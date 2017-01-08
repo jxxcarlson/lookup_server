@@ -4,9 +4,9 @@ defmodule LookupPhoenix.SearchController do
 
     def index(conn, %{"search" => %{"query" => query}}) do
       queryList = String.split(query)
-      IO.puts queryList
       notes = LookupPhoenix.Note.search(queryList)
-      render(conn, "index.html", notes: notes)
+
+      render(conn, "index.html", notes: notes, count: length(notes))
     end
 
 

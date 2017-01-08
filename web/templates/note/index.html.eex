@@ -1,6 +1,10 @@
-<h2>Lookup: notes</h2>
 
-<%= link "New note", to: note_path(@conn, :new) %>
+
+<span style="font-size:1.5em;"> <%= @count %>  Notes </span>
+<span class="text-right" style="float:right; margin-left:140px;font-size:1.5em">
+   <%= link "New note", to: note_path(@conn, :new) %>
+</span>
+
 
 <table class="table">
   <thead>
@@ -19,8 +23,12 @@
 
       <td class="text-right">
         <%= link "Show", to: note_path(@conn, :show, note), class: "btn btn-default btn-xs" %>
+      </td>
+      <td class="text-right">
         <%= link "Edit", to: note_path(@conn, :edit, note), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: note_path(@conn, :delete, note), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+      <td class="text-right">
+        <%= link "Delete", to: note_path(@conn, :delete, note), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-default btn-xs" %>
       </td>
     </tr>
 <% end %>

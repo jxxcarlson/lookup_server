@@ -14,5 +14,5 @@
 
 </ul>
 
-<%= link "Edit", to: note_path(@conn, :edit, @note) %>
-<%= link "Back", to: note_path(@conn, :index) %>
+<span style="margin-right:8px;"><%= link "Edit", to: note_path(@conn, :edit, @note) %></span>
+<span style="margin-right:8px;"><%= link "Back", to: note_path(@conn, :index) %></span>

@@ -13,19 +13,22 @@
 
   <body>
   <!-- http://stackoverflow.com/questions/33068021/creating-a-search-bar-in-the-permanent-layout-app-html-eex -->
-  <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
-    <%= text_input f, :query %>
-    <%= submit "Search" %>
-  <% end %>
+
+
+
 
     <div class="container">
       <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
-            <li><a href="/">Home</a></li>
-          </ul>
-        </nav>
-        <span class="logo"></span>
+
+         <div>
+            <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
+              <%= text_input f, :query %>
+              <%= submit "Search" %>
+            <% end %>
+
+            <!-- <span class="pull-right"><a href="/">Home</a><span>  -->
+        </div>
+
       </header>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
