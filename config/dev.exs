@@ -17,6 +17,7 @@ config :lookup_phoenix, LookupPhoenix.Endpoint,
 
 # Watch static and templates for browser reloading.
 config :lookup_phoenix, LookupPhoenix.Endpoint,
+  http: [port: 4001, ip: {0, 0, 0, 0}],
   live_reload: [
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
@@ -25,6 +26,7 @@ config :lookup_phoenix, LookupPhoenix.Endpoint,
       ~r{web/templates/.*(eex)$}
     ]
   ]
+
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
