@@ -1,18 +1,19 @@
-<h2>Show note</h2>
 
-<ul>
 
-  <li>
-    <strong>Title:</strong>
-    <%= @note.title %>
-  </li>
+<div style="font-size: 1.2em">
 
-  <li>
-    <strong>Content:</strong>
-    <%= @note.content %>
-  </li>
+<p> <b><%= @note.title %></b> </p>
 
-</ul>
+
+<p><%= @note.content %> </p>
+
+
+</div>
+
+
+
+
+<br><br><br>
 
 <span style="margin-right:8px;"><%= link "Edit", to: note_path(@conn, :edit, @note) %></span>
 <span style="margin-right:8px;"><%= link "Back", to: note_path(@conn, :index) %></span>
