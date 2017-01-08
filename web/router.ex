@@ -18,6 +18,7 @@ defmodule LookupPhoenix.Router do
 
     resources "/notes", NoteController
     post "/search", SearchController, :index
+    get "/search", PageController, :index
     get "/", PageController, :index
   end
 

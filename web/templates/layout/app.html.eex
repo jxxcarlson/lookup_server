@@ -23,7 +23,8 @@
          <div>
             <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
               <%= text_input f, :query %>
-              <%= submit "Search" %>
+             <%= submit "Search" %>
+             <button>Random</button>
             <% end %>
 
             <!-- <span class="pull-right"><a href="/">Home</a><span>  -->
