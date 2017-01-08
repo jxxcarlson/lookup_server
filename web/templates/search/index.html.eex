@@ -1,0 +1,2 @@
+<%= render LookupPhoenix.NoteView, "index.html", assigns %>
+

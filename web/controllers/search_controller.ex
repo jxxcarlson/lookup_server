@@ -1,11 +1,14 @@
 defmodule LookupPhoenix.SearchController do
     use LookupPhoenix.Web, :controller
+    alias LookupPhoenix.Note
 
     def index(conn, %{"search" => %{"query" => query}}) do
-      IO.puts query
-      results = "foo" # do the actual search using `query`
-      render conn, "index.html", results: results
+      queryList = String.split(query)
+      IO.puts queryList
+      notes = LookupPhoenix.Note.search(queryList)
+      render(conn, "index.html", notes: notes)
     end
+
 
 end
 

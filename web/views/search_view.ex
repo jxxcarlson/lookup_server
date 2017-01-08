@@ -1,3 +1,3 @@
-defmodule LookupPhoenix.NoteView do
+defmodule LookupPhoenix.SearchView do
   use LookupPhoenix.Web, :view
 end
