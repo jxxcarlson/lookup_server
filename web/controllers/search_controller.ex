@@ -3,10 +3,17 @@ defmodule LookupPhoenix.SearchController do
     alias LookupPhoenix.Note
 
     def index(conn, %{"search" => %{"query" => query}}) do
+
       queryList = String.split(query)
       notes = LookupPhoenix.Note.search(queryList)
 
-      render(conn, "index.html", notes: notes, count: length(notes))
+      noteCount = length(notes)
+      case noteCount do
+        1 -> noteCountString = "1 Note"
+        _ -> noteCountString = Integer.to_string(noteCount) <> " Notes"
+      end
+
+      render(conn, "index.html", notes: notes, noteCountString: noteCountString)
     end
 
 

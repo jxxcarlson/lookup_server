@@ -1,6 +1,6 @@
 
 
-<span style="font-size:1.5em;"> <%= @count %>  Notes </span>
+<span style="font-size:1.5em;"> <%= @noteCountString %> </span>
 <span class="text-right" style="float:right; margin-left:140px;font-size:1.5em">
    <%= link "New note", to: note_path(@conn, :new) %>
 </span>

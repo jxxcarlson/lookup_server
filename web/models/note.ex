@@ -34,6 +34,7 @@ defmodule LookupPhoenix.Note do
     end
 
     def search(arg) do
+      arg = Enum.map(arg, fn(x) -> String.downcase(x) end)
       case arg do
         [] -> []
         _ -> search_with_non_empty_arg(arg)

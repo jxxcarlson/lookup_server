@@ -3,9 +3,11 @@ defmodule LookupPhoenix.NoteController do
 
   alias LookupPhoenix.Note
 
+
+
   def index(conn, _params) do
     notes = Repo.all(Note)
-    render(conn, "index.html", notes: notes)
+    render(conn, "index.html", notes: notes, noteCountString: "")
   end
 
   def new(conn, _params) do
