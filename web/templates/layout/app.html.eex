@@ -12,6 +12,12 @@
   </head>
 
   <body>
+  <!-- http://stackoverflow.com/questions/33068021/creating-a-search-bar-in-the-permanent-layout-app-html-eex -->
+  <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
+    <%= text_input f, :query %>
+    <%= submit "Search" %>
+  <% end %>
+
     <div class="container">
       <header class="header">
         <nav role="navigation">
