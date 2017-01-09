@@ -24,7 +24,7 @@
             <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
               <%= text_input f, :query %>
              <%= submit "Search" %>
-             <button>Random</button>
+             <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-xs" %>
             <% end %>
 
             <!-- <span class="pull-right"><a href="/">Home</a><span>  -->

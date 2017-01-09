@@ -1,3 +1,5 @@
+# require IEx
+
 defmodule LookupPhoenix.SearchController do
     use LookupPhoenix.Web, :controller
     alias LookupPhoenix.Note
@@ -14,6 +16,18 @@ defmodule LookupPhoenix.SearchController do
       end
 
       render(conn, "index.html", notes: notes, noteCountString: noteCountString)
+    end
+
+
+    def random(conn, _params) do
+      expected_number_of_entries = 10
+      p = (100*expected_number_of_entries) / Note.count
+      notes = LookupPhoenix.Note.random(p)
+      case length(notes) do
+        1 -> countReportString =   "1 Random note"
+        _ -> countReportString = "#{length(notes)} Random notes"
+      end
+      render(conn, "index.html", notes: notes, noteCountString: countReportString)
     end
 
 

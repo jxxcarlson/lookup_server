@@ -17,8 +17,11 @@ defmodule LookupPhoenix.Router do
     pipe_through :browser # Use the default browser stack
 
     resources "/notes", NoteController
+
+    get "/random", SearchController, :random
+
     post "/search", SearchController, :index
-    get "/search", PageController, :index
+
     get "/", PageController, :index
   end
 

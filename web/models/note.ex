@@ -22,15 +22,18 @@ defmodule LookupPhoenix.Note do
     |> validate_required([:title, :content])
   end
 
+
   def search_by_title(arg) do
       Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%"))
       |> Repo.all
     end
 
     def search_with_non_empty_arg(arg) do
-      Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
+      result = Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
       |> Repo.all
       |> Note.filter_records_with_term_list(tl(arg))
+      IO.inspect(result)
+      result
     end
 
     def search(arg) do
@@ -58,11 +61,22 @@ defmodule LookupPhoenix.Note do
 
     end
 
+     def fromPair(pair) do
+          # %Note{ :title => pair[0], :content => pair[1]}
+          %Note{ :title => "Foo", :content => "Bar"}
+     end
 
+     def count do
+       Repo.aggregate(Note, :count, :id)
+     end
 
-    def random(p \\ 10) do
-      {_ok, result} = Ecto.Adapters.SQL.query(Repo, "SELECT title, content FROM notes TABLESAMPLE BERNOULLI(#{p})")
+    def random(p \\ 2.0) do
+      {_ok, result} = Ecto.Adapters.SQL.query(Repo, "SELECT id FROM notes TABLESAMPLE BERNOULLI(#{p})")
       result.rows
+      |> List.flatten
+      |> Enum.filter(fn(x) -> is_integer(x) end)
+      |> Enum.map(fn(id) -> Repo.get!(Note, id) end)
     end
 
 end
+
