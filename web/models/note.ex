@@ -32,8 +32,6 @@ defmodule LookupPhoenix.Note do
       result = Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
       |> Repo.all
       |> Note.filter_records_with_term_list(tl(arg))
-      IO.inspect(result)
-      result
     end
 
     def search(arg) do
@@ -76,6 +74,10 @@ defmodule LookupPhoenix.Note do
       |> List.flatten
       |> Enum.filter(fn(x) -> is_integer(x) end)
       |> Enum.map(fn(id) -> Repo.get!(Note, id) end)
+    end
+
+    def linkify(text) do
+      Regex.replace(~r/((http|https):\/\/\S*)\s/, " "<>text<>" ",  "<a href=\"\\1\" target=\"_blank\">LINK</a> ")
     end
 
 end
