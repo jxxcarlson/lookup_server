@@ -16,7 +16,17 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def create(conn, %{"note" => note_params}) do
-    changeset = Note.changeset(%Note{}, note_params)
+    IO.puts "============================="
+    IO.inspect note_params
+    IO.puts "-----------"
+    new_content = Note.makeLink(note_params["content"])
+    IO.puts "new_content:"
+    IO.puts new_content
+    IO.puts "-----------"
+    new_params = %{"content" => new_content, "title" => note_params["title"]}
+    IO.inspect new_params
+    IO.puts "-----------"
+    changeset = Note.changeset(%Note{}, new_params)
 
     case Repo.insert(changeset) do
       {:ok, _note} ->

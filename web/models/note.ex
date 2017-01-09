@@ -78,8 +78,14 @@ defmodule LookupPhoenix.Note do
 
     def linkify(text) do
       #text = Regex.replace(~r/((http|https):\/\/\S*)\s/, " "<>text<>" ",  "<a href=\"\\1\" target=\"_blank\">LINK</a> ")
-      text = Regex.replace(~r/((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?]*)\s/, " "<>text<>" ",  "<a href=\"\\1\" target=\"_blank\">LINK</a> ")
-      Regex.replace(~r/((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?]*)\[(.*)\]\s/, " "<>text<>" ",  "<a href=\"\\1\" target=\"_blank\">\\3</a> ")
+      text = Regex.replace(~r/((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#@_]*)\s/, " "<>text<>" ",  "<a href=\"\\1\" target=\"_blank\">LINK</a> ")
+      Regex.replace(~r/((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#@_]*)\[(.*)\]\s/, " "<>text<>" ",  "<a href=\"\\1\" target=\"_blank\">\\3</a> ")
+    end
+
+    def makeLink(text) do
+        Regex.replace(~r/((https|http):\/\/([a-zA-Z0-9_\-\.]*)[a-zA-Z0-9\.\-=@#&_\?\/]*)\s/, " "<>text<>" ",
+          "<a href=\"\\1\" target=\"_blank\">\\3</a> ")
+
     end
 
 end
