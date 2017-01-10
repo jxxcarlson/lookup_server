@@ -2,10 +2,13 @@
 
 <div style="font-size: 1.2em">
 
+<span style="float:right;margin-right:8px;"><%= link "Edit", to: note_path(@conn, :edit, @note) %></span>
+<span style="float:right;margin-right:8px;"><%= link "Back", to: note_path(@conn, :index) %></span>
+
 <p> <b><%= @note.title %></b> </p>
 
 
-<p><%= @note.content %> </p>
+<div style="white-space:pre-wrap;"><%= @note.content %> </div>
 
 
 </div>
@@ -15,5 +18,3 @@
 
 <br><br><br>
 
-<span style="margin-right:8px;"><%= link "Edit", to: note_path(@conn, :edit, @note) %></span>
-<span style="margin-right:8px;"><%= link "Back", to: note_path(@conn, :index) %></span>
