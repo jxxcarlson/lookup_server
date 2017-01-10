@@ -6,12 +6,7 @@ defmodule LookupPhoenix.NoteController do
 
 
   def index(conn, _params) do
-    IO.puts "---------"
-    IO.puts "active_notes"
-    IO.inspect _params["active_notes"]
-    IO.puts "---------"
-    # notes = Repo.all(Note)
-    id_list = Mnemonix.get(Cache, :active_notes)
+    id_list = Note.recall_list
     notes = Note.getDocumentsFromList(id_list)
     render(conn, "index.html", notes: notes, noteCountString: "")
   end
@@ -28,7 +23,7 @@ defmodule LookupPhoenix.NoteController do
 
     case Repo.insert(changeset) do
       {:ok, _note} ->
-        Mnemonix.put(Cache, :active_notes, [_note.id])
+        Note.memorize_list([_note.id])
         conn
         |> put_flash(:info, "Note created successfully: #{_note.id}")
         |> redirect(to: note_path(conn, :index, active_notes: [_note.id]))
@@ -44,6 +39,7 @@ defmodule LookupPhoenix.NoteController do
 
   def edit(conn, %{"id" => id}) do
     note = Repo.get!(Note, id)
+    # Mnemonix.put(Cache, :active_notes, [note.id])
     changeset = Note.changeset(note)
     render(conn, "edit.html", note: note, changeset: changeset)
   end
@@ -68,6 +64,13 @@ defmodule LookupPhoenix.NoteController do
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).
     Repo.delete!(note)
+
+
+    n = String.to_integer(id)
+    Note.recall_list
+    |> List.delete(n)
+    |> Note.memorize_list
+
 
     conn
     |> put_flash(:info, "Note deleted successfully.")

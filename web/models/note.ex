@@ -32,6 +32,8 @@ defmodule LookupPhoenix.Note do
       result = Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
       |> Repo.all
       |> Note.filter_records_with_term_list(tl(arg))
+      Note.memorize_list Enum.map(result, fn (record) -> record.id end)
+      result
     end
 
     def search(arg) do
@@ -77,14 +79,8 @@ defmodule LookupPhoenix.Note do
       id_list = result.rows
       |> List.flatten
       |> Enum.filter(fn(x) -> is_integer(x) end)
+      Note.memorize_list(id_list)
       Mnemonix.put(Cache, :active_notes, id_list)
-
-      IO.puts "----------------"
-      xxx = Mnemonix.get(Cache, :active_notes)
-      IO.puts "id_list"
-      IO.inspect xxx
-      IO.puts "----------------"
-
       id_list |> getDocumentsFromList
     end
 
@@ -98,6 +94,14 @@ defmodule LookupPhoenix.Note do
         Regex.replace(~r/((https|http):\/\/([a-zA-Z0-9_\-\.]*)[a-zA-Z0-9\.\-=@#&_%\?\/]*)\s/, " "<>text<>" ",
           "<a href=\"\\1\" target=\"_blank\">\\3</a> ")
 
+    end
+
+    def memorize_list(id_list) do
+      Mnemonix.put(Cache, :active_notes, id_list)
+    end
+
+    def recall_list do
+      Mnemonix.get(Cache, :active_notes)
     end
 
 end
