@@ -5,6 +5,7 @@ defmodule LookupPhoenix do
   # for more information on OTP Applications
   def start(_type, _args) do
     import Supervisor.Spec
+    {:ok, store} = Mnemonix.Store.start_link({Mnemonix.Map.Store, initial: %{active_notes: []}}, name: Cache)
 
     # Define workers and child supervisors to be supervised
     children = [

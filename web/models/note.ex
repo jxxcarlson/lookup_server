@@ -68,12 +68,24 @@ defmodule LookupPhoenix.Note do
        Repo.aggregate(Note, :count, :id)
      end
 
+    def getDocumentsFromList(id_list) do
+      id_list |> Enum.map(fn(id) -> Repo.get!(Note, id) end)
+    end
+
     def random(p \\ 2.0) do
       {_ok, result} = Ecto.Adapters.SQL.query(Repo, "SELECT id FROM notes TABLESAMPLE BERNOULLI(#{p})")
-      result.rows
+      id_list = result.rows
       |> List.flatten
       |> Enum.filter(fn(x) -> is_integer(x) end)
-      |> Enum.map(fn(id) -> Repo.get!(Note, id) end)
+      Mnemonix.put(Cache, :active_notes, id_list)
+
+      IO.puts "----------------"
+      xxx = Mnemonix.get(Cache, :active_notes)
+      IO.puts "id_list"
+      IO.inspect xxx
+      IO.puts "----------------"
+
+      id_list |> getDocumentsFromList
     end
 
     def linkify(text) do

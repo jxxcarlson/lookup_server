@@ -6,7 +6,13 @@ defmodule LookupPhoenix.NoteController do
 
 
   def index(conn, _params) do
-    notes = Repo.all(Note)
+    IO.puts "---------"
+    IO.puts "active_notes"
+    IO.inspect _params["active_notes"]
+    IO.puts "---------"
+    # notes = Repo.all(Note)
+    id_list = Mnemonix.get(Cache, :active_notes)
+    notes = Note.getDocumentsFromList(id_list)
     render(conn, "index.html", notes: notes, noteCountString: "")
   end
 
@@ -16,23 +22,16 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def create(conn, %{"note" => note_params}) do
-    IO.puts "============================="
-    IO.inspect note_params
-    IO.puts "-----------"
     new_content = Note.makeLink(note_params["content"])
-    IO.puts "new_content:"
-    IO.puts new_content
-    IO.puts "-----------"
     new_params = %{"content" => new_content, "title" => note_params["title"]}
-    IO.inspect new_params
-    IO.puts "-----------"
     changeset = Note.changeset(%Note{}, new_params)
 
     case Repo.insert(changeset) do
       {:ok, _note} ->
+        Mnemonix.put(Cache, :active_notes, [_note.id])
         conn
-        |> put_flash(:info, "Note created successfully.")
-        |> redirect(to: note_path(conn, :index))
+        |> put_flash(:info, "Note created successfully: #{_note.id}")
+        |> redirect(to: note_path(conn, :index, active_notes: [_note.id]))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
