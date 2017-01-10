@@ -79,6 +79,7 @@ defmodule LookupPhoenix.Note do
       id_list = result.rows
       |> List.flatten
       |> Enum.filter(fn(x) -> is_integer(x) end)
+      |> ListUtil.mcut
       Note.memorize_list(id_list)
       Mnemonix.put(Cache, :active_notes, id_list)
       id_list |> getDocumentsFromList
