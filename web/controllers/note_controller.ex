@@ -7,8 +7,9 @@ defmodule LookupPhoenix.NoteController do
 
   def index(conn, _params) do
     id_list = Note.recall_list
+    noteCoountString = "#{length(id_list)} Notes"
     notes = Note.getDocumentsFromList(id_list)
-    render(conn, "index.html", notes: notes, noteCountString: "")
+    render(conn, "index.html", notes: notes, noteCountString: noteCoountString)
   end
 
   def new(conn, _params) do
