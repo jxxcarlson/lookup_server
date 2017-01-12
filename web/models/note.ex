@@ -46,7 +46,7 @@ defmodule LookupPhoenix.Note do
 
     def filter_records_with_term(list, term) do
 
-      Enum.filter(list, fn(x) -> String.contains?(x.title, term) or String.contains?(x.content, term) end)
+      Enum.filter(list, fn(x) -> String.contains?(String.downcase(x.title), term) or String.contains?(String.downcase(x.content), term) end)
 
     end
 
