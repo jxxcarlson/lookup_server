@@ -8,7 +8,7 @@
 <p> <b><%= @note.title %></b> </p>
 
 
-<div style="white-space:pre-wrap;"><%= @note.content %> </div>
+<div style="white-space:pre-wrap;"><%= raw(@note.content) %> </div>
 
 
 </div>
