@@ -18,7 +18,7 @@ defmodule LookupPhoenix.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {LookupPhoenix, []},
-     applications: [:mnemonix, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
+     applications: [:comeonin, :mnemonix, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex]]
   end
 
