@@ -24,7 +24,7 @@ defmodule LookupPhoenix.NoteController do
 
     case Repo.insert(changeset) do
       {:ok, _note} ->
-        Note.recall_list ++ [_note.id]
+        [_note.id] ++ Note.recall_list
         |> Note.memorize_list
         conn
         |> put_flash(:info, "Note created successfully: #{_note.id}")
