@@ -5,7 +5,7 @@ defmodule LookupPhoenix.UserController do
 
   def new(conn, _params) do
     changeset = User.changeset(%User{})
-    render conn, "new_user.html", changeset: changeset
+    render conn, "new.html.eex", changeset: changeset
   end
 
 
