@@ -9,6 +9,7 @@ defmodule LookupPhoenix.Note do
   schema "notes" do
     field :title, :string
     field :content, :string
+    field :user_id, :integer
 
     timestamps()
   end
@@ -18,7 +19,7 @@ defmodule LookupPhoenix.Note do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content])
+    |> cast(params, [:title, :content, :user_id])
     |> validate_required([:title, :content])
   end
 
