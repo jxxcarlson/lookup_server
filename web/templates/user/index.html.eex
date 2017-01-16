@@ -1,0 +1,30 @@
+
+
+<span style="font-size:1.5em;"> <%= @noteCountString %> </span>
+<span class="text-right" style="float:right; margin-left:140px;font-size:1.5em">
+   <%= link "New note", to: note_path(@conn, :new) %>
+</span>
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Content</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for user <- @users do %>
+    <tr>
+      <td><%= user.id %></td>
+      <td><%= user.name %></td>
+      <td><%= user.username %></td>
+      <td><%= user.email %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+

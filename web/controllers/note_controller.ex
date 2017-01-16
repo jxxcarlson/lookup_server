@@ -14,7 +14,7 @@ defmodule LookupPhoenix.NoteController do
 
   def new(conn, _params) do
     changeset = Note.changeset(%Note{})
-    render(conn, "new.html.eex", changeset: changeset)
+    render(conn, "new.html", changeset: changeset)
   end
 
   def create(conn, %{"note" => note_params}) do
@@ -30,7 +30,7 @@ defmodule LookupPhoenix.NoteController do
         |> put_flash(:info, "Note created successfully: #{_note.id}")
         |> redirect(to: note_path(conn, :index, active_notes: [_note.id]))
       {:error, changeset} ->
-        render(conn, "new.html.eex", changeset: changeset)
+        render(conn, "new.html", changeset: changeset)
     end
   end
 
