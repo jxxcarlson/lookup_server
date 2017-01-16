@@ -92,7 +92,7 @@ defmodule LookupPhoenix.Note do
     end
 
     def makeLink(text) do
-        Regex.replace(~r/((https|http):\/\/([a-zA-Z0-9_:\-\.]*)[a-zA-Z0-9\.\-=@#&_%\?\/]*)\s/, " "<>text<>" ",
+        Regex.replace(~r/((https|http):\/\/([a-zA-Z0-9_:\-\.]*)[a-zA-Z0-9\.\-=@#&_%!\?\/]*)\s/, " "<>text<>" ",
           "<a href=\"\\1\" target=\"_blank\">\\3</a> ")
 
     end
