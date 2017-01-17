@@ -18,6 +18,7 @@
 
       <header class="header">
          <ol class="breadcrumb text-right">
+            <li> <%= link "Home", to: page_path(@conn, :index) %> </li>
            <%= if @current_user do %>
              <li style="font-size:0.9em; margin-right:3em;"><%= LookupPhoenix.Note.count %> Notes</li
              <li><%= @current_user.username %></li>

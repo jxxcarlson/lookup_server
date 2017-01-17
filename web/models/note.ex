@@ -104,7 +104,7 @@ defmodule LookupPhoenix.Note do
       |> Enum.filter(fn(x) -> is_integer(x) end)
       |> ListUtil.mcut
       Note.memorize_list(id_list, user_id)
-      Mnemonix.put(Cache, :active_notes, id_list)
+      # Mnemonix.put(Cache, :active_notes, id_list)
       id_list
       |> getDocumentsFromList
       |> filter_records_for_user(user_id)

@@ -27,7 +27,6 @@ defmodule LookupPhoenix.SearchController do
       # note_count = Note.count_for_user(conn.assigns.current_user.id)
       user_id = conn.assigns.current_user.id
       note_count = Note.count_for_user(user_id)
-      IO.puts "Note count = #{note_count}"
 
       cond do
         note_count > 6 ->
