@@ -50,7 +50,8 @@ defmodule LookupPhoenix.Note do
       |> Repo.all
       |> Note.filter_records_for_user(user_id)
       |> Note.filter_records_with_term_list(tl(arg))
-      Note.memorize_list Enum.map(result, fn (record) -> record.id end)
+      Note.memorize_list(result, user_id)
+      Enum.map(result, fn (record) -> record.id end)
       result
     end
 
@@ -102,7 +103,7 @@ defmodule LookupPhoenix.Note do
       |> List.flatten
       |> Enum.filter(fn(x) -> is_integer(x) end)
       |> ListUtil.mcut
-      Note.memorize_list(id_list)
+      Note.memorize_list(id_list, user_id)
       Mnemonix.put(Cache, :active_notes, id_list)
       id_list
       |> getDocumentsFromList
@@ -121,12 +122,18 @@ defmodule LookupPhoenix.Note do
 
     end
 
-    def memorize_list(id_list) do
-      Mnemonix.put(Cache, :active_notes, id_list)
+    def memorize_list(id_list, user_id) do
+      new_id_list = Enum.filter(id_list, fn x -> is_integer(x) end)
+      Mnemonix.put(Cache, "active_notes_#{user_id}", new_id_list)
     end
 
-    def recall_list do
-      Mnemonix.get(Cache, :active_notes)
+    def recall_list(user_id) do
+      recalled = Mnemonix.get(Cache, "active_notes_#{user_id}")
+      if recalled == nil do
+         []
+      else
+         recalled |> Enum.filter(fn x -> is_integer(x) end)
+      end
     end
 
 end

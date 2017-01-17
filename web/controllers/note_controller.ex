@@ -6,10 +6,14 @@ defmodule LookupPhoenix.NoteController do
 
 
   def index(conn, _params) do
-    id_list = Note.recall_list
-    noteCoountString = "#{length(id_list)} Notes"
+    id_list = Note.recall_list(conn.assigns.current_user.id)
+    IO.puts "========================"
+    IO.puts "ID LIST"
+    IO.inspect id_list
+    IO.puts "========================"
+    noteCountString = "#{length(id_list)} Notes"
     notes = Note.getDocumentsFromList(id_list)
-    render(conn, "index.html", notes: notes, noteCountString: noteCoountString)
+    render(conn, "index.html", notes: notes, noteCountString: noteCountString)
   end
 
   def new(conn, _params) do
@@ -24,8 +28,8 @@ defmodule LookupPhoenix.NoteController do
 
     case Repo.insert(changeset) do
       {:ok, _note} ->
-        [_note.id] ++ Note.recall_list
-        |> Note.memorize_list
+        [_note.id] ++ Note.recall_list(conn.assigns.current_user.id)
+        |> Note.memorize_list(conn.assigns.current_user.id)
         conn
         |> put_flash(:info, "Note created successfully: #{_note.id}")
         |> redirect(to: note_path(conn, :index, active_notes: [_note.id]))
@@ -69,9 +73,9 @@ defmodule LookupPhoenix.NoteController do
 
 
     n = String.to_integer(id)
-    Note.recall_list
+    Note.recall_list(conn.assigns.current_user.id)
     |> List.delete(n)
-    |> Note.memorize_list
+    |> Note.memorize_list(conn.assigns.current_user.id)
 
 
     conn
