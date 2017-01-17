@@ -18,5 +18,11 @@ defmodule LookupPhoenix.SessionController do
     end
   end
 
+  def delete(conn, _) do
+    conn
+    |> LookupPhoenix.Auth.logout()
+    |> redirect(to: page_path(conn, :index))
+  end
+
 
 end
