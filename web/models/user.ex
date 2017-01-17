@@ -29,6 +29,7 @@ defmodule LookupPhoenix.User do
     |> cast(params, ~w(password), [])
     |> validate_length(:password, min: 6, max: 100)
     |> put_pass_hash()
+    |> erase_password()
   end
 
   def put_pass_hash(changeset) do
@@ -39,5 +40,14 @@ defmodule LookupPhoenix.User do
         changeset
     end
   end
+
+  def erase_password(changeset) do
+      case changeset do
+        %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
+          put_change(changeset, :password, "")
+        _ ->
+          changeset
+      end
+    end
 
   end
