@@ -1,7 +1,28 @@
 <div class="jumbotron">
-  <h2>Lookup Notes</h2>
+  <div>
 
-  <p>Please sign in or register to use Lookup</p>
+   <h2>Lookup Notes</h2>
+
+   <br>
+
+   <p>Please sign in or register</p>
+
+   </div>
+  </div>
+
+  <div style="max-width:36em;">
+
+    <div style="font-size: 1.2em;">
+    <p>Lookup is a place to keep those random thoughts and
+      bits of information where you can find them again.
+      Great search. Safe, secure, always there when you need it.</p>
+
+    <p style="color:darkred">Now in private beta test: jxxcarlson at gmail.
+    You will need an access code to join.</p>
+
+     </div>
+  </div>
+
 
 </div>
 

@@ -10,7 +10,7 @@ defmodule LookupPhoenix.SessionController do
       {:ok, conn} ->
         conn
         |> put_flash(:info, "Welcome back!")
-        |> redirect(to: note_path(conn, :index))
+        |> redirect(to: note_path(conn, :index, option: "recall_id_list"))
       {:error, _reason, conn} ->
         conn
         |> put_flash(:error, "Invalid username/password combination")

@@ -124,6 +124,9 @@ defmodule LookupPhoenix.Note do
 
     def memorize_list(id_list, user_id) do
       new_id_list = Enum.filter(id_list, fn x -> is_integer(x) end)
+      IO.puts "=========================="
+      IO.puts "Memorizing #{length(id_list)} notes for #{user_id}"
+      IO.puts "=========================="
       Mnemonix.put(Cache, "active_notes_#{user_id}", new_id_list)
     end
 
