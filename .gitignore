@@ -25,3 +25,5 @@ erl_crash.dump
 .idea/
 foo.txt
 /backups
+
+dgo*
