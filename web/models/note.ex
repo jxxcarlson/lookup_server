@@ -29,20 +29,25 @@ defmodule LookupPhoenix.Note do
       |> Repo.all
     end
 
-    def search_with_non_empty_arg(arg) do
+    def search_with_non_empty_arg(arg, user_id) do
       result = Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
       |> Repo.all
+      |> Note.filter_records_for_user(user_id)
       |> Note.filter_records_with_term_list(tl(arg))
       Note.memorize_list Enum.map(result, fn (record) -> record.id end)
       result
     end
 
-    def search(arg) do
+    def search(arg, user_id) do
       arg = Enum.map(arg, fn(x) -> String.downcase(x) end)
       case arg do
         [] -> []
-        _ -> search_with_non_empty_arg(arg)
+        _ -> search_with_non_empty_arg(arg, user_id)
       end
+    end
+
+    def filter_records_for_user(list, user_id) do
+      Enum.filter(list, fn(x) -> x.user_id == user_id end)
     end
 
     def filter_records_with_term(list, term) do
@@ -75,7 +80,7 @@ defmodule LookupPhoenix.Note do
       id_list |> Enum.map(fn(id) -> Repo.get!(Note, id) end)
     end
 
-    def random(p \\ 2.0) do
+    def random(p, user_id) do
       {_ok, result} = Ecto.Adapters.SQL.query(Repo, "SELECT id FROM notes TABLESAMPLE BERNOULLI(#{p})")
       id_list = result.rows
       |> List.flatten
@@ -83,7 +88,9 @@ defmodule LookupPhoenix.Note do
       |> ListUtil.mcut
       Note.memorize_list(id_list)
       Mnemonix.put(Cache, :active_notes, id_list)
-      id_list |> getDocumentsFromList
+      id_list
+      |> getDocumentsFromList
+      |> filter_records_for_user(user_id)
     end
 
     def linkify(text) do
