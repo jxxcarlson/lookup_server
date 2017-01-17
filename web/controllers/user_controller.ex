@@ -22,7 +22,7 @@ defmodule LookupPhoenix.UserController do
         conn
         |> LookupPhoenix.Auth.login(user)
         |> put_flash(:info, "#{user.name}, you are now a Lookup user")
-        |> redirect(to: user_path(conn, :index))
+        |> redirect(to: note_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end

@@ -6,6 +6,7 @@ defmodule LookupPhoenix.SearchController do
 
     def index(conn, %{"search" => %{"query" => query}}) do
 
+
       queryList = String.split(query)
       notes = LookupPhoenix.Note.search(queryList, conn.assigns.current_user.id)
 
@@ -16,6 +17,8 @@ defmodule LookupPhoenix.SearchController do
       end
 
       render(conn, "index.html", notes: notes, noteCountString: noteCountString)
+
+
     end
 
 
@@ -36,7 +39,7 @@ defmodule LookupPhoenix.SearchController do
 
       case note_count do
         1 -> countReportString =   "1 Random note"
-        _ -> countReportString = "#{note_count} Random notes"
+        _ -> countReportString = "#{length(notes)} Random notes"
       end
       render(conn, "index.html", notes: notes, noteCountString: countReportString)
     end

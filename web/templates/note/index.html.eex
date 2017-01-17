@@ -6,6 +6,16 @@
 </span>
 
 
+  <div style="font-size:1.2em;">
+    <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
+       <%= text_input f, :query, placeholder: "Search ...", style: "width:300px; height:30px; background-color:#eee;" %>
+       <!-- <%= submit "Search" %> -->
+       <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-xs" %>
+    <% end %>
+  </div>
+
+
+
 <table class="table">
   <thead>
     <tr>

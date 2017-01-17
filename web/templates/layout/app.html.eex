@@ -14,16 +14,12 @@
   <body>
   <!-- http://stackoverflow.com/questions/33068021/creating-a-search-bar-in-the-permanent-layout-app-html-eex -->
 
-
-
-
     <div class="container">
-
-
 
       <header class="header">
          <ol class="breadcrumb text-right">
            <%= if @current_user do %>
+             <li style="font-size:0.9em; margin-right:3em;"><%= LookupPhoenix.Note.count %> Notes</li
              <li><%= @current_user.username %></li>
              <li>
                <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
@@ -35,17 +31,8 @@
          </ol>
 
 
-         <span style="font-size:0.9em"><%= LookupPhoenix.Note.count %> Notes<span>
 
-         <% if @conn.assigns.current_user != nil do %>
-             <div style="font-size:1.2em;">
-                <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
-                  <%= text_input f, :query, placeholder: "Search ...", style: "width:300px; height:30px; background-color:#eee;" %>
-                 <!-- <%= submit "Search" %> -->
-                 <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-xs" %>
-                <% end %>
-            </div>
-        <% end %>
+
 
       </header>
 
