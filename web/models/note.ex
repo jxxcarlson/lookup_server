@@ -24,10 +24,26 @@ defmodule LookupPhoenix.Note do
   end
 
 
-  def search_by_title(arg) do
+    def search_by_title(arg) do
       Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%"))
       |> Repo.all
     end
+
+    def count_for_user(user_id) do
+      query = Ecto.Query.from note in Note,
+         select: note.id,
+         where: note.user_id == ^user_id
+         length Repo.all(query)
+    end
+
+    def notes_for_user(user_id) do
+       query = Ecto.Query.from note in Note,
+         select: note.id,
+         where: note.user_id == ^user_id
+         Repo.all(query)
+         |> getDocumentsFromList
+    end
+
 
     def search_with_non_empty_arg(arg, user_id) do
       result = Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
