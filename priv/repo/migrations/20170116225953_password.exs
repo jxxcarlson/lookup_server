@@ -6,6 +6,6 @@ defmodule LookupPhoenix.Repo.Migrations.Password do
         add :password, :string
       end
 
-    end
+  end
 
 end

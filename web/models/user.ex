@@ -11,14 +11,16 @@ defmodule LookupPhoenix.User do
       field :email, :string
       field :password, :string
       field :password_hash, :string
+      field :registration_code, :string
 
       timestamps()
     end
 
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, ~w(name username email password), [] )
+    |> cast(params, ~w(name username email password registration_code), [] )
     |> validate_length(:username, min: 1, max: 20)
+    # |> validate_inclusion(:registration_code, ['ladidah'])
   end
 
   def registration_changeset(model, params) do

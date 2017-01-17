@@ -13,5 +13,8 @@
     <div class="form-group">
         <%= text_input f, :password, placeholder: "Password", class: "form-control" %>
     </div>
+    <div class="form-group">
+            <%= text_input f, :authorization_code, placeholder: "Authorization code", class: "form-control" %>
+    </div>
     <%= submit "Please create my account.", class: "btn btn-primary" %>
 <% end %>
