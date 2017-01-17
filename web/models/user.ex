@@ -20,7 +20,7 @@ defmodule LookupPhoenix.User do
     model
     |> cast(params, ~w(name username email password registration_code), [] )
     |> validate_length(:username, min: 1, max: 20)
-    # |> validate_inclusion(:registration_code, ['ladidah'])
+    |> validate_inclusion(:registration_code, ["ladidah", "uahs"])
   end
 
   def registration_changeset(model, params) do
