@@ -160,8 +160,18 @@ defmodule LookupPhoenix.Note do
     end
 
     def firstParagraph(text) do
-      Regex.run(~r/.*\s\s/, text)
-      |> List.first
+      short_text = Regex.run(~r/.*\s\s/, text)
+      case short_text do
+        nil -> text
+        [] -> text
+        _ -> List.first short_text
+      end
+    end
+
+    def format_for_index(text) do
+      text
+      |> firstParagraph
+      |> linkify
     end
 
     ########
