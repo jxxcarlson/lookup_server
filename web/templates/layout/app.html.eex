@@ -20,7 +20,9 @@
          <ol class="breadcrumb text-right">
             <!-- <li> <%= link "Home", to: page_path(@conn, :index) %> </li> -->
            <%= if @current_user do %>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;">LOOKUP </li
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "LOOKUP", to: page_path(@conn, :index) %> </li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "NOTES", to: note_path(@conn, :index) %> </li>
+
              <li><%= @current_user.username %>&mdash; <%= LookupPhoenix.Note.count_for_user(@current_user.id) %> Notes</li>
              <li>
                <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>

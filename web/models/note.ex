@@ -119,7 +119,11 @@ defmodule LookupPhoenix.Note do
     def makeLink(text) do
         Regex.replace(~r/((https|http):\/\/([a-zA-Z0-9_:\-\.]*)[a-zA-Z0-9\.\-=@#&_%!\?\/]*)\s/, " "<>text<>" ",
           "<a href=\"\\1\" target=\"_blank\">\\3</a> ")
+    end
 
+    def transform_images(text) do
+      Regex.replace(~r/image::(x*)\s/, " "<>text<>" ",
+                "<img src=\"\\1\" height=200")
     end
 
     def memorize_list(id_list, user_id) do
