@@ -55,10 +55,7 @@ defmodule LookupPhoenix.NoteController do
     render(conn, "edit.html", note: note, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "note" => note_params}) do
-    note = Repo.get!(Note, id)
-    changeset = Note.changeset(note, note_params)
-
+  def doUpdate(note, changeset, conn) do
     case Repo.update(changeset) do
       {:ok, note} ->
         conn
@@ -66,6 +63,14 @@ defmodule LookupPhoenix.NoteController do
         |> redirect(to: note_path(conn, :show, note))
       {:error, changeset} ->
         render(conn, "edit.html", note: note, changeset: changeset)
+    end
+  end
+
+  def update(conn, %{"id" => id, "note" => note_params}) do
+    note = Repo.get!(Note, id)
+    changeset = Note.changeset(note, note_params)
+    if note.user_id != 0 do
+      doUpdate(note, changeset, conn)
     end
   end
 

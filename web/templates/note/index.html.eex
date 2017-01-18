@@ -29,7 +29,7 @@
 <%= for note <- @notes do %>
     <tr>
       <td><%= note.title %></td>
-       <td><%= raw(LookupPhoenix.Note.linkify(note.content)) %></td>
+       <td><%= raw(LookupPhoenix.Note.firstParagraph(LookupPhoenix.Note.linkify(note.content))) %></td>
 
       <td class="text-right">
         <%= link "Show", to: note_path(@conn, :show, note), class: "btn btn-default btn-xs" %>

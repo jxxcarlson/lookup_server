@@ -156,7 +156,12 @@ defmodule LookupPhoenix.Note do
     end
 
     def scrubTags(text) do
-      Regex.replace(~r/\s:.*\s/, " " <> text <> " ", " ")
+      Regex.replace(~r/\s:.*\s/, " " <> text <> " ",    " ")
+    end
+
+    def firstParagraph(text) do
+      Regex.run(~r/.*\s\s/, text)
+      |> List.first
     end
 
     ########
