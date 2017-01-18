@@ -22,7 +22,8 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def create(conn, %{"note" => note_params}) do
-    new_content = Note.makeLink(note_params["content"])
+    new_content = note_params["content"]
+    |> Note.identity
     new_params = %{"content" => new_content, "title" => note_params["title"], "user_id" => conn.assigns.current_user.id}
     changeset = Note.changeset(%Note{}, new_params)
 

@@ -110,21 +110,33 @@ defmodule LookupPhoenix.Note do
       |> filter_records_for_user(user_id)
     end
 
+    def identity(text) do
+      text
+    end
+
+
+    #######
+
     def linkify(text) do
-      #text = Regex.replace(~r/((http|https):\/\/\S*)\s/, " "<>text<>" ",  "<a href=\"\\1\" target=\"_blank\">LINK</a> ")
-      text = Regex.replace(~r/((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#@_%]*)\s/, " "<>text<>" ",  "<a href=\"\\1\" target=\"_blank\">LINK</a> ")
-      Regex.replace(~r/((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#@_%]*)\[(.*)\]\s/, " "<>text<>" ",  "<a href=\"\\1\" target=\"_blank\">\\3</a> ")
+          text
+          |> makeSmartLinks
+          |> makeDumbLinks
+          |> makeImageLinks
+        end
+
+    def makeDumbLinks(text) do
+      Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#!@_%]*)\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">LINK</a> ")
     end
 
-    def makeLink(text) do
-        Regex.replace(~r/((https|http):\/\/([a-zA-Z0-9_:\-\.]*)[a-zA-Z0-9\.\-=@#&_%!\?\/]*)\s/, " "<>text<>" ",
-          "<a href=\"\\1\" target=\"_blank\">\\3</a> ")
+    def makeSmartLinks(text) do
+      Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#!@_%]*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
 
-    def transform_images(text) do
-      Regex.replace(~r/image::(x*)\s/, " "<>text<>" ",
-                "<img src=\"\\1\" height=200")
+    def makeImageLinks(text) do
+       Regex.replace(~r/\simage::(.*(png|jpg|jpeg))\s/, " "<>text<>" ", " <img src=\"\\1\" height=200> ")
     end
+
+    ########
 
     def memorize_list(id_list, user_id) do
       new_id_list = Enum.filter(id_list, fn x -> is_integer(x) end)
