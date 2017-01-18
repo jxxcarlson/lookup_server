@@ -137,8 +137,8 @@ defmodule LookupPhoenix.Note do
 
     def linkify(text, height \\ 200) do
       text
-      |> makeSmartLinks
       |> makeUserLinks
+      |> makeSmartLinks
       |> makeImageLinks(height)
       |> scrubTags
     end
@@ -150,7 +150,6 @@ defmodule LookupPhoenix.Note do
     def makeSmartLinks(text) do
           Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-\/&=\?#!@_%]*))\/(\S*\S)\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\1</a> ")
     end
-
 
     def makeUserLinks(text) do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#!@_%]*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
