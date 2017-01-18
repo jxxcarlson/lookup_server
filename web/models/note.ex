@@ -97,18 +97,36 @@ defmodule LookupPhoenix.Note do
       id_list |> Enum.map(fn(id) -> Repo.get!(Note, id) end)
     end
 
-    def random(p, user_id) do
+    # Get list of random note ids
+    def random_ids(p) do
       {_ok, result} = Ecto.Adapters.SQL.query(Repo, "SELECT id FROM notes TABLESAMPLE BERNOULLI(#{p})")
       id_list = result.rows
       |> List.flatten
       |> Enum.filter(fn(x) -> is_integer(x) end)
       |> ListUtil.mcut
-      Note.memorize_list(id_list, user_id)
-      # Mnemonix.put(Cache, :active_notes, id_list)
-      id_list
+    end
+
+    # Get list of random note ids for given user
+    def random_notes_for_user(p, user_id, truncate_at \\ 7) do
+      random_ids(p)
       |> getDocumentsFromList
       |> filter_records_for_user(user_id)
+      |> ListUtil.truncateAt(truncate_at)
     end
+
+    def random(p, user_id) do
+          {_ok, result} = Ecto.Adapters.SQL.query(Repo, "SELECT id FROM notes TABLESAMPLE BERNOULLI(#{p})")
+          id_list = result.rows
+          |> List.flatten
+          |> Enum.filter(fn(x) -> is_integer(x) end)
+          |> ListUtil.mcut
+
+          new_id_list = id_list
+          |> getDocumentsFromList
+          |> filter_records_for_user(user_id)
+          Note.memorize_list(new_id_list, user_id)
+          new_id_list
+     end
 
     def identity(text) do
       text
@@ -117,12 +135,12 @@ defmodule LookupPhoenix.Note do
 
     #######
 
-    def linkify(text) do
-          text
-          |> makeSmartLinks
-          |> makeDumbLinks
-          |> makeImageLinks
-        end
+    def linkify(text, height \\ 200) do
+      text
+      |> makeSmartLinks
+      |> makeDumbLinks
+      |> makeImageLinks(height)
+    end
 
     def makeDumbLinks(text) do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#!@_%]*)\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">LINK</a> ")
@@ -132,11 +150,17 @@ defmodule LookupPhoenix.Note do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#!@_%]*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
 
-    def makeImageLinks(text) do
-       Regex.replace(~r/\simage::(.*(png|jpg|jpeg))\s/, " "<>text<>" ", " <img src=\"\\1\" height=200> ")
+    def makeImageLinks(text, height \\ 200) do
+       Regex.replace(~r/\simage::(.*(png|jpg|jpeg))\s/, " "<>text<>" ", " <img src=\"\\1\" height=#{height}> ")
     end
 
     ########
+
+    def memorize_notes(note_list, user_id) do
+      note_list
+      |> Enum.map(fn(note) -> note.id end)
+      |> memorize_list(user_id)
+    end
 
     def memorize_list(id_list, user_id) do
       new_id_list = Enum.filter(id_list, fn x -> is_integer(x) end)

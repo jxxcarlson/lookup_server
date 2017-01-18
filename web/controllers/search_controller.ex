@@ -9,6 +9,7 @@ defmodule LookupPhoenix.SearchController do
 
       queryList = String.split(query)
       notes = LookupPhoenix.Note.search(queryList, conn.assigns.current_user.id)
+      LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
 
       noteCount = length(notes)
       case noteCount do
@@ -24,17 +25,20 @@ defmodule LookupPhoenix.SearchController do
 
     def random(conn, _params) do
       expected_number_of_entries = 14
-      # note_count = Note.count_for_user(conn.assigns.current_user.id)
+      # note_count = Note.count_notes_user(conn.assigns.current_user.id)
       user_id = conn.assigns.current_user.id
       note_count = Note.count_for_user(user_id)
 
       cond do
         note_count > 6 ->
            p = (100*expected_number_of_entries) / note_count
-           notes = LookupPhoenix.Note.random(p, conn.assigns.current_user.id) |> ListUtil.truncateAt(7)
+           notes = LookupPhoenix.Note.random_notes_for_user(p, conn.assigns.current_user.id)
         note_count <= 5 ->
            notes = Note.notes_for_user(user_id)
       end
+      LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
+
+
 
       case note_count do
         1 -> countReportString =   "1 Random note"

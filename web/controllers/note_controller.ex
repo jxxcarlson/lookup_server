@@ -4,13 +4,16 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Note
 
 
+  def report(message, object) do
+    IO.puts "========================"
+        IO.puts message
+        IO.inspect object
+        IO.puts "========================"
+  end
 
   def index(conn, _params) do
     id_list = Note.recall_list(conn.assigns.current_user.id)
-    IO.puts "========================"
-    IO.puts "ID LIST"
-    IO.inspect id_list
-    IO.puts "========================"
+    report("Note controller - index", id_list)
     noteCountString = "#{length(id_list)} Notes"
     notes = Note.getDocumentsFromList(id_list)
     render(conn, "index.html", notes: notes, noteCountString: noteCountString)
@@ -40,6 +43,7 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def show(conn, %{"id" => id}) do
+    report("Note controller - show", Note.recall_list(conn.assigns.current_user.id))
     note = Repo.get!(Note, id)
     render(conn, "show.html", note: note)
   end
