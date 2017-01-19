@@ -137,7 +137,7 @@ defmodule LookupPhoenix.Note do
 
     def linkify(text, height \\ 200) do
       text
-      #|> makeUserLinks
+      |> makeUserLinks
       |> makeSmartLinks
       |> makeImageLinks(height)
       |> scrubTags
