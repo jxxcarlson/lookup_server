@@ -170,7 +170,7 @@ defmodule LookupPhoenix.Note do
       case short_text do
         nil -> text
         [] -> text
-        _ -> List.first short_text
+        _ -> (List.first short_text) <> " •••"
       end
     end
 
