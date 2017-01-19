@@ -30,10 +30,10 @@ defmodule LookupPhoenix.SearchController do
       note_count = Note.count_for_user(user_id)
 
       cond do
-        note_count > 6 ->
+        note_count > 14 ->
            p = (100*expected_number_of_entries) / note_count
            notes = LookupPhoenix.Note.random_notes_for_user(p, conn.assigns.current_user.id)
-        note_count <= 5 ->
+        note_count <= 14 ->
            notes = Note.notes_for_user(user_id)
       end
       LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)

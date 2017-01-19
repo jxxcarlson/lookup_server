@@ -137,7 +137,7 @@ defmodule LookupPhoenix.Note do
 
     def linkify(text, height \\ 200) do
       text
-      |> makeUserLinks
+      #|> makeUserLinks
       |> makeSmartLinks
       |> makeImageLinks(height)
       |> scrubTags
@@ -148,9 +148,10 @@ defmodule LookupPhoenix.Note do
     end
 
     def makeSmartLinks(text) do
-          Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-\/&=\?#!@_%]*))\/(\S*\S)\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\1</a> ")
+          Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-\/&=\?#!@_%]*))\/(\S*\S)\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
 
+    # http://foo.io/ladidah/mo/stuff => <a href="http://foo.io/ladida/foo.io"" target=\"_blank\">foo.io/ladidah</a>
     def makeUserLinks(text) do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#!@_%]*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
@@ -179,6 +180,10 @@ defmodule LookupPhoenix.Note do
     end
 
     ########
+
+
+
+    ##########
 
     def memorize_notes(note_list, user_id) do
       note_list
