@@ -3,10 +3,21 @@ defmodule LookupPhoenix.UserController do
   plug :authenticate when action in [:index, :show]
 
   alias LookupPhoenix.User
+  alias LookupPhoenix.Tag
+
 
   def index(conn, _params) do
      users = Repo.all(LookupPhoenix.User)
      render conn, "index.html", users: users
+  end
+
+  def tags(conn, _params) do
+     render conn, "tags.html", user: conn.assigns.current_user
+  end
+
+  def update_tags(conn, _params) do
+    User.update_tags(conn.assigns.current_user.id)
+    render conn, "tags.html", user: conn.assigns.current_user
   end
 
   def new(conn, _params) do

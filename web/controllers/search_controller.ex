@@ -22,6 +22,34 @@ defmodule LookupPhoenix.SearchController do
 
     end
 
+    def tag_search(conn, %{"query" => query}) do
+
+          IO.puts "================"
+          IO.puts "QUERY: #{query}"
+          IO.puts "================"
+
+          queryList = String.split(query)
+          # queryList = String.split(query).map(fn(item) -> ":" <> item end)
+
+           IO.puts "================"
+           IO.puts "QUERY LIST: #{queryList}"
+           IO.puts "================"
+
+
+          notes = LookupPhoenix.Note.search(queryList, conn.assigns.current_user.id)
+          LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
+
+          noteCount = length(notes)
+          case noteCount do
+            1 -> noteCountString = "1 Note"
+            _ -> noteCountString = Integer.to_string(noteCount) <> " Notes"
+          end
+
+          render(conn, "index.html", notes: notes, noteCountString: noteCountString)
+
+
+     end
+
 
     def random(conn, _params) do
       expected_number_of_entries = 14

@@ -40,8 +40,8 @@ defmodule LookupPhoenix.Note do
        query = Ecto.Query.from note in Note,
          select: note.id,
          where: note.user_id == ^user_id
-         Repo.all(query)
-         |> getDocumentsFromList
+       Repo.all(query)
+       |> getDocumentsFromList
     end
 
 

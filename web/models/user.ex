@@ -3,7 +3,11 @@ defmodule LookupPhoenix.User do
 
   use Ecto.Schema
   import Ecto.Query
+
   alias LookupPhoenix.Repo
+  alias LookupPhoenix.Tag
+  alias LookupPhoenix.User
+
 
   schema "users" do
       field :name, :string
@@ -19,9 +23,9 @@ defmodule LookupPhoenix.User do
 
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, ~w(name username email password registration_code), [] )
+    |> cast(params, ~w(name username email password registration_code tags), [] )
     |> validate_length(:username, min: 1, max: 20)
-    |> validate_inclusion(:registration_code, ["ladidah", "uahs"])
+    |> validate_inclusion(:registration_code, ["pukool5", "uahs"])
   end
 
   def registration_changeset(model, params) do
@@ -49,6 +53,15 @@ defmodule LookupPhoenix.User do
         _ ->
           changeset
       end
-    end
+  end
+
+  def update_tags(user_id) do
+      user = Repo.get!(User, user_id)
+      tags = Tag.get_all_user_tags(user_id) |> Enum.sort
+      params = %{"tags" => tags}
+      changeset = User.changeset(user, params)
+      Repo.update(changeset)
+  end
+
 
   end
