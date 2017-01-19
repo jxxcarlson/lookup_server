@@ -3,7 +3,7 @@ defmodule LookupPhoenix.Repo.Migrations.Tags do
 
   def change do
     alter table(:users) do
-      add :tags, {:array, string}
+      add :tags, {:array, :string}
     end
   end
 end

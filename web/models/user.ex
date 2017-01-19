@@ -12,7 +12,7 @@ defmodule LookupPhoenix.User do
       field :password, :string
       field :password_hash, :string
       field :registration_code, :string
-      field :tags, {:array, :string}
+      field :tags, {:array, :string }
 
       timestamps()
     end
