@@ -45,6 +45,10 @@
      <li>Here is an example of a YouTube link: <span>https://youtu.be/EsTgr-n53Ow[George Oakley, Cello Sonata]</span>
      It appears like thie: <a href="https://youtu.be/EsTgr-n53Ow">George Oakley, Cello Sonata</a>.</li>
 
+     <li>You can also link to audio files.  Here is an example:
+     <a href="http://www.pmel.noaa.gov/acoustics/whales/sounds/whalewav/nepblue24s10x.wav" target=_blank>Blue whale - listen!</a>.
+
+
    </ul>
 
    <img src="https://www.allaboutbirds.org/guide/bbimages/aab/images/blue-winged-warbler.jpg" width=100 float=right>
