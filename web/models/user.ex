@@ -22,9 +22,14 @@ defmodule LookupPhoenix.User do
       timestamps()
     end
 
+  def running_changeset(model, params \\ :empty) do
+      model
+      |> cast(params, ~w(tags read_only), [] )
+    end
+
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, ~w(name username email password registration_code tags read_only), [] )
+    |> cast(params, ~w(name username email password registration_code), [] )
     |> validate_length(:username, min: 1, max: 20)
     |> validate_inclusion(:registration_code, ["student", "pukool5", "uahs"])
   end
@@ -70,14 +75,23 @@ defmodule LookupPhoenix.User do
       user = Repo.get!(User, user_id)
       tags = Tag.get_all_user_tags(user_id) |> Enum.sort
       params = %{"tags" => tags}
-      changeset = User.changeset(user, params)
+      changeset = User.running_changeset(user, params)
       Repo.update(changeset)
   end
 
-  def update_read_only(user_id, value) do
-      user = Repo.get!(User, user_id)
+  def initialize_metadata(user) do
+        params = %{"tags" => [], "read_only" => false}
+        changeset = User.running_changeset(user, params)
+        IO.puts "initialize_meta_data for user #{user.id}"
+        IO.inspect(changeset)
+        Repo.update(changeset)
+    end
+
+  def update_read_only(user, value) do
       params = %{"read_only" => value}
-      changeset = User.changeset(user, params)
+      changeset = User.running_changeset(user, params)
+      IO.puts "update_read_only, for user #{user.id}"
+      IO.inspect(changeset)
       Repo.update(changeset)
   end
 

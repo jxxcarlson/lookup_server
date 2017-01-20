@@ -30,6 +30,7 @@ defmodule LookupPhoenix.UserController do
     changeset = User.registration_changeset(%User{}, user_params)
     case Repo.insert(changeset) do
       {:ok, user} ->
+        User.initialize_metadata(user)
         conn
         |> LookupPhoenix.Auth.login(user)
         |> put_flash(:info, "#{user.name}, you are now a Lookup user")
