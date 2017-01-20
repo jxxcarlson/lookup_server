@@ -11,12 +11,31 @@ defmodule LookupPhoenix.NoteController do
         IO.puts "========================"
   end
 
+  def getRandomNotes(user_id) do
+     note_count = Note.count_for_user(user_id)
+     expected_number_of_entries = 7
+     cond do
+       note_count > 14 ->
+          p = (100*expected_number_of_entries) / note_count
+          notes = LookupPhoenix.Note.random_notes_for_user(p, user_id)
+       note_count <= 14 ->
+          notes = Note.notes_for_user(user_id)
+     end
+  end
+
   def index(conn, _params) do
-    id_list = Note.recall_list(conn.assigns.current_user.id)
-    report("Note controller - index", id_list)
-    noteCountString = "#{length(id_list)} Notes"
-    notes = Note.getDocumentsFromList(id_list)
-    render(conn, "index.html", notes: notes, noteCountString: noteCountString)
+     IO.puts "NOTE CONTROLLER INDEX"
+     user_id = conn.assigns.current_user.id
+     IO.puts "USER ID = #{user_id}"
+     id_list = Note.recall_list(user_id)
+     report("Note controller - index", id_list)
+     if length(id_list) == 0 do
+       notes = getRandomNotes(user_id)
+     else
+       notes = Note.getDocumentsFromList(id_list)
+     end
+     noteCountString = "#{length(notes)} Notes"
+     render(conn, "index.html", notes: notes, noteCountString: noteCountString)
   end
 
   def new(conn, _params) do
