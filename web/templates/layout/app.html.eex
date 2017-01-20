@@ -20,7 +20,7 @@
          <ol class="breadcrumb text-right">
             <!-- <li> <%= link "Home", to: page_path(@conn, :index) %> </li> -->
            <%= if @current_user do %>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "LOOKUP", to: page_path(@conn, :index) %> </li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "HOME", to: page_path(@conn, :index) %> </li>
              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "NOTES", to: note_path(@conn, :index) %> </li>
              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "TAGS", to: user_path(@conn, :tags) %> </li>
 
