@@ -2,7 +2,7 @@
   <%= link "Update tags", to: user_path(@conn, :update_tags), class: "btn btn-default" %>
 </span>
 
-<h1>Tags</h1>
+<h1>Tags (<%= length(@user.tags) %>)</h1>
 
 
 

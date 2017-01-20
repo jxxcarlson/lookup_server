@@ -95,9 +95,17 @@ defmodule LookupPhoenix.User do
       Repo.update(changeset)
   end
 
-  def set_demo(value) do
+  # say 'set_demo("edit")' or 'set_demo("locked")'
+  def set_demo(state) do
+     if state == "edit" do
+       read_only = false
+       IO.puts "You can now edit the demo notebook"
+     else
+       read_only = true
+       IO.puts "The demo notebook is now locked"
+     end
      user = Repo.get!(User, 23)
-     update_read_only(user, value)
+     update_read_only(user, read_only)
   end
 
 
