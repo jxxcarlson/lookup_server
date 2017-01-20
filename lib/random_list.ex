@@ -1,31 +1,25 @@
 defmodule ListUtil do
 
 
-    # Clause 1
-    def split(in_list, count) when count > 0 do
-      # FIRST STAGE
-      [head | tail] = in_list
+   # the first element is head, the tail is the rest of the list
+   # count must be greater than 0 to match
+   def split([head | tail], count) when count > 0 do
 
-      # RECURSION
-      result = split(tail, count - 1)
+     # recursively call passing in tail and decrementing the count
+     # it will match a two element tuple
+     {left, right} = split(tail, count-1)
 
-      # SECOND STAGE
-      {left, right} = result
-      return = {[head | left], right}
-    end
+     # return a two element tuple containing
+     # the head, concatenated with the left element
+     # and the right (i.e. the rest of the list)
+     {[head | left], right}
 
- @doc """
-  split(list, _count) -- Split list into two parts,
-  the first with _count elements. Return a tuple
-  with the wo parts.
+   end
 
-  # Example:
-      # iex(2)> ListUtil.split([1,2,3,4], 2)
-      # {[1, 2], [3, 4]}
-  """
-
-
-    def split(list, _count), do: return = {[], list}
+   # this is for when count is <= 0
+   # return a two element tuple with an empty array the rest of the list
+   # do not recurse
+   def split(list, _count), do: {[], list}
 
     def truncateAt(list, n) do
       {a, b} = split(list, n)
