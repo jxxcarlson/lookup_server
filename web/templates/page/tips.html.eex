@@ -29,25 +29,27 @@
     <b style="margin-left:0px;margin-top:25px;margin-bottom:15px">Links</b>
      <ul style="font-size:1.25em;list-style-type:none">
 
-     <li>Links  entered like <span>http://nytimes.com</span> will appear
-     as <span><a href="http//nytimes.com">nytimes.com</a></span>.</li>
+     <li><b>Web pages.</b> Make a link by pasting a URL like <span>http://nytimes.com</span>
+     into LookupNotes.  It will appear like this:
+      <span><a href="http//nytimes.com">nytimes.com</a></span>.</li>
 
      <li>Links  entered like <span>http://nytimes.com[NYT]</span> will appear
           as <span><a href="http//nytimes.com">NYT</a></span>.</li>
 
-     <li>
-     Enter image links like this: <span>image::https://www.allaboutbirds.org/.../warbler.jpg</span>.
-     They will appear as actual images (see below).  The general format is <span>image::IMAGE_ADDRESS</span>
-     You can often copy the &quot;image address&quot; by control-clicking the image.  Try that on the
+     <li><b>Images.</b>
+     Make an image link like this: <span>image::https://www.allaboutbirds.org/.../warbler.jpg</span>.
+     It will appear as an actual images (see below).  The format is <span>image::IMAGE_ADDRESS</span>
+     Copy the address of an image by control-clicking on it.  Try that on the
      image below.
      </li>
 
-     <li>Here is an example of a YouTube link: <span>https://youtu.be/EsTgr-n53Ow[George Oakley, Cello Sonata]</span>
+     <li><b>YouTube.</b> copy the &quot;video URL&quot; by control-clicking on the video.
+     Then paste it into Lookupnotes.io as in this example: <span>https://youtu.be/EsTgr-n53Ow[George Oakley, Cello Sonata]</span>
      It appears like thie: <a href="https://youtu.be/EsTgr-n53Ow">George Oakley, Cello Sonata</a>.</li>
 
-     <li>You can also link to audio files.  Here is an example:
-     <a href="http://www.pmel.noaa.gov/acoustics/whales/sounds/whalewav/nepblue24s10x.wav" target=_blank>Blue whale - listen!</a>.
-
+     <li><b>Audio.</b> You can also link to audio files.  Here is an example:
+     <a href="http://www.pmel.noaa.gov/acoustics/whales/sounds/whalewav/nepblue24s10x.wav" target=_blank>Blue whale</a>.
+      We made this by pasting in <span>http://www.pmel.noaa.gov/.../nepblue24s10x.wav[Blue whale]</span>
 
    </ul>
 
