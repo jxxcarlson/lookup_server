@@ -23,6 +23,7 @@
              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "HOME", to: page_path(@conn, :index) %> </li>
              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "NOTES", to: note_path(@conn, :index) %> </li>
              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "TAGS", to: user_path(@conn, :tags) %> </li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "TIPS", to: page_path(@conn, :tips) %> </li>
 
              <li><%= @current_user.username %>&mdash; <%= LookupPhoenix.Note.count_for_user(@current_user.id) %> Notes</li>
              <li>

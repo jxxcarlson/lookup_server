@@ -1,0 +1,50 @@
+ <style>
+ span {color: darkred;}
+ li {margin: 10px 0; }
+ </style>
+
+ <b style="margin-left:0px;">Search</b>
+   <ul style="font-size:1.25em;list-style-type:none">
+
+     <li>Put the word <span>quote</span> in the search box to find all notes
+     containing the word <span>quote</span>. Put <span>quote prais</span> to find all quotes
+      contaiing the word <span>quote</span> and the word fragment <span>prais</span>.  This
+      will match both <i>praise</i> and <i>praising</i>.</li>
+
+     <li>The <span>Random</span> button brings up a random
+     list of notes.</li>
+
+  </ul>
+  <b style="margin-left:0px;margin-top:25px;margin-bottom:15px">Tags</b>
+   <ul style="font-size:1.25em;list-style-type:none">
+
+    <li>Put tags in the note contents to help find the note in the future. Tags are
+      just words that can be  picked up by a search.  Thus we might put &quot;quote&quot;
+      in the body of every quote.  Better still is to put <span>:quote</span>.  Tags that
+      start with a colon will be added to your TAG list.</li>
+
+
+
+  </ul>
+    <b style="margin-left:0px;margin-top:25px;margin-bottom:15px">Links</b>
+     <ul style="font-size:1.25em;list-style-type:none">
+
+     <li>Links  entered like <span>http://nytimes.com</span> will appear
+     as <span><a href="http//nytimes.com">nytimes.com</a></span>.</li>
+
+     <li>Links  entered like <span>http://nytimes.com[NYT]</span> will appear
+          as <span><a href="http//nytimes.com">NYT</a></span>.</li>
+
+     <li>
+     Enter image links like this: <span>image::https://www.allaboutbirds.org/.../warbler.jpg</span>.
+     They will appear as actual images (see below).  The general format is <span>image::IMAGE_ADDRESS</span>
+     You can often copy the &quot;image address&quot; by control-clicking the image.  Try that on the
+     image below.
+     </li>
+
+     <li>Here is an example of a YouTube link: <span>https://youtu.be/EsTgr-n53Ow[George Oakley, Cello Sonata]</span>
+     It appears like thie: <a href="https://youtu.be/EsTgr-n53Ow">George Oakley, Cello Sonata</a>.</li>
+
+   </ul>
+
+   <img src="https://www.allaboutbirds.org/guide/bbimages/aab/images/blue-winged-warbler.jpg" width=100 float=right>

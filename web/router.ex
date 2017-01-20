@@ -28,6 +28,8 @@ defmodule LookupPhoenix.Router do
     get "/tag_search:query", SearchController, :tag_search
     get "/update_tags", UserController, :update_tags
 
+    get "/tips", PageController, :tips
+
     get "/", PageController, :index
   end
 

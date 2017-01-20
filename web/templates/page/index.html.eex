@@ -3,18 +3,22 @@
 <%= if @conn.assigns.current_user == nil do  %>
  <div style="max-width:36em;">
 
-     <div class="jumbotron">
+     <div class="jumbotron" style="">
        <div>
-          <h2>www.lookupnotes.io</h2>
+          <h2 style="color:darkred; font-size:3em;">www.lookupnotes.io</h2>
 
           <p>Please sign in or register</p>
        </div>
      </div>
 
      <div style="font-size: 1.2em;">
-         <p>Lookup is a place to keep those random thoughts and
-         bits of information where you can find them again.
-         Great search. Safe, secure, always there when you need it.</p>
+         <p>Put those random thoughts and
+         bits of information where you can find them again &mdash; here,
+         in your account at
+          <i>www.lookupnotes.io!</i></p>
+
+
+         <p>Great search. Safe, secure, always there when you need it.</p>
 
          <p style="color:darkred">Now in private beta test: jxxcarlson at gmail.
          You will need an access code to join.</p>
@@ -22,43 +26,17 @@
 
    </div>
 <% else %>
-   <b style="margin-left:0px;">Search</b>
-   <ul style="font-size:1.25em;list-style-type:none">
 
-     <li style="margin: 10px 0;">Put <b>quote</b> in the search box to find all notes
-     containg the word <b>quote</b>. Put <b>quote prais</b> to find all quotes
-      contaiing the word <b>quote</b> and the word fragment <b>prais</b>.  This
-      will match both <i>praise</i> and <i>praising</i>.</li>
+    <div class="jumbotron" style="">
+       <div>
+          <h2 style="color:darkred; font-size:3em;">www.lookupnotes.io</h2>
 
-     <li style="margin: 10px 0;">The <b>Random</b> button brings up a random
-     list of notes.</li>
+          <p>Signed in as <%= @current_user.name %> </p>
+       </div>
+     </div>
 
-  </ul>
-  <b style="margin-left:0px;margin-top:25px;margin-bottom:15px">Tags</b>
-   <ul style="font-size:1.25em;list-style-type:none">
+     <!-- <%= link "Tips", to: page_path(@conn, :tips), class: "btn btn-default btn-xs" %> -->
 
-    <li>Put tags in the note contents to help find the note in the future. Tags are
-      just words that can be  picked up by a searh.  Thus we might put &quot;quote&quot;
-      in the body of every quote.  Better still is to put <b>:quote</b>.  Tags that
-      start with a colon will be added to your TAG list.</li>
-
-
-
-  </ul>
-    <b style="margin-left:0px;margin-top:25px;margin-bottom:15px">Links</b>
-     <ul style="font-size:1.25em;list-style-type:none">
-
-     <li style="margin: 10px 0;">Links  entered like <b>http://nytimes.com</b> will appear
-     as <b><a href="http//nytimes.com">nytimes.com</a></b>.</li>
-
-     <li style="margin: 10px 0;">Links  entered like <b>http://nytimes.com[NYT]</b> will appear
-          as <b><a href="http//nytimes.com">NYT</a></b>.</li>
-
-     <li style="margin: 10px 0;">Enter image links like this <b>image::http://foo.bar.io/abc.jpg</b>.
-     You can often copy the &quot;image address&quot; by control-clicking the image.
-     </li>
-
-   </ul>
 <% end %>
 
 
