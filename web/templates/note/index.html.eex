@@ -38,9 +38,9 @@
         <%= link "Show", to: note_path(@conn, :show, note), class: "btn btn-default btn-xs" %>
       </td>
       <td class="text-right">
-        <%= if @current_user.read_only == false do %>
+
           <%= link "Edit", to: note_path(@conn, :edit, note), class: "btn btn-default btn-xs" %>
-        <% end %>
+
       </td>
       <td class="text-right">
         <%= if @current_user.read_only == false do %>

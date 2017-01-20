@@ -83,13 +83,9 @@ defmodule LookupPhoenix.NoteController do
 
 
   def edit(conn, %{"id" => id}) do
-    if (conn.assigns.current_user.read_only == true) do
-        read_only_message(conn)
-    else
         note = Repo.get!(Note, id)
         changeset = Note.changeset(note)
         render(conn, "edit.html", note: note, changeset: changeset)
-    end
   end
 
   def doUpdate(note, changeset, conn) do
