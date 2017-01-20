@@ -15,4 +15,6 @@ defmodule LookupPhoenix.NoteTest do
     changeset = Note.changeset(%Note{}, @invalid_attrs)
     refute changeset.valid?
   end
+
+
 end
