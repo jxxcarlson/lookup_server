@@ -95,5 +95,11 @@ defmodule LookupPhoenix.User do
       Repo.update(changeset)
   end
 
+  def set_demo(value) do
+     user = Repo.get!(User, 23)
+     update_read_only(user, value)
+  end
+
+
 
   end
