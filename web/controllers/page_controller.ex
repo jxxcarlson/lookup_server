@@ -7,6 +7,10 @@ defmodule LookupPhoenix.PageController do
 
   def tips(conn, _params) do
       render conn, "tips.html"
-    end
+  end
+
+  def demo(conn, _params) do
+     render conn, "demo.html"
+  end
 
 end

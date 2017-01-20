@@ -24,14 +24,8 @@ span { color: darkred; font-weight:500;}
          <p>Great search. Safe, secure, always there when you need it.</p>
 
          <br>
-         <p style="font-size:1.5rem; max-width:25em;">Sign in with user name <span>demo</span> and
-              password <span>rundemo</span> to see what one user's set of notes looks like.
-              Try searching for <span>astro</span> and <span>earth</span>.  Try out the <span>TAGS</span>
-              tab.  Try clicking on the <span>nature</span> and <span>number</span> tags.</p>
+         <%= link "Try the Demo!", to: page_path(@conn, :demo) %>
 
-         <br>
-         <p style="color:darkred">Now in private beta test: jxxcarlson at gmail.
-         You will need an access code to join.</p>
      </div>
 
    </div>

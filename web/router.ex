@@ -29,6 +29,7 @@ defmodule LookupPhoenix.Router do
     get "/update_tags", UserController, :update_tags
 
     get "/tips", PageController, :tips
+    get "/demo", PageController, :demo
 
     get "/", PageController, :index
   end

@@ -1,0 +1,21 @@
+
+
+<style>
+    span {color: darkred;}
+    li {margin: 10px 0; }
+    p {font-size:1.7rem; max-width:25em;}
+</style>
+
+<h3>Demo</h3>
+
+<p>Sign in to Lookupnotes.io with user name <span>demo</span> and
+password <span>rundemo</span> to see what one user's set of notes looks like.</p>
+
+<p>
+Once you are signed in, try searching for <span>astro</span> and <span>earth</span>.   Try out the <span>TAGS</span>
+tab.  Try clicking on the <span>nature</span> and <span>number</span> tags. And try the <span>Random</span> button</p>
+
+<p>
+<%= link "Home", to: page_path(@conn, :index) %>
+</p>
+
