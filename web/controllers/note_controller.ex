@@ -38,26 +38,40 @@ defmodule LookupPhoenix.NoteController do
      render(conn, "index.html", notes: notes, noteCountString: noteCountString)
   end
 
+  def read_only_message(conn) do
+      conn
+      |> put_flash(:info, "Sorry, these notes are read-only.")
+      |> redirect(to: note_path(conn, :index))
+  end
+
   def new(conn, _params) do
-    changeset = Note.changeset(%Note{})
-    render(conn, "new.html", changeset: changeset)
+    if (conn.assigns.current_user.read_only == true) do
+           read_only_message(conn)
+    else
+        changeset = Note.changeset(%Note{})
+        render(conn, "new.html", changeset: changeset)
+    end
   end
 
   def create(conn, %{"note" => note_params}) do
-    new_content = note_params["content"]
-    |> Note.identity
-    new_params = %{"content" => new_content, "title" => note_params["title"], "user_id" => conn.assigns.current_user.id}
-    changeset = Note.changeset(%Note{}, new_params)
+    if (conn.assigns.current_user.read_only == true) do
+         read_only_message(conn)
+    else
+      new_content = note_params["content"]
+      |> Note.identity
+      new_params = %{"content" => new_content, "title" => note_params["title"], "user_id" => conn.assigns.current_user.id}
+      changeset = Note.changeset(%Note{}, new_params)
 
-    case Repo.insert(changeset) do
-      {:ok, _note} ->
-        [_note.id] ++ Note.recall_list(conn.assigns.current_user.id)
-        |> Note.memorize_list(conn.assigns.current_user.id)
-        conn
-        |> put_flash(:info, "Note created successfully: #{_note.id}")
-        |> redirect(to: note_path(conn, :index, active_notes: [_note.id]))
-      {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset)
+      case Repo.insert(changeset) do
+        {:ok, _note} ->
+          [_note.id] ++ Note.recall_list(conn.assigns.current_user.id)
+          |> Note.memorize_list(conn.assigns.current_user.id)
+          conn
+          |> put_flash(:info, "Note created successfully: #{_note.id}")
+          |> redirect(to: note_path(conn, :index, active_notes: [_note.id]))
+        {:error, changeset} ->
+          render(conn, "new.html", changeset: changeset)
+      end
     end
   end
 
@@ -67,11 +81,15 @@ defmodule LookupPhoenix.NoteController do
     render(conn, "show.html", note: note)
   end
 
+
   def edit(conn, %{"id" => id}) do
-    note = Repo.get!(Note, id)
-    # Mnemonix.put(Cache, :active_notes, [note.id])
-    changeset = Note.changeset(note)
-    render(conn, "edit.html", note: note, changeset: changeset)
+    if (conn.assigns.current_user.read_only == true) do
+        read_only_message(conn)
+    else
+        note = Repo.get!(Note, id)
+        changeset = Note.changeset(note)
+        render(conn, "edit.html", note: note, changeset: changeset)
+    end
   end
 
   def doUpdate(note, changeset, conn) do
@@ -88,27 +106,37 @@ defmodule LookupPhoenix.NoteController do
   def update(conn, %{"id" => id, "note" => note_params}) do
     note = Repo.get!(Note, id)
     changeset = Note.changeset(note, note_params)
-    if note.user_id != 0 do
-      doUpdate(note, changeset, conn)
+    if (conn.assigns.current_user.read_only == false) do
+        doUpdate(note, changeset, conn)
+    else
+       read_only_message(conn)
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    note = Repo.get!(Note, id)
+    IO.puts "DELETE, read_only status = #{conn.assigns.current_user.read_only}"
+    if (conn.assigns.current_user.read_only == true) do
+       read_only_message(conn)
+    else
+       note = Repo.get!(Note, id)
 
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
-    Repo.delete!(note)
-
-
-    n = String.to_integer(id)
-    Note.recall_list(conn.assigns.current_user.id)
-    |> List.delete(n)
-    |> Note.memorize_list(conn.assigns.current_user.id)
+       # Here we use delete! (with a bang) because we expect
+       # it to always work (and if it does not, it will raise).
+       Repo.delete!(note)
 
 
-    conn
-    |> put_flash(:info, "Note deleted successfully.")
-    |> redirect(to: note_path(conn, :index))
+       n = String.to_integer(id)
+       Note.recall_list(conn.assigns.current_user.id)
+       |> List.delete(n)
+       |> Note.memorize_list(conn.assigns.current_user.id)
+
+
+       conn
+       |> put_flash(:info, "Note deleted successfully.")
+       |> redirect(to: note_path(conn, :index))
+    end
   end
+
+
+
 end
