@@ -19,7 +19,7 @@
 <%= for user <- @users do %>
     <tr>
       <td><%= user.id %></td>
-      <td><%= user.read_only %></td>
+      <td><%= LookupPhoenix.Utility.xForTrue(user.read_only) %></td>
       <td><%= LookupPhoenix.Note.count_for_user(user.id) %>
       <td><%= user.number_of_searches %>
 
