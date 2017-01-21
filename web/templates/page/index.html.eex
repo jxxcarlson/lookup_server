@@ -26,6 +26,9 @@ span { color: darkred; font-weight:500;}
          <br>
          <%= link "Try the Demo!", to: page_path(@conn, :demo) %>
 
+         <br><br>
+              <span>Contact: jxxcarlson at gmail</span>
+
      </div>
 
    </div>
@@ -43,6 +46,9 @@ span { color: darkred; font-weight:500;}
                     password <span>rundemo</span> to see what one user's set of notes looks like.
                     Try searching for <span>astro</span> and <span>earth</span>.  Try out the <span>TAGS</span>
                     tab.  Try clicking on the <span>nature</span> and <span>number</span> tags.</p>
+
+    <br><br>
+     <span>Contact: jxxcarlson at gmail</span>
 
      <!-- <%= link "Tips", to: page_path(@conn, :tips), class: "btn btn-default btn-xs" %> -->
 

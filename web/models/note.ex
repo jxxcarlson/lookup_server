@@ -149,8 +149,9 @@ defmodule LookupPhoenix.Note do
 
     # ha ha http://foo.bar.io/a/b/c blah blah => 1: http://foo.bar.io/a/b/c, 3: foo.bar.io
     def makeSmartLinks(text) do
-          # Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-&=\?#!@_%]*)\/\S*\S)\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
-          Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-&=\?#!@_%]*)(\/\S*\S|))\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
+       # Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-&=\?#!@_%]*)\/\S*\S)\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
+       # Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-&=\?#!@_%]*)(\/\S*\S|))\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
+       Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-_%]*)([\/?=#]\S*|))\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
 
     # http://foo.io/ladidah/mo/stuff => <a href="http://foo.io/ladida/foo.io"" target=\"_blank\">foo.io/ladidah</a>
