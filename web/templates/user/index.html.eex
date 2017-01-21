@@ -7,8 +7,10 @@
       <th>id</th>
       <th>Locked</th>
       <th>Notes</th>
-      <th>Name</th>
+
       <th>Username</th>
+      <th>Name</th>
+
       <th>Email</th>
     </tr>
   </thead>
@@ -18,8 +20,10 @@
       <td><%= user.id %></td>
       <td><%= user.read_only %></td>
       <td><%= LookupPhoenix.Note.count_for_user(user.id) %>
-      <td><%= user.name %></td>
+
       <td><%= user.username %></td>
+      <td><%= user.name %></td>
+
       <td><%= user.email %></td>
 
       <td class="text-right">
