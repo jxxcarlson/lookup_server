@@ -19,13 +19,14 @@ defmodule LookupPhoenix.User do
       field :tags, {:array, :string }
       field :read_only, :boolean
       field :admin, :boolean
+      field :number_of_searches, :integer
 
       timestamps()
     end
 
   def running_changeset(model, params \\ :empty) do
       model
-      |> cast(params, ~w(tags read_only), [] )
+      |> cast(params, ~w(tags read_only number_of_searches), [] )
   end
 
   def admin_changeset(model, params \\ :empty) do
@@ -87,7 +88,7 @@ defmodule LookupPhoenix.User do
   end
 
   def initialize_metadata(user) do
-     params = %{"tags" => [], "read_only" => false, "admin" => false}
+     params = %{"tags" => [], "read_only" => false, "admin" => false, "number_of_searches"  => 0}
      changeset = User.running_changeset(user, params)
      Repo.update(changeset)
   end
@@ -101,6 +102,12 @@ defmodule LookupPhoenix.User do
   def set_admin(user, value) do
      params = %{"admin" => value}
      changeset = User.admin_changeset(user, params)
+     Repo.update(changeset)
+  end
+
+  def init_number_of_searches(user) do
+    params = %{"number_of_searches" =>0}
+    changeset = User.running_changeset(user, params)
      Repo.update(changeset)
   end
 
