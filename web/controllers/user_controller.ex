@@ -56,19 +56,41 @@ defmodule LookupPhoenix.UserController do
     render conn, "new.html", changeset: changeset
   end
 
+  def createUser(changeset, conn) do
+    case Repo.insert(changeset) do
+          {:ok, user} ->
+            User.initialize_metadata(user)
+            conn
+            |> LookupPhoenix.Auth.login(user)
+            |> put_flash(:info, "#{Utility.firstWord(user.name)}, you are now a LookupNote user!")
+            |> redirect(to: note_path(conn, :index))
+          {:error, changeset} ->
+            render(conn, "new.html", changeset: changeset)
+        end
+  end
+
   def create(conn, %{"user" => user_params}) do
 
     changeset = User.registration_changeset(%User{}, user_params)
-    case Repo.insert(changeset) do
-      {:ok, user} ->
-        User.initialize_metadata(user)
-        conn
-        |> LookupPhoenix.Auth.login(user)
-        |> put_flash(:info, "#{Utility.firstWord(user.name)}, you are now a LookupNote user!")
-        |> redirect(to: note_path(conn, :index))
-      {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset)
+
+    preflight_check = cond do
+      user_params["registration_code"] == "" ->
+           {:error, "Sorry, a registration code is required."}
+      Enum.member?(["ladidah", "student", "uahs"], user_params["registration_code"]) == false ->
+           {:error, "Sorry, that is not a valid registration code."}
+      true -> {:ok, :proceed}
     end
+    IO.inspect preflight_check
+
+    case  preflight_check do
+      {:error, message} ->
+        conn
+        |> put_flash(:error, message)
+        |> redirect(to: user_path(conn, :new))
+      _ -> createUser(changeset, conn)
+    end
+
+
   end
 
   defp authenticate(conn, _opts) do

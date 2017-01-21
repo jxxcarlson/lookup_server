@@ -11,7 +11,6 @@ defmodule LookupPhoenix.SessionController do
       {:ok, conn} ->
         conn
         |> put_flash(:info, "Welcome back, #{Utility.firstWord(conn.assigns.current_user.name)}!")
-        # |> put_flash(:info, "Welcome back!")
         |> redirect(to: note_path(conn, :index, option: "recall_id_list"))
       {:error, _reason, conn} ->
         conn
