@@ -3,9 +3,13 @@
 defmodule LookupPhoenix.SearchController do
     use LookupPhoenix.Web, :controller
     alias LookupPhoenix.Note
+    alias LookupPhoenix.User
+
 
     def index(conn, %{"search" => %{"query" => query}}) do
 
+
+      User.increment_number_of_searches(conn.assigns.current_user)
 
       queryList = String.split(query)
       notes = LookupPhoenix.Note.search(queryList, conn.assigns.current_user.id)
@@ -24,17 +28,9 @@ defmodule LookupPhoenix.SearchController do
 
     def tag_search(conn, %{"query" => query}) do
 
-          IO.puts "================"
-          IO.puts "QUERY: #{query}"
-          IO.puts "================"
+          User.increment_number_of_searches(conn.assigns.current_user)
 
           queryList = String.split(query)
-          # queryList = String.split(query).map(fn(item) -> ":" <> item end)
-
-           IO.puts "================"
-           IO.puts "QUERY LIST: #{queryList}"
-           IO.puts "================"
-
 
           notes = LookupPhoenix.Note.search(queryList, conn.assigns.current_user.id)
           LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
@@ -52,6 +48,7 @@ defmodule LookupPhoenix.SearchController do
 
 
     def random(conn, _params) do
+     User.increment_number_of_searches(conn.assigns.current_user)
       expected_number_of_entries = 14
       # note_count = Note.count_notes_user(conn.assigns.current_user.id)
       user_id = conn.assigns.current_user.id
