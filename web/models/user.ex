@@ -128,6 +128,11 @@ defmodule LookupPhoenix.User do
      update_read_only(user, read_only)
   end
 
+  def delete_by_id(id) do
+    user = User |> Repo.get(id)
+    Repo.delete!(user)
+  end
+
 
 
   end
