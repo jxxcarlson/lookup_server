@@ -26,6 +26,11 @@ defmodule LookupPhoenix.User do
   def running_changeset(model, params \\ :empty) do
       model
       |> cast(params, ~w(tags read_only), [] )
+  end
+
+  def admin_changeset(model, params \\ :empty) do
+        model
+        |> cast(params, ~w(admin), [] )
     end
 
   def changeset(model, params \\ :empty) do
@@ -63,6 +68,7 @@ defmodule LookupPhoenix.User do
       end
   end
 
+
   def set_read_only(changeset, value) do
         case changeset do
           %Ecto.Changeset{valid?: true, changes: %{read_only: value}} ->
@@ -83,27 +89,27 @@ defmodule LookupPhoenix.User do
   def initialize_metadata(user) do
      params = %{"tags" => [], "read_only" => false, "admin" => false}
      changeset = User.running_changeset(user, params)
-     IO.puts "initialize_meta_data for user #{user.id}"
-     IO.inspect(changeset)
      Repo.update(changeset)
   end
 
   def update_read_only(user, value) do
       params = %{"read_only" => value}
       changeset = User.running_changeset(user, params)
-      IO.puts "update_read_only, for user #{user.id}"
-      IO.inspect(changeset)
       Repo.update(changeset)
+  end
+
+  def update_admin(user, value) do
+     params = %{"admin" => value}
+     changeset = User.admin_changeset(user, params)
+     Repo.update(changeset)
   end
 
   # say 'set_demo("edit")' or 'set_demo("locked")'
   def set_demo(state) do
      if state == "edit" do
        read_only = false
-       IO.puts "You can now edit the demo notebook"
      else
        read_only = true
-       IO.puts "The demo notebook is now locked"
      end
      user = Repo.get!(User, 23)
      update_read_only(user, read_only)
