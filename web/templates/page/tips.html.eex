@@ -30,7 +30,7 @@
      <ul style="font-size:1.25em;list-style-type:none">
 
      <li><b>Web pages.</b> Make a link by pasting a URL like <span>http://nytimes.com</span>
-     into LookupNotes.  It will appear like this:
+     into LookupNote.  It will appear like this:
       <span><a href="http//nytimes.com">nytimes.com</a></span>.</li>
 
      <li>Links  entered like <span>http://nytimes.com[NYT]</span> will appear
@@ -44,7 +44,7 @@
      </li>
 
      <li><b>YouTube.</b> copy the &quot;video URL&quot; by control-clicking on the video.
-     Then paste it into Lookupnotes.io as in this example: <span>https://youtu.be/EsTgr-n53Ow[George Oakley, Cello Sonata]</span>
+     Then paste it into Lookupnote.io as in this example: <span>https://youtu.be/EsTgr-n53Ow[George Oakley, Cello Sonata]</span>
      It appears like thie: <a href="https://youtu.be/EsTgr-n53Ow">George Oakley, Cello Sonata</a>.</li>
 
      <li><b>Audio.</b> You can also link to audio files.  Here is an example:
