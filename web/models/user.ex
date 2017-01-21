@@ -110,7 +110,7 @@ defmodule LookupPhoenix.User do
        read_only = false
      else
        read_only = true
-     end    
+     end
      user = Repo.get!(User, 23)
      update_read_only(user, read_only)
   end
