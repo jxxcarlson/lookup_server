@@ -98,7 +98,7 @@ defmodule LookupPhoenix.User do
       Repo.update(changeset)
   end
 
-  def update_admin(user, value) do
+  def set_admin(user, value) do
      params = %{"admin" => value}
      changeset = User.admin_changeset(user, params)
      Repo.update(changeset)
@@ -110,7 +110,7 @@ defmodule LookupPhoenix.User do
        read_only = false
      else
        read_only = true
-     end
+     end    
      user = Repo.get!(User, 23)
      update_read_only(user, read_only)
   end
