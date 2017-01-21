@@ -5,6 +5,7 @@ defmodule LookupPhoenix.UserController do
   alias LookupPhoenix.User
   alias LookupPhoenix.Tag
   alias LookupPhoenix.Repo
+  alias LookupPhoenix.Utility
 
 
   def index(conn, _params) do
@@ -63,7 +64,7 @@ defmodule LookupPhoenix.UserController do
         User.initialize_metadata(user)
         conn
         |> LookupPhoenix.Auth.login(user)
-        |> put_flash(:info, "#{user.name}, you are now a Lookup user")
+        |> put_flash(:info, "#{Utility.firstWord(user.name)}, you are now a LookupNote user!")
         |> redirect(to: note_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)

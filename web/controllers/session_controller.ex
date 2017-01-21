@@ -1,5 +1,6 @@
 defmodule LookupPhoenix.SessionController do
   use LookupPhoenix.Web, :controller
+  alias LookupPhoenix.Utility
 
   def new(conn, _) do
     render conn, "new.html"
@@ -9,7 +10,8 @@ defmodule LookupPhoenix.SessionController do
     case LookupPhoenix.Auth.login_by_username_and_pass(conn, user, pass, repo: Repo) do
       {:ok, conn} ->
         conn
-        |> put_flash(:info, "Welcome back!")
+        |> put_flash(:info, "Welcome back, #{Utility.firstWord(conn.assigns.current_user.name)}!")
+        # |> put_flash(:info, "Welcome back!")
         |> redirect(to: note_path(conn, :index, option: "recall_id_list"))
       {:error, _reason, conn} ->
         conn

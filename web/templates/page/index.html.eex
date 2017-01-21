@@ -15,16 +15,19 @@ span { color: darkred; font-weight:500;}
      </div>
 
      <div style="font-size: 1.5rem;">
-         <p>Put those random thoughts and
-         bits of information where you can find them again &mdash; here,
-         in your account at
-          <i>www.lookupnote.io!</i></p>
+     <p><span>LookupNote</span> helps you keep track of random snippets
+     of information of all kinds &mdash; text, links to web pages, even images,
+     audio, and video.  Look at the <%= link "Demo", to: page_path(@conn, :demo) %>
+     to see LookupNote in action.
+     </p>
 
+     <p><span>LookupNote</span> is your mini search engine.
+     Safe, secure, always there when you need it.</p>
 
-         <p>Great search. Safe, secure, always there when you need it.</p>
+     <p><span>Used by</span> students, researchers, people in all walks of life.</p>
 
-         <br>
-         <%= link "Try the Demo!", to: page_path(@conn, :demo) %>
+     <br>
+     <p><span><%= link "Try the Demo!", to: page_path(@conn, :demo) %></span></p>
 
          <br><br>
               <span>Contact: jxxcarlson at gmail</span>

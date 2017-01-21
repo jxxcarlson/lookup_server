@@ -17,6 +17,7 @@
     <div class="container">
 
       <header class="header">
+
          <ol class="breadcrumb text-right">
             <!-- <li> <%= link "Home", to: page_path(@conn, :index) %> </li> -->
            <%= if @current_user do %>
@@ -39,10 +40,6 @@
              <li> <%= link "Sign in", to: session_path(@conn, :new) %> </li>
            <% end %>
          </ol>
-
-
-
-
 
       </header>
 

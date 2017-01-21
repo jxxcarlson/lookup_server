@@ -50,7 +50,30 @@ defmodule LookupPhoenix.Tag do
       String.replace(tag, ":", "")
     end
 
-    # def get_tags_from_note_list(noteList: xxx)
+
+    ##############
+
+    def put_element(element, map) do
+      if map[element] == nil do
+        Map.merge(map , %{element =>1})
+      else
+        %{map | element => map[element] + 1}
+      end
+    end
+
+    def merge_elements_into_map(element_list, map) do
+       Enum.reduce(element_list, map, fn(element, map) -> put_element(element, map) end)
+    end
+
+    def merge_tags_from_note_to_map(note, map) do
+        get_tags_from_note(note)
+        |> merge_elements_into_map(map)
+    end
+
+    def merge_all_user_tags_into_map(user_id) do
+        Note.notes_for_user(user_id)
+        |> Enum.reduce(%{}, fn(note, map) -> merge_tags_from_note_to_map(note, map) end)
+    end
 
 
 end

@@ -1,3 +1,8 @@
+<style>
+p { max-width:400px;}
+li {width: 340px;}
+</style>
+
 <h1>New User</h1>
 
 <%= form_for @changeset, user_path(@conn, :create), fn f -> %>
@@ -18,3 +23,25 @@
     </div>
     <%= submit "Please create my account.", class: "btn btn-primary" %>
 <% end %>
+
+<br>
+
+<h4>Note</h4>
+
+<p>In order to provide a pleasant, ad-free experience, LookupNote will eventually become
+a paid service.  Here is how it will work:</p>
+
+<div style="margin-left: 2em;">
+<p>The annual fee will be <b>low</b>.  Something on the order of $10.</p>
+
+<p>Accounts never die.  If at any time you decide that the annual fee is not for you,
+your account is &quot;frozen.&quot;  This means it will function normally
+in all respects, except that you can no longer create or edit notes. Your
+account can be unfrozen at any time.
+</p>
+
+<p>There will be no advertisements.  User data will not be shared with anyone.</p>
+
+</div>
+
+<p>&mdash; the Management</p>
