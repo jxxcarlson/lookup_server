@@ -4,12 +4,42 @@ defmodule LookupPhoenix.UserController do
 
   alias LookupPhoenix.User
   alias LookupPhoenix.Tag
+  alias LookupPhoenix.Repo
 
 
   def index(conn, _params) do
-     users = Repo.all(LookupPhoenix.User)
-     render conn, "index.html", users: users
+    if conn.assigns.current_user.admin == true do
+        users = Repo.all(LookupPhoenix.User)
+        render conn, "index.html", users: users
+      else
+        conn
+        |> put_flash(:error, "Sorry, you do no have access to that page")
+        |> redirect(to: page_path(conn, :index))
+        |> halt
+    end
   end
+
+  def delete(conn, %{"id" => id}) do
+      if conn.assigns.current_user.admin == true do
+         user = Repo.get!(User, id)
+         User.update_read_only(user, !user.read_only)
+         user = Repo.get!(User, id)
+         if user.read_only == true do
+           message = "locked"
+         else
+           message = "unlocked"
+         end
+         conn
+         |> put_flash(:info, "#{user.username} is #{message}")
+         |> redirect(to: user_path(conn, :index))
+      else
+          conn
+          |> put_flash(:error, "Sorry, you do no have access to that page")
+          |> redirect(to: page_path(conn, :index))
+          |> halt
+      end
+    end
+
 
   def tags(conn, _params) do
      render conn, "tags.html", user: conn.assigns.current_user

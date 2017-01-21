@@ -18,6 +18,7 @@ defmodule LookupPhoenix.User do
       field :registration_code, :string
       field :tags, {:array, :string }
       field :read_only, :boolean
+      field :admin, :boolean
 
       timestamps()
     end
@@ -80,12 +81,12 @@ defmodule LookupPhoenix.User do
   end
 
   def initialize_metadata(user) do
-        params = %{"tags" => [], "read_only" => false}
-        changeset = User.running_changeset(user, params)
-        IO.puts "initialize_meta_data for user #{user.id}"
-        IO.inspect(changeset)
-        Repo.update(changeset)
-    end
+     params = %{"tags" => [], "read_only" => false, "admin" => false}
+     changeset = User.running_changeset(user, params)
+     IO.puts "initialize_meta_data for user #{user.id}"
+     IO.inspect(changeset)
+     Repo.update(changeset)
+  end
 
   def update_read_only(user, value) do
       params = %{"read_only" => value}

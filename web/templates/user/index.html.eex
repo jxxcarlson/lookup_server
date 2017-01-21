@@ -5,6 +5,7 @@
   <thead>
     <tr>
       <th>id</th>
+      <th>Locked</th>
       <th>Name</th>
       <th>Username</th>
       <th>Email</th>
@@ -14,9 +15,14 @@
 <%= for user <- @users do %>
     <tr>
       <td><%= user.id %></td>
+      <td><%= user.read_only %></td>
       <td><%= user.name %></td>
       <td><%= user.username %></td>
       <td><%= user.email %></td>
+
+      <td class="text-right">
+         <%= link "Lock/unlock", to: user_path(@conn, :delete, user), method: :delete, class: "btn btn-default btn-xs" %>
+      </td>
     </tr>
 <% end %>
   </tbody>

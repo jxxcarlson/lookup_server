@@ -25,6 +25,11 @@
              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "TAGS", to: user_path(@conn, :tags) %> </li>
              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "TIPS", to: page_path(@conn, :tips) %> </li>
 
+             <%= if @current_user.admin == true do %>
+                <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "USERS", to: user_path(@conn, :index) %> </li>
+             <% end %>
+
+
              <li><%= @current_user.username %>&mdash; <%= LookupPhoenix.Note.count_for_user(@current_user.id) %> Notes</li>
              <li>
                <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
