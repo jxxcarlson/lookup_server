@@ -34,18 +34,22 @@
       <span><a href="http//nytimes.com">nytimes.com</a></span>.</li>
 
      <li>Links  entered like <span>http://nytimes.com[NYT]</span> will appear
-          as <span><a href="http//nytimes.com">NYT</a></span>.</li>
+          as <span><a href="http//nytimes.com">NYT</a></span>.</li
 
-     <li><b>Images.</b>
+
+     <li>  <b>Images.</b>
      Make an image link like this: <span>image::https://www.allaboutbirds.org/.../warbler.jpg</span>.
      It will appear as an actual images (see below).  The format is <span>image::IMAGE_ADDRESS</span>
      Copy the address of an image by control-clicking on it.  Try that on the
      image below.
      </li>
 
+     <li> <img src="https://www.allaboutbirds.org/guide/bbimages/aab/images/blue-winged-warbler.jpg" width=100 align=top>
+
      <li><b>YouTube.</b> copy the &quot;video URL&quot; by control-clicking on the video.
      Then paste it into Lookupnote.io as in this example: <span>https://youtu.be/EsTgr-n53Ow[George Oakley, Cello Sonata]</span>
-     It appears like thie: <a href="https://youtu.be/EsTgr-n53Ow">George Oakley, Cello Sonata</a>.</li>
+     It appears like thie: <a href="https://youtu.be/EsTgr-n53Ow">George Oakley, Cello Sonata</a>. This technique
+     works with Vimeo and many other services.</li>
 
      <li><b>Audio.</b> You can also link to audio files.  Here is an example:
      <a href="http://www.pmel.noaa.gov/acoustics/whales/sounds/whalewav/nepblue24s10x.wav" target=_blank>Blue whale</a>.
@@ -53,4 +57,11 @@
 
    </ul>
 
-   <img src="https://www.allaboutbirds.org/guide/bbimages/aab/images/blue-winged-warbler.jpg" width=100 float=right>
+
+       <b style="margin-left:0px;margin-top:30px;">Smartphones and Tablets</b>
+        <ul style="font-size:1.25em;list-style-type:none">
+
+        <li>You can bookmark this app on the home screen of your smartphone or tablet.  Very convenient!</li>
+
+
+        </ul>
