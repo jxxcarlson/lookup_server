@@ -102,7 +102,9 @@ defmodule LookupPhoenix.NoteController do
 
   def update(conn, %{"id" => id, "note" => note_params}) do
     note = Repo.get!(Note, id)
-    changeset = Note.changeset(note, note_params)
+    new_content = Regex.replace(~r/(ß$)/, note_params["content"], "")
+    new_params = %{"content" => new_content, "title" => note_params["title"]}
+    changeset = Note.changeset(note, new_params)
     if (conn.assigns.current_user.read_only == false) do
         doUpdate(note, changeset, conn)
     else
