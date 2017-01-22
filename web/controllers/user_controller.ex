@@ -10,7 +10,7 @@ defmodule LookupPhoenix.UserController do
 
   def index(conn, _params) do
     if conn.assigns.current_user.admin == true do
-        users = Repo.all(LookupPhoenix.User) |> Enum.sort_by_id
+        users = Repo.all(LookupPhoenix.User)
         render conn, "index.html", users: users
       else
         conn

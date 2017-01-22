@@ -7,17 +7,17 @@
 
   <div class="form-group">
     <%= label f, :title, class: "control-label" %>
-    <%= text_input f, :title, class: "form-control" %>
+    <%= text_input f, :title, class: "form-control", id: 'title '  %>
     <%= error_tag f, :title %>
   </div>
 
   <div class="form-group">
     <%= label f, :content, class: "control-label" %>
-    <%= textarea f, :content, class: "form-control", style: "height:200px;"%>
+    <%= textarea f, :content, class: "form-control", style: "height:200px;", id: 'content' %>
     <%= error_tag f, :content %>
   </div>
 
   <div class="form-group">
-    <%= submit "Save", class: "btn btn-primary" %>
+    <%= submit "Save", class: "btn btn-primary", id: 'save' %>
   </div>
 <% end %>

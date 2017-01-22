@@ -7,8 +7,41 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+
+
     <title>Lookup</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+
+    <script>
+
+        // define a handler
+        function doc_keyUp(e) {
+
+            // this would test for whichever key is 78 and the ctrl key at the same time
+            if (e.altKey) {
+               switch(e.keyCode ) {
+                 case 72: // H
+                    document.getElementById('home').click();
+                    break;
+                 case 74:  // J
+                    document.getElementById('notes').click();
+                    break;
+                 case 75:  // K
+                    document.getElementById('tags').click();
+                    break;
+                 case 76:  // L
+                    document.getElementById('tips').click();
+                    break;
+                 case 85:  // U
+                    document.getElementById('users').click();
+                    break;
+               }
+            }
+        }
+        // register the handler
+        document.addEventListener('keyup', doc_keyUp, false);
+
+    </script>
   </head>
 
   <body>
@@ -21,13 +54,13 @@
          <ol class="breadcrumb text-right">
             <!-- <li> <%= link "Home", to: page_path(@conn, :index) %> </li> -->
            <%= if @current_user do %>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "HOME", to: page_path(@conn, :index) %> </li>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "NOTES", to: note_path(@conn, :index) %> </li>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "TAGS", to: user_path(@conn, :tags) %> </li>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "TIPS", to: page_path(@conn, :tips) %> </li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "HOME", to: page_path(@conn, :index), id: 'home' %> </li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "NOTES", to: note_path(@conn, :index), id: 'notes' %> </li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "TAGS", to: user_path(@conn, :tags), id: 'tags' %> </li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "TIPS", to: page_path(@conn, :tips), id: 'tips' %> </li>
 
              <%= if @current_user.admin == true do %>
-                <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "USERS", to: user_path(@conn, :index) %> </li>
+                <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "USERS", to: user_path(@conn, :index), id: 'users' %> </li>
              <% end %>
 
 

@@ -1,9 +1,23 @@
+<script>
 
+    // define a handler
+    function doc_keyUp(e) {
+
+        // this would test for whichever key is 78 and the ctrl key at the same time
+        if (e.altKey && e.keyCode == 78) {
+            // call your function to do the thing
+            document.getElementById('new_note').click();
+        }
+    }
+    // register the handler
+    document.addEventListener('keyup', doc_keyUp, false);
+
+</script>
 
 <span style="font-size:1.5em;"> <%= @noteCountString %> </span>
 <span class="text-right" style="float:right; margin-left:140px;font-size:1.5em">
    <%= if @current_user.read_only == false do %>
-     <%= link "New note", to: note_path(@conn, :new) %>
+     <%=  link "New note", to: note_path(@conn, :new), id: "new_note" %>
    <% end %>
 </span>
 

@@ -1,9 +1,28 @@
  <style>
  span {color: darkred;}
- li {margin: 10px 0; }
+ li {margin: 10px 0; font-size: 0.8em; }
+ li.heading {margin-left:-20px; font-weight:bold; font-size: 1.4rem;}
+ .heading {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-left:0px;
+    margin-top:25px;
+    margin-bottom:15px;
+  }
+  p.text { font-size: 1.4rem; max-width:600px;}
  </style>
 
- <b style="margin-left:0px;">Search</b>
+ <h3>Tips for using LookupNote</h3>
+
+ <p class="heading">The Basics</p>
+
+ <p class="text"> Go to the NOTES tab.  That is where you will do most of your work.
+ Type somehing in the search box to find a note.  Click on <span>New note</span>
+ to make a new note.  Enter the title, e.g, <span>Carpenter's wisdom</span>.  Enter
+ the contents of the note, e.g., <span>Measure twice, cut once</span>.
+ Click <span>Save</span>.
+
+ <p class="heading">Search</p>
    <ul style="font-size:1.25em;list-style-type:none">
 
      <li>Put the word <span>quote</span> in the search box to find all notes
@@ -15,7 +34,7 @@
      list of notes.</li>
 
   </ul>
-  <b style="margin-left:0px;margin-top:25px;margin-bottom:15px">Tags</b>
+  <p class="heading">Tags</p>
    <ul style="font-size:1.25em;list-style-type:none">
 
     <li>Put tags in the note contents to help find the note in the future. Tags are
@@ -26,7 +45,7 @@
 
 
   </ul>
-    <b style="margin-left:0px;margin-top:25px;margin-bottom:15px">Links</b>
+    <p class="heading">Links</p>
      <ul style="font-size:1.25em;list-style-type:none">
 
      <li><b>Web pages.</b> Make a link by pasting a URL like <span>http://nytimes.com</span>
@@ -34,7 +53,7 @@
       <span><a href="http//nytimes.com">nytimes.com</a></span>.</li>
 
      <li>Links  entered like <span>http://nytimes.com[NYT]</span> will appear
-          as <span><a href="http//nytimes.com">NYT</a></span>.</li
+          as <span><a href="http//nytimes.com">NYT</a></span>.</li>
 
 
      <li>  <b>Images.</b>
@@ -58,10 +77,31 @@
    </ul>
 
 
-       <b style="margin-left:0px;margin-top:30px;">Smartphones and Tablets</b>
-        <ul style="font-size:1.25em;list-style-type:none">
+   <p class="heading">Smart phones and tablets</p>
+     <ul style="font-size:1.25em;list-style-type:none">
 
-        <li>Add this app to the home screen of your smartphone or tablet.  Very convenient!</li>
+       <li>Add this app to the home screen of your smartphone or tablet.  Very convenient!</li>
+
+     </ul>
+
+    <p class="heading">Keyboard shortuts</p>
+     <ul style="font-size:1.25em;list-style-type:none">
 
 
-        </ul>
+       <li class="heading">Anywhere</li>
+       <li><b>alt-H</b> Home</li>
+       <li><b>alt-J</b> Notes</li>
+       <li><b>alt-K</b> Tags</li>
+       <li><b>alt-L</b> Tips</li>
+
+       <li  class="heading">Notes tab</li>
+       <li><b>alt-N</b> New Note</li>
+
+       <li class="heading">New  note screen</li>
+       <li><b>alt-T</b> Focus: title field</li>
+       <li><b>alt-C</b> Focus: content field</li>
+       <li><b>alt-B</b> Back</li>
+       <li><b>alt-S</b> Save</li>
+
+
+     </ul>
