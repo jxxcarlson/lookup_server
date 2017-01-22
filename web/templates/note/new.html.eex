@@ -16,7 +16,7 @@
                     document.getElementById('title').focus();
                     break;
                  case 67:  // C
-                    document.getElementById('title').focus();
+                    document.getElementById('content').focus();
                     break;
                }
             }

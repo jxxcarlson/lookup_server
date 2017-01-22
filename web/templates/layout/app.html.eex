@@ -29,7 +29,7 @@
                  case 75:  // K
                     document.getElementById('tags').click();
                     break;
-                 case 76:  // L
+                 case 191:  // /
                     document.getElementById('tips').click();
                     break;
                  case 85:  // U
@@ -64,7 +64,7 @@
              <% end %>
 
 
-             <li><%= @current_user.username %>&mdash; <%= LookupPhoenix.Note.count_for_user(@current_user.id) %> Notes</li>
+             <li><span style="font-weight:bold"><%= @current_user.username %></span>, <%= LookupPhoenix.Note.count_for_user(@current_user.id) %> Notes</li>
              <li>
                <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
              </li>

@@ -57,7 +57,7 @@ defmodule LookupPhoenix.NoteController do
     if (conn.assigns.current_user.read_only == true) do
          read_only_message(conn)
     else
-      new_content = note_params["content"]
+      new_content = Regex.replace(~r/(ß$)/, note_params["content"], "")
       |> Note.identity
       new_params = %{"content" => new_content, "title" => note_params["title"], "user_id" => conn.assigns.current_user.id}
       changeset = Note.changeset(%Note{}, new_params)

@@ -1,18 +1,29 @@
 <script>
 
-    // define a handler
-    function doc_keyUp(e) {
+        // define a handler
+        function doc_keyUp(e) {
 
-        // this would test for whichever key is 78 and the ctrl key at the same time
-        if (e.altKey && e.keyCode == 78) {
-            // call your function to do the thing
-            document.getElementById('new_note').click();
+            // this would test for whichever key is 78 and the ctrl key at the same time
+            if (e.altKey) {
+               switch(e.keyCode ) {
+                 case 78: // B
+                    document.getElementById('new_note').click();
+                    break;
+                 case 83:  // S
+                    document.getElementById('search_notes').focus();
+                    break;
+                 case 82:  // R
+                    console.log('RANDOM')
+                    document.getElementById('random_notes').click();
+                    break;
+               }
+            }
         }
-    }
-    // register the handler
-    document.addEventListener('keyup', doc_keyUp, false);
+        // register the handler
+        document.addEventListener('keyup', doc_keyUp, false);
 
-</script>
+    </script>
+
 
 <span style="font-size:1.5em;"> <%= @noteCountString %> </span>
 <span class="text-right" style="float:right; margin-left:140px;font-size:1.5em">
@@ -24,9 +35,9 @@
 
   <div style="font-size:1.2em;">
     <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
-       <%= text_input f, :query, placeholder: "Search ...", style: "width:300px; height:30px; background-color:#eee;" %>
-       <!-- <%= submit "Search" %> -->
-       <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-xs" %>
+       <%= text_input f, :query, placeholder: "Search ...", style: "width:300px; height:30px; background-color:#eee;", id: "search_notes" %>
+       &nbsp;     <!-- <%= submit "Search" %> -->
+       <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-xs", id: "random_notes" %>
     <% end %>
   </div>
 

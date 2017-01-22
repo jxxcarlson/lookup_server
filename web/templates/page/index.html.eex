@@ -21,7 +21,7 @@ span { color: darkred; font-weight:500;}
      to see LookupNote in action.
      </p>
 
-     <p><span>LookupNote</span> is your mini search engine.
+     <p><span>LookupNote</span> is your personal mini search engine.
      Safe, secure, always there when you need it.</p>
 
      <p><span>Used by</span> students, researchers, people in all walks of life.</p>
@@ -50,6 +50,8 @@ span { color: darkred; font-weight:500;}
                     Try searching for <span>astro</span> and <span>earth</span>.  Try out the <span>TAGS</span>
                     tab.  Try clicking on the <span>nature</span> and <span>number</span> tags.
                     And don't forget the <span>Random</span> button!</p>
+
+    <p><span><%= link "Link to the Demo", to: page_path(@conn, :demo) %></span></p>
 
     <br><br>
      <span>Contact: jxxcarlson at gmail</span>

@@ -17,6 +17,8 @@ tab.  Try clicking on the <span>nature</span> and <span>number</span> tags. And 
 
 <p>You won't be able to create or edit notes in the demo, but you will get a good idea what Lookupnote can do.</p>
 
+<br><br>
+
 <p>
 <%= link "Home", to: page_path(@conn, :index) %>
 </p>
