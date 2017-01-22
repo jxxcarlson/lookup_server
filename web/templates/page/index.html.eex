@@ -51,7 +51,7 @@ span { color: darkred; font-weight:500;}
                     tab.  Try clicking on the <span>nature</span> and <span>number</span> tags.
                     And don't forget the <span>Random</span> button!</p>
 
-    <p><span><%= link "Link to the Demo", to: page_path(@conn, :demo) %></span></p>
+    <p><span><%= link "The Demo", to: page_path(@conn, :demo) %></span></p>
 
     <br><br>
      <span>Contact: jxxcarlson at gmail</span>
