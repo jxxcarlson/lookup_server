@@ -94,6 +94,7 @@ defmodule LookupPhoenix.NoteController do
         conn
         |> put_flash(:info, "Note updated successfully.")
         |> redirect(to: note_path(conn, :show, note))
+        # |> redirect(to: note_path(conn, :index))
       {:error, changeset} ->
         render(conn, "edit.html", note: note, changeset: changeset)
     end
