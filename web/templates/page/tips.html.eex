@@ -40,9 +40,15 @@
    <ul style="font-size:1.25em;list-style-type:none">
 
     <li>Put tags in the note contents to help find the note in the future. Tags are
-      just words that can be  picked up by a search.  Thus we might put &quot;quote&quot;
-      in the body of every quote.  Better still is to put <span>:quote</span>.  Tags that
+      just words that can be  picked up by a search.  Thus we might put <span>quote</span>
+      in the body of every quote. Or use <span>:quote</span>.  Tags that
       start with a colon will be added to your TAG list.</li>
+
+    <li>Search for notes with official tags like <span>:astronomy</span> by clicking on that
+     tag in the TAG list. Or just type it in the search box.  Searching for <span>:astro</span>
+     also works.</li>
+
+
 
 
 

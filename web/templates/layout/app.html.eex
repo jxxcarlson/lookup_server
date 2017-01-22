@@ -7,6 +7,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <style>
+
+    li.link1 { font-size: 1.6rem; }
+
+    </style>
+
 
 
     <title>Lookup</title>
@@ -64,13 +70,13 @@
              <% end %>
 
 
-             <li><span style="font-weight:bold"><%= @current_user.username %></span>, <%= LookupPhoenix.Note.count_for_user(@current_user.id) %> Notes</li>
-             <li>
+             <li class="link1"><span style="font-weight:bold; color:black"><%= @current_user.username %></span>, <%= LookupPhoenix.Note.count_for_user(@current_user.id) %> Notes</li>
+             <li class="link1">
                <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
              </li>
            <% else %>
-             <li> <%= link "Register", to: user_path(@conn, :new) %> </li>
-             <li> <%= link "Sign in", to: session_path(@conn, :new) %> </li>
+             <li class="link1"> <%= link "Register", to: user_path(@conn, :new) %> </li>
+             <li class="link1"> <%= link "Sign in", to: session_path(@conn, :new) %> </li>
            <% end %>
          </ol>
 
