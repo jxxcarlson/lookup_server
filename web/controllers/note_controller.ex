@@ -58,8 +58,10 @@ defmodule LookupPhoenix.NoteController do
          read_only_message(conn)
     else
       new_content = Regex.replace(~r/(ß$)/, note_params["content"], "")
-      |> Note.identity
-      new_params = %{"content" => new_content, "title" => note_params["title"], "user_id" => conn.assigns.current_user.id}
+      new_title = Regex.replace(~r/(ß$)/, note_params["title"], "")
+      # |> Note.identity
+      new_params = %{"content" => new_content, "title" => new_title, "user_id" => conn.assigns.current_user.id}
+      # new_params = %{"content" => new_content, "title" => new_title}
       changeset = Note.changeset(%Note{}, new_params)
 
       case Repo.insert(changeset) do
@@ -103,7 +105,8 @@ defmodule LookupPhoenix.NoteController do
   def update(conn, %{"id" => id, "note" => note_params}) do
     note = Repo.get!(Note, id)
     new_content = Regex.replace(~r/(ß$)/, note_params["content"], "")
-    new_params = %{"content" => new_content, "title" => note_params["title"]}
+    new_title = Regex.replace(~r/(ß$)/, note_params["title"], "")
+    new_params = %{"content" => new_content, "title" => new_title}
     changeset = Note.changeset(note, new_params)
     if (conn.assigns.current_user.read_only == false) do
         doUpdate(note, changeset, conn)
