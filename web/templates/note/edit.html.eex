@@ -1,3 +1,31 @@
+<script>
+
+        // define a handler
+        function doc_keyUp(e) {
+
+            // this would test for whichever key is 78 and the ctrl key at the same time
+            if (e.altKey) {
+               switch(e.keyCode ) {
+                 case 66: // B
+                    document.getElementById('back').click();
+                    break;
+                 case 83:  // S
+                    document.getElementById('save').click();
+                    break;
+                 case 84:  // T
+                    document.getElementById('title').focus();
+                    break;
+                 case 67:  // C
+                    document.getElementById('content').focus();
+                    break;
+               }
+            }
+        }
+        // register the handler
+        document.addEventListener('keyup', doc_keyUp, false);
+
+    </script>
+
 <h2>Edit note</h2>
 
 <%= render "form.html", changeset: @changeset,
