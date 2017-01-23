@@ -140,6 +140,9 @@ defmodule LookupPhoenix.Note do
       |> makeUserLinks
       |> makeSmartLinks
       |> makeImageLinks(height)
+      |> formatMDash
+      |> formatNDash
+      |> formatStrike
       |> formatInlineCode
       |> formatCode
       |> formatBold
@@ -166,6 +169,19 @@ defmodule LookupPhoenix.Note do
 
     def makeImageLinks(text, height \\ 200) do
        Regex.replace(~r/\simage::(.*(png|jpg|jpeg|JPG|JPEG|PNG))\s/, " "<>text<>" ", " <img src=\"\\1\" height=#{height}> ")
+    end
+
+    def formatNDash(text) do
+      # \s(--)\s
+      Regex.replace(~r/\s(--)\s/, text, " &ndash; ")
+    end
+
+    def formatMDash(text) do
+       Regex.replace(~r/\s(---)\s/, text, " &mdash; ")
+    end
+
+    def formatStrike(text) do
+       Regex.replace(~r/\s(-.*-)\s/, text, " <span style='text-decoration: line-through'>\\1</span> ")
     end
 
     def formatInlineCode(text) do

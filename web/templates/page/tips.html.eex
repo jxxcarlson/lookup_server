@@ -1,5 +1,6 @@
  <style>
  span {color: darkred;}
+ span.strike{ color: black;text-decoration: line-through; }
  ul {font-size:1.25rem;list-style-type:none }
  li {margin: 10px 0; font-size: 1.5rem; }
  ul.toc {margin-left:-35px;}
@@ -148,6 +149,11 @@
     <li>Use _Fee fie fo fum!_ for italic text: <i>Fee fie fo fum!</i></li>
     <li>Use `a == b` for in-line code: <pre>a == b</pre></li>
     <li>Use <tt>red:[This is important]</tt> for red text: <span>This is important</span></li>
+    <li>The string <tt>--</tt> preceded and followed by a space becomes this: &ndash;
+    <li>The string <tt>---</tt> preceded and followed by a space becomes this: &mdash;
+    <li>The string <tt>-Bad stuff-</tt> preceded and followed by a space becomes
+         <span class="strike">Bad stuff</span> </li>
+
 
    </ul>
 
