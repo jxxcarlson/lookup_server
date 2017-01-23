@@ -143,11 +143,13 @@
 
    <p class="heading" id="md">Mini asciidoc/markdown</p>
 
+   <p class="text">This section is optional.  Use it only if you need it.</p>
+
    <ul>
 
     <li>Use *Fee fie fo fum!* for bold text: <b>Fee fie fo fum!</b></li>
     <li>Use _Fee fie fo fum!_ for italic text: <i>Fee fie fo fum!</i></li>
-    <li>Use `a == b` for in-line code: <pre>a == b</pre></li>
+    <li>Use `a == b` for in-line code: <tt style="color:darkred">a == b</tt></li>
     <li>Use <tt>red:[This is important]</tt> for red text: <span>This is important</span></li>
     <li>The string <tt>--</tt> preceded and followed by a space becomes this: &ndash;
     <li>The string <tt>---</tt> preceded and followed by a space becomes this: &mdash;
@@ -166,7 +168,8 @@
      end
    ----
    </pre>
-   For code or any literal text:
+   for code or any literal text.  It will be formatted like this:
+   <br><br>
    <pre>
      for this in that['values'] do
         whatever

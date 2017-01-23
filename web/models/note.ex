@@ -140,11 +140,11 @@ defmodule LookupPhoenix.Note do
       |> makeUserLinks
       |> makeSmartLinks
       |> makeImageLinks(height)
+      |> formatInlineCode
+      |> formatCode
       |> formatMDash
       |> formatNDash
       |> formatStrike
-      |> formatInlineCode
-      |> formatCode
       |> formatBold
       |> formatItalic
       |> formatRed
@@ -181,11 +181,11 @@ defmodule LookupPhoenix.Note do
     end
 
     def formatStrike(text) do
-       Regex.replace(~r/\s(-.*-)\s/, text, " <span style='text-decoration: line-through'>\\1</span> ")
+       Regex.replace(~r/\s(-.*-)\s/r, text, " <span style='text-decoration: line-through'>\\1</span> ")
     end
 
     def formatInlineCode(text) do
-      Regex.replace(~r/(`(.*)`)/, text, "<tt>\\2</tt>")
+      Regex.replace(~r/(`(.*)`)/r, text, "<tt style='color:darkred; font-weight:400'>\\2</tt>")
     end
 
     def formatCode(text) do
@@ -195,15 +195,15 @@ defmodule LookupPhoenix.Note do
     # ``\n(.*)\n```
 
     def formatBold(text) do
-       Regex.replace(~r/(\*(.*)\*)/, text, "<strong>\\2</strong>")
+       Regex.replace(~r/(\*(.*)\*)/r, text, "<strong>\\2</strong>")
     end
 
     def formatItalic(text) do
-       Regex.replace(~r/_(.*)_/, text, "<i>\\1</i>")
+       Regex.replace(~r/_(.*)_/r, text, "<i>\\1</i>")
     end
 
     def formatRed(text) do
-       Regex.replace(~r/red:\[(.*)\]/, text, "<span style='color:darkred'>\\1</span>")
+       Regex.replace(~r/red:\[(.*)\]/r, text, "<span style='color:darkred'>\\1</span>")
     end
 
     def scrubTags(text) do
