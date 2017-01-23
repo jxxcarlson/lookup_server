@@ -195,7 +195,7 @@ defmodule LookupPhoenix.Note do
     end
 
     def formatInlineCode(text) do
-      Regex.replace(~r/\`(.*)\`/, text, "<tt style='color:darkred; font-weight:400'>\\1</tt>")
+      Regex.replace(~r/\`(.*)\`/r, text, "<tt style='color:darkred; font-weight:400'>\\1</tt>")
     end
 
     def formatCode(text) do
