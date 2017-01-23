@@ -140,6 +140,7 @@ defmodule LookupPhoenix.Note do
       |> makeUserLinks
       |> makeSmartLinks
       |> makeImageLinks(height)
+      |> formatCode
       |> scrubTags
     end
 
@@ -161,6 +162,10 @@ defmodule LookupPhoenix.Note do
 
     def makeImageLinks(text, height \\ 200) do
        Regex.replace(~r/\simage::(.*(png|jpg|jpeg|JPG|JPEG|PNG))\s/, " "<>text<>" ", " <img src=\"\\1\" height=#{height}> ")
+    end
+
+    def formatCode(text) do
+      Regex.replace(~r/(\`.*\`)/, text, "<pre>\\1</pre>")
     end
 
     def scrubTags(text) do
