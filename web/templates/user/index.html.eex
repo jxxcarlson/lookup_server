@@ -5,9 +5,9 @@
   <thead>
     <tr>
       <th>id</th>
-      <th>Locked</th>
-      <th>Notes</th>
-      <th>Searches</th>
+      <th>LK</th>
+      <th>NO</th>
+      <th>SE</th>
 
       <th>Username</th>
       <th>Name</th>
