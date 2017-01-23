@@ -48,4 +48,25 @@ defmodule LookupPhoenix.NoteTest do
         assert String.trim(result) ==  String.trim(expected)
    end
 
+   test "formatInlineCode regex" do
+         input = "ho ho `foo := bar` ha ha"
+         output = Note.formatInlineCode(input)
+         expected_output = "ho ho <tt style='color:darkred; font-weight:400'>foo := bar</tt> ha ha"
+         assert output == expected_output
+   end
+
+   test "apply_markdown regex" do
+       input = "ho ho `foo := bar` ha ha"
+       output = Note.apply_markdown(input)
+       expected_output = "ho ho <tt style='color:darkred; font-weight:400'>foo := bar</tt> ha ha"
+       assert output == expected_output
+   end
+
+   test "transform_text regex" do
+        input = "ho ho `foo := bar` ha ha"
+        output = Note.transform_text(input)
+        expected_output = "ho ho <tt style='color:darkred; font-weight:400'>foo := bar</tt> ha ha"
+        assert output == expected_output
+   end
+
 end

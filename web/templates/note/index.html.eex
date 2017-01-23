@@ -56,7 +56,7 @@
 <%= for note <- @notes do %>
     <tr>
       <td><%= note.title %></td>
-       <!-- <td><%= raw(LookupPhoenix.Note.firstParagraph(LookupPhoenix.Note.linkify(note.content))) %></td> -->
+       <!-- <td><%= raw(LookupPhoenix.Note.firstParagraph(LookupPhoenix.Note.transform_text(note.content))) %></td> -->
        <td><%= raw(LookupPhoenix.Note.format_for_index(note.content)) %></td>
 
       <td class="text-right">

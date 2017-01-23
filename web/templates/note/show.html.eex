@@ -8,7 +8,7 @@
 <p> <b><%= @note.title %></b> </p>
 
 
-<div style="white-space:pre-wrap;"><%= raw(String.trim(LookupPhoenix.Note.linkify(@note.content,500))) %> </div>
+<div style="white-space:pre-wrap;"><%= raw(String.trim(LookupPhoenix.Note.transform_text(@note.content,500))) %> </div>
 
 
 </div>

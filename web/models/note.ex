@@ -135,20 +135,30 @@ defmodule LookupPhoenix.Note do
 
     #######
 
+    def transform_text(text, height \\ 200) do
+      linkify(text, height)
+      |> apply_markdown
+    end
+
+
     def linkify(text, height \\ 200) do
       text
       |> makeUserLinks
       |> makeSmartLinks
       |> makeImageLinks(height)
-      |> formatInlineCode
+      |> String.trim
+    end
+
+    def apply_markdown(text) do
+      text
       |> formatCode
+      |> formatInlineCode
       |> formatMDash
       |> formatNDash
       |> formatStrike
       |> formatBold
       |> formatItalic
       |> formatRed
-      |> scrubTags
     end
 
     def makeDumbLinks(text) do
@@ -185,7 +195,7 @@ defmodule LookupPhoenix.Note do
     end
 
     def formatInlineCode(text) do
-      Regex.replace(~r/`(.*)`/r, text, "<tt style='color:darkred; font-weight:400'>\\1</tt>")
+      Regex.replace(~r/\`(.*)\`/, text, "<tt style='color:darkred; font-weight:400'>\\1</tt>")
     end
 
     def formatCode(text) do
