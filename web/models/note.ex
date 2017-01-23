@@ -140,7 +140,11 @@ defmodule LookupPhoenix.Note do
       |> makeUserLinks
       |> makeSmartLinks
       |> makeImageLinks(height)
+      |> formatInlineCode
       |> formatCode
+      |> formatBold
+      |> formatItalic
+      |> formatRed
       |> scrubTags
     end
 
@@ -164,8 +168,26 @@ defmodule LookupPhoenix.Note do
        Regex.replace(~r/\simage::(.*(png|jpg|jpeg|JPG|JPEG|PNG))\s/, " "<>text<>" ", " <img src=\"\\1\" height=#{height}> ")
     end
 
+    def formatInlineCode(text) do
+      Regex.replace(~r/(`(.*)`)/, text, "<tt>\\2</tt>")
+    end
+
     def formatCode(text) do
-      Regex.replace(~r/(\`.*\`)/, text, "<pre>\\1</pre>")
+      Regex.replace(~r/----(?:\r\n|[\r\n])(.*)(?:\r\n|[\r\n])----/ms, text, "<pre>\\1</pre>")
+    end
+
+    # ``\n(.*)\n```
+
+    def formatBold(text) do
+       Regex.replace(~r/(\*(.*)\*)/, text, "<strong>\\2</strong>")
+    end
+
+    def formatItalic(text) do
+       Regex.replace(~r/_(.*)_/, text, "<i>\\1</i>")
+    end
+
+    def formatRed(text) do
+       Regex.replace(~r/red:\[(.*)\]/, text, "<span style='color:darkred''>\\1</span>")
     end
 
     def scrubTags(text) do

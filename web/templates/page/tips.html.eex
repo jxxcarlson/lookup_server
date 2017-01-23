@@ -1,20 +1,37 @@
  <style>
  span {color: darkred;}
- li {margin: 10px 0; font-size: 0.8em; }
+ ul {font-size:1.25rem;list-style-type:none }
+ li {margin: 10px 0; font-size: 1.5rem; }
+ ul.toc {margin-left:-35px;}
  li.heading {margin-left:-20px; font-weight:bold; font-size: 1.4rem;}
+ a {font-size: 1.5rem; }
  .heading {
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 1.8rem;
     margin-left:0px;
     margin-top:25px;
     margin-bottom:15px;
   }
-  p.text { font-size: 1.4rem; max-width:600px;}
+  p.text { font-size: 1.5rem; max-width:600px;}
  </style>
+
+
 
  <h3>Tips for using LookupNote</h3>
 
- <p class="heading">The Basics</p>
+ <ul  class="toc">
+
+ <li><a href="#basics">The Basics</a> </li>
+ <li><a href="#search">Search</a> </li>
+ <li><a href="#taggs">Tags</a> </li>
+ <li><a href="#links">Links</a> </li>
+ <li><a href="#iphone">Smart phones and tablets</a> </li>
+ <li><a href="#hotkeys">Keyboard shortcuts</a> </li>
+ <li><a href="#md">Mini asciidoc/markdown</a> </li>
+
+ </ul>
+
+ <p class="heading" id="basics">The Basics</p>
 
  <p class="text"> Go to the NOTES tab.  That is where you will do most of your work.
  Type somehing in the search box to find a note.  Click on <span>New note</span>
@@ -24,8 +41,8 @@
 
  <p class="text">That's all there is to it!</p>
 
- <p class="heading">Search</p>
-   <ul style="font-size:1.25em;list-style-type:none">
+ <p class="heading" id="search">Search</p>
+   <ul>
 
      <li>Put the word <span>quote</span> in the search box to find all notes
      containing the word <span>quote</span>. Put <span>quote prais</span> to find all quotes
@@ -36,8 +53,8 @@
      list of notes.</li>
 
   </ul>
-  <p class="heading">Tags</p>
-   <ul style="font-size:1.25em;list-style-type:none">
+  <p class="heading" id="taggs">Tags</p>
+   <ul>
 
     <li>Put tags in the note contents to help find the note in the future. Tags are
       just words that can be  picked up by a search.  Thus we might put <span>quote</span>
@@ -53,8 +70,8 @@
 
 
   </ul>
-    <p class="heading">Links</p>
-     <ul style="font-size:1.25em;list-style-type:none">
+    <p class="heading" id="links">Links</p>
+     <ul>
 
      <li><b>Web pages.</b> Make a link by pasting a URL like <span>http://nytimes.com</span>
      into LookupNote.  It will appear like this:
@@ -85,17 +102,17 @@
    </ul>
 
 
-   <p class="heading">Smart phones and tablets</p>
+   <p class="heading" id="iphone">Smart phones and tablets</p>
      <ul style="font-size:1.25em;list-style-type:none">
 
        <li>Add this app to the home screen of your smartphone or tablet.  Very convenient!</li>
 
      </ul>
 
-    <p class="heading">Keyboard shortcuts</p>
+    <p class="heading" id="hotkeys">Keyboard shortcuts</p>
 
     <p class="text">Mac OS: alt = option</p>
-     <ul style="font-size:1.25em;list-style-type:none">
+     <ul>
 
 
        <li class="heading">Anywhere</li>
@@ -121,3 +138,33 @@
 
 
      </ul>
+
+
+   <p class="heading" id="md">Mini asciidoc/markdown</p>
+
+   <ul>
+
+    <li>Use *Fee fie fo fum!* for bold text: <b>Fee fie fo fum!</b></li>
+    <li>Use _Fee fie fo fum!_ for italic text: <i>Fee fie fo fum!</i></li>
+    <li>Use `a == b` for in-line code: <pre>a == b</pre></li>
+    <li>Use <tt>red:[This is important]</tt> for red text: <span>This is important</span></li>
+
+   </ul>
+
+   <p class="text"> Use
+   <pre>
+   ----
+     for this in that['values'] do
+        whatever
+        |> hohoho
+     end
+   ----
+   </pre>
+   For code or any literal text:
+   <pre>
+     for this in that['values'] do
+        whatever
+        |> hohoho
+      end
+   </pre>
+   </p>
