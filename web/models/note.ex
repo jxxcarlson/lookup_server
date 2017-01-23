@@ -181,7 +181,7 @@ defmodule LookupPhoenix.Note do
     end
 
     def formatStrike(text) do
-       Regex.replace(~r/\s(-.*-)\s/r, text, " <span style='text-decoration: line-through'>\\1</span> ")
+       Regex.replace(~r/\s-(.*)-\s/r, text, " <span style='text-decoration: line-through'>\\1</span> ")
     end
 
     def formatInlineCode(text) do
