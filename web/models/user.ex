@@ -107,7 +107,7 @@ defmodule LookupPhoenix.User do
 
   def set_name(user, value) do
        params = %{"name" => value}
-       changeset = User.admin_changeset(user, params)
+       changeset = User.changeset(user, params)
        Repo.update(changeset)
     end
 
