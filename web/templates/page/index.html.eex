@@ -26,8 +26,9 @@ span { color: darkred; font-weight:500;}
 
      <p><span>Used by</span> students, researchers, people in all walks of life.</p>
 
-     <br>
-     <p><span><%= link "Try the Demo!", to: page_path(@conn, :demo) %></span></p>
+     <BR>
+
+      <p><span><%= link "Try the Demo!", to: page_path(@conn, :demo) %></span></p>
 
          <br><br>
               <span>Contact: jxxcarlson at gmail</span>
@@ -45,13 +46,17 @@ span { color: darkred; font-weight:500;}
        </div>
      </div>
 
-     <p style="font-size:1.5rem; max-width:25em;">Sign in with user name <span>demo</span> and
+     <!-- <p style="font-size:1.5rem; max-width:25em;">Sign in with user name <span>demo</span> and
                     password <span>rundemo</span> to see what one user's set of notes looks like.
                     Try searching for <span>astro</span> and <span>earth</span>.  Try out the <span>TAGS</span>
                     tab.  Try clicking on the <span>nature</span> and <span>number</span> tags.
                     And don't forget the <span>Random</span> button!</p>
+    -->
 
-    <p><span><%= link "The Demo", to: page_path(@conn, :demo) %></span></p>
+    <p><span><%= link "The LookupNote Demo", to: page_path(@conn, :demo) %></span></p>
+
+    <p>Take a look at the <span><%= link "Tips Page", to: page_path(@conn, :tips) %></span> if you are interested in
+    mini asciidoc/markdown features. </p>
 
     <br><br>
      <span>Contact: jxxcarlson at gmail</span>

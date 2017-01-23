@@ -1,7 +1,7 @@
 
 
 <style>
-    span {color: darkred;}
+    span {color: darkred; font-weight: bold;}
     li {margin: 10px 0; }
     p {font-size:1.7rem; max-width:25em;}
 </style>
@@ -12,12 +12,18 @@
 password <span>rundemo</span> to see what one user's set of notes looks like.</p>
 
 <p>
-Once you are signed in, try searching for <span>astro</span> and <span>earth</span>.   Try out the <span>TAGS</span>
-tab.  Try clicking on the <span>nature</span> and <span>number</span> tags. And try the <span>Random</span> button.</p>
+Once you are signed in, try searching for <span>astro</span> and <span>earth</span>.   Take a look at the <span>TAGS</span>
+tab.  Try clicking on the <span>nature</span> and <span>number</span> tags. And don't forget the <span>Random</span> button!</p>
 
-<p>You won't be able to create or edit notes in the demo, but you will get a good idea what Lookupnote can do.</p>
+<br>
+
+<p><b>Note.</b> You won't be able to create or edit notes in the demo, but by playing around with it,
+you will get a good idea what Lookupnote can do.
+Do press <span>edit</span> to see how the note was entered.  For some good examples,
+search for <span>asciidoc</span> or <span>markdown</span>.</p>
 
 <br><br>
+
 
 <p>
 <%= link "Home", to: page_path(@conn, :index) %>
