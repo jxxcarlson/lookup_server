@@ -199,7 +199,7 @@ defmodule LookupPhoenix.Note do
     end
 
     def formatCode(text) do
-      Regex.replace(~r/----(?:\r\n|[\r\n])(.*)(?:\r\n|[\r\n])----/ms, text, "<pre>\\1</pre>")
+      Regex.replace(~r/----(?:\r\n|[\r\n])(.*)(?:\r\n|[\r\n])----/msr, text, "<pre>\\1</pre>")
     end
 
     # ``\n(.*)\n```

@@ -69,4 +69,60 @@ defmodule LookupPhoenix.NoteTest do
         assert output == expected_output
    end
 
+   test "formatCode" do
+input = """
+
+----
+a == b
+----
+foo, bar
+----
+c == d
+----
+
+"""
+   output = Note.formatCode(input)
+   expected_output = """
+<pre>
+a == b
+</pre>
+foo, bar
+<pre>
+c == d
+</pre>
+"""
+   clean_output = Regex.replace(~r/\s/, output, "")
+   clean_expected_utput = Regex.replace(~r/\s/, expected_output, "")
+
+    assert  clean_output == clean_expected_utput
+   end
+
+test "transform_text" do
+input = """
+
+----
+a == b
+----
+foo, bar
+----
+c == d
+----
+
+"""
+   output = Note.transform_text(input)
+   expected_output = """
+<pre>
+a == b
+</pre>
+foo, bar
+<pre>
+c == d
+</pre>
+"""
+   clean_output = Regex.replace(~r/\s/, output, "")
+   clean_expected_utput = Regex.replace(~r/\s/, expected_output, "")
+
+    assert  clean_output == clean_expected_utput
+   end
+
 end
