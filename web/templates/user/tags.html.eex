@@ -9,9 +9,11 @@
 
 <table class="table">
   <tbody>
-<%= for tag <- @user.tags do %>
+<%= for row <- Enum.chunk(@user.tags, 5, 5, []) do %>
     <tr>
-      <td><%= link LookupPhoenix.Tag.pretty(tag), to: search_path(@conn, :tag_search, tag) %> </td>
+      <%= for tag <- row do %>
+        <td><%= link LookupPhoenix.Tag.pretty(tag), to: search_path(@conn, :tag_search, tag) %> </td>
+      <% end %>
     </tr>
 <% end %>
   </tbody>
