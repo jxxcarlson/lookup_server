@@ -82,16 +82,15 @@
           as <span><a href="http//nytimes.com">NYT</a></span>.</li>
 
 
-     <li>  <b>Images.</b>
-     Make an image link like this: <span>image::https://www.allaboutbirds.org/.../warbler.jpg</span>.
-     It will appear as an actual images (see below).  The format is <span>image::IMAGE_ADDRESS</span>
-     Copy the address of an image by control-clicking on it.  Try that on the
+     <li>  <b>Images.</b> To display an image, simply paste in its &quot;image address.&quot;
+     The image of the yellow bird below was made by pasting in <span>https://www.allaboutbirds.org/.../warbler.jpg</span>.
+     To copy the the address of an image, control-click on it.  Try that on the
      image below.
      </li>
 
      <li> <img src="https://www.allaboutbirds.org/guide/bbimages/aab/images/blue-winged-warbler.jpg" width=100 align=top>
 
-     <li><b>YouTube.</b> copy the &quot;video URL&quot; by control-clicking on the video.
+     <li><b>YouTube.</b> Copy the &quot;video URL&quot; by control-clicking on the video.
      Then paste it into Lookupnote.io as in this example: <span>https://youtu.be/EsTgr-n53Ow[George Oakley, Cello Sonata]</span>
      It appears like thie: <a href="https://youtu.be/EsTgr-n53Ow">George Oakley, Cello Sonata</a>. This technique
      works with Vimeo and many other services.</li>

@@ -155,6 +155,18 @@ c == d
       assert output == expected_output
    end
 
+    test "simplify urls II" do
+      input = "abc image::http://foo.io/hoho.jpg def image::http://bar.io/a/b/c/umdo.jpg?yada=yada ho ho ho"
+      output = Note.simplifyURLs(input)
+      expected_output = "abc image::http://foo.io/hoho.jpg def image::http://bar.io/a/b/c/umdo.jpg ho ho ho"
+      assert output == expected_output
+    end
 
+    test "preprocess image URLs" do
+      input = "abc http://foo.io/hoho.jpg def http://bar.io/a/b/c/umdo.PNG ho ho ho"
+      output = Note.preprocessImageURLs(input)
+      expected_output = "abc image::http://foo.io/hoho.jpg def image::http://bar.io/a/b/c/umdo.PNG ho ho ho"
+      assert output == expected_output
+    end
 
 end

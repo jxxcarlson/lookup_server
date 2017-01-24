@@ -143,6 +143,7 @@ defmodule LookupPhoenix.Note do
 
     def linkify(text, height \\ 200) do
       text
+      |> simplifyURLs
       |> makeUserLinks
       |> makeSmartLinks
       |> makeImageLinks(height)
@@ -162,7 +163,7 @@ defmodule LookupPhoenix.Note do
     end
 
     def getURLs(text) do
-      Regex.scan(~r/\s((http|https):\/\/\S*)\s/, " " <> text <> " ", [:all])
+      Regex.scan(~r/((http|https):\/\/\S*)\s/, " " <> text <> " ", [:all])
       |> Enum.map(fn(x) -> hd(tl(x)) end)
     end
 
@@ -181,14 +182,23 @@ defmodule LookupPhoenix.Note do
       Enum.reduce(url_substitution_list, text, fn(substitution_item, text) -> simplify_one_URL(substitution_item, text) end)
     end
 
+    def preprocessImageURLs(text) do
+      # Regex.replace(~r/\s((http|https):\/\/\S*\.(jpg|jpeg|png))\s/i, text, "image::\\1 ")
+      Regex.replace(~r/[^:]((http|https):\/\/\S*\.(jpg|jpeg|png))\s/i, text, " image::\\1 ")
+    end
+
+    def preprocessURLs(text) do
+      text
+      |> simplifyURLs
+      |> preprocessImageURLs
+    end
+
     def makeDumbLinks(text) do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#!@_%]*)\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">LINK</a> ")
     end
 
     # ha ha http://foo.bar.io/a/b/c blah blah => 1: http://foo.bar.io/a/b/c, 3: foo.bar.io
     def makeSmartLinks(text) do
-       # Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-&=\?#!@_%]*)\/\S*\S)\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
-       # Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-&=\?#!@_%]*)(\/\S*\S|))\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
        Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-_%]*)([\/?=#]\S*|))\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
 
@@ -229,7 +239,7 @@ defmodule LookupPhoenix.Note do
     end
 
     def formatItalic(text) do
-       Regex.replace(~r/_(.*)_/r, text, "<i>\\1</i>")
+       Regex.replace(~r/ _(.*)_ /r, text, "<i>\\1</i>")
     end
 
     def formatRed(text) do
