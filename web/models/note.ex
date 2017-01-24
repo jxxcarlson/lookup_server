@@ -161,6 +161,26 @@ defmodule LookupPhoenix.Note do
       |> formatRed
     end
 
+    def getURLs(text) do
+      Regex.scan(~r/\s((http|https):\/\/\S*)\s/, " " <> text <> " ", [:all])
+      |> Enum.map(fn(x) -> hd(tl(x)) end)
+    end
+
+    def prepURLs(url_list) do
+       Enum.map(url_list, fn(x) -> [x, hd(String.split(x, "?"))] end)
+    end
+
+    def simplify_one_URL(substitution_item, text) do
+      target = hd(substitution_item)
+      replacement = hd(tl(substitution_item))
+      String.replace(text, target, replacement)
+    end
+
+    def simplifyURLs(text) do
+      url_substitution_list = text |> getURLs |> prepURLs
+      Enum.reduce(url_substitution_list, text, fn(substitution_item, text) -> simplify_one_URL(substitution_item, text) end)
+    end
+
     def makeDumbLinks(text) do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#!@_%]*)\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">LINK</a> ")
     end

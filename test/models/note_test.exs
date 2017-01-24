@@ -125,4 +125,36 @@ c == d
     assert  clean_output == clean_expected_utput
    end
 
+   test "get urls" do
+     input = "abc http://foo.io def http://bar.io?yada=yada"
+     output = Note.getURLs(input)
+     expected_output = ["http://foo.io", "http://bar.io?yada=yada"]
+     assert output == expected_output
+   end
+
+   test "prep urls" do
+     input = "abc http://foo.io def http://bar.io?yada=yada"
+     output = Note.getURLs(input) |> Note.prepURLs
+     expected_output = [["http://foo.io", "http://foo.io"], ["http://bar.io?yada=yada", "http://bar.io"]]
+     assert output == expected_output
+   end
+
+   test "simplify one url" do
+      input = "abc http://foo.io?a=b def http://bar.io?yada=yada ho ho ho"
+      substitution_list = Note.getURLs(input) |> Note.prepURLs
+      substitution_item = hd(substitution_list)
+      output = Note.simplify_one_URL(substitution_item, input)
+      expected_output = "abc http://foo.io def http://bar.io?yada=yada ho ho ho"
+      assert output == expected_output
+   end
+
+   test "simplify urls" do
+      input = "abc http://foo.io def http://bar.io?yada=yada ho ho ho"
+      output = Note.simplifyURLs(input)
+      expected_output = "abc http://foo.io def http://bar.io ho ho ho"
+      assert output == expected_output
+   end
+
+
+
 end
