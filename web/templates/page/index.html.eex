@@ -24,11 +24,13 @@ span { color: darkred; font-weight:500;}
      <p><span>LookupNote</span> is your personal mini search engine.
      Safe, secure, always there when you need it.</p>
 
-     <p><span>Used by</span> students, researchers, people in all walks of life.</p>
+     <p><span>Used by</span> students, writers, researchers, you name it.</p>
 
      <BR>
 
-      <p><span><%= link "Try the Demo!", to: page_path(@conn, :demo) %></span></p>
+      <p><span><%= link "Try the Demo", to: page_path(@conn, :demo) %></span>
+
+      <span style="margin-left:15px;"> <%= link "Sign up for a free trial", to: user_path(@conn, :new) %> </span></p>
 
          <br><br>
               <span>Contact: jxxcarlson at gmail</span>
@@ -53,10 +55,10 @@ span { color: darkred; font-weight:500;}
                     And don't forget the <span>Random</span> button!</p>
     -->
 
-    <p><span><%= link "The LookupNote Demo", to: page_path(@conn, :demo) %></span></p>
+    <p><span><%= link "LookupNote Demo", to: page_path(@conn, :demo) %></span></p>
 
     <p>Take a look at the <span><%= link "Tips Page", to: page_path(@conn, :tips) %></span> if you are interested in
-    mini asciidoc/markdown features. </p>
+    mini asciidoc-markdown features. </p>
 
     <br><br>
      <span>Contact: jxxcarlson at gmail</span>
