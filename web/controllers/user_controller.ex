@@ -48,7 +48,8 @@ defmodule LookupPhoenix.UserController do
 
   def update_tags(conn, _params) do
     User.update_tags(conn.assigns.current_user.id)
-    render conn, "tags.html", user: conn.assigns.current_user
+    conn |> redirect(to: user_path(conn, :tags))
+    # render conn, "tags.html", user: conn.assigns.current_user
   end
 
   def new(conn, _params) do
