@@ -13,6 +13,7 @@ defmodule LookupPhoenix.Note do
     field :content, :string
     field :user_id, :integer
     field :viewed_at, :utc_datetime
+    field :edited_at, :utc_datetime
 
     timestamps()
   end
@@ -327,12 +328,25 @@ defmodule LookupPhoenix.Note do
     Repo.update(changeset)
   end
 
+  def update_edited_at(note) do
+      params = %{"edited_at" => Timex.now}
+      changeset = Note.changeset(note, params)
+      Repo.update(changeset)
+  end
+
   def init_viewed_at(note) do
       then = Timex.shift(Timex.now, [hours: -30])
       params = %{"viewed_at" => then}
       changeset = Note.changeset(note, params)
       Repo.update(changeset)
   end
+
+  def init_edited_at(note) do
+        then = Timex.shift(Timex.now, [hours: -170])
+        params = %{"edited_at" => then}
+        changeset = Note.changeset(note, params)
+        Repo.update(changeset)
+   end
 
 
   def init_updated_at(note) do
@@ -346,9 +360,9 @@ defmodule LookupPhoenix.Note do
     Note |> Repo.all |> Enum.map(fn(note) -> Note.init_viewed_at(note) end)
   end
 
-   def init_notes_updated_at do
-      Note |> Repo.all |> Enum.map(fn(note) -> Note.init_updated_at(note) end)
-    end
+   def init_notes_edited_at do
+      Note |> Repo.all |> Enum.map(fn(note) -> Note.init_edited_at(note) end)
+   end
 
 end
 
