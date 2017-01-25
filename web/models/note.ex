@@ -7,6 +7,8 @@ defmodule LookupPhoenix.Note do
   alias LookupPhoenix.Repo
 
   schema "notes" do
+    use Timex.Ecto.Timestamps
+
     field :title, :string
     field :content, :string
     field :user_id, :integer
@@ -27,6 +29,15 @@ defmodule LookupPhoenix.Note do
     def search_by_title(arg) do
       Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%"))
       |> Repo.all
+    end
+
+    def before_date(hours, date_time, user_id) do
+       then = Timex.shift(date_time, [hours: -hours])
+       query = Ecto.Query.from note in Note,
+          select: note.id,
+          where: note.user_id == ^user_id and note.inserted_at >= ^then
+        Repo.all(query)
+        |> getDocumentsFromList
     end
 
     def count_for_user(user_id) do

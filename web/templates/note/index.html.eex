@@ -38,6 +38,7 @@
        <%= text_input f, :query, placeholder: "Search ...", style: "width:300px; height:30px; background-color:#eee;", id: "search_notes" %>
        &nbsp;     <!-- <%= submit "Search" %> -->
        <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-xs", id: "random_notes" %>
+       <%= link "Recent", to: search_path(@conn, :recent), class: "btn btn-default btn-xs", id: "recent_notes" %>
     <% end %>
   </div>
 

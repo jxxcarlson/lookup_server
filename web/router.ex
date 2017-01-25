@@ -22,6 +22,7 @@ defmodule LookupPhoenix.Router do
     resources "/sessions", SessionController, only: [:new, :create, :delete ]
 
     get "/random", SearchController, :random
+    get "/recent", SearchController, :recent
     get "/tags", UserController, :tags
 
     post "/search", SearchController, :index
