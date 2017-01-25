@@ -10,7 +10,11 @@ defmodule LookupPhoenix.UserController do
 
   def index(conn, _params) do
     if conn.assigns.current_user.admin == true do
-        users = Repo.all(LookupPhoenix.User)
+        query = Ecto.Query.from user in User,
+                  # select: note.id,
+                  # where: note.user_id == ^user_id and note.updated_at >= ^then,
+                  order_by: [asc: user.id]
+        users = Repo.all(query)
         render conn, "index.html", users: users
       else
         conn
