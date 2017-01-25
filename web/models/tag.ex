@@ -41,9 +41,15 @@ defmodule LookupPhoenix.Tag do
       |> Enum.reduce([], fn(note, list) -> merge_tags_from_note(note, list) end)
     end
 
+    def ignorable_tag(tag) do
+      [":gt", ":lt", ":eq"]
+      |> Enum.member?(tag)
+    end
+
     def get_all_user_tags(user_id) do
       Note.notes_for_user(user_id)
       |> Enum.reduce([], fn(note, list) -> merge_tags_from_note(note, list) end)
+      |> Enum.filter(fn(x) -> !ignorable_tag(x) end)
     end
 
     def pretty(tag) do
