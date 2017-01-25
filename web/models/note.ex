@@ -32,7 +32,7 @@ defmodule LookupPhoenix.Note do
       |> Repo.all
     end
 
-    def udpated_before_date(hours, date_time, user_id) do
+    def updated_before_date(hours, date_time, user_id) do
        then = Timex.shift(date_time, [hours: -hours])
        query = Ecto.Query.from note in Note,
           select: note.id,
