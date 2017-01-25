@@ -12,6 +12,7 @@ defmodule LookupPhoenix.Note do
     field :title, :string
     field :content, :string
     field :user_id, :integer
+    field :viewed_at, :utc_datetime
 
     timestamps()
   end
