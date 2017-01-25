@@ -35,8 +35,8 @@ defmodule LookupPhoenix.Note do
        then = Timex.shift(date_time, [hours: -hours])
        query = Ecto.Query.from note in Note,
           select: note.id,
-          where: note.user_id == ^user_id and note.inserted_at >= ^then,
-          order_by: [desc: note.inserted_at]
+          where: note.user_id == ^user_id and note.updated_at >= ^then,
+          order_by: [desc: note.updated_at]
         Repo.all(query)
         |> getDocumentsFromList
     end
@@ -52,7 +52,7 @@ defmodule LookupPhoenix.Note do
        query = Ecto.Query.from note in Note,
          select: note.id,
          where: note.user_id == ^user_id,
-         order_by: [desc: note.inserted_at]
+         order_by: [desc: note.updated_at]
        Repo.all(query)
        |> getDocumentsFromList
     end
@@ -61,7 +61,7 @@ defmodule LookupPhoenix.Note do
     def search_with_non_empty_arg(arg, user_id) do
       query = Ecto.Query.from note in Note,
          where: (ilike(note.title, ^"%#{List.first(arg)}%") or ilike(note.content, ^"%#{List.first(arg)}%")),
-         order_by: [desc: note.inserted_at]
+         order_by: [desc: note.updated_at]
       result = Repo.all(query)
       |> Note.filter_records_for_user(user_id)
       |> Note.filter_records_with_term_list(tl(arg))
