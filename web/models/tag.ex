@@ -8,7 +8,7 @@ defmodule LookupPhoenix.Tag do
     # get_tags(text) reeturns a list of the tags found in
     # the string tsxt
     def get_tags(text) do
-      text2 = String.replace(text, "`", "")
+      text2 = Regex.replace(~r/[`,.;]/, text,  "")
       Regex.scan(~r/(\s:[a-zA-Z]\S*)/, " "<>text2<>" ")
       |> Enum.map(fn(x) -> String.trim(hd(x)) end)
     end
