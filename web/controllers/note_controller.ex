@@ -24,11 +24,8 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def index(conn, _params) do
-     IO.puts "NOTE CONTROLLER INDEX"
      user_id = conn.assigns.current_user.id
-     IO.puts "USER ID = #{user_id}"
      id_list = Note.recall_list(user_id)
-     report("Note controller - index", id_list)
      if length(id_list) == 0 do
        notes = getRandomNotes(user_id)
      else
@@ -78,8 +75,8 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def show(conn, %{"id" => id}) do
-    report("Note controller - show", Note.recall_list(conn.assigns.current_user.id))
     note = Repo.get!(Note, id)
+    Note.update_viewed_at(note)
     render(conn, "show.html", note: note)
   end
 
@@ -116,7 +113,6 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def delete(conn, %{"id" => id}) do
-    IO.puts "DELETE, read_only status = #{conn.assigns.current_user.read_only}"
     if (conn.assigns.current_user.read_only == true) do
        read_only_message(conn)
     else

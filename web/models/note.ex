@@ -22,7 +22,7 @@ defmodule LookupPhoenix.Note do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :user_id])
+    |> cast(params, [:title, :content, :user_id, :viewed_at])
     |> validate_required([:title, :content])
   end
 
@@ -309,6 +309,24 @@ defmodule LookupPhoenix.Note do
          recalled |> Enum.filter(fn x -> is_integer(x) end)
       end
     end
+
+
+  def update_viewed_at(note) do
+    params = %{"viewed_at" => Timex.now}
+    changeset = Note.changeset(note, params)
+    Repo.update(changeset)
+  end
+
+  def init_viewed_at(note) do
+      then = Timex.shift(Timex.now, [hours: -30])
+      params = %{"viewed_at" => then}
+      changeset = Note.changeset(note, params)
+      Repo.update(changeset)
+  end
+
+  def init_notes_viewed_at do
+    Note |> Repo.all |> Enum.map(fn(note) -> Note.init_viewed_at(note) end)
+  end
 
 end
 

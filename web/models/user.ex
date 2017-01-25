@@ -106,22 +106,22 @@ defmodule LookupPhoenix.User do
   end
 
   def set_name(user, value) do
-       params = %{"name" => value}
-       changeset = User.changeset(user, params)
-       Repo.update(changeset)
-    end
+    params = %{"name" => value}
+    changeset = User.changeset(user, params)
+    Repo.update(changeset)
+  end
 
   def init_number_of_searches(user) do
     params = %{"number_of_searches" =>0}
     changeset = User.running_changeset(user, params)
-     Repo.update(changeset)
+    Repo.update(changeset)
   end
 
   def increment_number_of_searches(user) do
-      params = %{"number_of_searches" => user.number_of_searches + 1}
-      changeset = User.running_changeset(user, params)
-       Repo.update(changeset)
-   end
+    params = %{"number_of_searches" => user.number_of_searches + 1}
+    changeset = User.running_changeset(user, params)
+    Repo.update(changeset)
+  end
 
   # say 'set_demo("edit")' or 'set_demo("locked")'
   def set_demo(state) do
