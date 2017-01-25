@@ -22,7 +22,7 @@ defmodule LookupPhoenix.Note do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :user_id, :viewed_at])
+    |> cast(params, [:title, :content, :user_id, :viewed_at, :updated_at])
     |> validate_required([:title, :content])
   end
 
@@ -334,9 +334,21 @@ defmodule LookupPhoenix.Note do
       Repo.update(changeset)
   end
 
+
+  def init_updated_at(note) do
+      then = Timex.shift(Timex.now, [hours: -171])
+      params = %{"updated_at" => then}
+      changeset = Note.changeset(note, params)
+      Repo.update(changeset)
+  end
+
   def init_notes_viewed_at do
     Note |> Repo.all |> Enum.map(fn(note) -> Note.init_viewed_at(note) end)
   end
+
+   def init_notes_updated_at do
+      Note |> Repo.all |> Enum.map(fn(note) -> Note.init_updated_at(note) end)
+    end
 
 end
 

@@ -76,6 +76,9 @@ defmodule LookupPhoenix.SearchController do
         User.increment_number_of_searches(conn.assigns.current_user)
         hours_before = String.to_integer params["hours_before"]
         mode = params["mode"]
+        IO.puts "=================="
+        IO.puts "mode = #{mode}, hours_before = #{hours_before}"
+        IO.puts "=================="
         user_id = conn.assigns.current_user.id
 
         case mode do
