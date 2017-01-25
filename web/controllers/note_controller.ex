@@ -56,10 +56,8 @@ defmodule LookupPhoenix.NoteController do
     else
       new_content = Regex.replace(~r/ß/, note_params["content"], "") |> Note.preprocessURLs
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
-      # |> Note.identity
       new_params = %{"content" => new_content, "title" => new_title,
-         "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now}
-      # new_params = %{"content" => new_content, "title" => new_title}
+         "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now}
       changeset = Note.changeset(%Note{}, new_params)
 
       case Repo.insert(changeset) do
@@ -104,7 +102,7 @@ defmodule LookupPhoenix.NoteController do
     note = Repo.get!(Note, id)
     new_content = Regex.replace(~r/ß/, note_params["content"], "") |> Note.preprocessURLs
     new_title = Regex.replace(~r/ß/, note_params["title"], "")
-    new_params = %{"content" => new_content, "title" => new_title}
+    new_params = %{"content" => new_content, "title" => new_title, "edited_at" => Timex.now}
     changeset = Note.changeset(note, new_params)
     if (conn.assigns.current_user.read_only == false) do
         doUpdate(note, changeset, conn)

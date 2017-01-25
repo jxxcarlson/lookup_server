@@ -23,7 +23,7 @@ defmodule LookupPhoenix.Note do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :user_id, :viewed_at, :updated_at])
+    |> cast(params, [:title, :content, :user_id, :viewed_at, :edited_at])
     |> validate_required([:title, :content])
   end
 
@@ -37,8 +37,8 @@ defmodule LookupPhoenix.Note do
        then = Timex.shift(date_time, [hours: -hours])
        query = Ecto.Query.from note in Note,
           select: note.id,
-          where: note.user_id == ^user_id and note.updated_at >= ^then,
-          order_by: [desc: note.updated_at]
+          where: note.user_id == ^user_id and note.edited_at >= ^then,
+          order_by: [desc: note.edited_at]
         Repo.all(query)
         |> getDocumentsFromList
     end
