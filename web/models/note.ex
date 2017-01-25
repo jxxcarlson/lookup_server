@@ -32,12 +32,22 @@ defmodule LookupPhoenix.Note do
       |> Repo.all
     end
 
-    def before_date(hours, date_time, user_id) do
+    def udpated_before_date(hours, date_time, user_id) do
        then = Timex.shift(date_time, [hours: -hours])
        query = Ecto.Query.from note in Note,
           select: note.id,
           where: note.user_id == ^user_id and note.updated_at >= ^then,
           order_by: [desc: note.updated_at]
+        Repo.all(query)
+        |> getDocumentsFromList
+    end
+
+    def viewed_before_date(hours, date_time, user_id) do
+       then = Timex.shift(date_time, [hours: -hours])
+       query = Ecto.Query.from note in Note,
+          select: note.id,
+          where: note.user_id == ^user_id and note.viewed_at >= ^then,
+          order_by: [desc: note.viewed_at]
         Repo.all(query)
         |> getDocumentsFromList
     end
