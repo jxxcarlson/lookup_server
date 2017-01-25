@@ -53,6 +53,8 @@
      <li>The <span>Random</span> button brings up a random
      list of notes.</li>
 
+     <li>You can try the above in link "the Demo", to: page_path(@conn, :demo) %> if you are new to LookupNote</li>
+
   </ul>
   <p class="heading" id="taggs">Tags</p>
    <ul>
