@@ -72,11 +72,11 @@ defmodule LookupPhoenix.SearchController do
          render(conn, "index.html", notes: notes, noteCountString: countReportString)
     end
 
-   def recent(conn, _params) do
+   def recent(conn, params) do
         User.increment_number_of_searches(conn.assigns.current_user)
-
+        hours_before = String.to_integer params["hours_before"]
         user_id = conn.assigns.current_user.id
-        notes = Note.before_date(25, Timex.now, user_id)
+        notes = Note.before_date(hours_before, Timex.now, user_id)
         note_count = length(notes)
         Note.memorize_notes(notes, conn.assigns.current_user.id)
 
