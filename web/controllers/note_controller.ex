@@ -57,7 +57,8 @@ defmodule LookupPhoenix.NoteController do
       new_content = Regex.replace(~r/ß/, note_params["content"], "") |> Note.preprocessURLs
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
       # |> Note.identity
-      new_params = %{"content" => new_content, "title" => new_title, "user_id" => conn.assigns.current_user.id}
+      new_params = %{"content" => new_content, "title" => new_title,
+         "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now}
       # new_params = %{"content" => new_content, "title" => new_title}
       changeset = Note.changeset(%Note{}, new_params)
 
