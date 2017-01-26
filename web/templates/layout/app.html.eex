@@ -41,6 +41,9 @@
                  case 85:  // U
                     document.getElementById('users').click();
                     break;
+                 case 78: // N
+                    document.getElementById('new_note').click();
+                    break;
                }
             }
         }
@@ -51,6 +54,7 @@
   </head>
 
   <body>
+  <%=  link "New note", to: note_path(@conn, :new),   class: "btn btn-default btn-s", color: "blue", id: "new_note" %>
   <!-- http://stackoverflow.com/questions/33068021/creating-a-search-bar-in-the-permanent-layout-app-html-eex -->
 
     <div class="container">

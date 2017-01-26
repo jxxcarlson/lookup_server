@@ -6,7 +6,7 @@
             // this would test for whichever key is 78 and the ctrl key at the same time
             if (e.altKey) {
                switch(e.keyCode ) {
-                 case 78: // B
+                 case 78: // N
                     document.getElementById('new_note').click();
                     break;
                  case 83:  // S
