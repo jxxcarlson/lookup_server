@@ -26,10 +26,7 @@
 
 
 <div style="font-size:1.2em; margin-top:-38px; background-color:#eee; padding:5px;">
-   <%= if @current_user.read_only == false do %>
-      <%=  link "New note", to: note_path(@conn, :new),   class: "btn btn-default btn-s", color: "blue", id: "new_note" %>
-   <% end %>
-   <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-s", id: "random_notes", style: "margin-left:40px;" %>
+   <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-s", id: "random_notes", style: "" %>
    <%= link "Recently Viewed", to: search_path(@conn, :recent, hours_before: 25, mode: "viewed"), class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:20px;" %>
 
    <%= link "Recent", to: search_path(@conn, :recent, hours_before: 25, mode: "updated"), class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:20px;" %>

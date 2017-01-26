@@ -54,7 +54,7 @@
   </head>
 
   <body>
-  <%=  link "New note", to: note_path(@conn, :new),   class: "btn btn-default btn-s", color: "blue", id: "new_note" %>
+
   <!-- http://stackoverflow.com/questions/33068021/creating-a-search-bar-in-the-permanent-layout-app-html-eex -->
 
     <div class="container">
@@ -64,13 +64,14 @@
          <ol class="breadcrumb text-right">
             <!-- <li> <%= link "Home", to: page_path(@conn, :index) %> </li> -->
            <%= if @current_user do %>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "HOME", to: page_path(@conn, :index), id: 'home' %> </li>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "NOTES", to: note_path(@conn, :index), id: 'notes' %> </li>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "TAGS", to: user_path(@conn, :tags), id: 'tags' %> </li>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "TIPS", to: page_path(@conn, :tips), id: 'tips' %> </li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Home", to: page_path(@conn, :index), id: 'home' %> </li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: note_path(@conn, :index), id: 'notes' %> </li>
+              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%=  link "New", to: note_path(@conn, :new),   class: "", color: "blue", id: "new_note" %></li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Tags", to: user_path(@conn, :tags), id: 'tags' %> </li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Tips", to: page_path(@conn, :tips), id: 'tips' %> </li>
 
              <%= if @current_user.admin == true do %>
-                <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "USERS", to: user_path(@conn, :index), id: 'users' %> </li>
+                <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Users", to: user_path(@conn, :index), id: 'users' %> </li>
              <% end %>
 
 
@@ -87,7 +88,9 @@
          <%= if @conn.assigns[:current_user] != nil do %>
            <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
                <%= text_input f, :query, placeholder: "Search ...", style: "width:300px; height:35px; font-size:1.8rem; background-color:#eee;", id: "search_notes" %>
-            <% end %>
+           <% end %>
+
+            <span style="float:right;"></span>
          <% end %>
 
       </header>
