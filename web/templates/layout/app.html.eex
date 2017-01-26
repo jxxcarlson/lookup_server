@@ -80,6 +80,12 @@
            <% end %>
          </ol>
 
+         <%= if @conn.assigns[:current_user] != nil do %>
+           <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
+               <%= text_input f, :query, placeholder: "Search ...", style: "width:300px; height:35px; font-size:1.8rem; background-color:#eee;", id: "search_notes" %>
+            <% end %>
+         <% end %>
+
       </header>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>

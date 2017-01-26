@@ -22,30 +22,25 @@
         // register the handler
         document.addEventListener('keyup', doc_keyUp, false);
 
-    </script>
+</script>
 
 
-<span style="font-size:1.5em;"> <%= @noteCountString %> </span>
-<span class="text-right" style="float:right; margin-left:140px;font-size:1.5em">
+<div style="font-size:1.2em; margin-top:-38px; background-color:#eee; padding:5px;">
    <%= if @current_user.read_only == false do %>
-     <%=  link "New note", to: note_path(@conn, :new), id: "new_note" %>
+      <%=  link "New note", to: note_path(@conn, :new),   class: "btn btn-default btn-s", color: "blue", id: "new_note" %>
    <% end %>
-</span>
+   <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-s", id: "random_notes", style: "margin-left:40px;" %>
+   <%= link "Recently Viewed", to: search_path(@conn, :recent, hours_before: 25, mode: "viewed"), class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:20px;" %>
 
+   <%= link "Recent", to: search_path(@conn, :recent, hours_before: 25, mode: "updated"), class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:20px;" %>
+   <%= link "Less recent", to: search_path(@conn, :recent, hours_before: 169, mode: "updated"), class: "btn btn-default btn-s", id: "less_recent_notes" %>
+</div>
 
-  <div style="font-size:1.2em;">
-    <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
-       <%= text_input f, :query, placeholder: "Search ...", style: "width:300px; height:30px; background-color:#eee;", id: "search_notes" %>
-       &nbsp;     <!-- <%= submit "Search" %> -->
-       <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-xs", id: "random_notes" %>
-       <%= link "Recently Viewed", to: search_path(@conn, :recent, hours_before: 25, mode: "viewed"), class: "btn btn-default btn-xs", id: "recent_notes", style: "margin-left:20px;" %>
-       <%= link "Recent", to: search_path(@conn, :recent, hours_before: 25, mode: "updated"), class: "btn btn-default btn-xs", id: "recent_notes", style: "margin-left:20px;" %>
-       <%= link "Less Recent", to: search_path(@conn, :recent, hours_before: 169, mode: "updated"), class: "btn btn-default btn-xs", id: "recent_notes" %>
+<div style="margin-top:15px;margin-bottom:-15px;">
+    <span style="font-size:1.25em;"> <%= @noteCountString %> </span>
+</div>
 
-    <% end %>
-  </div>
-
-
+<div style="height: 2px; background-color:#ddd; margin-top:18px;margin-bottom:-18px;"></div>
 
 <table class="table">
   <thead>
