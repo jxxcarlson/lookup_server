@@ -15,7 +15,7 @@ span { color: darkred; font-weight:500;}
      </div>
 
      <div style="font-size: 1.5rem;">
-     <p><span>LookupNote</span> helps you keep track of random snippets
+     <p><span>LookupNote</span> is a tool for storing and finding random snippets
      of information of all kinds &mdash; text, links to web pages, even images,
      audio, and video.  Look at the <%= link "Demo", to: page_path(@conn, :demo) %>
      to see LookupNote in action.

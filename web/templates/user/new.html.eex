@@ -1,6 +1,7 @@
 <style>
 p { max-width:400px;}
-li {width: 340px;}
+ul { margin-left:-10px;}
+li {width: 340px;margin-bottom:10px;}
 </style>
 
 <h1>New User</h1>
@@ -22,27 +23,41 @@ li {width: 340px;}
             <%= text_input f, :registration_code, placeholder: "Registration code", class: "form-control" %>
     </div>
     <%= submit "Please create my account.", class: "btn btn-primary" %>
+    <span style="font-size:1.25em; color:cornflowerblue;margin-left:20px;">
+      <%= link "Cancel", to: page_path(@conn, :index), id: 'home' %>
+    </span>
 <% end %>
+
+
 
 <br>
 
 <h4>Note</h4>
 
 <p>In order to provide a pleasant, productive, ad-free experience, LookupNote will eventually become
-a paid service.  Here is how it will work:</p>
+a paid service.  Here is how it will work, once the beta test period is over.</p>
 
-<div style="margin-left: 2em;">
-<p>The annual fee will be <b>low</b>.  Something on the order of $12 &mdash; a dollar a month. Just
-$6 per year for students.</p>
+<div style="">
 
-<p>Accounts never die.  If at any time you decide that the annual fee is not for you,
-your account is &quot;frozen.&quot;  This means it will function normally
+<ul>
+
+<li>There is a one-month free trial period</li>
+
+<li>After the trial period, the annual fee will be <b>low</b>.  It has not
+yet been set, but expect something on the order of $12,
+with half that for students.</li>
+
+<li>Accounts never die.  If at any time you decide that the annual fee is not for you,
+your account is &quot;frozen&quot; when the annual paid period expires. This means it will function normally
 in all respects, except that you can no longer create or edit notes. Your
 account can be unfrozen at any time.
-</p>
+</li>
 
-<p>There will be no advertisements.  User data will not be shared with anyone.</p>
+<li>There will be no advertisements.  The identity and data of LookupNote users will not be shared with anyone.
+</li>
+
+</ul>
 
 </div>
 
-<p>&mdash; the Management</p>
+<p>Your LookupNote Team</p>
