@@ -25,7 +25,7 @@
 </script>
 
 
-<div style="font-size:1.2em; margin-top:-38px; background-color:#eee; padding:5px;">
+<div style="font-size:1.2em; margin-top:0; background-color:#eee; padding:5px;">
    <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-s", id: "random_notes", style: "" %>
    <%= link "Recently Viewed", to: search_path(@conn, :recent, hours_before: 25, mode: "viewed"), class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:20px;" %>
 
