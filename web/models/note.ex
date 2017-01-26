@@ -163,8 +163,15 @@ defmodule LookupPhoenix.Note do
     #######
 
     def transform_text(text, height \\ 200) do
-      linkify(text, height)
+      text
+      |> padString
+      |> linkify(height)
       |> apply_markdown
+      |> String.trim
+    end
+
+    def padString(text) do
+      "\n" <> text <> "\n"
     end
 
 
@@ -183,6 +190,7 @@ defmodule LookupPhoenix.Note do
       |> formatInlineCode
       |> formatMDash
       |> formatNDash
+      |> padString
       |> formatStrike
       |> formatBold
       |> formatItalic

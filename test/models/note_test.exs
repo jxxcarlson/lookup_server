@@ -55,6 +55,19 @@ defmodule LookupPhoenix.NoteTest do
          assert output == expected_output
    end
 
+   test "apply strikethrough" do
+     input = """
+-Call Reza-
+- Pay bills
+"""
+    output = Note.padString(input) |> Note.formatStrike |> String.trim
+    expected_output="""
+<span style='text-decoration: line-through'>Call Reza</span> "
+- Pay bills
+"""
+     assert output == expected_output
+   end
+
    test "apply_markdown regex" do
        input = "ho ho `foo := bar` ha ha"
        output = Note.apply_markdown(input)
