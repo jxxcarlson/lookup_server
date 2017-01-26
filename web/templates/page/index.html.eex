@@ -57,7 +57,7 @@ span { color: darkred; font-weight:500;}
 
     <p><span><%= link "LookupNote Demo", to: page_path(@conn, :demo) %></span></p>
 
-    <p>Take a look at the <span><%= link "Tips Page", to: page_path(@conn, :tips) %></span> if you are interested in
+    <p>Take a look at the <span><%= link "User Manual", to: page_path(@conn, :tips) %></span> if you are interested in
     mini markup features. </p>
 
     <br><br>

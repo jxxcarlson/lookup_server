@@ -35,7 +35,7 @@
                  case 75:  // K
                     document.getElementById('tags').click();
                     break;
-                 case 191:  // /
+                 case 77:  // M
                     document.getElementById('tips').click();
                     break;
                  case 85:  // U
@@ -68,7 +68,7 @@
              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: note_path(@conn, :index), id: 'notes' %> </li>
               <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%=  link "New", to: note_path(@conn, :new),   class: "", color: "blue", id: "new_note" %></li>
              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Tags", to: user_path(@conn, :tags), id: 'tags' %> </li>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Tips", to: page_path(@conn, :tips), id: 'tips' %> </li>
+             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Manual", to: page_path(@conn, :tips), id: 'tips' %> </li>
 
              <%= if @current_user.admin == true do %>
                 <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Users", to: user_path(@conn, :index), id: 'users' %> </li>
