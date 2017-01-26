@@ -278,7 +278,7 @@ defmodule LookupPhoenix.Note do
     end
 
     def formatRed(text) do
-       Regex.replace(~r/red:\[(.*)\]/r, text, "<span style='color:darkred'>\\1</span>")
+       Regex.replace(~r/red:\[(.*)\]/r, text, "<span style='color:darkred;'>\\1</span>")
     end
 
     def scrubTags(text) do
