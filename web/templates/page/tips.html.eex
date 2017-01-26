@@ -35,8 +35,8 @@
  <p class="heading" id="basics">The Basics</p>
 
  <p class="text"> Go to the NOTES tab.  That is where you will do most of your work.
- Type somehing in the search box to find a note.  Click on <span>New note</span>
- to make a new note.  Enter the title, e.g, <span>Carpenter's wisdom</span>.  Enter
+ Type somehing in the search box to find a note.  Click on <span>New</span>
+ in the header to make a new note.  Enter the title, e.g, <span>Carpenter's wisdom</span>.  Enter
  the contents of the note, e.g., <span>Measure twice, cut once</span>.
  Click <span>Save</span>.
 
@@ -118,9 +118,13 @@
 
 
        <li class="heading">Anywhere</li>
+       <li style="color:darkred;"><b>Three keys in a row</b></li>
        <li><b>alt-H</b> Home</li>
-       <li><b>alt-J</b> Notes &mdash; next to Home</li>
+       <li><b>alt-J</b> Notes</li>
        <li><b>alt-K</b> Tag &mdash; think of <i>Keys</i></li>
+
+       <li  style="color:darkred; margin-top:15px;"><b>Two more keys</b></li>
+       <li><b>alt-N</b> New Note</li>
        <li><b>alt-/</b> Tips</li>
 
        <li  class="heading">Notes tab</li>
