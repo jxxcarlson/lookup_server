@@ -136,7 +136,7 @@ defmodule RenderText do
     end
 
     def formatRed(text) do
-       Regex.replace(~r/Ued:\[(.*)\]/U, text, "<span style='color:darkred;'>\\1</span>")
+       Regex.replace(~r/red:\[(.*)\]/U, text, "<span style='color:darkred;'>\\1</span>")
     end
 
     def scrubTags(text) do
