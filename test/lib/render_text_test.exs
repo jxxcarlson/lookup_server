@@ -42,7 +42,7 @@ defmodule RenderTextTest do
    end
 
    test "apply strikethrough" do
-     input = "-Call Reza-"
+     input = " -Call Reza- "
      output = RenderText.padString(input) |> RenderText.formatStrike |> String.trim
      expected_output="<span style='text-decoration: line-through'>Call Reza</span>"
      assert output == expected_output

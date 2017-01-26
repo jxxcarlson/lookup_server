@@ -106,15 +106,15 @@ defmodule RenderText do
 
     def formatNDash(text) do
       # \s(--)\s
-      Regex.replace(~r/\s(--)\s/, text, " &ndash; ")
+      Regex.replace(~r/ (--) /, text, " &ndash; ")
     end
 
     def formatMDash(text) do
-       Regex.replace(~r/\s(---)\s/, text, " &mdash; ")
+       Regex.replace(~r/ (---) /, text, " &mdash; ")
     end
 
     def formatStrike(text) do
-       Regex.replace(~r/\s-(.*)-\s/U, text, " <span style='text-decoration: line-through'>\\1</span> ")
+       Regex.replace(~r/ -(.*)- /U, text, " <span style='text-decoration: line-through'>\\1</span> ")
     end
 
     def formatInlineCode(text) do
