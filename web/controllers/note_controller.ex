@@ -54,7 +54,7 @@ defmodule LookupPhoenix.NoteController do
     if (conn.assigns.current_user.read_only == true) do
          read_only_message(conn)
     else
-      new_content = Regex.replace(~r/ß/, note_params["content"], "") |> Note.preprocessURLs
+      new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
       new_params = %{"content" => new_content, "title" => new_title,
          "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now}
@@ -100,7 +100,7 @@ defmodule LookupPhoenix.NoteController do
 
   def update(conn, %{"id" => id, "note" => note_params}) do
     note = Repo.get!(Note, id)
-    new_content = Regex.replace(~r/ß/, note_params["content"], "") |> Note.preprocessURLs
+    new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
     new_title = Regex.replace(~r/ß/, note_params["title"], "")
     new_params = %{"content" => new_content, "title" => new_title, "edited_at" => Timex.now}
     changeset = Note.changeset(note, new_params)
