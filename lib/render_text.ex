@@ -12,6 +12,7 @@ defmodule RenderText do
 
     def preprocessURLs(text) do
       text
+      |> padString
       |> simplifyURLs
       |> preprocessImageURLs
     end
