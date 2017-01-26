@@ -17,8 +17,8 @@ defmodule LookupPhoenix.SearchController do
 
       noteCount = length(notes)
       case noteCount do
-        1 -> noteCountString = "1 Note"
-        _ -> noteCountString = Integer.to_string(noteCount) <> " Notes"
+        1 -> noteCountString = "1 Note found"
+        _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found"
       end
 
       render(conn, "index.html", notes: notes, noteCountString: noteCountString)
@@ -37,8 +37,8 @@ defmodule LookupPhoenix.SearchController do
 
           noteCount = length(notes)
           case noteCount do
-            1 -> noteCountString = "1 Note"
-            _ -> noteCountString = Integer.to_string(noteCount) <> " Notes"
+            1 -> noteCountString = "1 Note found with tag #{query}"
+            _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found with tag #{query}"
           end
 
           render(conn, "index.html", notes: notes, noteCountString: noteCountString)
@@ -76,24 +76,23 @@ defmodule LookupPhoenix.SearchController do
         User.increment_number_of_searches(conn.assigns.current_user)
         hours_before = String.to_integer params["hours_before"]
         mode = params["mode"]
-        IO.puts "=================="
-        IO.puts "mode = #{mode}, hours_before = #{hours_before}"
-        IO.puts "=================="
         user_id = conn.assigns.current_user.id
 
         case mode do
           "updated" ->
              notes = Note.updated_before_date(hours_before, Timex.now, user_id)
+             update_message = "Recently updated"
           "viewed" ->
-              notes = Note.viewed_before_date(hours_before, Timex.now, user_id)
+             notes = Note.viewed_before_date(hours_before, Timex.now, user_id)
+             update_message = "Recently viewed"
         end
 
         note_count = length(notes)
         Note.memorize_notes(notes, conn.assigns.current_user.id)
 
         case note_count do
-           1 -> countReportString =   "1 Recent note"
-           _ -> countReportString = "#{length(notes)} Recent notes"
+           1 -> countReportString =   "1 #{update_message} note"
+           _ -> countReportString = "#{length(notes)} #{update_message} notes"
         end
         render(conn, "index.html", notes: notes, noteCountString: countReportString)
    end
