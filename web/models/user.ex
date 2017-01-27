@@ -108,7 +108,7 @@ defmodule LookupPhoenix.User do
   def set_name(user, value) do
     params = %{"name" => value}
     changeset = User.changeset(user, params)
-    Repo.update(changeset)
+       Repo.update(changeset)
   end
 
   def init_number_of_searches(user) do

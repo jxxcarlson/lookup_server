@@ -83,7 +83,8 @@ defmodule LookupPhoenix.NoteController do
   def edit(conn, %{"id" => id}) do
         note = Repo.get!(Note, id)
         changeset = Note.changeset(note)
-        render(conn, "edit.html", note: note, changeset: changeset)
+        locked = conn.assigns.current_user.read_only
+        render(conn, "edit.html", note: note, changeset: changeset, locked: locked, conn: conn)
   end
 
   def doUpdate(note, changeset, conn) do

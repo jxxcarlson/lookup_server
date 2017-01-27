@@ -29,6 +29,6 @@
 <h2>Edit note</h2>
 
 <%= render "form.html", changeset: @changeset,
-                        action: note_path(@conn, :update, @note) %>
+                        action: note_path(@conn, :update, @note), locked: @locked, conn: @conn %>
 
 <%= link "Back", to: note_path(@conn, :index) %>

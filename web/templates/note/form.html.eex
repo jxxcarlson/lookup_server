@@ -18,6 +18,10 @@
   </div>
 
   <div class="form-group">
-    <%= submit "Save", class: "btn btn-primary", id: 'save' %>
+    <%= if @locked do %>
+      <!-- <%= link "Back!!", to: note_path(@conn, :index), id: 'notes' %> -->
+    <% else %>
+      <%= submit "Save", class: "btn btn-primary", id: 'save' %>
+    <% end %>
   </div>
 <% end %>
