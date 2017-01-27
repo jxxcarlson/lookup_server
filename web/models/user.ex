@@ -30,10 +30,15 @@ defmodule LookupPhoenix.User do
       |> cast(params, ~w(tags read_only number_of_searches search_filter), [] )
   end
 
+  def password_changeset(model, params \\ :empty) do
+        model
+        |> cast(params, ~w(password_hash), [] )
+    end
+
   def admin_changeset(model, params \\ :empty) do
         model
         |> cast(params, ~w(admin), [] )
-    end
+  end
 
   def changeset(model, params \\ :empty) do
     model
@@ -50,6 +55,14 @@ defmodule LookupPhoenix.User do
     |> put_pass_hash()
     |> erase_password()
     # |> set_read_only(false)
+  end
+
+
+  def change_password(user, password) do
+    password_hash = Comeonin.Bcrypt.hashpwsalt(password)
+    params = %{"password_hash" => password_hash}
+    changeset = password_changeset(user, params)
+    Repo.update(changeset)
   end
 
   def put_pass_hash(changeset) do
