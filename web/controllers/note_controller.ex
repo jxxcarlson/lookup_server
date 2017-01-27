@@ -42,11 +42,12 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def new(conn, _params) do
-    if (conn.assigns.current_user.read_only == true) do
+    locked = conn.assigns.current_user.read_only
+    if (locked) do
            read_only_message(conn)
     else
         changeset = Note.changeset(%Note{})
-        render(conn, "new.html", changeset: changeset)
+        render(conn, "new.html", changeset: changeset, locked: locked)
     end
   end
 

@@ -28,7 +28,8 @@
 
 <h2>New note</h2>
 
+
 <%= render "form.html", changeset: @changeset,
-                        action: note_path(@conn, :create) %>
+                        action: note_path(@conn, :create), locked: @locked %>
 
 <%= link "Back", to: note_path(@conn, :index), id: 'back' %>
