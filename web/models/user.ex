@@ -20,6 +20,7 @@ defmodule LookupPhoenix.User do
       field :read_only, :boolean
       field :admin, :boolean
       field :number_of_searches, :integer
+      field :search_filter, :string
 
       timestamps()
     end
