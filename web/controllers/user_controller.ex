@@ -65,6 +65,7 @@ defmodule LookupPhoenix.UserController do
     case Repo.insert(changeset) do
           {:ok, user} ->
             User.initialize_metadata(user)
+            User.set_admin(user, false)
             conn
             |> LookupPhoenix.Auth.login(user)
             |> put_flash(:info, "#{Utility.firstWord(user.name)}, you are now a LookupNote user!")

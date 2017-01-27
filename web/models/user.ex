@@ -27,7 +27,7 @@ defmodule LookupPhoenix.User do
 
   def running_changeset(model, params \\ :empty) do
       model
-      |> cast(params, ~w(tags read_only number_of_searches), [] )
+      |> cast(params, ~w(tags read_only number_of_searches search_filter), [] )
   end
 
   def admin_changeset(model, params \\ :empty) do
@@ -89,7 +89,8 @@ defmodule LookupPhoenix.User do
   end
 
   def initialize_metadata(user) do
-     params = %{"tags" => [], "read_only" => false, "admin" => false, "number_of_searches"  => 0}
+     # params = %{"tags" => [], "read_only" => false, "admin" => false, "number_of_searches"  => 0}
+     params = %{"tags" => [], "read_only" => false, "admin" => false, "number_of_searches"  => 0, "search_filter" => " "}
      changeset = User.running_changeset(user, params)
      Repo.update(changeset)
   end
@@ -138,6 +139,11 @@ defmodule LookupPhoenix.User do
   def delete_by_id(id) do
     user = User |> Repo.get(id)
     Repo.delete!(user)
+  end
+
+  def init_meta_all do
+    users = User |> Repo.all |> Enum.filter(fn(user) -> user.id != 9 end)
+    Enum.map(users, fn(user) -> initialize_metadata(user) end)
   end
 
 
