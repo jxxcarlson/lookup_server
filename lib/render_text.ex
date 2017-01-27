@@ -30,6 +30,9 @@ defmodule RenderText do
       text
       |> firstParagraph
       |> linkify
+      |> formatBold
+      |> formatRed
+      |> formatItalic
     end
 
     ############# PRIVATE ##################
