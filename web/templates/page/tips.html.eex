@@ -173,6 +173,7 @@
     <li>The string <tt>---</tt> preceded and followed by a space becomes this: &mdash;
     <li>The string <tt>-Bad stuff-</tt> preceded and followed by a space becomes
          <span class="strike">Bad stuff</span> </li>
+    <li>List items: Begin with hyphen followed by a space, end with blank line</li>
 
 
    </ul>

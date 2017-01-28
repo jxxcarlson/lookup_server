@@ -162,4 +162,49 @@ c == d
       assert output == expected_output
     end
 
+    test "getItems returns a list of 'items'''" do
+      text = """
+Foo, bar
+- item one
+- item two
+
+- item three
+
+blah, blah
+"""
+
+    items = RenderText.getItems(text)
+    assert length(items) == 3
+    assert hd(items) == "item one"
+    assert hd(tl(items)) == "item two"
+    assert hd(tl(tl(items))) == "item three"
+
+    end
+
+    test "RenderText.formatItems ...'" do
+      text = """
+Foo, bar
+- item one
+- item two
+
+- item three
+
+blah, blah
+"""
+
+    items = RenderText.getItems(text)
+    assert length(items) == 3
+    assert hd(items) == "item one"
+    assert hd(tl(items)) == "item two"
+    assert hd(tl(tl(items))) == "item three"
+
+    item_one = hd(items)
+    # assert RenderText.formatItem(item_one) == "<p style='margin-bottom:-1em; margin-top:0; padding-left:20px; text-indent:-20px;'>-  item one</p>"
+
+    IO.puts "=================="
+    IO.inspect items
+    IO.puts "=================="
+    assert RenderText.formatItems(text) ==  "Foo, bar\n<p style='padding-left:20px; text-indent:-20px;'>-  item one</p>\n<p style='padding-left:20px; text-indent:-20px;'>-  item two</p>\n\n<p style='padding-left:20px; text-indent:-20px;'>-  item three</p>\n\nblah, blah\n"
+    end
+
 end

@@ -4,6 +4,7 @@ defmodule RenderText do
 
     def transform(text, height \\ 200) do
       text
+      |> String.trim
       |> padString
       |> linkify(height)
       |> apply_markdown
@@ -15,6 +16,7 @@ defmodule RenderText do
       |> padString
       |> simplifyURLs
       |> preprocessImageURLs
+      |> String.trim
     end
 
     def firstParagraph(text) do
@@ -63,6 +65,7 @@ defmodule RenderText do
       |> formatBold
       |> formatItalic
       |> formatRed
+      |> formatItems
     end
 
     def getURLs(text) do
@@ -119,6 +122,27 @@ defmodule RenderText do
 
     def formatStrike(text) do
        Regex.replace(~r/ -(.*)- /U, text, " <span style='text-decoration: line-through'>\\1</span> ")
+    end
+
+    def doGetItems(scan) do
+      hd(tl(hd(scan)))
+      |> String.split( "-")
+      |> Enum.map(fn(item) -> String.trim(item) end)
+      # String.split(item_chunk, "-") |> Enum.map(fn(item) -> String.trim(item) end)
+
+    end
+
+    def formatItems(text) do
+      # item_chunk = hd tl hd Regex.scan(~r/^- (\S*.*)[\n\r][\n\r]/ms, text)
+      scan = Regex.scan(~r/^- (\S*.*)[\n\r][\n\r]/ms, text)
+      case scan do
+        [] -> text
+        _ -> doGetItems(scan) |> Enum.reduce(text, fn(item, text) -> String.replace(text, "- " <> item, formatItem(item)) end)
+      end
+    end
+
+    def formatItem(item) do
+      "<p style='padding-left:20px; text-indent:-20px;margin-bottom:0em;;'>-  #{item}</p>"
     end
 
     def formatInlineCode(text) do
