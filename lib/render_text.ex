@@ -142,7 +142,7 @@ defmodule RenderText do
     end
 
     def formatItem(item) do
-      "<p style='padding-left:20px; text-indent:-20px;margin-bottom:0em;;'>-  #{item}</p>"
+      "<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  #{item}</span>"
     end
 
     def formatInlineCode(text) do
