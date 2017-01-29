@@ -34,6 +34,24 @@ defmodule RenderTextTest do
         assert String.trim(result) ==  String.trim(expected)
    end
 
+   test "userLinks parses example 1" do
+     url = "https://www.itp.uni-hannover.de/teaching/Open2014/master.pdf"
+     link_text = "Quantum Master Equations (Hannover)"
+     full_url = url <> "[#{link_text}]"
+     result =  RenderText.makeUserLinks(full_url)
+     expected = "<a href=\"#{url}\" target=\"_blank\">#{link_text}</a>"
+     assert String.trim(result) ==  String.trim(expected)
+   end
+
+   test "userLinks parses example 2" do
+     url = "https://www.itp.uni-hannover.de/~weimer/teaching/Open2014/master.pdf"
+     link_text = "Quantum Master Equations (Hannover)"
+     full_url = url <> "[#{link_text}]"
+     result =  RenderText.makeUserLinks(full_url)
+     expected = "<a href=\"#{url}\" target=\"_blank\">#{link_text}</a>"
+     assert String.trim(result) ==  String.trim(expected)
+   end
+
    test "formatInlineCode regex" do
          input = "ho ho `foo := bar` ha ha"
          output = RenderText.formatInlineCode(input)
