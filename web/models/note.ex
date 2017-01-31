@@ -235,5 +235,15 @@ defmodule LookupPhoenix.Note do
       Note |> Repo.all |> Enum.map(fn(note) -> Note.init_edited_at(note) end)
    end
 
+   def inserted_at(note) do
+     {:ok, inserted_at }= note.inserted_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
+     inserted_at
+   end
+
+   def inserted_at_short(note) do
+      {:ok, inserted_at }= note.inserted_at |> Timex.local |> Timex.format("{M}/{D}/{YYYY}")
+      inserted_at
+   end
+
 end
 

@@ -43,6 +43,7 @@
   <thead>
     <tr>
       <th>Title</th>
+      <th>Date</th>
       <th>Content</th>
 
       <th></th>
@@ -51,13 +52,11 @@
   <tbody>
 <%= for note <- @notes do %>
     <tr>
-      <td>
-        <%= link note.title, to: note_path(@conn, :show, note), class: "" %>
-      </td>
-      <!-- <td><%= note.title %></td> -->
-       <!-- <td><%= raw(RenderText.firstParagraph(RenderText.transform(note.content))) %></td> -->
+      <td> <%= link note.title, to: note_path(@conn, :show, note), class: "" %> </td>
 
-       <td><%= raw(RenderText.format_for_index(note.content)) %></td>
+      <td> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td>
+
+      <td><%= raw(RenderText.format_for_index(note.content)) %></td>
 
      <!--
       <td class="text-right">
