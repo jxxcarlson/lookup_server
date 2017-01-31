@@ -34,6 +34,14 @@ defmodule RenderTextTest do
         assert String.trim(result) ==  String.trim(expected)
    end
 
+   test "smartLinks parses example 5" do
+           argument = "https://medium.com/@_rchaves_/testing-in-elm-93ad05ee1832#.gk2ch6hz0"
+           link_text = "medium.com"
+           result =  RenderText.makeSmartLinks(argument)
+           expected = "<a href=\"#{argument}\" target=\"_blank\">#{link_text}</a>"
+           assert String.trim(result) ==  String.trim(expected)
+   end
+
    test "userLinks parses example 1" do
      url = "https://www.itp.uni-hannover.de/teaching/Open2014/master.pdf"
      link_text = "Quantum Master Equations (Hannover)"

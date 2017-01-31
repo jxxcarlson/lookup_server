@@ -1,5 +1,6 @@
 defmodule LookupPhoenix.NoteController do
   use LookupPhoenix.Web, :controller
+  use Timex
 
   alias LookupPhoenix.Note
 
@@ -77,7 +78,9 @@ defmodule LookupPhoenix.NoteController do
   def show(conn, %{"id" => id}) do
     note = Repo.get!(Note, id)
     Note.update_viewed_at(note)
-    render(conn, "show.html", note: note)
+    {:ok, inserted_at }= note.inserted_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
+    {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
+    render(conn, "show.html", note: note, inserted_at: inserted_at, updated_at: updated_at)
   end
 
 
