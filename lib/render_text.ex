@@ -59,12 +59,12 @@ defmodule RenderText do
       text
       |> formatCode
       |> formatInlineCode
-      |> formatMDash
-      |> formatNDash
       |> padString
       |> formatStrike
       |> formatBold
       |> formatItalic
+      |> formatMDash
+      |> formatNDash
       |> formatRed
       |> padString
       |> formatItems
@@ -115,15 +115,15 @@ defmodule RenderText do
 
     def formatNDash(text) do
       # \s(--)\s
-      Regex.replace(~r/ (--) /, text, " &ndash; ")
+      Regex.replace(~r/\s(--) /, text, " &ndash; ")
     end
 
     def formatMDash(text) do
-       Regex.replace(~r/ (---) /, text, " &mdash; ")
+       Regex.replace(~r/\s(---) /, text, " &mdash; ")
     end
 
     def formatStrike(text) do
-       Regex.replace(~r/ -(.*)- /U, text, " <span style='text-decoration: line-through'>\\1</span> ")
+       Regex.replace(~r/\s-(.*)-\s/U, text, " <span style='text-decoration: line-through'>\\1</span> ")
     end
 
     def getItems(text) do
@@ -157,7 +157,7 @@ defmodule RenderText do
     end
 
     def formatItalic(text) do
-       Regex.replace(~r/ _(.*)_ /U, text, "<i>\\1</i>")
+       Regex.replace(~r/\s_(.*)_\s/U, text, " <i>\\1</i> ")
     end
 
     def formatRed(text) do
