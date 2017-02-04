@@ -168,11 +168,15 @@ defmodule RenderText do
       Regex.replace(~r/\s:.*\s/, " " <> text <> " ",    " ")
     end
 
+
+    # TeX: { extensions: ["mhchem.js"] }
+
     def insert_mathjax!(text) do
       text <>  """
 
           <script type="text/x-mathjax-config">
-            MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+            MathJax.Hub.Config( {tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}, TeX: { extensions: ["mhchem.js"] } });
+
           </script>
               <script type="text/javascript" async
                       src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
@@ -186,9 +190,9 @@ defmodule RenderText do
     end
 
     def insert_mathjax(text) do
-      if Regex.match?(~r/:math/, text) do
+      if Regex.match?(~r/:latex/, text) do
         text = insert_mathjax!(text)
-        Regex.replace(~r/:math/, text, "")
+        Regex.replace(~r/:latex/, text, "")
       else
         text
       end
