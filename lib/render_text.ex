@@ -2,11 +2,12 @@ defmodule RenderText do
 
 ############# PUBLIC ##################
 
-    def transform(text, height \\ 200) do
+    def transform(text, width, height) do
       text
       |> String.trim
       |> padString
-      |> linkify(height)
+      |> linkify(width, height)
+      |> makePDFLinks(width, height)
       |> apply_markdown
       |> insert_mathjax
       |> scrubTags
@@ -18,7 +19,6 @@ defmodule RenderText do
       |> padString
       |> simplifyURLs
       |> preprocessImageURLs
-      # |> preprocessPDFURLs
       |> String.trim
     end
 
@@ -34,7 +34,8 @@ defmodule RenderText do
     def format_for_index(text) do
       text
       |> firstParagraph
-      |> linkify("200px")
+      |> linkify("120px", "120px")
+      |> makeSimplePDFLinks
       |> formatBold
       |> formatRed
       |> formatItalic
@@ -48,13 +49,12 @@ defmodule RenderText do
     end
 
 
-    def linkify(text, height \\ 200) do
+    def linkify(text, width, height) do
       text
       |> simplifyURLs
       |> makeUserLinks
       |> makeSmartLinks
-      |> makeImageLinks(height)
-      |> makePDFLinks(height)
+      |> makeImageLinks(width, height)
       |> String.trim
     end
 
@@ -111,8 +111,13 @@ defmodule RenderText do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=~\?#!@_%-]*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
 
-    def makeImageLinks(text, height \\ 200) do
-       Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" height=#{height}> ")
+    def makeImageLinks(text, width, height) do
+       if width == "-" do
+         Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" height=#{height} > ")
+       else
+         Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" height=#{height} width=#{width}> ")
+       end
+
     end
 
     def formatNDash(text) do
@@ -197,13 +202,11 @@ defmodule RenderText do
       end
     end
 
-    def preprocessPDFURLs(text) do
-        Regex.replace(~r/[^:]((http|https):\/\/\S*\.(pdf))\s/i, text, " iframe::\\1 ")
-    end
-
-   def makePDFLinks(text, height \\ 800) do
-        #Regex.replace(~r/\siframe::(.*(pdf))\s/i, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a> <iframe style='height:#{height}; width:100%' src=\"\\1\"></iframe> ")
-        Regex.replace(~r/display:((http|https):(.*(pdf)))\s/U, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a> <iframe style='height:#{height}; width:100%' src=\"\\1\"></iframe> ")
+   def makePDFLinks(text, width, height) do
+     Regex.replace(~r/display:((http|https):(.*(pdf)))\s/U, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a> <iframe style='height:#{height}; width:#{width}' src=\"\\1\"></iframe> ")
+   end
+   def makeSimplePDFLinks(text) do
+        Regex.replace(~r/display:((http|https):(.*(pdf)))\s/U, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a>")
    end
 
 end
