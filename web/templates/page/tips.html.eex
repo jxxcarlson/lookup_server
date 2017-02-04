@@ -219,4 +219,9 @@
       </pre>
 
       <p class="text">You can also use <tt>\[ .. \]</tt> instead of
-      <tt>$$ .. $$</tt>
+      <tt>$$ .. $$</tt></p>
+
+      <p  class="text">If you need to write longer documents
+      that can be shared on the web, e.g., lecture notes or a book,
+       please see
+      <a href="http://www.manuscripta.io">www.manuscripta.io</a></p>

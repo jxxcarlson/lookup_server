@@ -26,6 +26,9 @@ span { color: darkred; font-weight:500;}
 
      <p><span>Used by</span> students, writers, researchers, you name it.</p>
 
+     <p><span>Advanced features</span> for those who need them: code formatting, mini markup, LaTeX.
+     Click on the Manual tab when you are signed in.</p>
+
      <BR>
 
       <p><span><%= link "Try the Demo", to: page_path(@conn, :demo) %></span>
@@ -57,8 +60,8 @@ span { color: darkred; font-weight:500;}
 
     <p><span><%= link "LookupNote Demo", to: page_path(@conn, :demo) %></span></p>
 
-    <p>Take a look at the <span><%= link "User Manual", to: page_path(@conn, :tips) %></span> if you are interested in
-    mini markup features. </p>
+    <p>Take a look at the <span><%= link "User Manual", to: page_path(@conn, :tips) %></span> for advanced features:
+   code formatting, mini markup, LaTeX. </p>
 
     <br><br>
      <span>Contact: jxxcarlson at gmail</span>
