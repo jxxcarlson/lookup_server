@@ -42,11 +42,34 @@ defmodule RenderTextTest do
            assert String.trim(result) ==  String.trim(expected)
    end
 
-   test "smartlinks parses example in list item" do
-     argument = "\n- http://noredink.github.io/json-to-elm/\n\n"
+
+    test "smartLinks parses example 6" do
+           argument = "http://www.rsc.org/learn%3C/span%3E-chemistry/resource/res00000466/the-electrolysis-of-solutions"
+           link_text = "www.rsc.org"
+           result =  RenderText.makeSmartLinks(argument)
+           expected = "<a href=\"#{argument}\" target=\"_blank\">#{link_text}</a>"
+           assert String.trim(result) ==  String.trim(expected)
+   end
+
+    test "smartLinks parses example 7" do
+              argument = "http://noredink.github.io/json-to-elm/"
+              link_text = "noredink.github.io"
+              result =  RenderText.makeSmartLinks(argument)
+              expected = "<a href=\"#{argument}\" target=\"_blank\">#{link_text}</a>"
+              assert String.trim(result) ==  String.trim(expected)
+      end
+
+# http://noredink.github.io/json-to-elm/
+
+   test "transform parses example in list item" do
+     argument = """
+
+- http://noredink.github.io/json-to-elm/
+
+"""
      link_text = "noredink.github.io"
      result = RenderText.transform(argument)
-     expected = ""
+     expected = "<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  <a href=\"http://noredink.github.io/json-to-elm/\" target=\"_blank\">noredink.github.io</a></span>"
      assert String.trim(result) ==  String.trim(expected)
    end
 
@@ -195,6 +218,18 @@ c == d
       expected_output = "abc image::http://foo.io/hoho.jpg def image::http://bar.io/a/b/c/umdo.PNG ho ho ho"
       assert output == expected_output
     end
+
+    test "getItems returns a list of 'items' when threre is just one item" do
+          text = """
+- item one
+
+blah, blah
+"""
+
+        items = RenderText.getItems(text)
+        assert length(items) == 1
+        assert hd(items) == "item one"
+        end
 
     test "getItems returns a list of 'items'" do
       text = """

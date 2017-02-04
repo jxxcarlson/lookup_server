@@ -65,6 +65,7 @@ defmodule RenderText do
       |> formatBold
       |> formatItalic
       |> formatRed
+      |> padString
       |> formatItems
     end
 
@@ -99,12 +100,12 @@ defmodule RenderText do
 
     # ha ha http://foo.bar.io/a/b/c blah blah => 1: http://foo.bar.io/a/b/c, 3: foo.bar.io
     def makeSmartLinks(text) do
-       Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-_%]*)([\/?=#]\S*|))\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
+       Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-_%-]*)([\/?=#]\S*|))\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
 
     # http://foo.io/ladidah/mo/stuff => <a href="http://foo.io/ladida/foo.io"" target=\"_blank\">foo.io/ladidah</a>
     def makeUserLinks(text) do
-      Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=~\?#!@_%]*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
+      Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=~\?#!@_%-]*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
 
     def makeImageLinks(text, height \\ 200) do
@@ -124,32 +125,10 @@ defmodule RenderText do
        Regex.replace(~r/ -(.*)- /U, text, " <span style='text-decoration: line-through'>\\1</span> ")
     end
 
-    def doGetItems(scan) do
-      hd(tl(hd(scan)))
-      |> String.split( "-")
-      |> Enum.map(fn(item) -> String.trim(item) end)
-      # String.split(item_chunk, "-") |> Enum.map(fn(item) -> String.trim(item) end)
-    end
-
     def getItems(text) do
-      scan = Regex.scan(~r/^- (\S*.*)[\n\r][\n\r]/ms, text)
-      case scan do
-        [] -> []
-        _ ->
-          hd(tl(hd(scan)))
-          |> String.split( "-")
-          |> Enum.map(fn(item) -> String.trim(item) end)
-      end
-
-    end
-
-    def formatItems1(text) do
-      # item_chunk = hd tl hd Regex.scan(~r/^- (\S*.*)[\n\r][\n\r]/ms, text)
-      scan = Regex.scan(~r/^- (\S*.*)[\n\r][\n\r]/ms, text)
-      case scan do
-        [] -> text
-        _ -> doGetItems(scan) |> Enum.reduce(text, fn(item, text) -> String.replace(text, "- " <> item, formatItem(item)) end)
-      end
+      Regex.scan(~r/^- (\S*.*)[\n\r]/msU, "\n" <> text)
+      |> Enum.map(fn(x) -> hd(tl(x)) end)
+      |> Enum.map(fn(item) -> String.trim(item) end)
     end
 
 
