@@ -243,6 +243,10 @@
       $$\ce{H2O + HCl <=> H3O+ + Cl-}$$
       </pre>
 
+      <p  class="text"><span>Note.</span> As with mathematical
+       text, you must put the tag <span>:latex</span>
+      in the text of your note to activate LaTeX processing.</p>
+
       <p class="text">  If you want to see some examples,
       sign in to <span>lookupnote.io</span> with user name
       <span>demo</span> and password <span>rundemo</span>, then
