@@ -33,6 +33,7 @@
  <li><a href="#md">Mini markup</a> </li>
  <li><a href="#math">LaTeX</a> </li>
  <li><a href="#chem">Chemical formulas</a> </li>
+ <li><a href="#longer">Longer documents</a> </li>
 
  </ul>
 
@@ -222,20 +223,34 @@
       <p class="text">You can also use <tt>\[ .. \]</tt> instead of
       <tt>$$ .. $$</tt></p>
 
+      <p  class="text"><span>Note.</span> You must put the tag <span>:latex</span>
+      in the text of your note to activate LaTeX processing.</p>
 
-      <p  class="text">If you need to write longer documents
-      that can be shared on the web, e.g., lecture notes or a book,
-       please see
-      <a href="http://www.manuscripta.io">www.manuscripta.io</a></p>
+      <p class="text"> If you want to see some examples,
+            sign in to <span>lookupnote.io</span> with user name
+            <span>demo</span> and password <span>rundemo</span>, then
+            search for <span>math</span> or <span>math example</span>.
 
     <p class="heading" id="chem">Chemical formulas</p>
 
       <p class="text">For chemical formulas, use LaTeX, as above.
-      The <span>mhchme</span> package is installed, so you can
+      The <span>mhchem</span> package is installed, so you can
       write simple formulas like this: </p>
 
       <pre>
       $\ce{HCl}$ dissociates in water as follows:
+
       $$\ce{H2O + HCl <=> H3O+ + Cl-}$$
       </pre>
 
+      <p class="text">  If you want to see some examples,
+      sign in to <span>lookupnote.io</span> with user name
+      <span>demo</span> and password <span>rundemo</span>, then
+      search for <span>chem</span> or <span>chem example</span>.
+
+
+    <p class="heading" id="longer">Longer documents</p>
+        <p  class="text">If you need to write longer documents
+      that can be shared on the web, e.g., lecture notes or a book,
+       please see
+      <a href="http://www.manuscripta.io">www.manuscripta.io</a></p>
