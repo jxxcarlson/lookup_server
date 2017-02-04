@@ -18,7 +18,7 @@ defmodule RenderText do
       |> padString
       |> simplifyURLs
       |> preprocessImageURLs
-      |> preprocessPDFURLs
+      # |> preprocessPDFURLs
       |> String.trim
     end
 
@@ -202,7 +202,8 @@ defmodule RenderText do
     end
 
    def makePDFLinks(text, height \\ 800) do
-        Regex.replace(~r/\siframe::(.*(pdf))\s/i, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a> <iframe style='height:#{height}; width:100%' src=\"\\1\"></iframe> ")
+        #Regex.replace(~r/\siframe::(.*(pdf))\s/i, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a> <iframe style='height:#{height}; width:100%' src=\"\\1\"></iframe> ")
+        Regex.replace(~r/display:((http|https):(.*(pdf)))\s/U, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a> <iframe style='height:#{height}; width:100%' src=\"\\1\"></iframe> ")
    end
 
 end
