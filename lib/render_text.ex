@@ -92,8 +92,7 @@ defmodule RenderText do
     end
 
     def preprocessImageURLs(text) do
-      # Regex.replace(~r/\s((http|https):\/\/\S*\.(jpg|jpeg|png))\s/i, text, "image::\\1 ")
-      Regex.replace(~r/[^:]((http|https):\/\/\S*\.(jpg|jpeg|png))\s/i, text, " image::\\1 ")
+      Regex.replace(~r/[^:]((http|https):\/\/\S*\.(jpg|jpeg|png|gif))\s/i, text, " image::\\1 ")
     end
 
     def makeDumbLinks(text) do
@@ -111,7 +110,7 @@ defmodule RenderText do
     end
 
     def makeImageLinks(text, height \\ 200) do
-       Regex.replace(~r/\simage::(.*(png|jpg|jpeg|JPG|JPEG|PNG))\s/, " "<>text<>" ", " <img src=\"\\1\" height=#{height}> ")
+       Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif|))\s/o, " "<>text<>" ", " <img src=\"\\1\" height=#{height}> ")
     end
 
     def formatNDash(text) do
