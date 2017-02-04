@@ -112,10 +112,13 @@ defmodule RenderText do
     end
 
     def makeImageLinks(text, width, height) do
-       if width == "-" do
-         Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" height=#{height} > ")
-       else
-         Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" height=#{height} width=#{width}> ")
+       case width do
+         "-" ->
+           Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" height=#{height} > ")
+         "100%" ->
+           Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" height=#{height} > ")
+         _ ->
+           Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" height=#{height} width=#{width}> ")
        end
 
     end
