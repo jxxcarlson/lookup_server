@@ -34,7 +34,7 @@ defmodule RenderText do
     def format_for_index(text) do
       text
       |> firstParagraph
-      |> linkify
+      |> linkify(200)
       |> formatBold
       |> formatRed
       |> formatItalic
@@ -54,7 +54,7 @@ defmodule RenderText do
       |> makeUserLinks
       |> makeSmartLinks
       |> makeImageLinks(height)
-      |> makePDFLinks("100%")
+      |> makePDFLinks(height)
       |> String.trim
     end
 
@@ -202,7 +202,7 @@ defmodule RenderText do
     end
 
    def makePDFLinks(text, height \\ 800) do
-        Regex.replace(~r/\siframe::(.*(pdf))\s/i, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a> <iframe style='height:800px; width:100%' src=\"\\1\"></iframe> ")
+        Regex.replace(~r/\siframe::(.*(pdf))\s/i, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a> <iframe style='height:#{height}; width:100%' src=\"\\1\"></iframe> ")
    end
 
 end

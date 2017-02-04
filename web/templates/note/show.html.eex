@@ -9,7 +9,7 @@
 <p> <%= @inserted_at  %> </p>
 
 
-<div style="white-space:pre-wrap;"><%= raw(String.trim(RenderText.transform(@note.content,500))) %> </div>
+<div style="white-space:pre-wrap;"><%= raw(String.trim(RenderText.transform(@note.content,"600px"))) %> </div>
 
 
 <span style="float:right;margin-right:8px;"><%= link "Edit", to: note_path(@conn, :edit, @note) %></span>
