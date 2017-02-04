@@ -203,10 +203,10 @@ defmodule RenderText do
     end
 
    def makePDFLinks(text, width, height) do
-     Regex.replace(~r/display:((http|https):(.*(pdf)))\s/U, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a> <iframe style='height:#{height}; width:#{width}' src=\"\\1\"></iframe> ")
+     Regex.replace(~r/display::((http|https):(.*(pdf)))\s/U, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a> <iframe style='height:#{height}; width:#{width}' src=\"\\1\"></iframe> ")
    end
    def makeSimplePDFLinks(text) do
-        Regex.replace(~r/display:((http|https):(.*(pdf)))\s/U, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a>")
+        Regex.replace(~r/display::((http|https):(.*(pdf)))\s/U, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a>")
    end
 
 end
