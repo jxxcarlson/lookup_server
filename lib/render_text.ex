@@ -18,6 +18,7 @@ defmodule RenderText do
       |> padString
       |> simplifyURLs
       |> preprocessImageURLs
+      |> preprocessPDFURLs
       |> String.trim
     end
 
@@ -53,6 +54,7 @@ defmodule RenderText do
       |> makeUserLinks
       |> makeSmartLinks
       |> makeImageLinks(height)
+      |> makePDFLinks("100%")
       |> String.trim
     end
 
@@ -110,7 +112,7 @@ defmodule RenderText do
     end
 
     def makeImageLinks(text, height \\ 200) do
-       Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif|))\s/o, " "<>text<>" ", " <img src=\"\\1\" height=#{height}> ")
+       Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" height=#{height}> ")
     end
 
     def formatNDash(text) do
@@ -194,5 +196,13 @@ defmodule RenderText do
         text
       end
     end
+
+    def preprocessPDFURLs(text) do
+        Regex.replace(~r/[^:]((http|https):\/\/\S*\.(pdf))\s/i, text, " iframe::\\1 ")
+    end
+
+   def makePDFLinks(text, height \\ 800) do
+        Regex.replace(~r/\siframe::(.*(pdf))\s/i, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a> <iframe style='height:800px; width:100%' src=\"\\1\"></iframe> ")
+   end
 
 end
