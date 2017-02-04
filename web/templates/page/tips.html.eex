@@ -27,7 +27,7 @@
  <li><a href="#basics">The Basics</a> </li>
  <li><a href="#search">Search</a> </li>
  <li><a href="#taggs">Tags</a> </li>
- <li><a href="#links">Links</a> </li>
+ <li><a href="#links">Links to web pages, images, video, audio, and PDF files</a> </li>
  <li><a href="#iphone">Smart phones and tablets</a> </li>
  <li><a href="#hotkeys">Keyboard shortcuts</a> </li>
  <li><a href="#md">Mini markup</a> </li>
@@ -92,7 +92,7 @@
 
 
   </ul>
-    <p class="heading" id="links">Links</p>
+    <p class="heading" id="links">Links to web pages, images, video, audio, and PDF files</p>
      <ul>
 
      <li><b>Web pages.</b> Make a link by pasting a URL like <span>http://nytimes.com</span>
@@ -119,6 +119,12 @@
      <li><b>Audio.</b> You can also link to audio files.  Here is an example:
      <a href="http://www.pmel.noaa.gov/acoustics/whales/sounds/whalewav/nepblue24s10x.wav" target=_blank>Blue whale</a>.
       We made this by pasting in <span>http://www.pmel.noaa.gov/.../nepblue24s10x.wav[Blue whale]</span>
+
+     <li><b>PDFs.</b>To link to a pdf, proceed as you would for any web page: just past in its URL.  Here is an example:
+          <a href="http://www.stateofthebirds.org/2014/2014%20SotB_FINAL_low-res.pdf" target=_blank>The State of the Birds 2014</a>.
+           We made this by pasting in <span>http://www.stateofthebirds.org/...pdf[The State of the Birds 2014]</span>.
+           To display the PDF inside LookupNote, say this instead:
+           <span>display::http://www.stateofthebirds...</span>
 
    </ul>
 
