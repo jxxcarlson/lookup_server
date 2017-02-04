@@ -34,7 +34,7 @@ defmodule RenderText do
     def format_for_index(text) do
       text
       |> firstParagraph
-      |> linkify(200)
+      |> linkify("200px")
       |> formatBold
       |> formatRed
       |> formatItalic
