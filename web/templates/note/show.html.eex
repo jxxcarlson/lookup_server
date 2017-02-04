@@ -2,7 +2,7 @@
 
 <div style="font-size: 1.2em; margin-top:-1.5em;">
 
-  <span style="font-size:2em; font-style:bold"> <%= @note.title  %> </span>
+  <span style="font-size:3rem; font-style:bold"> <%= @note.title  %> </span>
   <span style="margin-left:18px;"> <%= @inserted_at  %> </span>
 
   <span style="margin-left:18px; margin-right:8px;"><%= link "Edit", to: note_path(@conn, :edit, @note) %></span>
