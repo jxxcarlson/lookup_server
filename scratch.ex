@@ -1,9 +1,7 @@
-if conn.assigns.current_user.admin == true do
-           users = Repo.all(LookupPhoenix.User)
-           render conn, "index.html", users: users
-       else
-           conn
-           |> put_flash(:error, "Sorry, you do no have access to that page")
-           |> redirect(to: page_path(conn, :index))
-           |> halt
-       end
+def preprocessPDFURLs(text) do
+          Regex.replace(~r/[^:]((http|https):\/\/\S*\.(jpg|jpeg|png|gif|tiff)\s/i, text, " iframe::\\1 ")
+     end
+
+    def makePDFLink(text, height \\ 200) do
+       Regex.replace(~r/\siframe::(.*(pdf))\s/i, " "<>text<>" ", " <iframe src=\"\\1\"></iframe> ")
+    end

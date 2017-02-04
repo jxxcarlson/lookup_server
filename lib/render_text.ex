@@ -110,7 +110,7 @@ defmodule RenderText do
     end
 
     def makeImageLinks(text, height \\ 200) do
-       Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif|))\s/o, " "<>text<>" ", " <img src=\"\\1\" height=#{height}> ")
+       Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" height=#{height}> ")
     end
 
     def formatNDash(text) do
