@@ -42,6 +42,14 @@ defmodule RenderTextTest do
            assert String.trim(result) ==  String.trim(expected)
    end
 
+   test "smartlinks parses example in list item" do
+     argument = "\n- http://noredink.github.io/json-to-elm/\n\n"
+     link_text = "noredink.github.io"
+     result = RenderText.transform(argument)
+     expected = ""
+     assert String.trim(result) ==  String.trim(expected)
+   end
+
    test "userLinks parses example 1" do
      url = "https://www.itp.uni-hannover.de/teaching/Open2014/master.pdf"
      link_text = "Quantum Master Equations (Hannover)"
@@ -188,7 +196,7 @@ c == d
       assert output == expected_output
     end
 
-    test "getItems returns a list of 'items'''" do
+    test "getItems returns a list of 'items'" do
       text = """
 Foo, bar
 - item one
@@ -230,7 +238,18 @@ blah, blah
     IO.puts "=================="
     IO.inspect items
     IO.puts "=================="
-    assert RenderText.formatItems(text) ==  "Foo, bar\n<p style='padding-left:20px; text-indent:-20px;'>-  item one</p>\n<p style='padding-left:20px; text-indent:-20px;'>-  item two</p>\n\n<p style='padding-left:20px; text-indent:-20px;'>-  item three</p>\n\nblah, blah\n"
+    assert RenderText.formatItems(text) ==  "Foo, bar\n<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  item one</span>\n<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  item two</span>\n\n<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  item three</span>\n\nblah, blah\n"
+    end
+
+    test "getItems when there are no items ...'" do
+       text = """
+ Foo, bar
+ blah, blah
+ """
+
+     items = RenderText.getItems(text)
+     assert length(items) == 0
+
     end
 
 end

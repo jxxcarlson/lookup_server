@@ -129,16 +129,33 @@ defmodule RenderText do
       |> String.split( "-")
       |> Enum.map(fn(item) -> String.trim(item) end)
       # String.split(item_chunk, "-") |> Enum.map(fn(item) -> String.trim(item) end)
+    end
+
+    def getItems(text) do
+      scan = Regex.scan(~r/^- (\S*.*)[\n\r][\n\r]/ms, text)
+      case scan do
+        [] -> []
+        _ ->
+          hd(tl(hd(scan)))
+          |> String.split( "-")
+          |> Enum.map(fn(item) -> String.trim(item) end)
+      end
 
     end
 
-    def formatItems(text) do
+    def formatItems1(text) do
       # item_chunk = hd tl hd Regex.scan(~r/^- (\S*.*)[\n\r][\n\r]/ms, text)
       scan = Regex.scan(~r/^- (\S*.*)[\n\r][\n\r]/ms, text)
       case scan do
         [] -> text
         _ -> doGetItems(scan) |> Enum.reduce(text, fn(item, text) -> String.replace(text, "- " <> item, formatItem(item)) end)
       end
+    end
+
+
+    def formatItems(text) do
+       getItems(text)
+       |> Enum.reduce(text, fn(item, text) -> String.replace(text, "- " <> item, formatItem(item)) end)
     end
 
     def formatItem(item) do

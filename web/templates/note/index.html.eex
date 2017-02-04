@@ -52,11 +52,11 @@
   <tbody>
 <%= for note <- @notes do %>
     <tr>
-      <td style="width:30%"> <%= link note.title, to: note_path(@conn, :show, note), class: "" %> </td>
+      <td style="width:35%"> <%= link note.title, to: note_path(@conn, :show, note), class: "" %> </td>
 
       <td> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td>
 
-      <td><%= raw(RenderText.format_for_index(note.content)) %></td>
+      <td style="width:35%"><%= raw(RenderText.format_for_index(note.content)) %></td>
 
      <!--
       <td class="text-right">
