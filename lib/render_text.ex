@@ -57,10 +57,10 @@ defmodule RenderText do
 
     def apply_markdown(text) do
       text
+      |> formatStrike
       |> formatCode
       |> formatInlineCode
       |> padString
-      |> formatStrike
       |> formatBold
       |> formatItalic
       |> formatMDash
@@ -123,7 +123,7 @@ defmodule RenderText do
     end
 
     def formatStrike(text) do
-       Regex.replace(~r/\s-(.*)-\s/U, text, " <span style='text-decoration: line-through'>\\1</span> ")
+       Regex.replace(~r/\s-[^-](.*)-[^-](\s)/U, text, " <span style='text-decoration: line-through'>\\1</span> \\2")
     end
 
     def getItems(text) do
