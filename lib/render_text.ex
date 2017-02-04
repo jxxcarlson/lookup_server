@@ -8,8 +8,9 @@ defmodule RenderText do
       |> padString
       |> linkify(height)
       |> apply_markdown
-      |> String.trim
       |> insert_mathjax
+      |> scrubTags
+      |> String.trim
     end
 
     def preprocessURLs(text) do
@@ -169,7 +170,7 @@ defmodule RenderText do
     end
 
 
-    # TeX: { extensions: ["mhchem.js"] }
+
 
     def insert_mathjax!(text) do
       text <>  """
@@ -185,14 +186,11 @@ defmodule RenderText do
 """
     end
 
-    def identity(text) do
-      text
-    end
 
     def insert_mathjax(text) do
       if Regex.match?(~r/:latex/, text) do
         text = insert_mathjax!(text)
-        Regex.replace(~r/:latex/, text, "")
+        # Regex.replace(~r/:latex/, text, "")
       else
         text
       end
