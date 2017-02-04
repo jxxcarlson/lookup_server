@@ -9,6 +9,7 @@ defmodule RenderText do
       |> linkify(height)
       |> apply_markdown
       |> String.trim
+      |> insert_mathjax
     end
 
     def preprocessURLs(text) do
@@ -165,6 +166,32 @@ defmodule RenderText do
 
     def scrubTags(text) do
       Regex.replace(~r/\s:.*\s/, " " <> text <> " ",    " ")
+    end
+
+    def insert_mathjax!(text) do
+      text <>  """
+
+          <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+          </script>
+              <script type="text/javascript" async
+                      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+           </script>
+
+"""
+    end
+
+    def identity(text) do
+      text
+    end
+
+    def insert_mathjax(text) do
+      if Regex.match?(~r/:math/, text) do
+        text = insert_mathjax!(text)
+        Regex.replace(~r/:math/, text, "")
+      else
+        text
+      end
     end
 
 end

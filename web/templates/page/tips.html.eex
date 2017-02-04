@@ -5,6 +5,7 @@
  ul {font-size:1.25rem;list-style-type:none }
  li {margin: 10px 0; font-size: 1.5rem; }
  ul.toc {margin-left:-35px;}
+ ul.toc li {margin:0;}
  li.heading {margin-left:-20px; font-weight:bold; font-size: 1.4rem;}
  a {font-size: 1.5rem; }
  .heading {
@@ -21,7 +22,7 @@
 
  <h3>LookupNote Manual</h3>
 
- <ul  class="toc">
+ <ul class="toc">
 
  <li><a href="#basics">The Basics</a> </li>
  <li><a href="#search">Search</a> </li>
@@ -30,10 +31,13 @@
  <li><a href="#iphone">Smart phones and tablets</a> </li>
  <li><a href="#hotkeys">Keyboard shortcuts</a> </li>
  <li><a href="#md">Mini markup</a> </li>
+ <li><a href="#math">LaTeX</a> </li>
 
  </ul>
 
  <p class="heading" id="basics">The Basics</p>
+
+  <p class="text">Here is what you need to get started:</p>
 
   <ul>
 
@@ -41,11 +45,11 @@
       Type something in the search box to find matching notes.
     </li>
 
-    <li class="text"><b>Viewing notes.</b> Click on the title of the note to view more content</li>
+    <li class="text"><b>Viewing notes.</b> Click on the title of the note to view the full note.</li>
 
 
-    <li><b>Creating notes.</b> Click on <span class="bold">New</span>
-      in the header to make a new note.  Enter the title, e.g, <span>Carpenter's wisdom</span>.  Enter
+    <li><b>Creating notes.</b> Click on the <span class="bold">New</span>
+      tab to make a new note.  Enter the title, e.g, <span>Carpenter's wisdom</span>.  Enter
       the contents of the note, e.g., <span>Measure twice, cut once</span>.
       Click <span class="bold">Save</span>.
     </li>
@@ -159,7 +163,7 @@
      </ul>
 
 
-   <p class="heading" id="md">Mini markup/p>
+   <p class="heading" id="md">Mini markup</p>
 
    <p class="text">This section is optional.  Use it only if you need it.</p>
 
@@ -196,3 +200,23 @@
       end
    </pre>
    </p>
+
+
+   <p class="heading" id="math">LaTeX</p>
+
+      <p class="text">Courtesy of <a href="http://mathjax.org" target="_blank">MathJax</a>,
+      you may use LaTeX for formulas, equations, etc.
+      Write mathematical text as in these examples:</p>
+
+      <pre>
+      The Pythagorean theorem says that $a^2 + b^2 = c^2$.
+
+      In calculus, we learned that
+
+      $$
+        \int_0^1 x^n dx = \frac{1}{n+1}
+      $$
+      </pre>
+
+      <p class="text">You can also use <tt>\[ .. \]</tt> instead of
+      <tt>$$ .. $$</tt>
