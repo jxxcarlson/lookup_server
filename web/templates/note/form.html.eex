@@ -13,7 +13,7 @@
 
   <div class="form-group">
     <%= label f, :content, class: "control-label" %>
-    <%= textarea f, :content, class: "form-control", style: "height:200px;", id: 'content' %>
+    <%= textarea f, :content, class: "form-control", style: "height:200px; overflow: scroll", id: 'content' %>
     <%= error_tag f, :content %>
   </div>
 
@@ -25,3 +25,9 @@
     <% end %>
   </div>
 <% end %>
+
+<script>
+    document.getElementById("content").style.height = (window.innerHeight - 400) + 'px'
+    console.log("window.innerHeight: " + window.innerHeight)
+</script>
+

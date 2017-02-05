@@ -1,6 +1,7 @@
 
 
-<div style="font-size: 1.2em; margin-top:-1.5em;">
+
+<div style="font-size: 1.2em; margin-top:-0.5em;">
 
   <span style="font-size:3rem; font-style:bold"> <%= @note.title  %> </span>
   <span style="margin-left:18px;"> <%= @inserted_at  %> </span>
@@ -12,7 +13,7 @@
 
 <br>
 <br>
-<div style="white-space:pre-wrap;"><%= raw(String.trim(RenderText.transform(@note.content,"100%", "600px"))) %> </div>
+<div id="rendered_text" style="overflow: scroll; height: 150px; white-space:pre-wrap;"><%= raw(String.trim(RenderText.transform(@note.content,"100%", "1000px"))) %> </div>
 
 
 <span style="float:right;margin-right:8px;"><%= link "Edit", to: note_path(@conn, :edit, @note) %></span>
@@ -23,4 +24,9 @@
 <br><br>
 <p> <i>Last updated: <%= @updated_at %> </i></p>
 <br>
+
+<script>
+    document.getElementById("rendered_text").style.height = (window.innerHeight - 300) + 'px'
+    console.log("window.innerHeight: " + window.innerHeight)
+</script>
 
