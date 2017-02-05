@@ -15,7 +15,7 @@ defmodule LookupPhoenix.Note do
     field :viewed_at, :utc_datetime
     field :edited_at, :utc_datetime
 
-     belongs_to :user, LookupPhoenix.User
+     # belongs_to :user, LookupPhoenix.User
 
     timestamps()
   end
