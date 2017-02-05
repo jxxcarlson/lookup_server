@@ -26,7 +26,7 @@ defmodule LookupPhoenix.Note do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :user_id, :viewed_at, :edited_at])
+    |> cast(params, [:title, :content, :tags, :user_id, :viewed_at, :edited_at])
     |> validate_required([:title, :content])
   end
 
