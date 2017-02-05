@@ -10,7 +10,7 @@ defmodule RenderText do
       |> makePDFLinks(width, height)
       |> apply_markdown
       |> insert_mathjax
-      |> scrubTags
+      # |> scrubTags
       |> String.trim
     end
 
