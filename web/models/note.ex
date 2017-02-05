@@ -14,6 +14,7 @@ defmodule LookupPhoenix.Note do
     # field :user_id, :integer
     field :viewed_at, :utc_datetime
     field :edited_at, :utc_datetime
+    field :tags, {:array, :string}
 
      belongs_to :user, LookupPhoenix.User
 
