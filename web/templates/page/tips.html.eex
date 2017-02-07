@@ -252,11 +252,14 @@
       two colons if you want them displayed.
 
       <p  class="text"><span>Note.</span> Chemical formulas
-      and reactions are displayed using the <span>mhchem</span>.  As with mathematical
+      and reactions are displayed using the <span>mhchem</span>: see the
+      <a href="http://ctan.mackichan.com/macros/latex/contrib/mhchem/mhchem.pdf">Official documentation</a>
+       or <a href="https://docs.moodle.org/27/en/Chemistry_notation_using_mhchem">Using mchem</a>.
+.      As with mathematical
        text, you must put the tag <span>:latex</span>
       in the text of your note to activate LaTeX processing.</p>
 
-      <p class="text">  If you want to see some examples,
+      <p class="text">  For example of <span>mhchem</span> in action,
       sign in to <span>lookupnote.io</span> with user name
       <span>demo</span> and password <span>rundemo</span>, then
       search for <span>chem</span> or <span>chem example</span>.
