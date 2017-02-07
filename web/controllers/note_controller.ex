@@ -139,6 +139,10 @@ defmodule LookupPhoenix.NoteController do
     end
   end
 
+  def grab(conn, url) do
+
+  end
+
 
 
 end
