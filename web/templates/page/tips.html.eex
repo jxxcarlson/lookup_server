@@ -239,17 +239,20 @@
 
     <p class="heading" id="chem">Chemical formulas</p>
 
-      <p class="text">For chemical formulas, use LaTeX, as above.
-      The <span>mhchem</span> package is installed, so you can
-      write simple formulas like this: </p>
+      <p class="text">For chemical formulas, imitate the examples
+      below.
 
       <pre>
-      $\ce{HCl}$ dissociates in water as follows:
+      chem:[HCl] dissociates in water as follows:
 
-      $$\ce{H2O + HCl <=> H3O+ + Cl-}$$
+      chem::[H2O + HCl <=> H3O+ + Cl-}]
       </pre>
 
-      <p  class="text"><span>Note.</span> As with mathematical
+      <p>Use one colon for in-line formulas and equations.  Use
+      two colons if you want them displayed.
+
+      <p  class="text"><span>Note.</span> Chemical formulas
+      and reactions are displayed using the <span>mhchem</span>.  As with mathematical
        text, you must put the tag <span>:latex</span>
       in the text of your note to activate LaTeX processing.</p>
 

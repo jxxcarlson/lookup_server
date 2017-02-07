@@ -8,6 +8,8 @@ defmodule RenderText do
       |> padString
       |> linkify(mode)
       |> apply_markdown
+      |> formatChem
+      |> formatChemBlock
       |> insert_mathjax
       |> String.trim
     end
@@ -171,6 +173,14 @@ defmodule RenderText do
     def formatRed(text) do
        Regex.replace(~r/red:\[(.*)\]/U, text, "<span style='color:darkred;'>\\1</span>")
     end
+
+    def formatChem(text) do
+      Regex.replace(~r/chem:\[(.*)\]/U, text, "$\\ce{\\1}$")
+    end
+
+    def formatChemBlock(text) do
+          Regex.replace(~r/chem::\[(.*)\]/U, text, "$$\\ce{\\1}$$")
+        end
 
     def scrubTags(text) do
       Regex.replace(~r/\s:.*\s/, " " <> text <> " ",    " ")
