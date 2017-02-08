@@ -134,7 +134,7 @@ defmodule RenderText do
 
     def formatStrike(text) do
        # Regex.replace(~r/\s-[^-](.*)-[^-](\s)/U, text, " <span style='text-decoration: line-through'>\\1</span> \\2")
-       Regex.replace(~r/(^|\s)-([^-]*)-\s/r, text, " <span style='text-decoration: line-through'>\\2</span> \\3")
+       Regex.replace(~r/(^|\s)-([^-\s]*)-\s/r, text, " <span style='text-decoration: line-through'>\\2</span> \\3")
     end
 
     def getItems(text) do
