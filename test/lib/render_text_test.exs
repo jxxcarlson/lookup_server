@@ -287,4 +287,11 @@ blah, blah
 
     end
 
-end
+  test "word count" do
+    input = "abc def"
+    output = RenderText.word_count(input)
+    expected_output = 2
+    assert output == expected_output
+   end
+
+ end

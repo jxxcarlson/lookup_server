@@ -2,7 +2,7 @@ defmodule RenderText do
 
 ############# PUBLIC ##################
 
-    def transform(text, mode) do
+    def transform(text, mode \\ "show   ") do
       text
       |> String.trim
       |> padString
@@ -133,7 +133,8 @@ defmodule RenderText do
     end
 
     def formatStrike(text) do
-       Regex.replace(~r/\s-[^-](.*)-[^-](\s)/U, text, " <span style='text-decoration: line-through'>\\1</span> \\2")
+       # Regex.replace(~r/\s-[^-](.*)-[^-](\s)/U, text, " <span style='text-decoration: line-through'>\\1</span> \\2")
+       Regex.replace(~r/[^-]-(.*)-[^-]/U, text, " <span style='text-decoration: line-through'>\\1</span> \\2")
     end
 
     def getItems(text) do
@@ -222,6 +223,12 @@ defmodule RenderText do
         _ ->
           Regex.replace(~r/display::((http|https):(.*(pdf)))\s/U, " "<>text<>" ", "<a href=\"\\1\">PDF FILE</a>")
      end
+   end
+
+   def word_count(text) do
+      text
+      |> String.split(~r/\s/)
+      |> length
    end
 
 

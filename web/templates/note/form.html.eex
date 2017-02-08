@@ -19,15 +19,18 @@
 
   <div class="form-group">
     <%= if @locked do %>
-      <!-- <%= link "Back!!", to: note_path(@conn, :index), id: 'notes' %> -->
+      <%= link "Back!!", to: note_path(@conn, :index), id: 'notes' %>
     <% else %>
-      <%= submit "Save", class: "btn btn-primary", style: "width: 100%;", id: 'save' %>
+      <span><%= submit "Save", class: "btn btn-primary", style: "width: 40%;", id: 'save' %>
+      <%= link "Back", to: note_path(@conn, :index), id: 'notes', class: "btn btn-primary", style: "width: 30%;margin-right:2em;" %>
+      Word count: <%= @word_count %>
+      <span>
     <% end %>
   </div>
 <% end %>
 
 <script>
-    document.getElementById("content").style.height = (window.innerHeight - 400) + 'px'
+    document.getElementById("content").style.height = (window.innerHeight - 350) + 'px'
     console.log("window.innerHeight: " + window.innerHeight)
 </script>
 
