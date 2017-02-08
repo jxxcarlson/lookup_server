@@ -17,7 +17,7 @@ defmodule RenderText do
     def preprocessURLs(text) do
       text
       |> padString
-      |> simplifyURLs
+      # |> simplifyURLs
       |> preprocessImageURLs
       |> String.trim
     end
