@@ -48,7 +48,7 @@ defmodule LookupPhoenix.NoteController do
            read_only_message(conn)
     else
         changeset = Note.changeset(%Note{})
-        render(conn, "new.html", changeset: changeset, locked: locked)
+        render(conn, "new.html", changeset: changeset, locked: locked, word_count: 0, conn: conn)
     end
   end
 

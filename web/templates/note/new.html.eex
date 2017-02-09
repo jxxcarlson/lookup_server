@@ -30,6 +30,4 @@
 
 
 <%= render "form.html", changeset: @changeset,
-                        action: note_path(@conn, :create), locked: @locked %>
-
-<%= link "Back", to: note_path(@conn, :index), id: 'back' %>
+                        action: note_path(@conn, :create), locked: @locked, conn: @conn, word_count: 0 %>
