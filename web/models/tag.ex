@@ -64,7 +64,7 @@ defmodule LookupPhoenix.Tag do
 
     # merge tags from note into list
     def merge_tags_from_note(note, list) do
-      get_tags_from_note(note)
+      note.tags
       |> merge_elements_into_list(list)
     end
 

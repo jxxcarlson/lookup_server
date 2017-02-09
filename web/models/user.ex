@@ -99,8 +99,8 @@ defmodule LookupPhoenix.User do
       user = Repo.get!(User, user_id)
       tags = Tag.get_all_user_tags(user_id) |> Enum.sort
       params = %{"tags" => tags}
-      # changeset = User.running_changeset(user, params)
-      # Repo.update(changeset)
+      changeset = User.running_changeset(user, params)
+      Repo.update(changeset)
   end
 
   def initialize_metadata(user) do
