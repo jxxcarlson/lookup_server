@@ -58,6 +58,10 @@
 
     <li><b>Editing notes.</b> Press the <span class="bold">Edit</span> button.</li>
 
+    <li><b>Tags.</b> You will notice a place to enter tags at the bottom of the form
+    where you create or edit a note.  Tags help you find notes when you search for them.
+    Separate tags by a command and a space.</li>
+
 </ul>
  <p class="text">That's all there is to it!</p>
 
@@ -68,6 +72,8 @@
      containing the word <span>quote</span>. Put <span>quote prais</span> to find all quotes
       contaiing the word <span>quote</span> and the word fragment <span>prais</span>.  This
       will match both <i>praise</i> and <i>praising</i>.</li>
+
+    <li>To search for notes tagged as <span>birds</span>, enter <span>/birds</span> in the search box.</li>
 
      <li>The <span>Random</span> button brings up a random
      list of notes.</li>
