@@ -84,20 +84,30 @@ defmodule LookupPhoenix.Note do
     def search_with_non_empty_arg(query_terms, user_id) do
 
       [tags, terms] = parse_query(query_terms)
-      tags = Enum.map(tags, fn(tag) -> String.replace("tag", "/", "") end)
+      tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
+
+      IO.puts "====== search ======"
+      IO.puts "tags: #{tags}"
+      IO.puts "terms: #{terms}"
+      IO.puts "===================="
 
       case tags do
         [] -> query = Ecto.Query.from note in Note,
                        where: (ilike(note.title, ^"%#{List.first(terms)}%") or ilike(note.content, ^"%#{List.first(terms)}%")),
                        order_by: [desc: note.updated_at]
+
+
+
         _ -> query = Ecto.Query.from note in Note,
                        where: (ilike(note.tag_string, ^"%#{List.first(tags)}%")),
                        order_by: [desc: note.updated_at]
+
+
       end
 
       result = Repo.all(query)
       |> Note.filter_records_for_user(user_id)
-      |> Note.filter_records_with_term_list(tl(query_terms))
+      # |> Note.filter_records_with_term_list(tl(query_terms))
       Note.memorize_list(result, user_id)
       Enum.map(result, fn (record) -> record.id end)
       result
