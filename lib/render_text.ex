@@ -71,6 +71,7 @@ defmodule RenderText do
       |> formatRed
       |> padString
       |> formatItems
+      |> formatAnswer
     end
 
     def getURLs(text) do
@@ -181,8 +182,12 @@ defmodule RenderText do
     end
 
     def formatChemBlock(text) do
-          Regex.replace(~r/chem::\[(.*)\]/U, text, "$$\\ce{\\1}$$")
-        end
+      Regex.replace(~r/chem::\[(.*)\]/U, text, "$$\\ce{\\1}$$")
+    end
+
+    def formatAnswer(text) do
+       Regex.replace(~r/answer:\[(.*)\]/U, text, "<p><span id=\"QQ\" class=\"answer_head\">Answer:</span> <span id=\"QQA\" class=\"hide_answer\">\\1</span></p>")
+    end
 
     def scrubTags(text) do
       Regex.replace(~r/\s:.*\s/, " " <> text <> " ",    " ")
