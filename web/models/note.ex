@@ -14,6 +14,7 @@ defmodule LookupPhoenix.Note do
     # field :user_id, :integer
     field :viewed_at, :utc_datetime
     field :edited_at, :utc_datetime
+    field :tag_string, :string
     field :tags, {:array, :string}
 
      belongs_to :user, LookupPhoenix.User
@@ -26,7 +27,7 @@ defmodule LookupPhoenix.Note do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :tags, :user_id, :viewed_at, :edited_at])
+    |> cast(params, [:title, :content, :tags, :user_id, :viewed_at, :edited_at, :tag_string])
     |> validate_required([:title, :content])
   end
 
@@ -72,24 +73,42 @@ defmodule LookupPhoenix.Note do
        |> getDocumentsFromList
     end
 
+    def parse_query(query_terms) do
+      tags = Enum.filter(query_terms, fn(term) -> String.first(term) == "/" end)
+      terms = Enum.filter(query_terms, fn(term) -> String.first(term) != "/" end)
+      [tags, terms]
+    end
 
-    def search_with_non_empty_arg(arg, user_id) do
-      query = Ecto.Query.from note in Note,
-         where: (ilike(note.title, ^"%#{List.first(arg)}%") or ilike(note.content, ^"%#{List.first(arg)}%")),
-         order_by: [desc: note.updated_at]
+
+
+    def search_with_non_empty_arg(query_terms, user_id) do
+
+      [tags, terms] = parse_query(query_terms)
+      tags = Enum.map(tags, fn(tag) -> String.replace("tag", "/", "") end)
+
+      case tags do
+        [] -> query = Ecto.Query.from note in Note,
+                       where: (ilike(note.title, ^"%#{List.first(terms)}%") or ilike(note.content, ^"%#{List.first(terms)}%")),
+                       order_by: [desc: note.updated_at]
+        _ -> query = Ecto.Query.from note in Note,
+                       where: (ilike(note.tag_string, ^"%#{List.first(tags)}%")),
+                       order_by: [desc: note.updated_at]
+      end
+
       result = Repo.all(query)
       |> Note.filter_records_for_user(user_id)
-      |> Note.filter_records_with_term_list(tl(arg))
+      |> Note.filter_records_with_term_list(tl(query_terms))
       Note.memorize_list(result, user_id)
       Enum.map(result, fn (record) -> record.id end)
       result
     end
 
-    def search(arg, user_id) do
-      arg = Enum.map(arg, fn(x) -> String.downcase(x) end)
-      case arg do
+
+    def search(query_terms, user_id) do
+      query_terms = Enum.map(query_terms, fn(x) -> String.downcase(x) end)
+      case query_terms do
         [] -> []
-        _ -> search_with_non_empty_arg(arg, user_id)
+        _ -> search_with_non_empty_arg(query_terms, user_id)
       end
     end
 
@@ -162,15 +181,7 @@ defmodule LookupPhoenix.Note do
       text
     end
 
-
-    #######
-
-
-    ########
-
-
-
-    ##########
+#########
 
     def memorize_notes(note_list, user_id) do
       note_list
@@ -208,35 +219,7 @@ defmodule LookupPhoenix.Note do
       Repo.update(changeset)
   end
 
-  def init_viewed_at(note) do
-      then = Timex.shift(Timex.now, [hours: -30])
-      params = %{"viewed_at" => then}
-      changeset = Note.changeset(note, params)
-      Repo.update(changeset)
-  end
 
-  def init_edited_at(note) do
-        then = Timex.shift(Timex.now, [hours: -170])
-        params = %{"edited_at" => then}
-        changeset = Note.changeset(note, params)
-        Repo.update(changeset)
-   end
-
-
-  def init_updated_at(note) do
-      then = Timex.shift(Timex.now, [hours: -171])
-      params = %{"updated_at" => then}
-      changeset = Note.changeset(note, params)
-      Repo.update(changeset)
-  end
-
-  def init_notes_viewed_at do
-    Note |> Repo.all |> Enum.map(fn(note) -> Note.init_viewed_at(note) end)
-  end
-
-   def init_notes_edited_at do
-      Note |> Repo.all |> Enum.map(fn(note) -> Note.init_edited_at(note) end)
-   end
 
    def inserted_at(note) do
      {:ok, inserted_at }= note.inserted_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
@@ -247,6 +230,43 @@ defmodule LookupPhoenix.Note do
       {:ok, inserted_at }= note.inserted_at |> Timex.local |> Timex.format("{M}/{D}/{YYYY}")
       inserted_at
    end
+
+   def tags2string(note) do
+     note.tags
+     |> Enum.join(", ")
+   end
+
+   ## ONE-TIME ##
+
+   def init_viewed_at(note) do
+         then = Timex.shift(Timex.now, [hours: -30])
+         params = %{"viewed_at" => then}
+         changeset = Note.changeset(note, params)
+         Repo.update(changeset)
+     end
+
+     def init_edited_at(note) do
+           then = Timex.shift(Timex.now, [hours: -170])
+           params = %{"edited_at" => then}
+           changeset = Note.changeset(note, params)
+           Repo.update(changeset)
+      end
+
+
+     def init_updated_at(note) do
+         then = Timex.shift(Timex.now, [hours: -171])
+         params = %{"updated_at" => then}
+         changeset = Note.changeset(note, params)
+         Repo.update(changeset)
+     end
+
+     def init_notes_viewed_at do
+       Note |> Repo.all |> Enum.map(fn(note) -> Note.init_viewed_at(note) end)
+     end
+
+      def init_notes_edited_at do
+         Note |> Repo.all |> Enum.map(fn(note) -> Note.init_edited_at(note) end)
+      end
 
 end
 

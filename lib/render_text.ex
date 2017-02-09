@@ -232,5 +232,9 @@ defmodule RenderText do
       |> length
    end
 
+   def erase_words(text, kill_words) do
+     Enum.reduce(kill_words, text, fn(kill_word, text) -> String.replace(text, "#{kill_word} ", "") end)
+   end
+
 
 end

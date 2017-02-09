@@ -3,9 +3,10 @@ defmodule LookupPhoenix.Tag do
 
     alias LookupPhoenix.Note
     alias LookupPhoenix.Repo
+    alias LookupPhoenix.Tag
 
-    # A tag is string th    at starts wit               h :, eg. :foo
-    # get_tags(text) reeturns a list of the tags found in
+    # A tag is string that starts with :, eg. :foo
+    # get_tags(text) returns a list of the tags found in
     # the string tsxt
     def get_tags(text) do
       text2 = Regex.replace(~r/[`,.;]/, text,  "")
@@ -16,6 +17,37 @@ defmodule LookupPhoenix.Tag do
     def get_tags_from_note(note) do
       get_tags(note.content)
     end
+
+    ####
+
+    def content2taglist(note) do
+      get_tags_from_note(note)
+    end
+
+    def fixTags(note) do
+      tag_list = content2taglist(note)
+
+      tag_string = tag_list
+      |> Enum.map( fn(tag) -> String.replace(tag, ":", "") end)
+      |>  Enum.join(", ")
+
+      content = RenderText.erase_words(note.content<> " ", tag_list)
+
+      tag_list = tag_list |> Enum.map( fn(tag) -> String.replace(tag, ":", "") end)
+
+      changeset = Note.changeset(note, %{"tags" => tag_list, "tag_string" => tag_string, "content" => content})
+      Repo.update(changeset)
+    end
+
+    def fix_all_tags do
+      Note |> Repo.all |> Enum.map(fn(note) -> fixTags(note) end)
+    end
+
+    def str2tags(str) do
+      str |> String.split(",") |> Enum.map(fn(str) -> String.trim(str) end)
+    end
+
+
 
     def insert_element(element, list) do
         if Enum.member?(list, element) do

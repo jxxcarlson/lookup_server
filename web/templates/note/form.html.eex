@@ -18,6 +18,12 @@
   </div>
 
   <div class="form-group">
+      <%= label f, :tags, class: "control-label" %>
+      <%= text_input f, :tag_string, class: "form-control", id: 'tags'  %>
+      <%= error_tag f, :tag_string %>
+    </div>
+
+  <div class="form-group">
     <%= if @locked do %>
       <%= link "Back!!", to: note_path(@conn, :index), id: 'notes' %>
     <% else %>
@@ -30,7 +36,7 @@
 <% end %>
 
 <script>
-    document.getElementById("content").style.height = (window.innerHeight - 350) + 'px'
+    document.getElementById("content").style.height = (window.innerHeight - 400) + 'px'
     console.log("window.innerHeight: " + window.innerHeight)
 </script>
 

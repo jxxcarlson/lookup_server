@@ -22,7 +22,8 @@
 
 <br><br>
 <p> <i>Last updated: <%= @updated_at %>
-  <span style='margin-left:2em;'>Word count: <%= @word_count %> </span>  </i>
+  <span style='margin-left:2em;'>Word count: <%= @word_count %> </span>
+  <span style='margin-left:2em;'>Tags: <%= @note.tag_string %></span></i>
   <span style="float:right;margin-right:8px;"><%= link "Edit", to: note_path(@conn, :edit, @note) %></span>
   <span style="float:right;margin-right:8px;"><%= link "Back", to: note_path(@conn, :index) %></span>
 

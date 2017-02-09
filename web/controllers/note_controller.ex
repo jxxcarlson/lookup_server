@@ -58,8 +58,10 @@ defmodule LookupPhoenix.NoteController do
     else
       new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
+
       new_params = %{"content" => new_content, "title" => new_title,
-         "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now}
+         "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now,
+         "tag_string" => " ", "tags" => []}
       changeset = Note.changeset(%Note{}, new_params)
 
       case Repo.insert(changeset) do
@@ -92,8 +94,9 @@ defmodule LookupPhoenix.NoteController do
         changeset = Note.changeset(note)
         locked = conn.assigns.current_user.read_only
         word_count = RenderText.word_count(note.content)
+        tags = Note.tags2string(note)
         render(conn, "edit.html", note: note, changeset: changeset,
-          word_count: word_count, locked: locked, conn: conn)
+          word_count: word_count, locked: locked, conn: conn, tags: tags)
   end
 
   def doUpdate(note, changeset, conn) do
@@ -110,9 +113,18 @@ defmodule LookupPhoenix.NoteController do
 
   def update(conn, %{"id" => id, "note" => note_params}) do
     note = Repo.get!(Note, id)
+
     new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
     new_title = Regex.replace(~r/ß/, note_params["title"], "")
-    new_params = %{"content" => new_content, "title" => new_title, "edited_at" => Timex.now}
+
+    tags = note_params["tag_string"] |> String.split(",") |> Enum.map(fn(str) -> String.trim(str) end)
+    IO.puts "==== TAGS ====="
+    IO.inspect tags
+    IO.puts "========"
+
+    new_params = %{"content" => new_content, "title" => new_title,
+      "edited_at" => Timex.now, "tag_string" => note_params["tag_string"], "tags" => tags}
+
     changeset = Note.changeset(note, new_params)
     if (conn.assigns.current_user.read_only == false) do
         doUpdate(note, changeset, conn)

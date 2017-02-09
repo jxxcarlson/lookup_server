@@ -294,4 +294,20 @@ blah, blah
     assert output == expected_output
    end
 
+
+   test "erase words 1" do
+     text = "this is a :foo test hohoho :bar hahaha"
+     kill_words = [":foo", ":bar"]
+     expected_output = "this is a test hohoho hahaha"
+     output = Enum.reduce(kill_words, text, fn(kill_word, text) -> String.replace(text, "#{kill_word} ", "") end)
+     assert output == expected_output
+   end
+
+   test "erase words" do
+     input = "this is a :foo test hohoho :bar hahaha"
+     expected_output = "this is a test hohoho hahaha"
+     output = RenderText.erase_words(input, [":foo", ":bar"])
+     assert output == expected_output
+   end
+
  end
