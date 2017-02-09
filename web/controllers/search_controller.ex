@@ -28,12 +28,15 @@ defmodule LookupPhoenix.SearchController do
 
     def tag_search(conn, %{"query" => query}) do
 
+         IO.puts "THIS IS TAG SEARCH, query = #{query} ................."
+
           User.increment_number_of_searches(conn.assigns.current_user)
 
-          queryList = String.split(query).map(fn(term) -> "#/{term}" end)
+          queryList = String.split(query)
 
-          notes = LookupPhoenix.Note.search(queryList, conn.assigns.current_user.id)
-          LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
+          notes = Note.tag_search(queryList, conn.assigns.current_user.id)
+
+          Note.memorize_notes(notes, conn.assigns.current_user.id)
 
           noteCount = length(notes)
           case noteCount do
@@ -45,6 +48,26 @@ defmodule LookupPhoenix.SearchController do
 
 
      end
+
+     def tag_search1(conn, %{"query" => query}) do
+
+               User.increment_number_of_searches(conn.assigns.current_user)
+
+               queryList = String.split(query)
+
+               notes = LookupPhoenix.Note.search(queryList, conn.assigns.current_user.id)
+               LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
+
+               noteCount = length(notes)
+               case noteCount do
+                 1 -> noteCountString = "1 Note found with tag #{query}"
+                 _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found with tag #{query}"
+               end
+
+               render(conn, "index.html", notes: notes, noteCountString: noteCountString)
+
+
+      end
 
 
     def random(conn, _params) do

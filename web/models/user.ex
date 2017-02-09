@@ -99,13 +99,14 @@ defmodule LookupPhoenix.User do
       user = Repo.get!(User, user_id)
       tags = Tag.get_all_user_tags(user_id) |> Enum.sort
       params = %{"tags" => tags}
-      changeset = User.running_changeset(user, params)
-      Repo.update(changeset)
+      # changeset = User.running_changeset(user, params)
+      # Repo.update(changeset)
   end
 
   def initialize_metadata(user) do
      # params = %{"tags" => [], "read_only" => false, "admin" => false, "number_of_searches"  => 0}
-     params = %{"tags" => [], "read_only" => false, "admin" => false, "number_of_searches"  => 0, "search_filter" => " "}
+     params = %{"tags" => [], "read_only" => false, "admin" => false,
+        "number_of_searches"  => 0, "search_filter" => " "}
      changeset = User.running_changeset(user, params)
      Repo.update(changeset)
   end
@@ -161,6 +162,20 @@ defmodule LookupPhoenix.User do
     Enum.map(users, fn(user) -> initialize_metadata(user) end)
   end
 
+  ### ONE TIME ###
 
+  def fix_tags(user) do
+    new_tags = user.tags |> Enum.map(fn(tag) -> String.replace(tag, ":", "") end)
+    IO.puts "New tags: #{new_tags}"
+    changeset = User.running_changeset(user, %{"tags" => new_tags, "search_filter" => " "})
+    IO.inspect changeset
+    Repo.update(changeset)
+  end
+
+  def fix_all_tags do
+    User |> Repo.all |> Enum.map(fn(user) -> fix_tags(user) end)
+  end
+
+  # alias LookupPhoenix.User; alias LookupPhoenix.Repo; alias LookupPhoenix.Tagr;  alias LookupPhoenix.Note; u =  User |> Repo.get!(9)
 
   end

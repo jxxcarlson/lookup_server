@@ -128,6 +128,15 @@ defmodule LookupPhoenix.Note do
       end
     end
 
+    def tag_search(tag_list, user_id) do
+       IO.puts("In tag_search, tag_list = #{tag_list}")
+       query = Ecto.Query.from note in Note,
+          where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tag_list)}%")),
+          order_by: [desc: note.updated_at]
+       result = Repo.all(query)
+    end
+
+
     def filter_records_for_user(list, user_id) do
       Enum.filter(list, fn(x) -> x.user_id == user_id end)
     end
