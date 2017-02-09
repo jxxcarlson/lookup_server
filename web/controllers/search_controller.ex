@@ -30,7 +30,7 @@ defmodule LookupPhoenix.SearchController do
 
           User.increment_number_of_searches(conn.assigns.current_user)
 
-          queryList = String.split(query)
+          queryList = String.split(query).map(fn(term) -> "#/{term}" end)
 
           notes = LookupPhoenix.Note.search(queryList, conn.assigns.current_user.id)
           LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
