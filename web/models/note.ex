@@ -93,21 +93,27 @@ defmodule LookupPhoenix.Note do
 
       case tags do
         [] -> query = Ecto.Query.from note in Note,
-                       where: (ilike(note.title, ^"%#{List.first(terms)}%") or ilike(note.content, ^"%#{List.first(terms)}%")),
+                       where: (note.user_id == ^user_id and (ilike(note.title, ^"%#{List.first(terms)}%") or ilike(note.content, ^"%#{List.first(terms)}%"))),
                        order_by: [desc: note.updated_at]
+              terms = tl(terms)
+              IO.puts "NO TAGS, TERMS = #{length(terms)}"
 
 
 
         _ -> query = Ecto.Query.from note in Note,
-                       where: (ilike(note.tag_string, ^"%#{List.first(tags)}%")),
+                       where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tags)}%")),
                        order_by: [desc: note.updated_at]
+              tags = tl(tags)
+              IO.puts "TAGS = #{length(tags)}, TERMS = #{length(terms)}"
 
 
       end
 
       result = Repo.all(query)
-      |> Note.filter_records_for_user(user_id)
-      # |> Note.filter_records_with_term_list(tl(query_terms))
+      # |> Note.filter_records_for_user(user_id)
+      |> Note.filter_notes_with_tag_list(tags)
+      |> Note.filter_records_with_term_list(terms)
+
       Note.memorize_list(result, user_id)
       Enum.map(result, fn (record) -> record.id end)
       result
@@ -126,11 +132,14 @@ defmodule LookupPhoenix.Note do
       Enum.filter(list, fn(x) -> x.user_id == user_id end)
     end
 
+    ##################
+
     def filter_records_with_term(list, term) do
 
       Enum.filter(list, fn(x) -> String.contains?(String.downcase(x.title), term) or String.contains?(String.downcase(x.content), term) end)
 
     end
+
 
     def filter_records_with_term_list(list, term_list) do
 
@@ -142,6 +151,28 @@ defmodule LookupPhoenix.Note do
       end
 
     end
+
+    ################
+
+    def filter_notes_with_tag(note_list, tag) do
+
+       Enum.filter(note_list, fn(note) -> Enum.member?(note.tags, tag) end)
+
+    end
+
+
+    def filter_notes_with_tag_list(note_list, tag_list) do
+
+      case {note_list, tag_list} do
+        {note_list,[]} -> note_list
+        {note_list, tag_list} -> filter_notes_with_tag_list(
+              filter_notes_with_tag(note_list, hd(tag_list)), tl(tag_list)
+            )
+      end
+
+    end
+
+   ################
 
      def fromPair(pair) do
           # %Note{ :title => pair[0], :content => pair[1]}
