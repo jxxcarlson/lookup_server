@@ -4,6 +4,7 @@ defmodule LookupPhoenix.SearchController do
     use LookupPhoenix.Web, :controller
     alias LookupPhoenix.Note
     alias LookupPhoenix.User
+    alias LookupPhoenix.Utility
 
 
     def index(conn, %{"search" => %{"query" => query}}) do
@@ -14,6 +15,8 @@ defmodule LookupPhoenix.SearchController do
       queryList = String.split(query)
       notes = LookupPhoenix.Note.search(queryList, conn.assigns.current_user.id)
       LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
+
+      notes = Utility.add_index_to_maplist(notes)
 
       noteCount = length(notes)
       case noteCount do
@@ -37,6 +40,8 @@ defmodule LookupPhoenix.SearchController do
           notes = Note.tag_search(queryList, conn.assigns.current_user.id)
 
           Note.memorize_notes(notes, conn.assigns.current_user.id)
+
+          notes = Utility.add_index_to_maplist(notes)
 
           noteCount = length(notes)
           case noteCount do
@@ -86,7 +91,7 @@ defmodule LookupPhoenix.SearchController do
          end
          LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
 
-
+         notes = Utility.add_index_to_maplist(notes)
 
          case note_count do
            1 -> countReportString =   "1 Random note"
@@ -110,8 +115,12 @@ defmodule LookupPhoenix.SearchController do
              update_message = "Recently viewed"
         end
 
+
+
         note_count = length(notes)
         Note.memorize_notes(notes, conn.assigns.current_user.id)
+
+        notes = Utility.add_index_to_maplist(notes)
 
         case note_count do
            1 -> countReportString =   "1 #{update_message} note"

@@ -166,9 +166,8 @@ defmodule LookupPhoenix.User do
 
   def fix_tags(user) do
     new_tags = user.tags |> Enum.map(fn(tag) -> String.replace(tag, ":", "") end)
-    IO.puts "New tags: #{new_tags}"
     changeset = User.running_changeset(user, %{"tags" => new_tags, "search_filter" => " "})
-    IO.inspect changeset
+
     Repo.update(changeset)
   end
 

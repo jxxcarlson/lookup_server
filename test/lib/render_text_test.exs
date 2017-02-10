@@ -268,11 +268,7 @@ blah, blah
     assert hd(tl(tl(items))) == "item three"
 
     item_one = hd(items)
-    # assert RenderText.formatItem(item_one) == "<p style='margin-bottom:-1em; margin-top:0; padding-left:20px; text-indent:-20px;'>-  item one</p>"
 
-    IO.puts "=================="
-    IO.inspect items
-    IO.puts "=================="
     assert RenderText.formatItems(text) ==  "Foo, bar\n<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  item one</span>\n<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  item two</span>\n\n<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  item three</span>\n\nblah, blah\n"
     end
 

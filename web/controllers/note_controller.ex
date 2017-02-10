@@ -4,6 +4,7 @@ defmodule LookupPhoenix.NoteController do
 
   alias LookupPhoenix.Note
   alias LookupPhoenix.Tag
+  alias LookupPhoenix.Utility
 
 
   def report(message, object) do
@@ -24,6 +25,8 @@ defmodule LookupPhoenix.NoteController do
           notes = Note.notes_for_user(user_id)
      end
 
+     notes = Utility.add_index_to_maplist(notes)
+
   end
 
   def index(conn, _params) do
@@ -36,9 +39,11 @@ defmodule LookupPhoenix.NoteController do
        notes = Note.getDocumentsFromList(id_list)
      end
 
-
      options = %{mode: "index", process: "none"}
      noteCountString = "#{length(notes)} Notes"
+
+     notes = Utility.add_index_to_maplist(notes)
+
      render(conn, "index.html", notes: notes, noteCountString: noteCountString, options: options)
   end
 

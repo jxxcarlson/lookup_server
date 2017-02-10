@@ -43,6 +43,7 @@
 <table class="table">
   <thead>
     <tr>
+      <th></th>
       <th>Title</th>
       <th>Date</th>
       <th>Content</th>
@@ -53,6 +54,9 @@
   <tbody>
 <%= for note <- @notes do %>
     <tr>
+
+      <td style="width:4%"> <%= note.index + 1 %> </td>
+
       <td style="width:35%"> <%= link note.title, to: note_path(@conn, :show, note), class: "" %> </td>
 
       <td> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td>
