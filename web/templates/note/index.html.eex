@@ -59,12 +59,6 @@
 
       <td style="width:35%"><%= raw(RenderText.format_for_index(note.content)) %></td>
 
-     <!--
-      <td class="text-right">
-        <%= link "Show", to: note_path(@conn, :show, note), class: "btn btn-default btn-xs" %>
-      </td>
-      -->
-
       <td class="text-right">
           <%= link "Edit", to: note_path(@conn, :edit, note), class: "btn btn-default btn-xs" %>
       </td>

@@ -23,16 +23,20 @@ defmodule LookupPhoenix.NoteController do
        note_count <= 14 ->
           notes = Note.notes_for_user(user_id)
      end
+
   end
 
   def index(conn, _params) do
      user_id = conn.assigns.current_user.id
      id_list = Note.recall_list(user_id)
+
      if length(id_list) == 0 do
        notes = getRandomNotes(user_id)
      else
        notes = Note.getDocumentsFromList(id_list)
      end
+
+
      options = %{mode: "index", process: "none"}
      noteCountString = "#{length(notes)} Notes"
      render(conn, "index.html", notes: notes, noteCountString: noteCountString, options: options)
