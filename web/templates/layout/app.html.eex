@@ -61,10 +61,10 @@
 
     <div class="container">
 
-      <header >
+      <header>
 
-         <ol class="breadcrumb text-right">
-            <!-- <li> <%= link "Home", to: page_path(@conn, :index) %> </li> -->
+         <ol class="breadcrumb text-right" style="background-color:#d9d9d9">
+
            <%= if @current_user do %>
              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Home", to: page_path(@conn, :index), id: 'home' %> </li>
              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: note_path(@conn, :index), id: 'notes' %> </li>

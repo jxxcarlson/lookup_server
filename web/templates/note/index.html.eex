@@ -33,12 +33,13 @@
    <%= link "Less recent", to: search_path(@conn, :recent, hours_before: 169, mode: "updated"), class: "btn btn-default btn-s", id: "less_recent_notes" %>
 </div>
 
-<div style="margin-top:15px;margin-bottom:-15px;">
+<div style="margin-top:18px;margin-bottom:-15px;">
     <span style="font-size:1.25em;"> <%= @noteCountString %> </span>
 </div>
 
 <div style="height: 2px; background-color:#ddd; margin-top:18px;margin-bottom:-18px;"></div>
 
+<div style="overflow: scroll; height:400px;" id="table_div">
 <table class="table">
   <thead>
     <tr>
@@ -76,5 +77,10 @@
 <% end %>
   </tbody>
 </table>
+</div>
 
 
+<script>
+    document.getElementById("table_div").style.height = (window.innerHeight - 250) + 'px'
+    console.log("window.innerHeight: " + window.innerHeight)
+</script>
