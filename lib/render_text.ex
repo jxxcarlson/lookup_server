@@ -73,6 +73,7 @@ defmodule RenderText do
       |> padString
       |> formatItems
       |> formatAnswer
+      |> highlight
     end
 
     def getURLs(text) do
@@ -253,6 +254,10 @@ defmodule RenderText do
 
    def erase_words(text, kill_words) do
      Enum.reduce(kill_words, text, fn(kill_word, text) -> String.replace(text, "#{kill_word} ", "") end)
+   end
+
+   def highlight(text) do
+     Regex.replace(~r/#(\S.*)#/U, text, "<span style='color:darkred;'>\\1</span>")
    end
 
 
