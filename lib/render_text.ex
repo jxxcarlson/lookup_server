@@ -2,15 +2,15 @@ defmodule RenderText do
 
 ############# PUBLIC ##################
 
-    def transform(text, mode \\ "show   ") do
+    def transform(text, options \\ %{mode: "show", process: "none"}) do
       text
       |> String.trim
       |> padString
-      |> linkify(mode)
+      |> linkify(options)
       |> apply_markdown
       |> formatChem
       |> formatChemBlock
-      |> insert_mathjax
+      |> insert_mathjax(options)
       |> String.trim
     end
 
@@ -34,7 +34,7 @@ defmodule RenderText do
     def format_for_index(text) do
       text
       |> firstParagraph
-      |> linkify("index")
+      |> linkify(%{mode: "index", process: "node"})
       |> formatBold
       |> formatRed
       |> formatItalic
@@ -48,13 +48,13 @@ defmodule RenderText do
     end
 
 
-    def linkify(text, mode) do
+    def linkify(text, options) do
       text
       |> simplifyURLs
       |> makeUserLinks
       |> makeSmartLinks
-      |> makeImageLinks(mode)
-      |> makePDFLinks(mode)
+      |> makeImageLinks(options)
+      |> makePDFLinks(options)
       |> String.trim
     end
 
@@ -113,8 +113,8 @@ defmodule RenderText do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=~\?#!@_%-]*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
 
-    def makeImageLinks(text, mode) do
-       case mode do
+    def makeImageLinks(text, options) do
+       case options[:mode] do
          "index" ->
            Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
          "show" ->
@@ -197,31 +197,32 @@ defmodule RenderText do
 
 
     def insert_mathjax!(text) do
-      text <>  """
 
-          <script type="text/x-mathjax-config">
-            MathJax.Hub.Config( {tex2jax: {inlineMath: [['$','$']]}, TeX: { extensions: ["mhchem.js"] } });
+        text <>  """
 
-          </script>
-              <script type="text/javascript" async
-                      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
-           </script>
+                  <script type="text/x-mathjax-config">
+                    MathJax.Hub.Config( {tex2jax: {inlineMath: [['$','$']]}, TeX: { extensions: ["mhchem.js"] } });
+
+                  </script>
+                      <script type="text/javascript" async
+                              src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+                   </script>
 
 """
+
     end
 
 
-    def insert_mathjax(text) do
-      if Regex.match?(~r/:latex/, text) do
+    def insert_mathjax(text, options) do
+      if options[:process] == "latex" do
         text = insert_mathjax!(text)
-        # Regex.replace(~r/:latex/, text, "")
       else
         text
       end
     end
 
-   def makePDFLinks(text, mode) do
-     case mode do
+   def makePDFLinks(text, options) do
+     case options[:mode] do
        "index" ->
           Regex.replace(~r/display::((http|https):(.*(pdf)))\s/U, " "<>text<>" ", "<a href=\"\\1\" target=\"_blank\">PDF FILE</a>")
        "show" ->

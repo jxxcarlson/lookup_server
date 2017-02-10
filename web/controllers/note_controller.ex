@@ -32,8 +32,9 @@ defmodule LookupPhoenix.NoteController do
      else
        notes = Note.getDocumentsFromList(id_list)
      end
+     options = %{mode: "index", process: "none"}
      noteCountString = "#{length(notes)} Notes"
-     render(conn, "index.html", notes: notes, noteCountString: noteCountString)
+     render(conn, "index.html", notes: notes, noteCountString: noteCountString, options: options)
   end
 
   def read_only_message(conn) do
@@ -80,12 +81,17 @@ defmodule LookupPhoenix.NoteController do
   def show(conn, %{"id" => id}) do
     note = Repo.get!(Note, id)
     Note.update_viewed_at(note)
+    if Enum.member?(note.tags, "latex") do
+      options = %{mode: "show", process: "latex"}
+    else
+      options = %{mode: "show", process: "none"}
+    end
     inserted_at= Note.inserted_at(note)
     word_count = RenderText.word_count(note.content)
     {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
     render(conn, "show.html", note: note,
        inserted_at: inserted_at, updated_at: updated_at,
-       word_count: word_count)
+       word_count: word_count, options: options)
   end
 
 
