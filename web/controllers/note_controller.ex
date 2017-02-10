@@ -102,7 +102,8 @@ defmodule LookupPhoenix.NoteController do
     id_list = String.split(id_string, "%2C")
 
     current_id = Enum.at(id_list, index)
-    last_index = length(id_list) - 1
+    note_count = length(id_list) - 1
+    last_index = note_count - 1
     if index >= last_index do
       next_index = 0
     else
@@ -138,7 +139,7 @@ defmodule LookupPhoenix.NoteController do
     {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
     render(conn, "show.html", note: note,
        inserted_at: inserted_at, updated_at: updated_at,
-       word_count: word_count, options: options, index: index,
+       word_count: word_count, note_count: note_count, options: options, index: index,
        next_index: next_index, previous_index: previous_index,
        next_id: next_id, previous_id: previous_id, id_list: id_list |> Enum.join(","))
   end

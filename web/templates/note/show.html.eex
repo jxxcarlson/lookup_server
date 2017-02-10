@@ -19,9 +19,10 @@
 
   <span style="float:right;margin-right:8px;" ><%= link "Edit", to: note_path(@conn, :edit, @note) %></span>
   <span style="float:right;margin-right:8px;" ><%= link "Back", to: note_path(@conn, :index) %></span>
-  <span style="float:right;margin-right:8px;" >(<%= @index + 1 %>)</span>
 
-  <span style="float:right;margin-right:8px;" ><%= link "Next", to: note_path(@conn, :show, @next_id, index: @next_index, id_list: @id_list) %></span>
+
+  <span class: "btn btn-primary" style="float:right;margin-right:28px;" ><%= link "Next", to: note_path(@conn, :show, @next_id, index: @next_index, id_list: @id_list) %></span>
+  <span style="float:right;margin-right:8px;" >(<%= @index + 1 %>/<%= @note_count %>)</span>
   <span style="float:right;margin-right:8px;" ><%= link "Previous", to: note_path(@conn, :show, @previous_id, index: @previous_index, id_list: @id_list) %></span>
 
 
