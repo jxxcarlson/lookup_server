@@ -189,7 +189,7 @@
     <li>Use *Fee fie fo fum!* for bold text: <b>Fee fie fo fum!</b></li>
     <li>Use _Fee fie fo fum!_ for italic text: <i>Fee fie fo fum!</i></li>
     <li>Use `a == b` for in-line code: <tt style="color:darkred">a == b</tt></li>
-    <li>Use <tt>red:[This is important]</tt> for red text: <span>This is important</span></li>
+    <li>Use <tt>#This is important#</tt> for red text: <span>This is important</span></li>
     <li>The string <tt>--</tt> preceded and followed by a space becomes this: &ndash;
     <li>The string <tt>---</tt> preceded and followed by a space becomes this: &mdash;
     <li>The string <tt>-Bad stuff-</tt> preceded and followed by a space becomes
