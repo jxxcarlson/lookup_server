@@ -11,8 +11,9 @@
 
 <div style="font-size: 1.2em; margin-top:-0.5em;">
 
- <span style="font-size:2.5rem; font-style:bold; margin-bottom:0.35å    rem;"> <%= @note.title  %> </span>
-<p style="margin-bottom:1em;">
+ <span style="font-size:2.1rem; font-style:bold; margin-bottom:0"> <%= @note.title  %> </span>
+
+ <p style="margin-bottom:1em;margin-top:1rem;">
 
   <span style="margin-left:0;"> <%= @inserted_at  %> </span>
 
@@ -22,8 +23,8 @@
 
 
   <span class: "btn btn-primary" style="float:right;margin-right:28px;" ><%= link "Next", to: note_path(@conn, :show, @next_id, index: @next_index, id_list: @id_list) %></span>
-  <span style="float:right;margin-right:8px;" >(<%= @index + 1 %>/<%= @note_count %>)</span>
-  <span style="float:right;margin-right:8px;" ><%= link "Previous", to: note_path(@conn, :show, @previous_id, index: @previous_index, id_list: @id_list) %></span>
+  <span style="background-color:#35d; color: white; padding-left:5px; padding-right:8px; float:right;margin-right:8px;" ><%= @index + 1 %>:<%= @note_count %></span>
+  <span style="float:right;margin-right:9px;" ><%= link "Prev", to: note_path(@conn, :show, @previous_id, index: @previous_index, id_list: @id_list) %></span>
 
 
 </p>
