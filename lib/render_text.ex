@@ -50,10 +50,11 @@ defmodule RenderText do
 
     def linkify(text, options) do
       text
-      |> simplifyURLs
+      # |> simplifyURLs
+      |> makeImageLinks(options)
+      |> makeFormattedImageLinks(options)
       |> makeUserLinks
       |> makeSmartLinks
-      |> makeImageLinks(options)
       |> makePDFLinks(options)
       |> String.trim
     end
@@ -119,6 +120,18 @@ defmodule RenderText do
            Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
          "show" ->
            Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" height=\"600px\" > ")
+         #_ ->
+         #  Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
+       end
+
+    end
+
+    def makeFormattedImageLinks(text, options) do
+       case options[:mode] do
+         "index" ->
+           Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\[(.*)\]\s/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
+         "show" ->
+           Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\[(.*)\]\s/i, " "<>text<>" ", " <img src=\"\\1\" style=\"\\3\" > ")
          #_ ->
          #  Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
        end

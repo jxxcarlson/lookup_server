@@ -112,7 +112,10 @@
      <li>  <b>Images.</b> To display an image, simply paste in its &quot;image address.&quot;
      The image of the yellow bird below was made by pasting in <span>https://www.allaboutbirds.org/.../warbler.jpg</span>.
      To copy the the address of an image, control-click on it.  Try that on the
-     image below.
+     image below.  You can apply light formatting to imgages, as in this example:
+     <span>https://www.allaboutbirds.org/.../warbler.jpg[height:200px]</span>.
+     The form <span>https://www.allaboutbirds.org/.../warbler.jpg[width:200px]</span> also works.
+
      </li>
 
      <li> <img src="https://www.allaboutbirds.org/guide/bbimages/aab/images/blue-winged-warbler.jpg" width=100 align=top>
