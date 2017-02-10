@@ -90,6 +90,8 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def show(conn, %{"id" => id}) do
+
+    index = conn.query_string |> String.split("=") |> List.last
     note = Repo.get!(Note, id)
     Note.update_viewed_at(note)
     if Enum.member?(note.tags, "latex") do
@@ -102,7 +104,7 @@ defmodule LookupPhoenix.NoteController do
     {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
     render(conn, "show.html", note: note,
        inserted_at: inserted_at, updated_at: updated_at,
-       word_count: word_count, options: options)
+       word_count: word_count, options: options, index: index)
   end
 
 
