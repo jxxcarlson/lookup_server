@@ -24,5 +24,14 @@ defmodule UtilityTest do
       IO.inspect output
    end
 
+   test "parse_query_string" do
+      input = "index=5&previous=333&next=777"
+      output = Utility.parse_query_string(input)
+      expected_output = %{"index" => "5", "next" => "777", "previous" => "333"}
+      assert output == expected_output
+      assert output["index"] == "5"
+      IO.inspect output
+   end
+
 
 end

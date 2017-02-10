@@ -43,8 +43,9 @@ defmodule LookupPhoenix.NoteController do
      noteCountString = "#{length(notes)} Notes"
 
      notes = Utility.add_index_to_maplist(notes)
+     id_string = Note.extract_id_list(notes)
 
-     render(conn, "index.html", notes: notes, noteCountString: noteCountString, options: options)
+     render(conn, "index.html", notes: notes, id_list: id_string, noteCountString: noteCountString, options: options)
   end
 
   def read_only_message(conn) do
@@ -91,7 +92,40 @@ defmodule LookupPhoenix.NoteController do
 
   def show(conn, %{"id" => id}) do
 
-    index = conn.query_string |> String.split("=") |> List.last
+    query_data = conn.query_string |> Utility.parse_query_string
+    index = query_data["index"]
+    {index, _} = Integer.parse index
+    id_string = query_data["id_list"]
+    IO.puts "=========== show, id_string: ======="
+    IO.inspect id_string
+    IO.puts "===================================="
+    id_list = String.split(id_string, "%2C")
+
+    current_id = Enum.at(id_list, index)
+    last_index = length(id_list) - 1
+    if index >= last_index do
+      next_index = 0
+    else
+      next_index = index + 1
+    end
+    if index == 0 do
+      previous_index = last_index
+    else
+      previous_index = index - 1
+    end
+    next_id = Enum.at(id_list, next_index)
+    previous_id = Enum.at(id_list, previous_index)
+
+
+    IO.puts "====== Query Data ======="
+    IO.inspect index
+    IO.inspect previous_id
+    IO.inspect current_id
+    IO.inspect next_id
+    IO.inspect id_list
+    IO.inspect id_string
+    IO.puts "=========================="
+
     note = Repo.get!(Note, id)
     Note.update_viewed_at(note)
     if Enum.member?(note.tags, "latex") do
@@ -104,7 +138,9 @@ defmodule LookupPhoenix.NoteController do
     {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
     render(conn, "show.html", note: note,
        inserted_at: inserted_at, updated_at: updated_at,
-       word_count: word_count, options: options, index: index)
+       word_count: word_count, options: options, index: index,
+       next_index: next_index, previous_index: previous_index,
+       next_id: next_id, previous_id: previous_id, id_list: id_list |> Enum.join(","))
   end
 
 

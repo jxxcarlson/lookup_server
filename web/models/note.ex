@@ -183,6 +183,24 @@ defmodule LookupPhoenix.Note do
 
    ################
 
+     def extract_id_list(list) do
+       list |> Enum.map(fn(note) -> note.id end) |> Enum.join(",")
+     end
+
+     def previous(note, notes) do
+       index = note.index
+       previous_index = max(0, index - 1)
+       previous_note = Enum.at(notes, previous_index)
+       previous_note.id
+     end
+
+     def next(note, notes) do
+        index = note.index
+        next_index = min(length(notes)-1, index + 1)
+        next_note = Enum.at(notes, next_index)
+        next_note.id
+     end
+
      def fromPair(pair) do
           # %Note{ :title => pair[0], :content => pair[1]}
           %Note{ :title => "Foo", :content => "Bar"}

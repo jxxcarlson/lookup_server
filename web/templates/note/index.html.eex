@@ -57,7 +57,9 @@
 
       <td style="width:4%"> <%= note.index + 1 %> </td>
 
-      <td style="width:35%"> <%= link note.title, to: note_path(@conn, :show, note, index: note.index), class: "" %> </td>
+      <td style="width:35%"> <%= link note.title, to: note_path(@conn, :show, note, index: note.index,
+         previous: LookupPhoenix.Note.previous(note, @notes), next: LookupPhoenix.Note.next(note, @notes),
+         id_list: @id_list), class: "" %> </td>
 
       <td> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td>
 
