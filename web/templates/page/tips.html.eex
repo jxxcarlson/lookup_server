@@ -235,8 +235,9 @@
       <p class="text">You can also use <tt>\[ .. \]</tt> instead of
       <tt>$$ .. $$</tt></p>
 
-      <p  class="text"><span>Note.</span> You must put the tag <span>:latex</span>
-      in the text of your note to activate LaTeX processing.</p>
+      <p  class="text"><span>Note.</span> You must put the tag <span>latex</span>
+      in the tags field of your note to activate LaTeX processing &mdash; do this
+      when you create or edit the note.</p>
 
       <p class="text"> If you want to see some examples,
             sign in to <span>lookupnote.io</span> with user name
@@ -262,8 +263,8 @@
       <a href="http://ctan.mackichan.com/macros/latex/contrib/mhchem/mhchem.pdf">Official documentation</a>
        or <a href="https://docs.moodle.org/27/en/Chemistry_notation_using_mhchem">Using mchem</a>.
 .      As with mathematical
-       text, you must put the tag <span>:latex</span>
-      in the text of your note to activate LaTeX processing.</p>
+       text, you must put the tag <span>latex</span>
+      in the tags field of your note to activate LaTeX processing.</p>
 
       <p class="text">  For example of <span>mhchem</span> in action,
       sign in to <span>lookupnote.io</span> with user name
