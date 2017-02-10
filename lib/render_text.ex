@@ -61,8 +61,7 @@ defmodule RenderText do
 
     def apply_markdown(text) do
       text
-      #     |> padString
-      |> formatStrike
+      |> padString
       |> formatCode
       |> formatInlineCode
       |> padString
@@ -75,6 +74,7 @@ defmodule RenderText do
       |> formatItems
       |> formatAnswer
       |> highlight
+      |> formatStrike
     end
 
     def getURLs(text) do
@@ -150,8 +150,8 @@ defmodule RenderText do
     end
 
     def formatStrike(text) do
-       # Regex.replace(~r/\s-[^-](.*)-[^-](\s)/U, text, " <span style='text-decoration: line-through'>\\1</span> \\2")
-       Regex.replace(~r/(^|\s)-([^-]*)-(\s)/r, text, " <span style='text-decoration: line-through'>\\2</span> \\3")
+       # Regex.replace(~r/(^|\s)-([^-]*)-(\s)/U, text, " <span style='text-decoration: line-through'>\\2</span> \\3")
+       Regex.replace(~r/(^|\s)-([^-]*)-(\s)/U, text, "\\1<span style='text-decoration: line-through'>\\2</span>\\3")
     end
 
     def getItems(text) do
@@ -166,7 +166,7 @@ defmodule RenderText do
        |> Enum.reduce(text, fn(item, text) -> String.replace(text, "- " <> item, formatItem(item)) end)
     end
 
-    def formatItem(item) do
+    def formatItem  (item) do
       "<span style='margin-left:2em; text-indent:-0.7em;display:inline-block;margin-bottom:0.3em;'>-  #{item}</span>"
     end
 
