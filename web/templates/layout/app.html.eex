@@ -61,7 +61,7 @@
 
     <div class="container">
 
-      <header class="header">
+      <header >
 
          <ol class="breadcrumb text-right">
             <!-- <li> <%= link "Home", to: page_path(@conn, :index) %> </li> -->
@@ -88,11 +88,11 @@
          </ol>
 
          <%= if @conn.assigns[:current_user] != nil do %>
+
            <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
-               <%= text_input f, :query, placeholder: "Search ...", style: "width:300px; height:35px; font-size:1.8rem; background-color:#eee;", id: "search_notes" %>
+               <%= text_input f, :query, placeholder: "Search ...", style: "margin-top:-18px; margin-bottom:3px; width:300px; height:35px; font-size:1.8rem; background-color:#eee;", id: "search_notes" %>
            <% end %>
 
-            <span style="float:right;"></span>
          <% end %>
 
       </header>
@@ -100,7 +100,8 @@
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p
 
-      <main role="main">
+      <!-- role="main" -->
+      <main>
         <%= render @view_module, @view_template, assigns %>
       </main>
 

@@ -3,6 +3,7 @@ defmodule LookupPhoenix.NoteController do
   use Timex
 
   alias LookupPhoenix.Note
+  alias LookupPhoenix.Tag
 
 
   def report(message, object) do
@@ -59,10 +60,11 @@ defmodule LookupPhoenix.NoteController do
     else
       new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
+      tags = Tag.str2tags(note_params["tag_string"])
 
       new_params = %{"content" => new_content, "title" => new_title,
          "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now,
-         "tag_string" => " ", "tags" => []}
+         "tag_string" => note_params["tag_string"], "tags" => tags}
       changeset = Note.changeset(%Note{}, new_params)
 
       case Repo.insert(changeset) do
@@ -123,10 +125,7 @@ defmodule LookupPhoenix.NoteController do
     new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
     new_title = Regex.replace(~r/ß/, note_params["title"], "")
 
-    tags = note_params["tag_string"] |> String.split(",") |> Enum.map(fn(str) -> String.trim(str) end)
-    IO.puts "==== TAGS ====="
-    IO.inspect tags
-    IO.puts "========"
+    tags = Tag.str2tags(note_params["tag_string"])
 
     new_params = %{"content" => new_content, "title" => new_title,
       "edited_at" => Timex.now, "tag_string" => note_params["tag_string"], "tags" => tags}

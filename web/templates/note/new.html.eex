@@ -26,7 +26,6 @@
 
     </script>
 
-<h2>New note</h2>
 
 
 <%= render "form.html", changeset: @changeset,
