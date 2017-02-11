@@ -99,11 +99,6 @@ defmodule LookupPhoenix.Note do
       [tags, terms] = split_query_terms(query_terms)
       tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
 
-      IO.puts "====== search ======"
-      IO.puts "tags: #{tags}"
-      IO.puts "terms: #{terms}"
-      IO.puts "===================="
-
       case tags do
         [] -> query = Ecto.Query.from note in Note,
                        where: (note.user_id == ^user_id and (ilike(note.title, ^"%#{List.first(terms)}%") or ilike(note.content, ^"%#{List.first(terms)}%"))),
@@ -115,7 +110,7 @@ defmodule LookupPhoenix.Note do
 
         _ -> query = Ecto.Query.from note in Note,
                        where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tags)}%")),
-                       order_by: [desc: note.updated_at]
+                       order_by: [desc: note.inserted_at]
               tags = tl(tags)
               IO.puts "TAGS = #{length(tags)}, TERMS = #{length(terms)}"
 
@@ -134,10 +129,7 @@ defmodule LookupPhoenix.Note do
 
 
     def search(query, user_id) do
-      IO.puts "note, search, query = #{query}"
       query_terms = decode_query(query)
-      IO.puts "note, search, queryterms:"
-      IO.inspect query_terms
       case query_terms do
         [] -> []
         _ -> search_with_non_empty_arg(query_terms, user_id)
@@ -145,7 +137,6 @@ defmodule LookupPhoenix.Note do
     end
 
     def tag_search(tag_list, user_id) do
-       IO.puts("In tag_search, tag_list = #{tag_list}")
        query = Ecto.Query.from note in Note,
           where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tag_list)}%")),
           order_by: [desc: note.updated_at]

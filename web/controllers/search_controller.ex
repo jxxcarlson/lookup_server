@@ -58,24 +58,6 @@ defmodule LookupPhoenix.SearchController do
 
      end
 
-     def tag_search1(conn, %{"query" => query}) do
-
-               User.increment_number_of_searches(conn.assigns.current_user)
-
-               notes = LookupPhoenix.Note.search(query, conn.assigns.current_user.id)
-               LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
-
-               noteCount = length(notes)
-               case noteCount do
-                 1 -> noteCountString = "1 Note found with tag #{query}"
-                 _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found with tag #{query}"
-               end
-
-               render(conn, "index.html", notes: notes, noteCountString: noteCountString)
-
-
-      end
-
 
     def random(conn, _params) do
          User.increment_number_of_searches(conn.assigns.current_user)
