@@ -319,7 +319,7 @@ defmodule LookupPhoenix.Note do
       id_list = String.split(id_string, "%2C")
 
       current_id = Enum.at(id_list, index)
-      note_count = length(id_list) - 1
+      note_count = length(id_list)
       last_index = note_count - 1
 
       if index >= last_index do
