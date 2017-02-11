@@ -95,7 +95,7 @@ defmodule LookupPhoenix.Note do
       case tags do
         [] -> query = Ecto.Query.from note in Note,
                        where: (note.user_id == ^user_id and (ilike(note.title, ^"%#{List.first(terms)}%") or ilike(note.content, ^"%#{List.first(terms)}%"))),
-                       order_by: [desc: note.updated_at]
+                       order_by: [desc: note.inserted_at]
               terms = tl(terms)
               IO.puts "NO TAGS, TERMS = #{length(terms)}"
 
