@@ -23,6 +23,11 @@
       <%= error_tag f, :tag_string %>
     </div>
 
+   <input type="hidden" name="index" value= <%=@index %> >
+   <input type="hidden" name="id_list" value=<%= @id_list %> >
+
+    <%= hidden_input(f, :yacca) %>
+
   <div class="form-group">
     <%= if @locked do %>
       <%= link "Back!!", to: note_path(@conn, :index), id: 'notes' %>

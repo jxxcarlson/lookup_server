@@ -92,75 +92,63 @@ defmodule LookupPhoenix.NoteController do
 
   def show(conn, %{"id" => id}) do
 
-    query_data = conn.query_string |> Utility.parse_query_string
-    index = query_data["index"]
-    {index, _} = Integer.parse index
-    id_string = query_data["id_list"]
-    IO.puts "=========== show, id_string: ======="
-    IO.inspect id_string
-    IO.puts "===================================="
-    id_list = String.split(id_string, "%2C")
-
-    current_id = Enum.at(id_list, index)
-    note_count = length(id_list) - 1
-    last_index = note_count - 1
-    if index >= last_index do
-      next_index = 0
-    else
-      next_index = index + 1
-    end
-    if index == 0 do
-      previous_index = last_index
-    else
-      previous_index = index - 1
-    end
-    next_id = Enum.at(id_list, next_index)
-    previous_id = Enum.at(id_list, previous_index)
-
-
-    IO.puts "====== Query Data ======="
-    IO.inspect index
-    IO.inspect previous_id
-    IO.inspect current_id
-    IO.inspect next_id
-    IO.inspect id_list
-    IO.inspect id_string
-    IO.puts "=========================="
+    qq = Note.decode_query_string(conn.query_string)
 
     note = Repo.get!(Note, id)
+
     Note.update_viewed_at(note)
     if Enum.member?(note.tags, "latex") do
       options = %{mode: "show", process: "latex"}
     else
       options = %{mode: "show", process: "none"}
     end
+
     inserted_at= Note.inserted_at(note)
     word_count = RenderText.word_count(note.content)
+
     {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
     render(conn, "show.html", note: note,
        inserted_at: inserted_at, updated_at: updated_at,
-       word_count: word_count, note_count: note_count, options: options, index: index,
-       next_index: next_index, previous_index: previous_index,
-       next_id: next_id, previous_id: previous_id, id_list: id_list |> Enum.join(","))
+       word_count: word_count, note_count: qq.note_count, options: options, index: qq.index,
+       next_index: qq.next_index, previous_index: qq.previous_index,
+       next_id: qq.next_id, previous_id: qq.previous_id, id_list: qq.id_list |> Enum.join(","))
   end
 
 
   def edit(conn, %{"id" => id}) do
+        qq = Note.decode_query_string(conn.query_string)
+        IO.puts "======= edit controller ======="
+        IO.inspect qq
+        IO.inspect qq.index
+        IO.inspect qq.id_list
+        IO.puts "================================"
         note = Repo.get!(Note, id)
         changeset = Note.changeset(note)
         locked = conn.assigns.current_user.read_only
         word_count = RenderText.word_count(note.content)
         tags = Note.tags2string(note)
         render(conn, "edit.html", note: note, changeset: changeset,
-          word_count: word_count, locked: locked, conn: conn, tags: tags)
+          word_count: word_count, locked: locked, conn: conn, tags: tags,
+          index: qq.index, id_list: qq.id_list)
   end
 
   def doUpdate(note, changeset, conn) do
+    IO.puts "=== DO UPDATE ==="
+    index = conn.params["index"]
+    id_string = conn.params["id_list"]
+    qq = Note.decode_query_string("index=#{index}&id_list=#{id_string}")
+    IO.inspect qq
+    IO.puts index
+    IO.puts id_string
+    IO.puts "================="
     case Repo.update(changeset) do
       {:ok, note} ->
         conn
         |> put_flash(:info, "Note updated successfully.")
-        |> redirect(to: note_path(conn, :show, note))
+        |> redirect(to: note_path(conn, :show, note, note_count: qq.note_count,
+            index: qq.index,
+            next_index: qq.next_index, previous_index: qq.previous_index,
+            next_id: qq.next_id, previous_id: qq.previous_id, id_list: qq.id_list |> Enum.join(",")))
         # |> redirect(to: note_path(conn, :index))
       {:error, changeset} ->
         render(conn, "edit.html", note: note, changeset: changeset)
@@ -168,6 +156,9 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def update(conn, %{"id" => id, "note" => note_params}) do
+    IO.puts "=== UPDATE ==="
+    IO.inspect note_params["index"]
+    IO.puts "==================="
     note = Repo.get!(Note, id)
 
     new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
