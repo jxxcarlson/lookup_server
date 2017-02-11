@@ -382,6 +382,7 @@ defmodule LookupPhoenix.Note do
        Repo.update(changeset)
     end
 
+    ## test
     def erase_string_in_all_notes(str) do
          Note |> Repo.all |> Enum.map(fn(note) -> Note.erase_string(note, str) end)
      end
