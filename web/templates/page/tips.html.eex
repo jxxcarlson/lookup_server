@@ -29,11 +29,12 @@
  <li><a href="#taggs">Tags</a> </li>
  <li><a href="#links">Links to web pages, images, video, audio, and PDF files</a> </li>
  <li><a href="#iphone">Smart phones and tablets</a> </li>
- <li><a href="#hotkeys">Keyboard shortcuts</a> </li>
  <li><a href="#md">Mini markup</a> </li>
- <li><a href="#math">LaTeX</a> </li>
- <li><a href="#chem">Chemical formulas</a> </li>
+ <li><a href="#math">Mathematical Formulas, LaTeX</a> </li>
+ <li><a href="#chem">Chemical formulas, LaTeX</a> </li>
  <li><a href="#longer">Longer documents</a> </li>
+  <li><a href="#hotkeys">Keyboard shortcuts</a> </li>
+
 
  </ul>
 
@@ -73,7 +74,8 @@
       contaiing the word <span>quote</span> and the word fragment <span>prais</span>.  This
       will match both <i>praise</i> and <i>praising</i>.</li>
 
-    <li>To search for notes tagged as <span>birds</span>, enter <span>/birds</span> in the search box.</li>
+    <li>To search for notes tagged as <span>bird</span>, enter <span>/bird</span> in the search box.
+    The search <span>/bird/red</span> will yield notes tagged as <span>bird</span> <b>and</b> <span>red</span></li>
 
      <li>The <span>Random</span> button brings up a random
      list of notes.</li>
@@ -145,44 +147,12 @@
 
      </ul>
 
-    <p class="heading" id="hotkeys">Keyboard shortcuts</p>
-
-    <p class="text">Mac OS: alt = option</p>
-     <ul>
-
-
-       <li class="heading">Anywhere</li>
-       <li style="color:darkred;"><b>Three keys in a row</b></li>
-       <li><b>alt-H</b> Home</li>
-       <li><b>alt-J</b> Notes</li>
-       <li><b>alt-K</b> Tag &mdash; think of <i>Keys</i></li>
-
-       <li  style="color:darkred; margin-top:15px;"><b>Two more keys</b></li>
-       <li><b>alt-N</b> New Note</li>
-       <li><b>alt-/</b> Tips</li>
-
-       <li  class="heading">Notes tab</li>
-       <li><b>alt-S</b> Focus on SEARCH box</li>
-       <li><b>alt-N</b> New Note</li>
-       <li><b>alt-R</b> Show random notes</li>
-
-       <li class="heading">New  note screen</li>
-       <li><b>alt-T</b> Focus on title field</li>
-       <li><b>alt-C</b> Focus on content field</li>
-       <li>&mdash;</li>
-       <li><b>TAB key</b> Move to next field</li>
-       <li><b>shift-TAB</b> Move to previous field</li>
-       <li>&mdash;</li>
-       <li><b>alt-B</b> Back</li>
-       <li><b>alt-S</b> Save</li>
-
-
-     </ul>
-
 
    <p class="heading" id="md">Mini markup</p>
 
-   <p class="text">This section is optional.  Use it only if you need it.</p>
+   <p class="text">This section is optional. LookupNotes' markup language
+   is much like <b>asciidoc</b> or <b>markdown</b>  Tt gives
+   a way of formatting your notes..</p>
 
    <ul>
 
@@ -219,7 +189,7 @@
    </p>
 
 
-   <p class="heading" id="math">LaTeX</p>
+   <p class="heading" id="math">Mathematical formulas, LaTeX</p>
 
       <p class="text">Courtesy of <a href="http://mathjax.org" target="_blank">MathJax</a>,
       you may use LaTeX for formulas, equations, etc.
@@ -247,7 +217,7 @@
             <span>demo</span> and password <span>rundemo</span>, then
             search for <span>math</span> or <span>math example</span>.
 
-    <p class="heading" id="chem">Chemical formulas</p>
+    <p class="heading" id="chem">Chemical formulas, LaTeX</p>
 
       <p class="text">For chemical formulas, imitate the examples
       below.
@@ -255,7 +225,7 @@
       <pre>
       chem:[HCl] dissociates in water as follows:
 
-      chem::[H2O + HCl <=> H3O+ + Cl-}]
+      chem::[H2O + HCl <=> H3O+ + Cl-]
       </pre>
 
       <p>Use one colon for in-line formulas and equations.  Use
@@ -280,3 +250,37 @@
       that can be shared on the web, e.g., lecture notes or a book,
        please see
       <a href="http://www.manuscripta.io">www.manuscripta.io</a></p>
+
+  <p class="heading" id="hotkeys">Keyboard shortcuts</p>
+
+     <p class="text">Mac OS: alt = option</p>
+      <ul>
+
+
+        <li class="heading">Anywhere</li>
+        <li style="color:darkred;"><b>Three keys in a row</b></li>
+        <li><b>alt-H</b> Home</li>
+        <li><b>alt-J</b> Notes</li>
+        <li><b>alt-K</b> Tag &mdash; think of <i>Keys</i></li>
+
+        <li  style="color:darkred; margin-top:15px;"><b>Two more keys</b></li>
+        <li><b>alt-N</b> New Note</li>
+        <li><b>alt-/</b> Tips</li>
+
+        <li  class="heading">Notes tab</li>
+        <li><b>alt-S</b> Focus on SEARCH box</li>
+        <li><b>alt-N</b> New Note</li>
+        <li><b>alt-R</b> Show random notes</li>
+
+        <li class="heading">New  note screen</li>
+        <li><b>alt-T</b> Focus on title field</li>
+        <li><b>alt-C</b> Focus on content field</li>
+        <li>&mdash;</li>
+        <li><b>TAB key</b> Move to next field</li>
+        <li><b>shift-TAB</b> Move to previous field</li>
+        <li>&mdash;</li>
+        <li><b>alt-B</b> Back</li>
+        <li><b>alt-S</b> Save</li>
+
+
+      </ul>
