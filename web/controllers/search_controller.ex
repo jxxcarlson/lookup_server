@@ -9,11 +9,11 @@ defmodule LookupPhoenix.SearchController do
 
     def index(conn, %{"search" => %{"query" => query}}) do
 
+      IO.puts "search, index, query = #{query}"
 
       User.increment_number_of_searches(conn.assigns.current_user)
 
-      queryList = String.split(query)
-      notes = Note.search(queryList, conn.assigns.current_user.id)
+      notes = Note.search(query, conn.assigns.current_user.id)
       Note.memorize_notes(notes, conn.assigns.current_user.id)
 
       notes = Utility.add_index_to_maplist(notes)
@@ -31,6 +31,8 @@ defmodule LookupPhoenix.SearchController do
     end
 
     def tag_search(conn, %{"query" => query}) do
+
+         IO.puts "search, tag_search, query = #{query}"
 
          IO.puts "THIS IS TAG SEARCH, query = #{query} ................."
 
@@ -60,9 +62,7 @@ defmodule LookupPhoenix.SearchController do
 
                User.increment_number_of_searches(conn.assigns.current_user)
 
-               queryList = String.split(query)
-
-               notes = LookupPhoenix.Note.search(queryList, conn.assigns.current_user.id)
+               notes = LookupPhoenix.Note.search(query, conn.assigns.current_user.id)
                LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
 
                noteCount = length(notes)

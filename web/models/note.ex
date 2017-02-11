@@ -74,7 +74,19 @@ defmodule LookupPhoenix.Note do
        |> getDocumentsFromList
     end
 
-    def parse_query(query_terms) do
+
+    def decode_query(query) do
+      IO.puts "decode_query: #{query}"
+      query
+      |> String.downcase
+      |> String.replace("/", " /")
+      |> String.split(~r/\s/)
+    end
+
+    # Input: a list of query terms
+    # Output: a pair of lists whose first element consists of tags,
+    # the second consists of the remainging elements
+    def split_query_terms(query_terms) do
       tags = Enum.filter(query_terms, fn(term) -> String.first(term) == "/" end)
       terms = Enum.filter(query_terms, fn(term) -> String.first(term) != "/" end)
       [tags, terms]
@@ -84,7 +96,7 @@ defmodule LookupPhoenix.Note do
 
     def search_with_non_empty_arg(query_terms, user_id) do
 
-      [tags, terms] = parse_query(query_terms)
+      [tags, terms] = split_query_terms(query_terms)
       tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
 
       IO.puts "====== search ======"
@@ -121,8 +133,11 @@ defmodule LookupPhoenix.Note do
     end
 
 
-    def search(query_terms, user_id) do
-      query_terms = Enum.map(query_terms, fn(x) -> String.downcase(x) end)
+    def search(query, user_id) do
+      IO.puts "note, search, query = #{query}"
+      query_terms = decode_query(query)
+      IO.puts "note, search, queryterms:"
+      IO.inspect query_terms
       case query_terms do
         [] -> []
         _ -> search_with_non_empty_arg(query_terms, user_id)
