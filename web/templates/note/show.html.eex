@@ -38,6 +38,7 @@
 
 <br><br>
 <p> <i>Last updated: <%= @updated_at %>
+  <span style='margin-left:2em;'>ID: <%= @note.id %> </span>
   <span style='margin-left:2em;'>Word count: <%= @word_count %> </span>
   <span style='margin-left:2em;'>Tags: <%= @note.tag_string %></span></i>
   <span style="float:right;margin-right:8px;">

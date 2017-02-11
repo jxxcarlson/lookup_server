@@ -165,6 +165,10 @@
     <li>The string <tt>-Bad stuff-</tt> preceded and followed by a space becomes
          <span class="strike">Bad stuff</span> </li>
     <li>List items: Begin with hyphen followed by a space, end with blank line</li>
+    <li>Cross references:  Put <span>xref::123[See this note]</span> in the body of
+    a note if you want to create a link to the note with ID 123.  The link text
+    is whatever you put inside the brackets, e.g., <span>See this note</span>.  Look at the bottom of the page
+    of a note &mdash; its ID is listed there, e.g., <span>ID: 123</span>.</li>
 
 
    </ul>
