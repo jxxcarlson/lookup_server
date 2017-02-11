@@ -75,6 +75,7 @@ defmodule RenderText do
       |> formatAnswer
       |> highlight
       |> formatStrike
+      |> formatXREF
     end
 
     def getURLs(text) do
@@ -273,5 +274,10 @@ defmodule RenderText do
      Regex.replace(~r/#(\S.*)#/U, text, "<span style='color:darkred;'>\\1</span>")
    end
 
+   # https://lookupnote.herokuapp.com/notes/439?index=0&previous=439&next=439&id_list=439
+
+   def formatXREF(text) do
+     Regex.replace(~r/xref::([0-9]*)\[(.*)\]/, text, "<a href=\"https://lookupnote.herokuapp.com/notes/\\1?index=0&previous=\\1&next=\\1&id_list=\\1\">\\2</a>")
+   end
 
 end
