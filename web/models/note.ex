@@ -375,5 +375,16 @@ defmodule LookupPhoenix.Note do
          Note |> Repo.all |> Enum.map(fn(note) -> Note.init_edited_at(note) end)
       end
 
+    def erase_string(note, str) do
+       new_conent = String.replace(note.content, str, "")
+       params = %{"content" => new_conent}
+       changeset = Note.changeset(note, params)
+       Repo.update(changeset)
+    end
+
+    def erase_string_in_all_notes(str) do
+         Note |> Repo.all |> Enum.map(fn(note) -> Note.erase_string(note, str) end)
+     end
+
 end
 

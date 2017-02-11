@@ -18,7 +18,7 @@ defmodule RenderText do
       text
       |> padString
       # |> simplifyURLs
-      |> preprocessImageURLs
+      # |> preprocessImageURLs
       |> String.trim
     end
 
@@ -116,7 +116,7 @@ defmodule RenderText do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=~\?#!@_%-]*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
 
-    def makeImageLinks(text, options) do
+    def makeImageLinks1(text, options) do
        case options[:mode] do
          "index" ->
            Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
@@ -128,12 +128,24 @@ defmodule RenderText do
 
     end
 
+    def makeImageLinks(text, options) do
+       case options[:mode] do
+         "index" ->
+           Regex.replace(~r/(http|https):\/\/(.*(png|jpg|jpeg|gif))(\s|$)/i, " "<>text<>" ", " <img src=\"\\0\" width=\"120px\" height=\"120px\" > ")
+         "show" ->
+           Regex.replace(~r/(http|https):\/\/(.*(png|jpg|jpeg|gif))(\s|$)/i, " "<>text<>" ", " <img src=\"\\0\" height=\"300px\" > ")
+         #_ ->
+         #  Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
+       end
+
+    end
+
     def makeFormattedImageLinks(text, options) do
        case options[:mode] do
          "index" ->
-           Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\[(.*)\]\s/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
+           Regex.replace(~r/((http|https):\/\/(.*(png|jpg|jpeg|gif)))\[(.*)\]/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
          "show" ->
-           Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\[(.*)\]\s/i, " "<>text<>" ", " <img src=\"\\1\" style=\"\\3\" > ")
+           Regex.replace(~r/((http|https):\/\/(.*(png|jpg|jpeg|gif)))\[(.*)\]/i, " "<>text<>" ", " <img src=\"\\1\" style=\"\\5\" > ")
          #_ ->
          #  Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
        end
