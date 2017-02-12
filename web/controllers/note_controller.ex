@@ -111,7 +111,10 @@ defmodule LookupPhoenix.NoteController do
        inserted_at: inserted_at, updated_at: updated_at,
        word_count: word_count, note_count: qq.note_count, options: options, index: qq.index,
        next_index: qq.next_index, previous_index: qq.previous_index,
-       next_id: qq.next_id, previous_id: qq.previous_id, id_list: qq.id_list |> Enum.join(","))
+       next_id: qq.next_id, previous_id: qq.previous_id,
+       first_index: qq.first_index, last_index: qq.last_index,
+       first_id: qq.first_id, last_id: qq.last_id,
+       id_list: qq.id_list |> Enum.join(","))
   end
 
 

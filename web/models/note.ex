@@ -339,10 +339,16 @@ defmodule LookupPhoenix.Note do
         previous_index = index - 1
       end
 
+
+
+      last_id = Enum.at(id_list, last_index)
       next_id = Enum.at(id_list, next_index)
       previous_id = Enum.at(id_list, previous_index)
+      first_id = Enum.at(id_list, last_index)
 
-      %{previous_index: previous_index, index: index, next_index: next_index,
+      %{first_index: 0, index: index, last_index: last_index,
+        previous_index: previous_index, next_index: next_index,
+        first_id: first_id, last_id: last_id,
         previous_id: previous_id, next_id: next_id,
         id_string: id_string, id_list: id_list,
         note_count: note_count}
