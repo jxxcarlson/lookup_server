@@ -198,7 +198,7 @@ defmodule RenderText do
     end
 
     def formatItalic(text) do
-       Regex.replace(~r/\s_(.*)_\s/U, text, " <i>\\1</i> ")
+       Regex.replace(~r/(\s)_(.*)_(\s)/U, text, "\\1<i>\\2</i>\\3")
     end
 
     def formatRed(text) do
