@@ -117,6 +117,7 @@
      image below.  You can apply light formatting to imgages, as in this example:
      <span>https://www.allaboutbirds.org/.../warbler.jpg[height:200px]</span>.
      The form <span>https://www.allaboutbirds.org/.../warbler.jpg[width:200px]</span> also works.
+     To see a full-size version of the image, control-click on it and select <span>open image in new Tab</span>.
 
      </li>
 
