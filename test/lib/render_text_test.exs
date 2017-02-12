@@ -44,22 +44,33 @@ defmodule RenderTextTest do
 
 
     test "smartLinks parses example 6" do
-           argument = "http://www.rsc.org/learn%3C/span%3E-chemistry/resource/res00000466/the-electrolysis-of-solutions"
-           link_text = "www.rsc.org"
-           result =  RenderText.makeSmartLinks(argument)
-           expected = "<a href=\"#{argument}\" target=\"_blank\">#{link_text}</a>"
-           assert String.trim(result) ==  String.trim(expected)
+       argument = "http://www.rsc.org/learn%3C/span%3E-chemistry/resource/res00000466/the-electrolysis-of-solutions"
+       link_text = "www.rsc.org"
+       result =  RenderText.makeSmartLinks(argument)
+       expected = "<a href=\"#{argument}\" target=\"_blank\">#{link_text}</a>"
+       assert String.trim(result) ==  String.trim(expected)
    end
 
     test "smartLinks parses example 7" do
-              argument = "http://noredink.github.io/json-to-elm/"
-              link_text = "noredink.github.io"
-              result =  RenderText.makeSmartLinks(argument)
-              expected = "<a href=\"#{argument}\" target=\"_blank\">#{link_text}</a>"
-              assert String.trim(result) ==  String.trim(expected)
-      end
+      argument = "http://noredink.github.io/json-to-elm/"
+      link_text = "noredink.github.io"
+      result =  RenderText.makeSmartLinks(argument)
+      expected = "<a href=\"#{argument}\" target=\"_blank\">#{link_text}</a>"
+      assert String.trim(result) ==  String.trim(expected)
+  end
+
+   test "userLinks" do
+      argument = "https://en.wikipedia.org/wiki/Newton's_laws_of_motion[Newton's Laws]"
+      url = "https://en.wikipedia.org/wiki/Newton's_laws_of_motion"
+      link_text = "Newton's Laws"
+      result =  RenderText.makeUserLinks(argument)
+      expected = " <a href=\"#{url}\" target=\"_blank\">#{link_text}</a> "
+      assert result ==  expected
+
+   end
 
 # http://noredink.github.io/json-to-elm/
+# ERROR: https://en.wikipedia.org/wiki/Newton's_laws_of_motion[Newton's Laws]
 
    test "transform parses example in list item" do
      argument = """
@@ -69,7 +80,10 @@ defmodule RenderTextTest do
 """
      link_text = "noredink.github.io"
      result = RenderText.transform(argument)
-     expected = "<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  <a href=\"http://noredink.github.io/json-to-elm/\" target=\"_blank\">noredink.github.io</a></span>"
+     expected = """
+<span style='margin-left:2em; text-indent:-0.7em;display:inline-block;margin-bottom:0.3em;'>-  <a href="http://noredink.github.io/json-to-elm/" target="_blank">noredink.github.io</a></span>
+"""
+
      assert String.trim(result) ==  String.trim(expected)
    end
 
@@ -99,9 +113,9 @@ defmodule RenderTextTest do
    end
 
    test "apply strikethrough" do
-     input = "ss  -Call Reza- eee"
+     input = "aaa -Call Reza- bbb"
      output = RenderText.padString(input) |> RenderText.formatStrike |> String.trim
-     expected_output="<span style='text-decoration: line-through'>Call Reza</span>"
+     expected_output="aaa <span style='text-decoration: line-through'>Call Reza</span> bbb"
      assert output == expected_output
    end
 
@@ -133,18 +147,15 @@ c == d
 """
    output = RenderText.formatCode(input)
    expected_output = """
-<pre>
-a == b
-</pre>
-foo, bar
-<pre>
-c == d
-</pre>
-"""
-   clean_output = Regex.replace(~r/\s/, output, "")
-   clean_expected_utput = Regex.replace(~r/\s/, expected_output, "")
 
-    assert  clean_output == clean_expected_utput
+<pre style='margin-bottom:-1.2em;;'>a == b</pre>
+foo, bar
+<pre style='margin-bottom:-1.2em;;'>c == d</pre>
+
+"""
+
+
+    assert  output == expected_output
    end
 
 test "transform" do
@@ -161,13 +172,9 @@ c == d
 """
    output = RenderText.transform(input)
    expected_output = """
-<pre>
-a == b
-</pre>
+<pre style='margin-bottom:-1.2em;;'>a == b</pre>
 foo, bar
-<pre>
-c == d
-</pre>
+<pre style='margin-bottom:-1.2em;;'>c == d</pre>
 """
    clean_output = Regex.replace(~r/\s/, output, "")
    clean_expected_utput = Regex.replace(~r/\s/, expected_output, "")
@@ -261,6 +268,16 @@ Foo, bar
 blah, blah
 """
 
+    expected_output = """
+Foo, bar
+<span style='margin-left:2em; text-indent:-0.7em;display:inline-block;margin-bottom:0.3em;'>-  item one</span>
+<span style='margin-left:2em; text-indent:-0.7em;display:inline-block;margin-bottom:0.3em;'>-  item two</span>
+
+<span style='margin-left:2em; text-indent:-0.7em;display:inline-block;margin-bottom:0.3em;'>-  item three</span>
+
+blah, blah
+"""
+
     items = RenderText.getItems(text)
     assert length(items) == 3
     assert hd(items) == "item one"
@@ -269,7 +286,12 @@ blah, blah
 
     item_one = hd(items)
 
-    assert RenderText.formatItems(text) ==  "Foo, bar\n<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  item one</span>\n<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  item two</span>\n\n<span style='padding-left:20px; text-indent:-20px;margin-bottom:0em;margin-top:0em;'>-  item three</span>\n\nblah, blah\n"
+    output = RenderText.formatItems(text)
+    IO.puts "========"
+    IO.puts output
+    IO.puts "========"
+
+    assert output ==  expected_output
     end
 
     test "getItems when there are no items ...'" do
