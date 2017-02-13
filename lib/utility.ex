@@ -1,5 +1,12 @@
 defmodule LookupPhoenix.Utility do
 
+  def report(message, object) do
+    IO.puts "========================"
+    IO.puts message
+    IO.inspect object
+    IO.puts "========================"
+  end
+
   def firstWord(str) do
     String.split(str) |> List.first
   end

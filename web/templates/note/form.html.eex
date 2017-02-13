@@ -24,9 +24,7 @@
     </div>
 
    <input type="hidden" name="index" value= <%=@index %> >
-   <input type="hidden" name="id_list" value=<%= @id_list %> >
-
-    <%= hidden_input(f, :yacca) %>
+   <input type="hidden" name="id_string" value=<%= @id_string %> >
 
   <div class="form-group">
     <%= if @locked do %>
