@@ -131,18 +131,25 @@ defmodule LookupPhoenix.NoteController do
   def doUpdate(note, changeset, conn) do
 
     index = conn.params["index"]
+<<<<<<< HEAD
     id_string = conn.params["id_list"]
     qq = Note.decode_query_string("index=#{index}&id_list=#{id_string}")
     params1 = %{}
+=======
+    id_string = conn.params["id_string"]
+
+    Utility.report("doUpdate, index", index)
+    Utility.report("doUpdate, id_string", id_string)
+
+
+    params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
+>>>>>>> fix
 
     case Repo.update(changeset) do
       {:ok, note} ->
         conn
         |> put_flash(:info, "Note updated successfully.")
-        |> redirect(to: note_path(conn, :show, note, note_count: qq.note_count,
-            index: qq.index,
-            next_index: qq.next_index, previous_index: qq.previous_index,
-            next_id: qq.next_id, previous_id: qq.previous_id, id_list: qq.id_list |> Enum.join(",")))
+        |> redirect(to: note_path(conn, :show, note, params))
         # |> redirect(to: note_path(conn, :index))
       {:error, changeset} ->
         render(conn, "edit.html", note: note, changeset: changeset)

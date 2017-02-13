@@ -312,8 +312,9 @@ defmodule LookupPhoenix.Note do
       query_data = q_string|> Utility.parse_query_string
       index = query_data["index"]
       {index, _} = Integer.parse index
+
       id_string = query_data["id_string"] |> String.replace("%2C", ",")
-      id_list = String.split(id_string, ",") |> Enum.map(fn(id) -> String.trim(id) end)
+      id_list = String.split(id_string, ",") # |> Enum.map(fn(id) -> String.trim(id) end)
 
       current_id = Enum.at(id_list, index)
       note_count = length(id_list)
@@ -330,6 +331,7 @@ defmodule LookupPhoenix.Note do
         previous_index = index - 1
       end
 
+      Utility.report("In Note, decode_query_string", q_string)
 
 
       last_id = Enum.at(id_list, last_index)
