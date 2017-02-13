@@ -30,11 +30,11 @@
                      id_string: @id_string), class: "" %>
   </span>
   <%= if @note_count > 1 do %>
-  <span class: "btn btn-primary" style="float:right;margin-right:28px;" ><%= link "Last", to: note_path(@conn, :edit, @last_id, index: @last_index, id_list: @id_list) %></span>
-  <span class: "btn btn-primary" style="float:right;margin-right:8px;" ><%= link "Next", to: note_path(@conn, :edit, @next_id, index: @next_index, id_list: @id_list) %></span>
+  <span class: "btn btn-primary" style="float:right;margin-right:28px;" ><%= link "Last", to: note_path(@conn, :edit, @last_id, index: @last_index, id_string: @id_string) %></span>
+  <span class: "btn btn-primary" style="float:right;margin-right:8px;" ><%= link "Next", to: note_path(@conn, :edit, @next_id, index: @next_index, id_string: @id_string) %></span>
   <span style="background-color:#35d; color: white; padding-left:5px; padding-right:8px; float:right;margin-right:8px;" ><%= @index + 1 %>:<%= @note_count %></span>
-  <span style="float:right;margin-right:9px;" ><%= link "Prev", to: note_path(@conn, :edit, @previous_id, index: @previous_index, id_list: @id_list) %></span>
-  <span style="float:right;margin-right:9px;" ><%= link "First", to: note_path(@conn, :edit, @first_id, index: @first_index, id_list: @id_list) %></span>
+  <span style="float:right;margin-right:9px;" ><%= link "Prev", to: note_path(@conn, :edit, @previous_id, index: @previous_index, id_string: @id_string) %></span>
+  <span style="float:right;margin-right:9px;" ><%= link "First", to: note_path(@conn, :edit, @first_id, index: @first_index, id_string: @id_string) %></span>
 
                    <% end %>
 
