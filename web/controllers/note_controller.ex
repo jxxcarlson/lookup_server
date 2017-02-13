@@ -131,19 +131,8 @@ defmodule LookupPhoenix.NoteController do
   def doUpdate(note, changeset, conn) do
 
     index = conn.params["index"]
-<<<<<<< HEAD
-    id_string = conn.params["id_list"]
-    qq = Note.decode_query_string("index=#{index}&id_list=#{id_string}")
-    params1 = %{}
-=======
     id_string = conn.params["id_string"]
-
-    Utility.report("doUpdate, index", index)
-    Utility.report("doUpdate, id_string", id_string)
-
-
     params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
->>>>>>> fix
 
     case Repo.update(changeset) do
       {:ok, note} ->
