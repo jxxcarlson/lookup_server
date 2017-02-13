@@ -21,6 +21,7 @@ defmodule LookupPhoenix.User do
       field :admin, :boolean
       field :number_of_searches, :integer
       field :search_filter, :string
+      field :channel, :string
 
       has_many :notes, LookupPhoenix.Note
 
@@ -29,7 +30,7 @@ defmodule LookupPhoenix.User do
 
   def running_changeset(model, params \\ :empty) do
       model
-      |> cast(params, ~w(tags read_only number_of_searches search_filter), [] )
+      |> cast(params, ~w(tags read_only number_of_searches search_filter channel), [] )
   end
 
   def password_changeset(model, params \\ :empty) do

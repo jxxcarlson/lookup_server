@@ -17,6 +17,7 @@ defmodule LookupPhoenix.Note do
     field :edited_at, :utc_datetime
     field :tag_string, :string
     field :tags, {:array, :string}
+    field :public, :boolean
 
      belongs_to :user, LookupPhoenix.User
 
@@ -28,7 +29,7 @@ defmodule LookupPhoenix.Note do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :tags, :user_id, :viewed_at, :edited_at, :tag_string])
+    |> cast(params, [:title, :content, :tags, :user_id, :viewed_at, :edited_at, :tag_string, :public])
     |> validate_required([:title, :content])
   end
 
