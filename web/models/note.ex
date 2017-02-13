@@ -384,6 +384,17 @@ defmodule LookupPhoenix.Note do
          Note |> Repo.all |> Enum.map(fn(note) -> Note.init_edited_at(note) end)
       end
 
+
+    def set_public(note, value) do
+      params = %{"public" => value}
+        changeset = Note.changeset(note, params)
+      Repo.update(changeset)
+    end
+
+    def init_all_public(value) do
+       Note |> Repo.all |> Enum.map(fn(note) -> Note.set_public(note, value) end)
+    end
+
     def erase_string(note, str) do
        new_conent = String.replace(note.content, str, "")
        params = %{"content" => new_conent}
