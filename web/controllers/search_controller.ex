@@ -9,8 +9,6 @@ defmodule LookupPhoenix.SearchController do
 
     def index(conn, %{"search" => %{"query" => query}}) do
 
-      IO.puts "search, index, query = #{query}"
-
       User.increment_number_of_searches(conn.assigns.current_user)
 
       notes = Note.search(query, conn.assigns.current_user.id)
@@ -32,10 +30,6 @@ defmodule LookupPhoenix.SearchController do
 
     def tag_search(conn, %{"query" => query}) do
 
-         IO.puts "search, tag_search, query = #{query}"
-
-         IO.puts "THIS IS TAG SEARCH, query = #{query} ................."
-
           User.increment_number_of_searches(conn.assigns.current_user)
 
           queryList = String.split(query)
@@ -54,7 +48,6 @@ defmodule LookupPhoenix.SearchController do
           end
 
           render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: noteCountString)
-
 
      end
 

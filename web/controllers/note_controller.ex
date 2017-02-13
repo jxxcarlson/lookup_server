@@ -6,14 +6,6 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Tag
   alias LookupPhoenix.Utility
 
-
-  def report(message, object) do
-    IO.puts "========================"
-        IO.puts message
-        IO.inspect object
-        IO.puts "========================"
-  end
-
   def getRandomNotes(user_id) do
      note_count = Note.count_for_user(user_id)
      expected_number_of_entries = 7
@@ -30,7 +22,7 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def index(conn, _params) do
-     IO.puts "INDEX"
+
      user_id = conn.assigns.current_user.id
      id_list = Note.recall_list(user_id)
 
@@ -45,15 +37,7 @@ defmodule LookupPhoenix.NoteController do
 
      notes = Utility.add_index_to_maplist(notes)
      id_string = Note.extract_id_list(notes)
-
      params = %{notes: notes, id_string: id_string, noteCountString: noteCountString, options: options}
-     # params2 = Note.decode_query_string(conn.query_string)
-     # params = Map.merge(params1, params2)
-
-     IO.puts "====== params ======="
-     IO.puts id_string
-     IO.inspect params
-     IO.puts "====================="
 
      render(conn, "index.html", params)
   end
@@ -117,9 +101,6 @@ defmodule LookupPhoenix.NoteController do
     params1 = %{note: note, inserted_at: inserted_at, updated_at: note.updated_at,
                   options: options, word_count: word_count}
     params2 = Note.decode_query_string(conn.query_string)
-    IO.puts "========== show, dcs ========"
-    IO.inspect params2
-    IO.puts "============================="
     params = Map.merge(params1, params2)
 
     {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
@@ -130,12 +111,7 @@ defmodule LookupPhoenix.NoteController do
 
 
   def edit(conn, %{"id" => id}) do
-        qq = Note.decode_query_string(conn.query_string)
-        IO.puts "======= edit controller ======="
-        IO.inspect qq
-        IO.inspect qq.index
-        IO.inspect qq.id_list
-        IO.puts "================================"
+
         note = Repo.get!(Note, id)
         changeset = Note.changeset(note)
         locked = conn.assigns.current_user.read_only
@@ -146,25 +122,19 @@ defmodule LookupPhoenix.NoteController do
                     word_count: word_count, locked: locked,
                     conn: conn, tags: tags}
         params2 = Note.decode_query_string(conn.query_string)
-        IO.puts "========== show, dcs ========"
-        IO.inspect params2
-        IO.puts "============================="
         params = Map.merge(params1, params2)
-
 
         render(conn, "edit.html", params)
 
   end
 
   def doUpdate(note, changeset, conn) do
-    IO.puts "=== DO UPDATE ==="
+
     index = conn.params["index"]
     id_string = conn.params["id_list"]
     qq = Note.decode_query_string("index=#{index}&id_list=#{id_string}")
-    IO.inspect qq
-    IO.puts index
-    IO.puts id_string
-    IO.puts "================="
+    params1 = %{}
+
     case Repo.update(changeset) do
       {:ok, note} ->
         conn
@@ -180,9 +150,7 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def update(conn, %{"id" => id, "note" => note_params}) do
-    IO.puts "=== UPDATE ==="
-    IO.inspect note_params["index"]
-    IO.puts "==================="
+
     note = Repo.get!(Note, id)
 
     new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs

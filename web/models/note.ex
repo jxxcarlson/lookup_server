@@ -76,7 +76,6 @@ defmodule LookupPhoenix.Note do
 
 
     def decode_query(query) do
-      IO.puts "decode_query: #{query}"
       query
       |> String.downcase
       |> String.replace("/", " /")
@@ -104,16 +103,11 @@ defmodule LookupPhoenix.Note do
                        where: (note.user_id == ^user_id and (ilike(note.title, ^"%#{List.first(terms)}%") or ilike(note.content, ^"%#{List.first(terms)}%"))),
                        order_by: [desc: note.inserted_at]
               terms = tl(terms)
-              IO.puts "NO TAGS, TERMS = #{length(terms)}"
-
-
 
         _ -> query = Ecto.Query.from note in Note,
                        where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tags)}%")),
                        order_by: [desc: note.inserted_at]
               tags = tl(tags)
-              IO.puts "TAGS = #{length(tags)}, TERMS = #{length(terms)}"
-
 
       end
 
@@ -266,9 +260,6 @@ defmodule LookupPhoenix.Note do
 
     def memorize_list(id_list, user_id) do
       new_id_list = Enum.filter(id_list, fn x -> is_integer(x) end)
-      IO.puts "=========================="
-      IO.puts "Memorizing #{length(id_list)} notes for #{user_id}"
-      IO.puts "=========================="
       Mnemonix.put(Cache, "active_notes_#{user_id}", new_id_list)
     end
 
@@ -316,19 +307,16 @@ defmodule LookupPhoenix.Note do
 
    def decode_query_string(q_string) do
 
-      IO.puts "q_string: #{q_string}"
+
       # Example: q_string=index=4&id_list=35%2C511%2C142%2C525%2C522%2C531%2C233
       query_data = q_string|> Utility.parse_query_string
       index = query_data["index"]
       {index, _} = Integer.parse index
       id_string = query_data["id_string"] |> String.replace("%2C", ",")
       id_list = String.split(id_string, ",") |> Enum.map(fn(id) -> String.trim(id) end)
-      # id_list = String.split(id_string, "%2C") |> Enum.map(fn(id) -> String.trim(id) end)
-      # id_list = Regex.split(~r/%2C|%252C/, id_string)
 
       current_id = Enum.at(id_list, index)
       note_count = length(id_list)
-      IO.puts "In decode_query_string, note_count = #{note_count}"
       last_index = note_count - 1
 
       if index >= last_index do
