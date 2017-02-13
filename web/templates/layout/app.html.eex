@@ -102,6 +102,8 @@
            <% end %>
            </span>
 
+           <span style="float:right; margin-top:18px; margin-right:4px;font-size:1.5rem; color:#666;">Channel</span>
+
          <% end %>
          </div>
 
