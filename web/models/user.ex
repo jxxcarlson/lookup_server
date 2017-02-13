@@ -121,7 +121,7 @@ defmodule LookupPhoenix.User do
   def initialize_metadata(user) do
      # params = %{"tags" => [], "read_only" => false, "admin" => false, "number_of_searches"  => 0}
      params = %{"tags" => [], "read_only" => false, "admin" => false,
-        "number_of_searches"  => 0, "search_filter" => " "}
+        "number_of_searches"  => 0, "search_filter" => " ", "channel" => "#{user.username}.all"}
      changeset = User.running_changeset(user, params)
      Repo.update(changeset)
   end
