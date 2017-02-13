@@ -349,7 +349,7 @@ defmodule LookupPhoenix.Note do
       %{first_index: 0, index: index, last_index: last_index,
         previous_index: previous_index, next_index: next_index,
         first_id: first_id, last_id: last_id,
-        previous_id: previous_id, next_id: next_id,
+        previous_id: previous_id, current_id: current_id, next_id: next_id,
         id_string: id_string, id_list: id_list,
         note_count: note_count}
 

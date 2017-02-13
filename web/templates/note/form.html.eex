@@ -33,6 +33,7 @@
       <%= link "Back!!", to: note_path(@conn, :index), id: 'notes' %>
     <% else %>
       <span><%= submit "Save", class: "btn btn-primary", style: "width: 40%;", id: 'save' %>
+
       <%= link "Back", to: note_path(@conn, :index), id: 'notes', class: "btn btn-primary", style: "width: 30%;margin-right:2em;" %>
       Word count: <%= @word_count %>
       <span>
