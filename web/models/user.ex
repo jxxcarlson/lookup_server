@@ -7,6 +7,7 @@ defmodule LookupPhoenix.User do
   alias LookupPhoenix.Repo
   alias LookupPhoenix.Tag
   alias LookupPhoenix.User
+  alias LookupPhoenix.Utility
 
 
   schema "users" do
@@ -86,6 +87,10 @@ defmodule LookupPhoenix.User do
       end
   end
 
+  def find_by_username(username) do
+    Repo.one(from u in User, where: u.username == ^username)
+   end
+
 
   def set_read_only(changeset, value) do
         case changeset do
@@ -103,6 +108,15 @@ defmodule LookupPhoenix.User do
       changeset = User.running_changeset(user, params)
       Repo.update(changeset)
   end
+
+  def update_channel(channel) do
+        [username, user_channel] = String.split(channel, ".")
+        user = User.find_by_username(username)
+        params = %{"channel" => channel}
+        changeset = User.running_changeset(user, params)
+        Utility.report("chengeset for channel", changeset)
+        Repo.update(changeset)
+    end
 
   def initialize_metadata(user) do
      # params = %{"tags" => [], "read_only" => false, "admin" => false, "number_of_searches"  => 0}
@@ -175,6 +189,20 @@ defmodule LookupPhoenix.User do
   def fix_all_tags do
     User |> Repo.all |> Enum.map(fn(user) -> fix_tags(user) end)
   end
+
+  def set_channel(user, channel_name) do
+    username = user.username
+    update_channel("${username}.${channel_name}")
+  end
+
+  def set_all_channels(channel_name) do
+    User
+    |> Repo.all
+    # |> Enum.map(fn(user) -> set_channel(user, "all") end)
+    |> Enum.map(fn(user) -> update_channel("#{user.username}.#{channel_name}") end)
+  end
+
+
 
   # alias LookupPhoenix.User; alias LookupPhoenix.Repo; alias LookupPhoenix.Tagr;  alias LookupPhoenix.Note; u =  User |> Repo.get!(9)
 

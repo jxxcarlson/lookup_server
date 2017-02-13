@@ -56,6 +56,14 @@ defmodule LookupPhoenix.UserController do
     # render conn, "tags.html", user: conn.assigns.current_user
   end
 
+  def update_channel(conn, params) do
+      Utility.report("params - set", params["set"])
+      Utility.report("params - set, channel", (params["set"])["channel"])
+      channel = (params["set"])["channel"]
+      User.update_channel(channel)
+      conn |> redirect(to: note_path(conn, :index))
+    end
+
   def new(conn, _params) do
     changeset = User.changeset(%User{})
     render conn, "new.html", changeset: changeset

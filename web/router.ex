@@ -18,7 +18,7 @@ defmodule LookupPhoenix.Router do
     pipe_through :browser # Use the default browser stack
 
     resources "/notes", NoteController
-    resources "/users", UserController, only: [:index, :show, :new, :create, :delete]
+    resources "/users", UserController, only: [:index, :show, :new, :create, :update, :delete]
     resources "/sessions", SessionController, only: [:new, :create, :delete ]
 
     get "/random", SearchController, :random
@@ -29,6 +29,7 @@ defmodule LookupPhoenix.Router do
     get "/tag_search:query", SearchController, :tag_search
 
     get "/update_tags", UserController, :update_tags
+    post "/update_channel", UserController, :update_channel
     post "/toggle_lock", UserController, :toggle_lock
 
 
