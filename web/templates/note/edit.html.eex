@@ -27,8 +27,7 @@
     </script>
 
   <span style="float:right;" ><%= link "Show", to: note_path(@conn, :show, @current_id, index: @index,
-                     previous: @previous_id, next: @next_id,
-                     id_list: @id_list), class: "" %>
+                     id_string: @id_string), class: "" %>
   </span>
   <%= if @note_count > 1 do %>
   <span class: "btn btn-primary" style="float:right;margin-right:28px;" ><%= link "Last", to: note_path(@conn, :edit, @last_id, index: @last_index, id_list: @id_list) %></span>

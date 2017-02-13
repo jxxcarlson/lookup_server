@@ -30,6 +30,7 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def index(conn, _params) do
+     IO.puts "INDEX"
      user_id = conn.assigns.current_user.id
      id_list = Note.recall_list(user_id)
 
@@ -45,7 +46,16 @@ defmodule LookupPhoenix.NoteController do
      notes = Utility.add_index_to_maplist(notes)
      id_string = Note.extract_id_list(notes)
 
-     render(conn, "index.html", notes: notes, id_list: id_string, noteCountString: noteCountString, options: options)
+     params = %{notes: notes, id_string: id_string, noteCountString: noteCountString, options: options}
+     # params2 = Note.decode_query_string(conn.query_string)
+     # params = Map.merge(params1, params2)
+
+     IO.puts "====== params ======="
+     IO.puts id_string
+     IO.inspect params
+     IO.puts "====================="
+
+     render(conn, "index.html", params)
   end
 
   def read_only_message(conn) do
@@ -92,8 +102,6 @@ defmodule LookupPhoenix.NoteController do
 
   def show(conn, %{"id" => id}) do
 
-    qq = Note.decode_query_string(conn.query_string)
-
     note = Repo.get!(Note, id)
 
     Note.update_viewed_at(note)
@@ -106,16 +114,19 @@ defmodule LookupPhoenix.NoteController do
     inserted_at= Note.inserted_at(note)
     word_count = RenderText.word_count(note.content)
 
+    params1 = %{note: note, inserted_at: inserted_at, updated_at: note.updated_at,
+                  options: options, word_count: word_count}
+    params2 = Note.decode_query_string(conn.query_string)
+    IO.puts "========== show, dcs ========"
+    IO.inspect params2
+    IO.puts "============================="
+    params = Map.merge(params1, params2)
+
     {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
-    render(conn, "show.html", note: note,
-       inserted_at: inserted_at, updated_at: updated_at,
-       word_count: word_count, note_count: qq.note_count, options: options, index: qq.index,
-       next_index: qq.next_index, previous_index: qq.previous_index,
-       next_id: qq.next_id, previous_id: qq.previous_id,
-       first_index: qq.first_index, last_index: qq.last_index,
-       first_id: qq.first_id, last_id: qq.last_id,
-       id_list: qq.id_list |> Enum.join(","))
+    render(conn, "show.html", params)
   end
+
+
 
 
   def edit(conn, %{"id" => id}) do
@@ -130,15 +141,19 @@ defmodule LookupPhoenix.NoteController do
         locked = conn.assigns.current_user.read_only
         word_count = RenderText.word_count(note.content)
         tags = Note.tags2string(note)
-        render(conn, "edit.html", note: note, changeset: changeset,
-          word_count: word_count, locked: locked, conn: conn, tags: tags,
-          note_count: qq.note_count,  index: qq.index,
-          next_index: qq.next_index, current_id: qq.current_id, previous_index: qq.previous_index,
-          next_id: qq.next_id, previous_id: qq.previous_id,
-          first_index: qq.first_index, last_index: qq.last_index,
-          first_id: qq.first_id, last_id: qq.last_id,
-          id_list: qq.id_list |> Enum.join(",")
-          )
+
+        params1 = %{note: note, changeset: changeset,
+                    word_count: word_count, locked: locked,
+                    conn: conn, tags: tags}
+        params2 = Note.decode_query_string(conn.query_string)
+        IO.puts "========== show, dcs ========"
+        IO.inspect params2
+        IO.puts "============================="
+        params = Map.merge(params1, params2)
+
+
+        render(conn, "edit.html", params)
+
   end
 
   def doUpdate(note, changeset, conn) do

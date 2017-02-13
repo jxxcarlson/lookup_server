@@ -25,7 +25,7 @@ defmodule LookupPhoenix.SearchController do
         _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found"
       end
 
-      render(conn, "index.html", notes: notes, id_list: id_string, noteCountString: noteCountString)
+      render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: noteCountString)
 
 
     end
@@ -53,7 +53,7 @@ defmodule LookupPhoenix.SearchController do
             _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found with tag #{query}"
           end
 
-          render(conn, "index.html", notes: notes, id_list: id_string, noteCountString: noteCountString)
+          render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: noteCountString)
 
 
      end
@@ -82,7 +82,7 @@ defmodule LookupPhoenix.SearchController do
            1 -> countReportString =   "1 Random note"
            _ -> countReportString = "#{length(notes)} Random notes"
          end
-         render(conn, "index.html", notes: notes, id_list: id_string, noteCountString: countReportString)
+         render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: countReportString)
     end
 
    def recent(conn, params) do
@@ -112,7 +112,7 @@ defmodule LookupPhoenix.SearchController do
            1 -> countReportString =   "1 #{update_message} note"
            _ -> countReportString = "#{length(notes)} #{update_message} notes"
         end
-        render(conn, "index.html", notes: notes, id_list: id_string, noteCountString: countReportString)
+        render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: countReportString)
    end
 
 

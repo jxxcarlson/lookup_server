@@ -321,11 +321,14 @@ defmodule LookupPhoenix.Note do
       query_data = q_string|> Utility.parse_query_string
       index = query_data["index"]
       {index, _} = Integer.parse index
-      id_string = query_data["id_list"]
-      id_list = String.split(id_string, "%2C")
+      id_string = query_data["id_string"] |> String.replace("%2C", ",")
+      id_list = String.split(id_string, ",") |> Enum.map(fn(id) -> String.trim(id) end)
+      # id_list = String.split(id_string, "%2C") |> Enum.map(fn(id) -> String.trim(id) end)
+      # id_list = Regex.split(~r/%2C|%252C/, id_string)
 
       current_id = Enum.at(id_list, index)
       note_count = length(id_list)
+      IO.puts "In decode_query_string, note_count = #{note_count}"
       last_index = note_count - 1
 
       if index >= last_index do

@@ -58,15 +58,14 @@
       <td style="width:4%"> <%= note.index + 1 %> </td>
 
       <td style="width:35%"> <%= link note.title, to: note_path(@conn, :show, note, index: note.index,
-         previous: LookupPhoenix.Note.previous(note, @notes), next: LookupPhoenix.Note.next(note, @notes),
-         id_list: @id_list), class: "" %> </td>
+         id_string: @id_string), class: "" %> </td>
 
       <td> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td>
 
       <td style="width:35%"><%= raw(RenderText.format_for_index(note.content)) %></td>
 
       <td class="text-right">
-          <%= link "Edit", to: note_path(@conn, :edit, note, index: note.index, id_list: @id_list), class: "btn btn-default btn-xs" %>
+          <%= link "Edit", to: note_path(@conn, :edit, note, index: note.index, id_string: @id_string), class: "btn btn-default btn-xs" %>
       </td>
       <td class="text-right">
         <%= if @current_user.read_only == false do %>
