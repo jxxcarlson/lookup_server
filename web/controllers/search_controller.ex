@@ -11,7 +11,7 @@ defmodule LookupPhoenix.SearchController do
 
       User.increment_number_of_searches(conn.assigns.current_user)
 
-      notes = Note.search(query, conn.assigns.current_user.id)
+      notes = Note.search(query, conn.assigns.current_user)
       Note.memorize_notes(notes, conn.assigns.current_user.id)
 
       notes = Utility.add_index_to_maplist(notes)

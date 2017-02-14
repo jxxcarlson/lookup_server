@@ -4,6 +4,7 @@ defmodule LookupPhoenix.Note do
   use Ecto.Schema
   import Ecto.Query
   alias LookupPhoenix.Note
+  alias LookupPhoenix.User
   alias LookupPhoenix.Repo
   alias LookupPhoenix.Utility
 
@@ -92,23 +93,65 @@ defmodule LookupPhoenix.Note do
       [tags, terms]
     end
 
+    def basic_query(user_id, access, term, type) do
+
+        query1 = from note in Note, where: note.user_id == ^user_id
+
+        if access == "public" do
+
+          query2 = from note in query1, where: note.public == ^ true
+
+        else
+
+          query2 = query1
+
+        end
+
+        if type == :tag do
+
+          query3 = from note in query2, where: ilike(note.tag_string, ^"%#{term}%")
+
+        else
+
+          query3 = from note in query2, where: ilike(note.title, ^"%#{term}%") or ilike(note.content, ^"%#{term}%")
+
+        end
+
+        query4 = from note in query3, order_by: [desc: note.inserted_at]
+
+        query4
 
 
-    def search_with_non_empty_arg(query_terms, user_id) do
+    end
 
-      [tags, terms] = split_query_terms(query_terms)
-      tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
+    def search_with_non_empty_arg(query_terms, user) do
+
+       user_id = user.id
+       access = :all
+       [tags, terms] = split_query_terms(query_terms)
+       tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
+
+      [channel_user_name, channel_name] = String.split(user.channel, ".")
+      if channel_user_name != user.username do
+        channel_user = User.find_by_username(channel_user_name)
+        user_id = channel_user.id
+        access = :public
+      end
+
+      if !Enum.member?(["all", "public"], channel_name) do
+         tags = [channel_name|tags]
+      end
+
+
+
+     Utility.report("search_with_non_empty_arg, user_id", user_id)
 
       case tags do
-        [] -> query = Ecto.Query.from note in Note,
-                       where: (note.user_id == ^user_id and (ilike(note.title, ^"%#{List.first(terms)}%") or ilike(note.content, ^"%#{List.first(terms)}%"))),
-                       order_by: [desc: note.inserted_at]
+        [] -> query = basic_query(user_id, access, hd(terms), :term)
               terms = tl(terms)
 
-        _ -> query = Ecto.Query.from note in Note,
-                       where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tags)}%")),
-                       order_by: [desc: note.inserted_at]
-              tags = tl(tags)
+        _ -> query = query = basic_query(user_id, access, hd(tags), :tag)
+             tags = tl(tags)
 
       end
 
@@ -123,11 +166,11 @@ defmodule LookupPhoenix.Note do
     end
 
 
-    def search(query, user_id) do
+    def search(query, user) do
       query_terms = decode_query(query)
       case query_terms do
         [] -> []
-        _ -> search_with_non_empty_arg(query_terms, user_id)
+        _ -> search_with_non_empty_arg(query_terms, user)
       end
     end
 
