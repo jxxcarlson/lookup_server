@@ -40,7 +40,7 @@ defmodule LookupPhoenix.Note do
       |> Repo.all
     end
 
-    def updated_before_date(hours, date_time, user) do
+    def updated_before_date1(hours, date_time, user) do
        [access, _channel_name, user_id] = decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
        query1 = Ecto.Query.from note in Note,
@@ -57,7 +57,7 @@ defmodule LookupPhoenix.Note do
        |> getDocumentsFromList
     end
 
-    def viewed_before_date(hours, date_time, user) do
+    def viewed_before_date1(hours, date_time, user) do
        [access, _channel_name, user_id] = decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
        query1 = Ecto.Query.from note in Note,
@@ -67,6 +67,32 @@ defmodule LookupPhoenix.Note do
       Repo.all(query1)
       |> getDocumentsFromList
     end
+
+    ####
+    def updated_before_date(hours, date_time, user) do
+       # user_id = user.id
+       [access, _channel_name, user_id] = decode_channel(user)
+       then = Timex.shift(date_time, [hours: -hours])
+       query = Ecto.Query.from note in Note,
+          select: note.id,
+          where: note.user_id == ^user_id and note.edited_at >= ^then,
+          order_by: [desc: note.edited_at]
+        Repo.all(query)
+        |> getDocumentsFromList
+    end
+
+    def viewed_before_date(hours, date_time, user) do
+       # user_id = user.id
+       [access, _channel_name, user_id] = decode_channel(user)
+       then = Timex.shift(date_time, [hours: -hours])
+       query = Ecto.Query.from note in Note,
+          select: note.id,
+          where: note.user_id == ^user_id and note.viewed_at >= ^then,
+          order_by: [desc: note.viewed_at]
+        Repo.all(query)
+        |> getDocumentsFromList
+    end
+    ###
 
     def count_for_user(user_id) do
       Utility.report("Note.count_for_user, user_id:", user_id)
