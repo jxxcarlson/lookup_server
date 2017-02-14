@@ -87,7 +87,7 @@
            <% end %>
          </ol>
 
-         <div style="margin-top:om;; margin-bottom:0">
+         <div style="margin-top:0;; margin-bottom:0">
          <%= if @conn.assigns[:current_user] != nil do %>
 
            <span style="float:left;">
