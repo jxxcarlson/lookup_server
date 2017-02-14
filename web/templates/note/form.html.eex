@@ -21,7 +21,11 @@
       <%= label f, :tags, class: "control-label" %>
       <%= text_input f, :tag_string, class: "form-control", id: 'tags', placeholder: 'separate tags by commas'  %>
       <%= error_tag f, :tag_string %>
-    </div>
+   </div>
+
+
+
+    <input type="radio" name="pubic" value= false %>
 
    <input type="hidden" name="index" value= <%=@index %> >
    <input type="hidden" name="id_string" value=<%= @id_string %> >

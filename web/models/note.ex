@@ -40,75 +40,58 @@ defmodule LookupPhoenix.Note do
       |> Repo.all
     end
 
-    def updated_before_date1(hours, date_time, user) do
-       [access, _channel_name, user_id] = decode_channel(user)
-       then = Timex.shift(date_time, [hours: -hours])
-       query1 = Ecto.Query.from note in Note,
-          where: note.user_id == ^user_id and note.edited_at >= ^then,
-          order_by: [desc: note.edited_at]
-       if access == :public do
-          IO.puts "PUBLIC ACCESS"
-          query = from note in query1,
-            where: note.public == true
-       else
-         IO.puts "PRIVATE ACCESS"
-          query = query1
-       end
-       Repo.all(query)
-       |> getDocumentsFromList
-    end
-
-    def viewed_before_date1(hours, date_time, user) do
-       [access, _channel_name, user_id] = decode_channel(user)
-       then = Timex.shift(date_time, [hours: -hours])
-       query1 = Ecto.Query.from note in Note,
-          where: note.user_id == ^user_id and note.viewed_at >= ^then,
-          order_by: [desc: note.viewed_at]
-
-      Repo.all(query1)
-      |> getDocumentsFromList
-    end
-
     ####
     def updated_before_date(hours, date_time, user) do
-        IO.puts "YADA YADA"
-       [access, _channel_name, user_id] = decode_channel(user)
+
+       [access, channel_name, user_id] = decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
        query1 = Ecto.Query.from note in Note,
           where: note.user_id == ^user_id and note.edited_at >= ^then,
           order_by: [desc: note.edited_at]
-        case access do
-          :all -> query2 = query1; IO.puts "PUBLIC ACCESS"
-          :public -> query2 = from note in query1, where: note.public == ^true; IO.puts "PRIVATE ACCESS"
-        end
+       if Enum.member?(["all", "public"], channel_name)  do
+         query2 = query1
+       else
+         query2 = from note in query1,
+           where: ilike(note.tag_string, ^"%#{channel_name}%")
+       end
+       case access do
+          :all -> query3 = query2
+          :public -> query3 = from note in query2, where: note.public == ^true
+       end
 
-        if access == :none do
+       if access == :none do
           []
-         else
-          Repo.all(query2)
-        end
+       else
+          Repo.all(query3)
+       end
 
     end
 
     def viewed_before_date(hours, date_time, user) do
        IO.puts "HO HO HO HO"
        # user_id = user.id
-       [access, _channel_name, user_id] = decode_channel(user)
+       [access, channel_name, user_id] = decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
        query1 = Ecto.Query.from note in Note,
           where: note.user_id == ^user_id and note.viewed_at >= ^then,
           order_by: [desc: note.viewed_at]
 
+        if Enum.member?(["all", "public"], channel_name)  do
+          query2 = query1
+        else
+          query2 = from note in query1,
+            where: ilike(note.tag_string, ^"%#{channel_name}%")
+        end
         case access do
-           :all -> query2 = query1; IO.puts "PUBLIC ACCESS"
-           :public -> query2 = from note in query1, where: note.public == ^true; IO.puts "PRIVATE ACCESS"
-         end
+           :all -> query3 = query2
+           :public -> query3 = from note in query2, where: note.public == ^true
+        end
 
-         if access == :none do
+        if access == :none do
            []
-          else
-           Repo.all(query2)
-         end
+        else
+           Repo.all(query3)
+        end
     end
     ###
 
@@ -530,6 +513,21 @@ defmodule LookupPhoenix.Note do
        params = %{"content" => new_conent}
        changeset = Note.changeset(note, params)
        Repo.update(changeset)
+    end
+
+    def public_indicator(note) do
+      if note.public do
+        "Public"
+      else
+        "Private"
+      end
+    end
+
+    def toggle_public(note) do
+      public = !note.public
+      params = %{"public" => public}
+      changeset = Note.changeset(note, params)
+      Repo.update(changeset)
     end
 
     ## test

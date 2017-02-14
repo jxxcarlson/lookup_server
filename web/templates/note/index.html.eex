@@ -45,6 +45,7 @@
     <tr>
       <th></th>
       <th>Title</th>
+      <th>P</th>
       <th>Date</th>
       <th>Content</th>
 
@@ -60,6 +61,7 @@
       <td style="width:35%"> <%= link note.title, to: note_path(@conn, :show, note, index: note.index,
          id_string: @id_string), class: "" %> </td>
 
+      <td> <%= LookupPhoenix.Utility.xForTrue(note.public) %> </td>
       <td> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td>
 
       <td style="width:35%"><%= raw(RenderText.format_for_index(note.content)) %></td>

@@ -107,7 +107,8 @@ defmodule LookupPhoenix.NoteController do
     params2 = Note.decode_query_string(conn.query_string)
     params = Map.merge(params1, params2)
 
-    {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
+    {:ok, updated_at } = note.updated_at |> Timex.local |> Timex.format("{Mfull} {D}, {YYYY}")
+    IO.puts "UPDATED AT: #{updated_at}"
     render(conn, "show.html", params)
   end
 

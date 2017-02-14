@@ -39,7 +39,7 @@
 </div>
 
 <br><br>
-<p> <i>Last updated: <%= @updated_at %>
+<p> <i><b><span><%= LookupPhoenix.Note.public_indicator(@note) %></b></span>, Last updated: <%= @updated_at %>
   <span style='margin-left:2em;'>ID: <%= @note.id %> </span>
   <span style='margin-left:2em;'>Word count: <%= @word_count %> </span>
   <span style='margin-left:2em;'>Tags: <%= @note.tag_string %></span></i>
