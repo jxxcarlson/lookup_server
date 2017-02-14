@@ -47,13 +47,14 @@ defmodule LookupPhoenix.Note do
           where: note.user_id == ^user_id and note.edited_at >= ^then,
           order_by: [desc: note.edited_at]
        if access == :public do
+          IO.puts "PUBLIC ACCESS"
           query = from note in query1,
-            select: note.id,
             where: note.public == true
        else
+         IO.puts "PRIVATE ACCESS"
           query = query1
        end
-       Repo.all(query1)
+       Repo.all(query)
        |> getDocumentsFromList
     end
 
@@ -70,27 +71,44 @@ defmodule LookupPhoenix.Note do
 
     ####
     def updated_before_date(hours, date_time, user) do
-
+        IO.puts "YADA YADA"
        [access, _channel_name, user_id] = decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
-       query = Ecto.Query.from note in Note,
-          select: note.id,
+       query1 = Ecto.Query.from note in Note,
           where: note.user_id == ^user_id and note.edited_at >= ^then,
           order_by: [desc: note.edited_at]
-        Repo.all(query)
-        |> getDocumentsFromList
+        case access do
+          :all -> query2 = query1; IO.puts "PUBLIC ACCESS"
+          :public -> query2 = from note in query1, where: note.public == ^true; IO.puts "PRIVATE ACCESS"
+        end
+
+        if access == :none do
+          []
+         else
+          Repo.all(query2)
+        end
+
     end
 
     def viewed_before_date(hours, date_time, user) do
+       IO.puts "HO HO HO HO"
        # user_id = user.id
        [access, _channel_name, user_id] = decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
-       query = Ecto.Query.from note in Note,
-          select: note.id,
+       query1 = Ecto.Query.from note in Note,
           where: note.user_id == ^user_id and note.viewed_at >= ^then,
           order_by: [desc: note.viewed_at]
-        Repo.all(query)
-        |> getDocumentsFromList
+
+        case access do
+           :all -> query2 = query1; IO.puts "PUBLIC ACCESS"
+           :public -> query2 = from note in query1, where: note.public == ^true; IO.puts "PRIVATE ACCESS"
+         end
+
+         if access == :none do
+           []
+          else
+           Repo.all(query2)
+         end
     end
     ###
 
@@ -152,10 +170,7 @@ defmodule LookupPhoenix.Note do
 
         end
 
-        query4 = from note in   query3, order_by: [desc: note.inserted_at]
-
-        Utility.report("access", access)
-        Utility.report("QUERY4", query4)
+        query4 = from note in  query3, order_by: [desc: note.inserted_at]
 
         query4
 
@@ -164,20 +179,18 @@ defmodule LookupPhoenix.Note do
 
     def decode_channel(user) do
         user_id = user.id
-        access = :all
-        Utility.report("in decode channel, channel = ", user.channel)
+        access = :none
+
         [channel_user_name, channel_name] = String.split(user.channel, ".")
-        Utility.report("in decode channel, channel_user_name = ", channel_user_name)
-        Utility.report("in decode channel, channel_name = ", channel_name)
-        if channel_user_name != user.username do
+
+        if channel_user_name == user.username do
+          access = :all
+        else
           channel_user = User.find_by_username(channel_user_name)
           user_id = channel_user.id
           access = :public
         end
-        Utility.report("acess in decode_channel", access)
-        # %{access: access, user_id: user_id, channel_name: channel_name}
-        Utility.report("2. in decode channel, channel_name = ", channel_name)
-        Utility.report("2. in decode channel, user_id = ", user_id)
+
         [access, channel_name, user_id]
     end
 
@@ -461,8 +474,6 @@ defmodule LookupPhoenix.Note do
         previous_id: previous_id, current_id: current_id, next_id: next_id,
         id_string: id_string, id_list: id_list,
         note_count: note_count, channel: channel}
-
-      Utility.report("Note, decode_query_string", output)
 
       output
    end
