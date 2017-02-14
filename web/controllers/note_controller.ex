@@ -152,6 +152,7 @@ defmodule LookupPhoenix.NoteController do
   def update(conn, %{"id" => id, "note" => note_params}) do
 
     note = Repo.get!(Note, id)
+    user = conn.assigns.current_user
 
     new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
     new_title = Regex.replace(~r/ß/, note_params["title"], "")
@@ -162,15 +163,21 @@ defmodule LookupPhoenix.NoteController do
       "edited_at" => Timex.now, "tag_string" => note_params["tag_string"], "tags" => tags}
 
     changeset = Note.changeset(note, new_params)
-    if (conn.assigns.current_user.read_only == false) do
-        doUpdate(note, changeset, conn)
+
+
+    if ((user.read_only == false) and (note.user_id ==  user.id)) do
+      doUpdate(note, changeset, conn)
     else
-       read_only_message(conn)
+      read_only_message(conn)
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    if (conn.assigns.current_user.read_only == true) do
+
+    user = conn.assigns.current_user
+
+    note = Repo.get!(Note, id)
+    if (user.read_only == true) or (user.id != note.user_id) do
        read_only_message(conn)
     else
        note = Repo.get!(Note, id)
