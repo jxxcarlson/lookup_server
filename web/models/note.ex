@@ -220,19 +220,22 @@ defmodule LookupPhoenix.Note do
     end
 
     def tag_search(tag_list, user) do
-       [access, _channel_name, user_id]= decode_channel(user)
+       [access, channel_name, user_id]= decode_channel(user)
 
        query1 = Ecto.Query.from note in Note,
           where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tag_list)}%")),
           order_by: [desc: note.updated_at]
-        if access == :public do
-          query2 = from note in query1,
-            where: note.public == true
-        else
-          query2 = query1
-        end
-
-       result = Repo.all(query2)
+        if Enum.member?(["all", "public"], channel_name)  do
+         query2 = query1
+       else
+         query2 = from note in query1,
+           where: ilike(note.tag_string, ^"%#{channel_name}%")
+       end
+       case access do
+          :all -> query3 = query2
+          :public -> query3 = from note in query2, where: note.public == ^true
+       end
+       result = Repo.all(query3)
     end
 
 
