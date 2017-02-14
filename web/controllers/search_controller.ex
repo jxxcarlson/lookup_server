@@ -57,10 +57,13 @@ defmodule LookupPhoenix.SearchController do
 
     def random(conn, _params) do
 
+        IO.puts "HERE IS RANDOM"
+
+        [access, _channel_name, user_id] = Note.decode_channel(conn.assigns.current_user)
+
          User.increment_number_of_searches(conn.assigns.current_user)
          expected_number_of_entries = 14
          # note_count = Note.count_notes_user(conn.assigns.current_user.id)
-         user_id = conn.assigns.current_user.id
 
          note_count = Note.count_for_user(user_id)
 
@@ -71,6 +74,7 @@ defmodule LookupPhoenix.SearchController do
            note_count <= 14 ->
               notes = Note.notes_for_user(user_id)
          end
+         Utility.report("Number of randome notes:", Enum.count(notes))
          LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
 
          notes = Utility.add_index_to_maplist(notes)

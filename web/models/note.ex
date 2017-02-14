@@ -70,7 +70,7 @@ defmodule LookupPhoenix.Note do
 
     ####
     def updated_before_date(hours, date_time, user) do
-       # user_id = user.id
+
        [access, _channel_name, user_id] = decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
        query = Ecto.Query.from note in Note,
@@ -245,8 +245,12 @@ defmodule LookupPhoenix.Note do
     end
 
 
-    def filter_public(list) do
+    def filter_public(list,access) do
+      if access == :public do
         Enum.filter(list, fn(x) -> x.public == true end)
+       else
+         list
+       end
     end
 
     ##################
@@ -337,7 +341,7 @@ defmodule LookupPhoenix.Note do
       random_ids(p)
       |> getDocumentsFromList
       |> filter_records_for_user(user_id)
-      |> filter_public
+      |> filter_public(access)
 
       |> ListUtil.truncateAt(truncate_at)
     end
