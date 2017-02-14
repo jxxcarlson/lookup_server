@@ -60,7 +60,7 @@ defmodule LookupPhoenix.UserController do
       Utility.report("params - set", params["set"])
       Utility.report("params - set, channel", (params["set"])["channel"])
       channel = (params["set"])["channel"]
-      User.update_channel(channel)
+      User.update_channel(conn.assigns.current_user, channel)
       conn |> redirect(to: note_path(conn, :index))
     end
 

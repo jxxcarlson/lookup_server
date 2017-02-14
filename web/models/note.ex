@@ -117,7 +117,7 @@ defmodule LookupPhoenix.Note do
 
         end
 
-        query4 = from note in query3, order_by: [desc: note.inserted_at]
+        query4 = from note in   query3, order_by: [desc: note.inserted_at]
 
         query4
 

@@ -109,12 +109,13 @@ defmodule LookupPhoenix.User do
       Repo.update(changeset)
   end
 
-  def update_channel(channel) do
-        [username, user_channel] = String.split(channel, ".")
-        user = User.find_by_username(username)
+  def update_channel(user,channel) do
+       # [username, user_channel] = String.split(channel, ".")
+       # user = User.find_by_username(username)
+        Utility.report("user", user.id)
         params = %{"channel" => channel}
         changeset = User.running_changeset(user, params)
-        Utility.report("chengeset for channel", changeset)
+        Utility.report("changeset for channel", changeset)
         Repo.update(changeset)
     end
 
@@ -192,14 +193,14 @@ defmodule LookupPhoenix.User do
 
   def set_channel(user, channel_name) do
     username = user.username
-    update_channel("${username}.${channel_name}")
+    update_channel(user, "${username}.${channel_name}")
   end
 
   def set_all_channels(channel_name) do
     User
     |> Repo.all
     # |> Enum.map(fn(user) -> set_channel(user, "all") end)
-    |> Enum.map(fn(user) -> update_channel("#{user.username}.#{channel_name}") end)
+    |> Enum.map(fn(user) -> update_channel(user, "#{user.username}.#{channel_name}") end)
   end
 
 
