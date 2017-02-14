@@ -46,7 +46,7 @@ defmodule LookupPhoenix.User do
 
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, ~w(name username email password registration_code), [] )
+    |> cast(params, ~w(name username email password registration_code channel), [] )
     |> validate_length(:username, min: 1, max: 20)
     |> validate_inclusion(:registration_code, ["student", "ladidah", "uahs"])
   end

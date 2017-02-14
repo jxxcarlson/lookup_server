@@ -40,27 +40,36 @@ defmodule LookupPhoenix.Note do
       |> Repo.all
     end
 
-    def updated_before_date(hours, date_time, user_id) do
+    def updated_before_date(hours, date_time, user) do
+       [access, _channel_name, user_id] = decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
-       query = Ecto.Query.from note in Note,
-          select: note.id,
+       query1 = Ecto.Query.from note in Note,
           where: note.user_id == ^user_id and note.edited_at >= ^then,
           order_by: [desc: note.edited_at]
-        Repo.all(query)
-        |> getDocumentsFromList
+       if access == :public do
+          query = from note in query1,
+            select: note.id,
+            where: note.public == true
+       else
+          query = query1
+       end
+       Repo.all(query1)
+       |> getDocumentsFromList
     end
 
-    def viewed_before_date(hours, date_time, user_id) do
+    def viewed_before_date(hours, date_time, user) do
+       [access, _channel_name, user_id] = decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
-       query = Ecto.Query.from note in Note,
-          select: note.id,
+       query1 = Ecto.Query.from note in Note,
           where: note.user_id == ^user_id and note.viewed_at >= ^then,
           order_by: [desc: note.viewed_at]
-        Repo.all(query)
-        |> getDocumentsFromList
+
+      Repo.all(query1)
+      |> getDocumentsFromList
     end
 
     def count_for_user(user_id) do
+      Utility.report("Note.count_for_user, user_id:", user_id)
       query = Ecto.Query.from note in Note,
          select: note.id,
          where: note.user_id == ^user_id
@@ -97,7 +106,7 @@ defmodule LookupPhoenix.Note do
 
         query1 = from note in Note, where: note.user_id == ^user_id
 
-        if access == "public" do
+        if access == :public do
 
           query2 = from note in query1, where: note.public == ^ true
 
@@ -119,30 +128,44 @@ defmodule LookupPhoenix.Note do
 
         query4 = from note in   query3, order_by: [desc: note.inserted_at]
 
+        Utility.report("access", access)
+        Utility.report("QUERY4", query4)
+
         query4
 
 
     end
 
+    def decode_channel(user) do
+        user_id = user.id
+        access = :all
+        Utility.report("in decode channel, channel = ", user.channel)
+        [channel_user_name, channel_name] = String.split(user.channel, ".")
+        Utility.report("in decode channel, channel_user_name = ", channel_user_name)
+        Utility.report("in decode channel, channel_name = ", channel_name)
+        if channel_user_name != user.username do
+          channel_user = User.find_by_username(channel_user_name)
+          user_id = channel_user.id
+          access = :public
+        end
+        Utility.report("acess in decode_channel", access)
+        # %{access: access, user_id: user_id, channel_name: channel_name}
+        Utility.report("2. in decode channel, channel_name = ", channel_name)
+        Utility.report("2. in decode channel, user_id = ", user_id)
+        [access, channel_name, user_id]
+    end
+
     def search_with_non_empty_arg(query_terms, user) do
 
-       user_id = user.id
-       access = :all
+       [access, channel_name, user_id]= decode_channel(user)
+
        [tags, terms] = split_query_terms(query_terms)
        tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
 
-      [channel_user_name, channel_name] = String.split(user.channel, ".")
-      if channel_user_name != user.username do
-        channel_user = User.find_by_username(channel_user_name)
-        user_id = channel_user.id
-        access = :public
-      end
 
       if !Enum.member?(["all", "public"], channel_name) do
          tags = [channel_name|tags]
       end
-
-
 
      Utility.report("search_with_non_empty_arg, user_id", user_id)
 
@@ -174,16 +197,30 @@ defmodule LookupPhoenix.Note do
       end
     end
 
-    def tag_search(tag_list, user_id) do
-       query = Ecto.Query.from note in Note,
+    def tag_search(tag_list, user) do
+       [access, _channel_name, user_id]= decode_channel(user)
+
+       query1 = Ecto.Query.from note in Note,
           where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tag_list)}%")),
           order_by: [desc: note.updated_at]
-       result = Repo.all(query)
+        if access == :public do
+          query2 = from note in query1,
+            where: note.public == true
+        else
+          query2 = query1
+        end
+
+       result = Repo.all(query2)
     end
 
 
     def filter_records_for_user(list, user_id) do
       Enum.filter(list, fn(x) -> x.user_id == user_id end)
+    end
+
+
+    def filter_public(list) do
+        Enum.filter(list, fn(x) -> x.public == true end)
     end
 
     ##################
@@ -269,10 +306,13 @@ defmodule LookupPhoenix.Note do
     end
 
     # Get list of random note ids for given user
-    def random_notes_for_user(p, user_id, truncate_at \\ 7) do
+    def random_notes_for_user(p, user, truncate_at \\ 7) do
+      [access, _channel_name, user_id]= decode_channel(user)
       random_ids(p)
       |> getDocumentsFromList
       |> filter_records_for_user(user_id)
+      |> filter_public
+
       |> ListUtil.truncateAt(truncate_at)
     end
 
@@ -282,6 +322,8 @@ defmodule LookupPhoenix.Note do
           |> List.flatten
           |> Enum.filter(fn(x) -> is_integer(x) end)
           |> ListUtil.mcut
+
+
 
           new_id_list = id_list
           |> getDocumentsFromList

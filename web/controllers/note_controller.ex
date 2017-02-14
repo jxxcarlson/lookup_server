@@ -6,13 +6,17 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Tag
   alias LookupPhoenix.Utility
 
-  def getRandomNotes(user_id) do
+  def getRandomNotes(current_user) do
+      [_access, channel_name, user_id] = Note.decode_channel(current_user)
+
+     Utility.report("channel_name in getRandomNotes", channel_name)
+
      note_count = Note.count_for_user(user_id)
      expected_number_of_entries = 7
      cond do
        note_count > 14 ->
           p = (100*expected_number_of_entries) / note_count
-          notes = LookupPhoenix.Note.random_notes_for_user(p, user_id)
+          notes = LookupPhoenix.Note.random_notes_for_user(p, current_user)
        note_count <= 14 ->
           notes = Note.notes_for_user(user_id)
      end
@@ -27,7 +31,7 @@ defmodule LookupPhoenix.NoteController do
      id_list = Note.recall_list(user_id)
 
      if length(id_list) == 0 do
-       notes = getRandomNotes(user_id)
+       notes = getRandomNotes(conn.assigns.current_user)
      else
        notes = Note.getDocumentsFromList(id_list)
      end

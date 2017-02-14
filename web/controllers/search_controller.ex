@@ -34,7 +34,10 @@ defmodule LookupPhoenix.SearchController do
 
           queryList = String.split(query)
 
-          notes = Note.tag_search(queryList, conn.assigns.current_user.id)
+          Utility.report("In tag_search of search controller,queryList is", queryList)
+          Utility.report("In tag_search of search controller, current user has", conn.assigns.current_user.id)
+
+          notes = Note.tag_search(queryList, conn.assigns.current_user)
 
           Note.memorize_notes(notes, conn.assigns.current_user.id)
 
@@ -53,16 +56,18 @@ defmodule LookupPhoenix.SearchController do
 
 
     def random(conn, _params) do
+
          User.increment_number_of_searches(conn.assigns.current_user)
          expected_number_of_entries = 14
          # note_count = Note.count_notes_user(conn.assigns.current_user.id)
          user_id = conn.assigns.current_user.id
+
          note_count = Note.count_for_user(user_id)
 
          cond do
            note_count > 14 ->
               p = (100*expected_number_of_entries) / note_count
-              notes = LookupPhoenix.Note.random_notes_for_user(p, conn.assigns.current_user.id)
+              notes = Note.random_notes_for_user(p, conn.assigns.current_user)
            note_count <= 14 ->
               notes = Note.notes_for_user(user_id)
          end
@@ -86,10 +91,10 @@ defmodule LookupPhoenix.SearchController do
 
         case mode do
           "updated" ->
-             notes = Note.updated_before_date(hours_before, Timex.now, user_id)
+             notes = Note.updated_before_date(hours_before, Timex.now, conn.assigns.current_user)
              update_message = "Recently updated"
           "viewed" ->
-             notes = Note.viewed_before_date(hours_before, Timex.now, user_id)
+             notes = Note.viewed_before_date(hours_before, Timex.now, conn.assigns.current_user)
              update_message = "Recently viewed"
         end
 
