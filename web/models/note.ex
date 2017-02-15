@@ -134,18 +134,19 @@ defmodule LookupPhoenix.Note do
       length Repo.all(query2)
     end
 
-    def notes_for_user(user_id, options) do
+    def notes_for_user(user, options) do
        tag = options["tag"]
+       IO.puts "IN notes_for_user, tag = #{tag}"
        query = Ecto.Query.from note in Note,
-         where: note.user_id == ^user_id,
+         where: note.user_id == ^user.id,
          order_by: [desc: note.inserted_at]
-       if Enum.member?(["none"], tag) do
-          query2 = query
-       else
-        query2 = from note in query, where: ilike(note.tag_string, ^"%#{tag}%")
-      end
+       case tag do
+         "none" -> query2 = query
+         "public" -> query2 = from note in query, where: note.public == true
+         "nonpublic" -> query2 = from note in query, where: note.public == false
+         _ -> query2 = from note in query, where: ilike(note.tag_string, ^"%#{tag}%")
+       end
        Repo.all(query2)
-       #|> getDocumentsFromList
     end
 
 

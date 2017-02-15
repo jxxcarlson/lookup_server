@@ -52,7 +52,7 @@ defmodule LookupPhoenix.UserController do
   end
 
   def update_tags(conn, _params) do
-    User.update_tags(conn.assigns.current_user.id)
+    User.update_tags(conn.assigns.current_user)
     conn |> redirect(to: user_path(conn, :tags))
     # render conn, "tags.html", user: conn.assigns.current_user
   end
@@ -83,9 +83,7 @@ defmodule LookupPhoenix.UserController do
       # Assemble the channel from known valid parts and save it
       channel = "#{channel_user_name}.#{channel_name}"
       User.update_channel(user, channel)
-      # SearchController.recent(conn, %{"mode" => "created", "hours_before" => "1000"})
-      conn |> redirect(to: search_path(conn, :recent, mode: "created", hours_before: "1000"))
-      # conn |> redirect(to: note_path(conn, :index))
+      conn |> redirect(to: note_path(conn, :index, mode: "all"))
     end
 
   def new(conn, _params) do
