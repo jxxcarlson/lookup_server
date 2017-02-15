@@ -66,7 +66,7 @@ defmodule LookupPhoenix.UserController do
       channel_parts = channel |> String.split(".")
       if length(channel_parts) != 2 do
         # use default channel
-        channel_parts = [user.user_name, "all"]
+        channel_parts = [user.username, "all"]
       end
 
       # Ensure that the 'channel_user_name' is valid
@@ -74,6 +74,7 @@ defmodule LookupPhoenix.UserController do
       if channel_user_name != user.username do
         channel_user = User.find_by_username(channel_user_name)
         if channel_user  == nil do
+          IO.puts "NIL USER "
           # default to username of current user
           channel_user_name = user.username
         end
