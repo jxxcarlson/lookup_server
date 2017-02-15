@@ -146,7 +146,9 @@ defmodule LookupPhoenix.Note do
          "nonpublic" -> query2 = from note in query, where: note.public == false
          _ -> query2 = from note in query, where: ilike(note.tag_string, ^"%#{tag}%")
        end
-       Repo.all(query2)
+       notes = Repo.all(query2)
+       Note.memorize_notes(notes, user.id)
+       notes
     end
 
 
