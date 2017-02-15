@@ -6,19 +6,19 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Tag
   alias LookupPhoenix.Utility
 
-  def getRandomNotes(current_user) do
+  def getRandomNotes(current_user, tag \\ "none") do
       [_access, channel_name, user_id] = Note.decode_channel(current_user)
 
      Utility.report("channel_name in getRandomNotes", channel_name)
 
-     note_count = Note.count_for_user(user_id)
+     note_count = Note.count_for_user(user_id, tag)
      expected_number_of_entries = 7
      cond do
        note_count > 14 ->
           p = (100*expected_number_of_entries) / note_count
-          notes = LookupPhoenix.Note.random_notes_for_user(p, current_user)
+          notes = Note.random_notes_for_user(p, current_user, 7, tag)
        note_count <= 14 ->
-          notes = Note.notes_for_user(user_id)
+          notes = Note.notes_for_user(user_id, tag)
      end
 
      notes = Utility.add_index_to_maplist(notes)
@@ -27,13 +27,20 @@ defmodule LookupPhoenix.NoteController do
 
   def index(conn, _params) do
 
-     user_id = conn.assigns.current_user.id
-     id_list = Note.recall_list(user_id)
+     user = conn.assigns.current_user
+     [channel_user_name, channel_name] = user.channel |> String.split(".")
 
-     if length(id_list) == 0 do
-       notes = getRandomNotes(conn.assigns.current_user)
-     else
-       notes = Note.getDocumentsFromList(id_list)
+     id_list = Note.recall_list(user.id)
+     qsMap = Utility.qs2map(conn.query_string)
+     mode = qsMap["mode"]
+     channel =
+     length_of_id_list = length(id_list)
+
+     case [mode, length_of_id_list] do
+       ["all", _] -> notes = Note.notes_for_user(user.id, channel_name)
+       [ _, 0 ]   -> notes = getRandomNotes(conn.assigns.current_user)
+       _ -> notes = Note.getDocumentsFromList(id_list)
+
      end
 
      options = %{mode: "index", process: "none"}

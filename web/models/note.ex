@@ -121,21 +121,30 @@ defmodule LookupPhoenix.Note do
     end
     ###
 
-    def count_for_user(user_id) do
+    def count_for_user(user_id, tag \\ "none") do
       Utility.report("Note.count_for_user, user_id:", user_id)
       query = Ecto.Query.from note in Note,
          select: note.id,
          where: note.user_id == ^user_id
-         length Repo.all(query)
+      if Enum.member?(["none"], tag) do
+        query2 = query
+      else
+        query2 = from note in query, where: ilike(note.tag_string, ^"%#{tag}%")
+      end
+      length Repo.all(query2)
     end
 
-    def notes_for_user(user_id) do
+    def notes_for_user(user_id, tag \\ "none") do
        query = Ecto.Query.from note in Note,
-         select: note.id,
          where: note.user_id == ^user_id,
          order_by: [desc: note.updated_at]
-       Repo.all(query)
-       |> getDocumentsFromList
+       if Enum.member?(["none"], tag) do
+          query2 = query
+       else
+        query2 = from note in query, where: ilike(note.tag_string, ^"%#{tag}%")
+      end
+       Repo.all(query2)
+       #|> getDocumentsFromList
     end
 
 
@@ -366,7 +375,7 @@ defmodule LookupPhoenix.Note do
     end
 
     # Get list of random note ids for given user
-    def random_notes_for_user(p, user, truncate_at \\ 7) do
+    def random_notes_for_user(p, user, truncate_at, tag) do
       [access, _channel_name, user_id]= decode_channel(user)
       random_ids(p)
       |> getDocumentsFromList

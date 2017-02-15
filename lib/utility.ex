@@ -32,4 +32,21 @@ defmodule LookupPhoenix.Utility do
     |> Enum.reduce(%{}, fn(item, acc) -> Map.merge(acc, %{List.first(item) => List.last(item)}) end )
   end
 
+  def str2map(str) do
+    parts = String.split(str,"=")
+    if length(parts) == 2 do
+      [key, value] = parts
+      %{key => value}
+    else
+      %{"foo" => "bar"}
+    end
+
+  end
+
+  def qs2map(string) do
+    string
+    |> String.split( "&")
+    |> Enum.reduce(%{}, fn(item, acc) -> Map.merge(acc, str2map(item)) end)
+  end
+
 end

@@ -26,6 +26,7 @@
 
 
 <div style="font-size:1.2em; margin-top:-15px; background-color:#eee; padding:5px;">
+   <%= link "All", to: note_path(@conn, :index, mode: "all"), class: "btn btn-default btn-s", id: "all_notes", style: "" %>
    <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-s", id: "random_notes", style: "" %>
    <%= link "Recently Viewed", to: search_path(@conn, :recent, hours_before: 25, mode: "viewed"), class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:20px;" %>
 
