@@ -66,13 +66,21 @@ defmodule LookupPhoenix.NoteController do
     if (conn.assigns.current_user.read_only == true) do
          read_only_message(conn)
     else
+      [access, channel_name, user_id] = Note.decode_channel(conn.assigns.current_user)
       new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
-      tags = Tag.str2tags(note_params["tag_string"])
+
+      if !Enum.member?(["all", "public"], channel_name) do
+        tagstring = note_params["tag_string"] <> " " <> channel_name
+      else
+        tagstring = note_params["tag_string"]
+      end
+
+      tags = Tag.str2tags(tagstring)
 
       new_params = %{"content" => new_content, "title" => new_title,
          "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now,
-         "tag_string" => note_params["tag_string"], "tags" => tags, "public" => false}
+         "tag_string" => tagstring, "tags" => tags, "public" => false}
       changeset = Note.changeset(%Note{}, new_params)
 
       case Repo.insert(changeset) do
@@ -161,7 +169,8 @@ defmodule LookupPhoenix.NoteController do
     tags = Tag.str2tags(note_params["tag_string"])
 
     new_params = %{"content" => new_content, "title" => new_title,
-      "edited_at" => Timex.now, "tag_string" => note_params["tag_string"], "tags" => tags}
+      "edited_at" => Timex.now, "tag_string" => note_params["tag_string"],
+      "tags" => tags, "public" => note_params["public"]}
 
     changeset = Note.changeset(note, new_params)
 

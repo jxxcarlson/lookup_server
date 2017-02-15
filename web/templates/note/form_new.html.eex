@@ -23,10 +23,6 @@
       <%= error_tag f, :tag_string %>
    </div>
 
-
-   <%= checkbox f, :public, class: "checkbox", value: @note.public %>
-
-
    <input type="hidden" name="index" value= <%=@index %> >
    <input type="hidden" name="id_string" value=<%= @id_string %> >
 

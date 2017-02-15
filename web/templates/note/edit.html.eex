@@ -41,7 +41,7 @@
 
 <%= render "form.html", changeset: @changeset,
        action: note_path(@conn, :update, @note),
-       locked: @locked, word_count: @word_count, conn: @conn, index: @index, id_string: @id_string  %>
+       locked: @locked, word_count: @word_count, conn: @conn, index: @index, id_string: @id_string, note: @note  %>
 
 
 
