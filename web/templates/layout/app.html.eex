@@ -63,6 +63,7 @@
 
       <header>
 
+
          <ol class="breadcrumb text-right" style="background-color:#d9d9d9">
 
            <%= if @current_user do %>
@@ -87,6 +88,11 @@
            <% end %>
          </ol>
 
+         <div>
+            <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+            <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+         </div>
+
          <div style="margin-top:0;; margin-bottom:0">
          <%= if @conn.assigns[:current_user] != nil do %>
 
@@ -107,12 +113,8 @@
          <% end %>
          </div>
 
-
-
       </header>
 
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p
 
       <!-- role="main" -->
       <main style="clear:left;">
