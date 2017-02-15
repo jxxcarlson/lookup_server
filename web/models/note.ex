@@ -220,6 +220,7 @@ defmodule LookupPhoenix.Note do
     end
 
     def tag_search(tag_list, user) do
+       IO.puts "HERE IS NOTE.TAG_SEARCH"
        [access, channel_name, user_id]= decode_channel(user)
 
        query1 = Ecto.Query.from note in Note,
@@ -351,8 +352,6 @@ defmodule LookupPhoenix.Note do
           |> List.flatten
           |> Enum.filter(fn(x) -> is_integer(x) end)
           |> ListUtil.mcut
-
-
 
           new_id_list = id_list
           |> getDocumentsFromList

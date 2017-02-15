@@ -30,52 +30,50 @@ defmodule LookupPhoenix.SearchController do
 
     def tag_search(conn, %{"query" => query}) do
 
+          IO.puts "TAG SEARCH"
+          user = conn.assigns.current_user
+
           User.increment_number_of_searches(conn.assigns.current_user)
 
           queryList = String.split(query)
 
           Utility.report("In tag_search of search controller,queryList is", queryList)
-          Utility.report("In tag_search of search controller, current user has", conn.assigns.current_user.id)
+          Utility.report("In tag_search of search controller, current user has",user.id)
 
-          notes = Note.tag_search(queryList, conn.assigns.current_user)
+          notes = Note.tag_search(queryList, user)
+          noteCount = length(notes)
+          Note.memorize_notes(notes, user.id)
 
-          Note.memorize_notes(notes, conn.assigns.current_user.id)
-
-          notes = Utility.add_index_to_maplist(notes)
+          notes_with_index = Utility.add_index_to_maplist(notes)
+          Utility.report("notes_with_index", notes_with_index)
           id_string = Note.extract_id_list(notes)
 
-          noteCount = length(notes)
           case noteCount do
             1 -> noteCountString = "1 Note found with tag #{query}"
             _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found with tag #{query}"
           end
 
-          render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: noteCountString)
+          render(conn, "index.html", notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
 
      end
 
 
-    def random(conn, _params) do
+    def raw_random(conn, expected_number_of_entries) do
 
-        IO.puts "HERE IS RANDOM"
-
-        [access, _channel_name, user_id] = Note.decode_channel(conn.assigns.current_user)
-
-         User.increment_number_of_searches(conn.assigns.current_user)
-         expected_number_of_entries = 14
-         # note_count = Note.count_notes_user(conn.assigns.current_user.id)
-
-         note_count = Note.count_for_user(user_id)
+         IO.puts "RAW RANDOM"
+         user = conn.assigns.current_user
+         note_count = Note.count_for_user(user.id)
 
          cond do
            note_count > 14 ->
               p = (100*expected_number_of_entries) / note_count
-              notes = Note.random_notes_for_user(p, conn.assigns.current_user)
+              notes = Note.random_notes_for_user(p, user)
            note_count <= 14 ->
-              notes = Note.notes_for_user(user_id)
+              notes = Note.notes_for_user(user.id)
          end
+
          Utility.report("Number of randome notes:", Enum.count(notes))
-         LookupPhoenix.Note.memorize_notes(notes, conn.assigns.current_user.id)
+         Note.memorize_notes(notes, user.id)
 
          notes = Utility.add_index_to_maplist(notes)
          id_string = Note.extract_id_list(notes)
@@ -85,6 +83,29 @@ defmodule LookupPhoenix.SearchController do
            _ -> countReportString = "#{length(notes)} Random notes"
          end
          render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: countReportString)
+
+    end
+
+
+    def random(conn, _params) do
+
+        IO.puts "HERE IS RANDOM"
+        user = conn.assigns.current_user
+        expected_number_of_entries = 14
+
+        [access, channel_name, user_id] = Note.decode_channel(user)
+
+         User.increment_number_of_searches(conn.assigns.current_user)
+
+        if Enum.member?(["all", "public"], channel_name) do
+          raw_random(conn, expected_number_of_entries)
+        else
+          notes = Note.tag_search([channel_name], user) |> ListUtil.mcut |> Utility.add_index_to_maplist
+          noteCountString = "#{length(notes)} random notes"
+          id_string = notes |> Enum.map(fn(note) -> note.id end) |> Enum.join(",")
+          render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: noteCountString, index: 0)
+        end
+
     end
 
    def recent(conn, params) do
