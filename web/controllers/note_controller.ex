@@ -3,6 +3,7 @@ defmodule LookupPhoenix.NoteController do
   use Timex
 
   alias LookupPhoenix.Note
+  alias LookupPhoenix.User
   alias LookupPhoenix.Tag
   alias LookupPhoenix.Utility
 
@@ -29,6 +30,8 @@ defmodule LookupPhoenix.NoteController do
 
      user = conn.assigns.current_user
      [channel_user_name, channel_name] = user.channel |> String.split(".")
+     IO.puts "channel_user_name: #{channel_user_name}"
+     channel_user = User.find_by_username(channel_user_name)
 
      id_list = Note.recall_list(user.id)
      qsMap = Utility.qs2map(conn.query_string)
@@ -37,9 +40,9 @@ defmodule LookupPhoenix.NoteController do
      length_of_id_list = length(id_list)
 
      case [mode, length_of_id_list] do
-       ["all", _] -> notes = Note.notes_for_user(user, %{"tag" => channel_name, "sort_by" => "inserted_at", "direction" => "desc"})
-       ["public", _] -> notes = Note.notes_for_user(user, %{"tag" => "public", "sort_by" => "inserted_at", "direction" => "desc"})
-       [ _, 0 ]   -> notes = getRandomNotes(user)
+       ["all", _] -> notes = Note.notes_for_user(channel_user, %{"tag" => channel_name, "sort_by" => "inserted_at", "direction" => "desc"})
+       ["public", _] -> notes = Note.notes_for_user(channel_user, %{"tag" => "public", "sort_by" => "inserted_at", "direction" => "desc"})
+       [ _, 0 ]   -> notes = getRandomNotes(channel_user)
        _ -> notes = Note.getDocumentsFromList(id_list)
 
      end
