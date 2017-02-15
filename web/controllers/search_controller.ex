@@ -62,6 +62,7 @@ defmodule LookupPhoenix.SearchController do
 
          IO.puts "RAW RANDOM"
          user = conn.assigns.current_user
+         [channel_user_name, channel_name] = user.channel |> String.split(".")
          note_count = Note.count_for_user(user.id)
 
          cond do
@@ -69,7 +70,7 @@ defmodule LookupPhoenix.SearchController do
               p = (100*expected_number_of_entries) / note_count
               notes = Note.random_notes_for_user(p, user, 7, "none")
            note_count <= 14 ->
-              notes = Note.notes_for_user(user.id)
+              notes = Note.notes_for_user(user.id, %{"tag" => channel_name, "sort_by" => "created_at", "direction" => "desc"})
          end
 
          Utility.report("Number of randome notes:", Enum.count(notes))

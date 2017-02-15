@@ -80,7 +80,7 @@ defmodule LookupPhoenix.Tag do
     end
 
     def get_all_user_tags(user_id) do
-      Note.notes_for_user(user_id)
+      Note.notes_for_user(user_id, %{"tag" => "all", "sort_by" => "created_at", "direction" => "desc"})
       |> Enum.reduce([], fn(note, list) -> merge_tags_from_note(note, list) end)
       |> Enum.filter(fn(x) -> !ignorable_tag(x) end)
     end
@@ -110,7 +110,7 @@ defmodule LookupPhoenix.Tag do
     end
 
     def merge_all_user_tags_into_map(user_id) do
-        Note.notes_for_user(user_id)
+        Note.notes_for_user(user_id, %{"tag" => "all", "sort_by" => "created_at", "direction" => "desc"})
         |> Enum.reduce(%{}, fn(note, map) -> merge_tags_from_note_to_map(note, map) end)
     end
 

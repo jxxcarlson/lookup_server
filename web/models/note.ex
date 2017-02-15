@@ -134,10 +134,11 @@ defmodule LookupPhoenix.Note do
       length Repo.all(query2)
     end
 
-    def notes_for_user(user_id, tag \\ "none") do
+    def notes_for_user(user_id, options) do
+       tag = options["tag"]
        query = Ecto.Query.from note in Note,
          where: note.user_id == ^user_id,
-         order_by: [desc: note.updated_at]
+         order_by: [desc: note.inserted_at]
        if Enum.member?(["none"], tag) do
           query2 = query
        else
@@ -546,7 +547,8 @@ defmodule LookupPhoenix.Note do
     end
 
      def set_public_for_user(user_id, value) do
-        notes_for_user(user_id)|> Enum.map(fn(note) -> Note.set_public(note, value) end)
+        options = %{}
+        notes_for_user(user_id, options )|> Enum.map(fn(note) -> Note.set_public(note, value) end)
      end
 
     def erase_string(note, str) do

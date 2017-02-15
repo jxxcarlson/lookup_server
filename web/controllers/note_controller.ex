@@ -18,7 +18,7 @@ defmodule LookupPhoenix.NoteController do
           p = (100*expected_number_of_entries) / note_count
           notes = Note.random_notes_for_user(p, current_user, 7, tag)
        note_count <= 14 ->
-          notes = Note.notes_for_user(user_id, tag)
+          notes = Note.notes_for_user(user_id, %{"tag" => tag, "sort_by" => "created_at", "direction" => "desc"})
      end
 
      notes = Utility.add_index_to_maplist(notes)
@@ -37,7 +37,7 @@ defmodule LookupPhoenix.NoteController do
      length_of_id_list = length(id_list)
 
      case [mode, length_of_id_list] do
-       ["all", _] -> notes = Note.notes_for_user(user.id, channel_name)
+       ["all", _] -> notes = Note.notes_for_user(user.id, %{"tag" => channel_name, "sort_by" => "created_at", "direction" => "desc"})
        [ _, 0 ]   -> notes = getRandomNotes(conn.assigns.current_user)
        _ -> notes = Note.getDocumentsFromList(id_list)
 
