@@ -71,7 +71,7 @@ defmodule LookupPhoenix.NoteController do
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
 
       if !Enum.member?(["all", "public"], channel_name) do
-        tagstring = note_params["tag_string"] <> " " <> channel_name
+        tagstring = [note_params["tag_string"], channel_name] |> Enum.join(", ")
       else
         tagstring = note_params["tag_string"]
       end

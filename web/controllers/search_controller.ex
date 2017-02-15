@@ -119,6 +119,9 @@ defmodule LookupPhoenix.SearchController do
           "updated" ->
              notes = Note.updated_before_date(hours_before, Timex.now, conn.assigns.current_user)
              update_message = "Recently updated"
+          "created" ->
+              notes = Note.created_before_date(hours_before, Timex.now, conn.assigns.current_user)
+              update_message = "Recently updated"
           "viewed" ->
              notes = Note.viewed_before_date(hours_before, Timex.now, conn.assigns.current_user)
              update_message = "Recently viewed"

@@ -6,6 +6,7 @@ defmodule LookupPhoenix.UserController do
   alias LookupPhoenix.Tag
   alias LookupPhoenix.Repo
   alias LookupPhoenix.Utility
+  alias LookupPhoenix.SearchController
 
 
   def index(conn, _params) do
@@ -57,11 +58,33 @@ defmodule LookupPhoenix.UserController do
   end
 
   def update_channel(conn, params) do
-      Utility.report("params - set", params["set"])
-      Utility.report("params - set, channel", (params["set"])["channel"])
+      IO.puts "UPDATE CHANNEL"
+      user = conn.assigns.current_user
       channel = (params["set"])["channel"]
-      User.update_channel(conn.assigns.current_user, channel)
-      conn |> redirect(to: note_path(conn, :index))
+
+      # Ensure that the channel has the form a.b
+      channel_parts = channel |> String.split(".")
+      if length(channel_parts) != 2 do
+        # use default channel
+        channel_parts = [user.user_name, "all"]
+      end
+
+      # Ensure that the 'channel_user_name' is valid
+      [channel_user_name, channel_name]  = channel_parts
+      if channel_user_name != user.username do
+        channel_user = User.find_by_username(channel_user_name)
+        if channel_user  == nil do
+          # default to username of current user
+          channel_user_name = user.username
+        end
+      end
+
+      # Assemble the channel from known valid parts and save it
+      channel = "#{channel_user_name}.#{channel_name}"
+      User.update_channel(user, channel)
+      # SearchController.recent(conn, %{"mode" => "created", "hours_before" => "1000"})
+      conn |> redirect(to: search_path(conn, :recent, mode: "created", hours_before: "1000"))
+      # conn |> redirect(to: note_path(conn, :index))
     end
 
   def new(conn, _params) do

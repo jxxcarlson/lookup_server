@@ -67,6 +67,32 @@ defmodule LookupPhoenix.Note do
 
     end
 
+    def created_before_date(hours, date_time, user) do
+
+       [access, channel_name, user_id] = decode_channel(user)
+       then = Timex.shift(date_time, [hours: -hours])
+       query1 = Ecto.Query.from note in Note,
+          where: note.user_id == ^user_id and note.inserted_at >= ^then,
+          order_by: [desc: note.inserted_at]
+       if Enum.member?(["all", "public"], channel_name)  do
+         query2 = query1
+       else
+         query2 = from note in query1,
+           where: ilike(note.tag_string, ^"%#{channel_name}%")
+       end
+       case access do
+          :all -> query3 = query2
+          :public -> query3 = from note in query2, where: note.public == ^true
+       end
+
+       if access == :none do
+          []
+       else
+          Repo.all(query3)
+       end
+
+    end
+
     def viewed_before_date(hours, date_time, user) do
        IO.puts "HO HO HO HO"
        # user_id = user.id
@@ -149,14 +175,13 @@ defmodule LookupPhoenix.Note do
 
         else
 
-          query3 = from note in query2, where: ilike(note.title, ^"%#{term}%") or ilike(note.content, ^"%#{term}%")
+          query3 = from note in query2, where: ilike(note.title, ^"%#{term}%") or ilike(note.tag_string, ^"%#{term}%") or ilike(note.content, ^"%#{term}%")
 
         end
 
         query4 = from note in  query3, order_by: [desc: note.inserted_at]
 
         query4
-
 
     end
 
@@ -168,9 +193,14 @@ defmodule LookupPhoenix.Note do
 
         if channel_user_name == user.username do
           access = :all
+          user_id = user.id
         else
           channel_user = User.find_by_username(channel_user_name)
-          user_id = channel_user.id
+          if channel_user == nil do
+            user_id = 0
+          else
+            user_id = channel_user.id
+          end
           access = :public
         end
 
