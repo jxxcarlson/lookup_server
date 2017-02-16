@@ -7,6 +7,8 @@
 .hide_answer{ color: blue; display:none }
 .show_answer{color: blue; display:inline}
 
+.navarrow { float:right; font-weight:bold;}
+
 </style>
 
 <div style="font-size: 1.2em; margin-top:-0.5em;">

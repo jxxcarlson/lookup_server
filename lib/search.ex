@@ -22,19 +22,21 @@ defmodule LookupPhoenix.Search do
     end
 
     def notes_for_user(user, options) do
-       [access, _channel_name, _user_id] = User.decode_channel(user)
+       IO.puts "NOTES FOR USER"
+       [access, channel_name, user_id] = User.decode_channel(user)
        tag = options["tag"]
        IO.puts "IN notes_for_user, tag = #{tag}"
        IO.puts "IN notes_for_user, access = #{access}"
+       IO.puts "IN notes_for_user, channel_name = #{channel_name}"
+       IO.puts "IN notes_for_user, user_id = #{user_id}"
        query = Ecto.Query.from note in Note,
-         where: note.user_id == ^user.id,
+         where: note.user_id == ^user_id,
          order_by: [desc: note.inserted_at]
-       case tag do
-         "all" -> query2 = query
-         "none" -> query2 = query
-         "public" -> query2 = from note in query, where: note.public == true
-         "nonpublic" -> query2 = from note in query, where: note.public == false
-         _ -> query2 = from note in query, where: ilike(note.tag_string, ^"%#{tag}%")
+       if Enum.member?(["all", "public"], channel_name) do
+         query2 = query
+       else
+         query2 = from note in query,
+           where: ilike(note.tag_string, ^"%#{channel_name}%")
        end
 
        Repo.all(query2)

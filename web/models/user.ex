@@ -64,7 +64,7 @@ defmodule LookupPhoenix.User do
     def decode_channel(user) do
         Utility.report("In user.ex, decode_channel, user is::", user)
         user_id = user.id
-        access = :none
+        access = :public
 
         [channel_user_name, channel_name] = String.split(user.channel, ".")
 
@@ -78,6 +78,9 @@ defmodule LookupPhoenix.User do
           else
             user_id = channel_user.id
           end
+        end
+
+        if channel_name == "public" do
           access = :public
         end
 

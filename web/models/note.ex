@@ -115,14 +115,14 @@ defmodule LookupPhoenix.Note do
    end
 
    def inserted_at_short(note) do
-      {:ok, inserted_at }= note.inserted_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
+      {:ok, inserted_at }= note.inserted_at |> Timex.local |> Timex.format("{M}/{D}/{YYYY}")
       inserted_at
    end
 
    # note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
 
     def updated_at_short(note) do
-      {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
+      {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{M}/{D}/{YYYY}")
       updated_at
    end
 

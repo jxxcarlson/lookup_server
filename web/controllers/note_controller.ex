@@ -30,9 +30,7 @@ defmodule LookupPhoenix.NoteController do
   def index(conn, _params) do
 
      user = conn.assigns.current_user
-     [channel_user_name, channel_name] = user.channel |> String.split(".")
-     IO.puts "channel_user_name: #{channel_user_name}"
-     channel_user = User.find_by_username(channel_user_name)
+     [access, channel_name, user_id] = User.decode_channel(user)
 
      id_list = Note.recall_list(user.id)
      qsMap = Utility.qs2map(conn.query_string)
@@ -41,9 +39,10 @@ defmodule LookupPhoenix.NoteController do
      length_of_id_list = length(id_list)
 
      case [mode, length_of_id_list] do
-       ["all", _] -> notes = Search.notes_for_user(user, %{"tag" => channel_name, "sort_by" => "inserted_at", "direction" => "desc"})
-       ["public", _] -> notes = Search.notes_for_user(user, %{"tag" => "public", "sort_by" => "inserted_at", "direction" => "desc"})
-       # [ _, 0 ]   -> notes = getRandomNotes(channel_user)
+       ["all", _] -> notes = Search.notes_for_user(user, %{"mode" => "all",
+          "sort_by" => "inserted_at", "direction" => "desc"})
+       ["public", _] -> notes = Search.notes_for_user(user, %{"mode" => "public",
+          "sort_by" => "inserted_at", "direction" => "desc"})
        _ -> notes = Note.getDocumentsFromList(id_list)
 
      end
