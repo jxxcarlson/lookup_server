@@ -120,6 +120,7 @@ defmodule LookupPhoenix.NoteController do
     end
 
     inserted_at= Note.inserted_at_short(note)
+    inserted_at= Note.updated_at_short(note)
     word_count = RenderText.word_count(note.content)
 
     params1 = %{note: note, inserted_at: inserted_at, updated_at: note.updated_at,
@@ -127,8 +128,8 @@ defmodule LookupPhoenix.NoteController do
     params2 = Note.decode_query_string(conn.query_string)
     params = Map.merge(params1, params2)
 
-    {:ok, updated_at } = note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
-    IO.puts "UPDATED AT: #{updated_at}"
+    # {:ok, updated_at } = note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
+    # IO.puts "UPDATED AT: #{updated_at}"
     render(conn, "show.html", params)
   end
 

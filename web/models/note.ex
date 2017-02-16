@@ -119,6 +119,13 @@ defmodule LookupPhoenix.Note do
       inserted_at
    end
 
+   # note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
+
+    def updated_at_short(note) do
+      {:ok, updated_at }= note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
+      updated_at
+   end
+
    def tags2string(note) do
      note.tags
      |> Enum.join(", ")
