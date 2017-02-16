@@ -96,22 +96,20 @@
          </div>
 
          <!-- SEARCH BOX AND CHANNEL SELECTOR -->
-         <div style="margin-top:0;; margin-bottom:0">
+         <div style="margin-top:-22.5px; margin-bottom:0; width:100%">
              <%= if @conn.assigns[:current_user] != nil do %>
 
                    <span style="float:left;">
                    <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
-                       <%= text_input f, :query, placeholder: "Search ...", style: "display:inline-block; margin-top:-18px; margin-bottom:3px; width:300px; height:35px; font-size:1.8rem; background-color:#eee;", id: "search_notes" %>
+                       <%= text_input f, :query, placeholder: "Search ...", style: "display:inline-block; margin-top:-18px; margin-bottom:3px; width:200px; height:35px; font-size:1.8rem; background-color:#eee;", id: "search_notes" %>
                    <%= end %>
                    </span>
 
                   <span style="float:right">
                    <%= form_for @conn, user_path(@conn, :update_channel), [name: :set], fn f -> %>
-                            <%= text_input f, :channel, placeholder: "Enter channel ...", value: @conn.assigns.current_user.channel, style: "display:inline-block; margin-top:-18px; margin-bottom:3px; width:240px; height:35px; font-size:1.8rem; color:#222; font-weight:400; background-color:#eee;", id: "search_notes" %>
+                            <%= text_input f, :channel, placeholder: "Enter channel ...", value: @conn.assigns.current_user.channel, style: "display:inline-block; margin-top:-18px; margin-bottom:3px; width:150px; height:35px; font-size:1.8rem; color:#222; font-weight:400; background-color:#eee;", id: "search_notes" %>
                    <%= end %>
                    </span>
-
-                   <span style="float:right; margin-top:18px; margin-right:4px;font-size:1.5rem; color:#666;">Channel</span>
 
              <% end %>
          </div>
