@@ -20,7 +20,7 @@
     <tr>
       <td style="text-align:right;"><%= user.id %></td>
       <td style="text-align:right;"><%= LookupPhoenix.Utility.xForTrue(user.read_only) %></td>
-      <td style="text-align:right;"><%= LookupPhoenix.Note.count_for_user(user.id) %>
+      <td style="text-align:right;"><%= LookupPhoenix.Search.count_for_user(user.id) %>
       <td style="text-align:right;"><%= user.number_of_searches %>
 
       <td><%= user.username %></td>

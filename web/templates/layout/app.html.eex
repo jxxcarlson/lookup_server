@@ -79,7 +79,7 @@
                  <% end %>
 
 
-                 <li class="link1"><span style="font-weight:bold; color:black"><%= @current_user.username %></span>, <%= LookupPhoenix.Note.count_for_user(@current_user.id) %> Notes</li>
+                 <li class="link1"><span style="font-weight:bold; color:black"><%= @current_user.username %></span>, <%= LookupPhoenix.Search.count_for_user(@current_user.id) %> Notes</li>
                  <li class="link1">
                    <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
                  </li>

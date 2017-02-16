@@ -5,6 +5,7 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Note
   alias LookupPhoenix.User
   alias LookupPhoenix.Tag
+  alias LookupPhoenix.Search
   alias LookupPhoenix.Utility
 
   def getRandomNotes(current_user, tag \\ "none") do
@@ -12,14 +13,14 @@ defmodule LookupPhoenix.NoteController do
 
      Utility.report("channel_name in getRandomNotes", channel_name)
 
-     note_count = Note.count_for_user(user_id, tag)
+     note_count = Search.count_for_user(user_id, tag)
      expected_number_of_entries = 7
      cond do
        note_count > 14 ->
           p = (100*expected_number_of_entries) / note_count
-          notes = Note.random_notes_for_user(p, current_user, 7, tag)
+          notes = Search.random_notes_for_user(p, current_user, 7, tag)
        note_count <= 14 ->
-          notes = Note.notes_for_user(current_user, %{"tag" => tag, "sort_by" => "created_at", "direction" => "desc"})
+          notes = Search.notes_for_user(current_user, %{"tag" => tag, "sort_by" => "created_at", "direction" => "desc"})
      end
 
      notes = Utility.add_index_to_maplist(notes)
@@ -40,8 +41,8 @@ defmodule LookupPhoenix.NoteController do
      length_of_id_list = length(id_list)
 
      case [mode, length_of_id_list] do
-       ["all", _] -> notes = Note.notes_for_user(channel_user, %{"tag" => channel_name, "sort_by" => "inserted_at", "direction" => "desc"})
-       ["public", _] -> notes = Note.notes_for_user(channel_user, %{"tag" => "public", "sort_by" => "inserted_at", "direction" => "desc"})
+       ["all", _] -> notes = Search.notes_for_user(channel_user, %{"tag" => channel_name, "sort_by" => "inserted_at", "direction" => "desc"})
+       ["public", _] -> notes = Search.notes_for_user(channel_user, %{"tag" => "public", "sort_by" => "inserted_at", "direction" => "desc"})
        [ _, 0 ]   -> notes = getRandomNotes(channel_user)
        _ -> notes = Note.getDocumentsFromList(id_list)
 

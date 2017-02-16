@@ -3,6 +3,7 @@
 defmodule LookupPhoenix.SearchController do
     use LookupPhoenix.Web, :controller
     alias LookupPhoenix.Note
+    alias LookupPhoenix.Search
     alias LookupPhoenix.User
     alias LookupPhoenix.Utility
 
@@ -11,7 +12,7 @@ defmodule LookupPhoenix.SearchController do
 
       User.increment_number_of_searches(conn.assigns.current_user)
 
-      notes = Note.search(query, conn.assigns.current_user)
+      notes = Search.search(query, conn.assigns.current_user)
       Note.memorize_notes(notes, conn.assigns.current_user.id)
 
       notes = Utility.add_index_to_maplist(notes)
@@ -40,7 +41,7 @@ defmodule LookupPhoenix.SearchController do
           Utility.report("In tag_search of search controller,queryList is", queryList)
           Utility.report("In tag_search of search controller, current user has",user.id)
 
-          notes = Note.tag_search(queryList, user)
+          notes = Search.tag_search(queryList, user)
           noteCount = length(notes)
           Note.memorize_notes(notes, user.id)
 
@@ -63,14 +64,14 @@ defmodule LookupPhoenix.SearchController do
          IO.puts "RAW RANDOM"
          user = conn.assigns.current_user
          [channel_user_name, channel_name] = user.channel |> String.split(".")
-         note_count = Note.count_for_user(user.id)
+         note_count = Search.count_for_user(user.id)
 
          cond do
            note_count > 14 ->
               p = (100*expected_number_of_entries) / note_count
-              notes = Note.random_notes_for_user(p, user, 7, "none")
+              notes = Search.random_notes_for_user(p, user, 7, "none")
            note_count <= 14 ->
-              notes = Note.notes_for_user(user, %{"tag" => channel_name, "sort_by" => "created_at", "direction" => "desc"})
+              notes = Search.notes_for_user(user, %{"tag" => channel_name, "sort_by" => "created_at", "direction" => "desc"})
          end
 
          Utility.report("Number of randome notes:", Enum.count(notes))
@@ -101,7 +102,7 @@ defmodule LookupPhoenix.SearchController do
         if Enum.member?(["all", "public"], channel_name) do
           raw_random(conn, expected_number_of_entries)
         else
-          notes = Note.tag_search([channel_name], user) |> ListUtil.mcut |> Utility.add_index_to_maplist
+          notes = Search.tag_search([channel_name], user) |> ListUtil.mcut |> Utility.add_index_to_maplist
           noteCountString = "#{length(notes)} random notes"
           id_string = notes |> Enum.map(fn(note) -> note.id end) |> Enum.join(",")
           render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: noteCountString, index: 0)
@@ -118,13 +119,13 @@ defmodule LookupPhoenix.SearchController do
 
         case mode do
           "updated" ->
-             notes = Note.updated_before_date(hours_before, Timex.now, conn.assigns.current_user)
+             notes = Search.updated_before_date(hours_before, Timex.now, conn.assigns.current_user)
              update_message = "Recently updated"
           "created" ->
-              notes = Note.created_before_date(hours_before, Timex.now, conn.assigns.current_user)
+              notes = Search.created_before_date(hours_before, Timex.now, conn.assigns.current_user)
               update_message = "Recently updated"
           "viewed" ->
-             notes = Note.viewed_before_date(hours_before, Timex.now, conn.assigns.current_user)
+             notes = Search.viewed_before_date(hours_before, Timex.now, conn.assigns.current_user)
              update_message = "Recently viewed"
         end
 
