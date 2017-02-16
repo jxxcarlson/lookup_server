@@ -1,4 +1,6 @@
-defmodule ListUtil do
+defmodule RandomList do
+  # import Random
+  # https://elixirforum.com/t/random-based-on-rand-not-random/1518
 
 
    # the first element is head, the tail is the rest of the list
@@ -66,6 +68,27 @@ defmodule ListUtil do
       when length(list) > n, do: mcut(list)
         |> split(n)
         |> proj1
+
+    # insert element in list if (a) it is not already
+    # in the list, and (b) the list is not yet full,
+    # i.e., has n elements.
+    #
+    # Thus the goal is to produce a list of n unique
+    # elments.
+    def unique_insert(list, element, n) do
+      if Enum.member?(list, element) or length(list) >= n do
+        list
+      else
+        [element|list]
+      end
+    end
+
+    def generate_integers(max_int, n)  do
+      # n = min(max_int, n)
+      # state = Random.seed(:exsplus)
+      Enum.reduce(1..(n + 10), [], fn(_k, output) -> unique_insert(output, :rand.uniform(max_int + 1) - 1, n) end)
+
+    end
 
 
 end

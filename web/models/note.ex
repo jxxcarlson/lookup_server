@@ -105,6 +105,7 @@ defmodule LookupPhoenix.Note do
       note_list
       |> Enum.map(fn(note) -> note.id end)
       |> memorize_list(user_id)
+      note_list
     end
 
     def memorize_list(id_list, user_id) do

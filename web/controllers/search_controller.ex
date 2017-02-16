@@ -102,7 +102,7 @@ defmodule LookupPhoenix.SearchController do
         if Enum.member?(["all", "public"], channel_name) do
           raw_random(conn, expected_number_of_entries)
         else
-          notes = Search.tag_search([channel_name], user) |> ListUtil.mcut |> Utility.add_index_to_maplist
+          notes = Search.tag_search([channel_name], user) |> RandomList.mcut |> Utility.add_index_to_maplist
           noteCountString = "#{length(notes)} random notes"
           id_string = notes |> Enum.map(fn(note) -> note.id end) |> Enum.join(",")
           render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: noteCountString, index: 0)

@@ -33,9 +33,21 @@ defmodule LookupPhoenix.Search do
          "nonpublic" -> query2 = from note in query, where: note.public == false
          _ -> query2 = from note in query, where: ilike(note.tag_string, ^"%#{tag}%")
        end
-       notes = Repo.all(query2)
-       Note.memorize_notes(notes, user.id)
-       notes
+
+       Repo.all(query2)
+       |> filter_random(30)
+       |> Note.memorize_notes(user.id)
+
+    end
+
+    def filter_random(notes, n) do
+      note_count = length(notes)
+      if note_count > n do
+        RandomList.generate_integers(note_count - 1, 30)
+        |> Enum.map(fn(index) -> Enum.at(notes, index) end)
+      else
+        notes
+      end
     end
 
 
@@ -209,7 +221,7 @@ defmodule LookupPhoenix.Search do
       |> filter_records_for_user(user_id)
       |> filter_public(access)
 
-      |> ListUtil.truncateAt(truncate_at)
+      |> RandomList.truncateAt(truncate_at)
     end
 
     # Not used
@@ -218,7 +230,7 @@ defmodule LookupPhoenix.Search do
           id_list = result.rows
           |> List.flatten
           |> Enum.filter(fn(x) -> is_integer(x) end)
-          |> ListUtil.mcut
+          |> RandomList.mcut
 
           new_id_list = id_list
           |> Note.getDocumentsFromList
@@ -233,7 +245,7 @@ defmodule LookupPhoenix.Search do
        id_list = result.rows
        |> List.flatten
        |> Enum.filter(fn(x) -> is_integer(x) end)
-       |> ListUtil.mcut
+       |> RandomList.mcut
      end
 
     # TITLE, note used
