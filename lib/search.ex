@@ -3,6 +3,7 @@ defmodule LookupPhoenix.Search do
     use Ecto.Schema
     import Ecto.Query
     alias LookupPhoenix.Note
+    alias LookupPhoenix.User
     alias LookupPhoenix.Repo
     alias LookupPhoenix.Utility
 
@@ -21,8 +22,10 @@ defmodule LookupPhoenix.Search do
     end
 
     def notes_for_user(user, options) do
+       [access, _channel_name, _user_id] = User.decode_channel(user)
        tag = options["tag"]
        IO.puts "IN notes_for_user, tag = #{tag}"
+       IO.puts "IN notes_for_user, access = #{access}"
        query = Ecto.Query.from note in Note,
          where: note.user_id == ^user.id,
          order_by: [desc: note.inserted_at]
@@ -35,19 +38,10 @@ defmodule LookupPhoenix.Search do
        end
 
        Repo.all(query2)
+       |> filter_public(access)
        |> filter_random(30)
        |> Note.memorize_notes(user.id)
 
-    end
-
-    def filter_random(notes, n) do
-      note_count = length(notes)
-      if note_count > n do
-        RandomList.generate_integers(note_count - 1, 30)
-        |> Enum.map(fn(index) -> Enum.at(notes, index) end)
-      else
-        notes
-      end
     end
 
 
@@ -99,7 +93,7 @@ defmodule LookupPhoenix.Search do
 
    def search_with_non_empty_arg(query_terms, user) do
 
-       [access, channel_name, user_id]= Note.decode_channel(user)
+       [access, channel_name, user_id]= User.decode_channel(user)
 
        [tags, terms] = split_query_terms(query_terms)
        tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
@@ -141,7 +135,7 @@ defmodule LookupPhoenix.Search do
 
     def tag_search(tag_list, user) do
        IO.puts "HERE IS Search.tag_search"
-       [access, channel_name, user_id]= Note.decode_channel(user)
+       [access, channel_name, user_id]= User.decode_channel(user)
 
        query1 = Ecto.Query.from note in Note,
           where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tag_list)}%")),
@@ -164,14 +158,6 @@ defmodule LookupPhoenix.Search do
       Enum.filter(list, fn(x) -> x.user_id == user_id end)
     end
 
-
-    def filter_public(list,access) do
-      if access == :public do
-        Enum.filter(list, fn(x) -> x.public == true end)
-       else
-         list
-       end
-    end
 
     ##################
 
@@ -215,7 +201,7 @@ defmodule LookupPhoenix.Search do
 
     # Get list of random note ids for given user
     def random_notes_for_user(p, user, truncate_at, tag) do
-      [access, _channel_name, user_id]= Note.decode_channel(user)
+      [access, _channel_name, user_id]= User.decode_channel(user)
       random_ids(p)
       |> Note.getDocumentsFromList
       |> filter_records_for_user(user_id)
@@ -260,7 +246,7 @@ defmodule LookupPhoenix.Search do
     def viewed_before_date(hours, date_time, user) do
        IO.puts "HO HO HO HO"
        # user_id = user.id
-       [access, channel_name, user_id] = Note.decode_channel(user)
+       [access, channel_name, user_id] = User.decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
        query1 = Ecto.Query.from note in Note,
           where: note.user_id == ^user_id and note.viewed_at >= ^then,
@@ -286,7 +272,7 @@ defmodule LookupPhoenix.Search do
 
     def updated_before_date(hours, date_time, user) do
 
-       [access, channel_name, user_id] = Note.decode_channel(user)
+       [access, channel_name, user_id] = User.decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
        query1 = Ecto.Query.from note in Note,
           where: note.user_id == ^user_id and note.edited_at >= ^then,
@@ -312,7 +298,7 @@ defmodule LookupPhoenix.Search do
 
     def created_before_date(hours, date_time, user) do
 
-       [access, channel_name, user_id] = Note.decode_channel(user)
+       [access, channel_name, user_id] = User.decode_channel(user)
        then = Timex.shift(date_time, [hours: -hours])
        query1 = Ecto.Query.from note in Note,
           where: note.user_id == ^user_id and note.inserted_at >= ^then,
@@ -334,6 +320,26 @@ defmodule LookupPhoenix.Search do
           Repo.all(query3)
        end
 
+    end
+
+    #### FILTERS ####
+
+    def filter_random(notes, n) do
+      note_count = length(notes)
+      if note_count > n do
+        RandomList.generate_integers(note_count - 1, 30)
+        |> Enum.map(fn(index) -> Enum.at(notes, index) end)
+      else
+        notes
+      end
+    end
+
+    def filter_public(list, access) do
+      if access == :public do
+        Enum.filter(list, fn(x) -> x.public == true end)
+       else
+         list
+       end
     end
 
 end

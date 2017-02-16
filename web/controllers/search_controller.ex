@@ -95,7 +95,7 @@ defmodule LookupPhoenix.SearchController do
         user = conn.assigns.current_user
         expected_number_of_entries = 14
 
-        [access, channel_name, user_id] = Note.decode_channel(user)
+        [access, channel_name, user_id] = User.decode_channel(user)
 
          User.increment_number_of_searches(conn.assigns.current_user)
 

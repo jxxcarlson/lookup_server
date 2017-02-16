@@ -61,6 +61,29 @@ defmodule LookupPhoenix.User do
     # |> set_read_only(false)
   end
 
+    def decode_channel(user) do
+        Utility.report("In user.ex, decode_channel, user is::", user)
+        user_id = user.id
+        access = :none
+
+        [channel_user_name, channel_name] = String.split(user.channel, ".")
+
+        if channel_user_name == user.username do
+          access = :all
+          user_id = user.id
+        else
+          channel_user = User.find_by_username(channel_user_name)
+          if channel_user == nil do
+            user_id = user.id
+          else
+            user_id = channel_user.id
+          end
+          access = :public
+        end
+
+        [access, channel_name, user_id]
+    end
+
 
   def change_password(user, password) do
     password_hash = Comeonin.Bcrypt.hashpwsalt(password)

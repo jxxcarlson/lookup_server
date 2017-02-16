@@ -34,34 +34,6 @@ defmodule LookupPhoenix.Note do
     |> validate_required([:title, :content])
   end
 
-    ####
-
-
-
-    def decode_channel(user) do
-        user_id = user.id
-        access = :none
-
-        [channel_user_name, channel_name] = String.split(user.channel, ".")
-
-        if channel_user_name == user.username do
-          access = :all
-          user_id = user.id
-        else
-          channel_user = User.find_by_username(channel_user_name)
-          if channel_user == nil do
-            user_id = 0
-          else
-            user_id = channel_user.id
-          end
-          access = :public
-        end
-
-        [access, channel_name, user_id]
-    end
-
-
-
    ################
 
      def extract_id_list(list) do

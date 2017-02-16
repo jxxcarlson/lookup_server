@@ -9,7 +9,7 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Utility
 
   def getRandomNotes(current_user, tag \\ "none") do
-      [_access, channel_name, user_id] = Note.decode_channel(current_user)
+      [_access, channel_name, user_id] = User.decode_channel(current_user)
 
      Utility.report("channel_name in getRandomNotes", channel_name)
 
@@ -43,7 +43,7 @@ defmodule LookupPhoenix.NoteController do
      case [mode, length_of_id_list] do
        ["all", _] -> notes = Search.notes_for_user(channel_user, %{"tag" => channel_name, "sort_by" => "inserted_at", "direction" => "desc"})
        ["public", _] -> notes = Search.notes_for_user(channel_user, %{"tag" => "public", "sort_by" => "inserted_at", "direction" => "desc"})
-       [ _, 0 ]   -> notes = getRandomNotes(channel_user)
+       # [ _, 0 ]   -> notes = getRandomNotes(channel_user)
        _ -> notes = Note.getDocumentsFromList(id_list)
 
      end
@@ -78,7 +78,7 @@ defmodule LookupPhoenix.NoteController do
     if (conn.assigns.current_user.read_only == true) do
          read_only_message(conn)
     else
-      [access, channel_name, user_id] = Note.decode_channel(conn.assigns.current_user)
+      [access, channel_name, user_id] = User.decode_channel(conn.assigns.current_user)
       new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
 
