@@ -92,22 +92,30 @@ defmodule LookupPhoenix.UserController do
   end
 
   def createUser(changeset, conn) do
+    IO.puts "Hello: createUser"
     case Repo.insert(changeset) do
           {:ok, user} ->
+            IO.puts "User.createUser, :ok"
             User.initialize_metadata(user)
+            IO.puts "AFTER: initialize_metadata"
             User.set_admin(user, false)
             conn
             |> LookupPhoenix.Auth.login(user)
             |> put_flash(:info, "#{Utility.firstWord(user.name)}, you are now a LookupNote user!")
             |> redirect(to: note_path(conn, :index))
           {:error, changeset} ->
+            IO.puts "ERROR in createUser"
             render(conn, "new.html", changeset: changeset)
         end
   end
 
   def create(conn, %{"user" => user_params}) do
-
+    IO.puts "UserController.create"
+    username = user_params["username"]
+    channel = "#{username}.all"
+    user_params = Map.merge(user_params, %{"channel" => channel})
     changeset = User.registration_changeset(%User{}, user_params)
+    Utility.report("create, changeset", changeset)
 
     preflight_check = cond do
       user_params["registration_code"] == "" ->
@@ -116,7 +124,7 @@ defmodule LookupPhoenix.UserController do
            {:error, "Sorry, that is not a valid registration code."}
       true -> {:ok, :proceed}
     end
-    IO.inspect preflight_check
+    Utility.report("preflight_check", preflight_check)
 
     case  preflight_check do
       {:error, message} ->

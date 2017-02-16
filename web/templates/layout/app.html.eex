@@ -64,58 +64,61 @@
       <header>
 
 
+         <!-- NAVIGATION BAR -->
          <ol class="breadcrumb text-right" style="background-color:#d9d9d9">
 
            <%= if @current_user do %>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Home", to: page_path(@conn, :index), id: 'home' %> </li>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: note_path(@conn, :index), id: 'notes' %> </li>
-              <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%=  link "New", to: note_path(@conn, :new),   class: "", color: "blue", id: "new_note" %></li>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Tags", to: user_path(@conn, :tags), id: 'tags' %> </li>
-             <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Manual", to: page_path(@conn, :tips), id: 'tips' %> </li>
+                 <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Home", to: page_path(@conn, :index), id: 'home' %> </li>
+                 <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: note_path(@conn, :index), id: 'notes' %> </li>
+                  <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%=  link "New", to: note_path(@conn, :new),   class: "", color: "blue", id: "new_note" %></li>
+                 <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Tags", to: user_path(@conn, :tags), id: 'tags' %> </li>
+                 <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Manual", to: page_path(@conn, :tips), id: 'tips' %> </li>
 
-             <%= if @current_user.admin == true do %>
-                <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Users", to: user_path(@conn, :index), id: 'users' %> </li>
-             <% end %>
+                 <%= if @current_user.admin == true do %>
+                    <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Users", to: user_path(@conn, :index), id: 'users' %> </li>
+                 <% end %>
 
 
-             <li class="link1"><span style="font-weight:bold; color:black"><%= @current_user.username %></span>, <%= LookupPhoenix.Note.count_for_user(@current_user.id) %> Notes</li>
-             <li class="link1">
-               <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
-             </li>
-           <% else %>
-             <li class="link1"> <%= link "Sign up", to: user_path(@conn, :new) %> </li>
-             <li class="link1"> <%= link "Sign in", to: session_path(@conn, :new) %> </li>
-           <% end %>
+                 <li class="link1"><span style="font-weight:bold; color:black"><%= @current_user.username %></span>, <%= LookupPhoenix.Note.count_for_user(@current_user.id) %> Notes</li>
+                 <li class="link1">
+                   <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
+                 </li>
+               <% else %>
+                 <li class="link1"> <%= link "Sign up", to: user_path(@conn, :new) %> </li>
+                 <li class="link1"> <%= link "Sign in", to: session_path(@conn, :new) %> </li>
+               <% end %>
          </ol>
 
+         <!-- FLASH MESSAGES -->
          <div>
             <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
             <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
          </div>
 
+         <!-- SEARCH BOX AND CHANNEL SELECTOR -->
          <div style="margin-top:0;; margin-bottom:0">
-         <%= if @conn.assigns[:current_user] != nil do %>
+             <%= if @conn.assigns[:current_user] != nil do %>
 
-           <span style="float:left;">
-           <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
-               <%= text_input f, :query, placeholder: "Search ...", style: "display:inline-block; margin-top:-18px; margin-bottom:3px; width:300px; height:35px; font-size:1.8rem; background-color:#eee;", id: "search_notes" %>
-           <% end %>
-           </span>
+                   <span style="float:left;">
+                   <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
+                       <%= text_input f, :query, placeholder: "Search ...", style: "display:inline-block; margin-top:-18px; margin-bottom:3px; width:300px; height:35px; font-size:1.8rem; background-color:#eee;", id: "search_notes" %>
+                   <%= end %>
+                   </span>
 
-          <span style="float:right">
-           <%= form_for @conn, user_path(@conn, :update_channel), [name: :set], fn f -> %>
-                    <%= text_input f, :channel, placeholder: "Enter channel ...", value: @conn.assigns.current_user.channel, style: "display:inline-block; margin-top:-18px; margin-bottom:3px; width:240px; height:35px; font-size:1.8rem; color:#222; font-weight:400; background-color:#eee;", id: "search_notes" %>
-           <% end %>
-           </span>
+                  <span style="float:right">
+                   <%= form_for @conn, user_path(@conn, :update_channel), [name: :set], fn f -> %>
+                            <%= text_input f, :channel, placeholder: "Enter channel ...", value: @conn.assigns.current_user.channel, style: "display:inline-block; margin-top:-18px; margin-bottom:3px; width:240px; height:35px; font-size:1.8rem; color:#222; font-weight:400; background-color:#eee;", id: "search_notes" %>
+                   <%= end %>
+                   </span>
 
-           <span style="float:right; margin-top:18px; margin-right:4px;font-size:1.5rem; color:#666;">Channel</span>
+                   <span style="float:right; margin-top:18px; margin-right:4px;font-size:1.5rem; color:#666;">Channel</span>
 
-         <% end %>
+             <% end %>
          </div>
 
       </header>
 
-
+      <!-- MAIN -->
       <!-- role="main" -->
       <main style="clear:left;">
         <%= render @view_module, @view_template, assigns %>
