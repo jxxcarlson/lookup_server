@@ -41,8 +41,8 @@ defmodule LookupPhoenix.NoteController do
      length_of_id_list = length(id_list)
 
      case [mode, length_of_id_list] do
-       ["all", _] -> notes = Search.notes_for_user(channel_user, %{"tag" => channel_name, "sort_by" => "inserted_at", "direction" => "desc"})
-       ["public", _] -> notes = Search.notes_for_user(channel_user, %{"tag" => "public", "sort_by" => "inserted_at", "direction" => "desc"})
+       ["all", _] -> notes = Search.notes_for_user(user, %{"tag" => channel_name, "sort_by" => "inserted_at", "direction" => "desc"})
+       ["public", _] -> notes = Search.notes_for_user(user, %{"tag" => "public", "sort_by" => "inserted_at", "direction" => "desc"})
        # [ _, 0 ]   -> notes = getRandomNotes(channel_user)
        _ -> notes = Note.getDocumentsFromList(id_list)
 
