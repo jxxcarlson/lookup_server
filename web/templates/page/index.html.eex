@@ -48,7 +48,7 @@ span { color: darkred; font-weight:500;}
        <div>
           <h2 style="color:darkred; font-size:3em;">www.lookupnote.io</h2>
 
-          <p>Signed in as <%= @current_user.name %> </p>
+          <p>Signed in as <%= @current_user.username %> </p>
        </div>
      </div>
 
