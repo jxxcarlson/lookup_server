@@ -120,10 +120,10 @@ defmodule LookupPhoenix.NoteController do
     end
 
     inserted_at= Note.inserted_at_short(note)
-    inserted_at= Note.updated_at_short(note)
+    updated_at= Note.updated_at_short(note)
     word_count = RenderText.word_count(note.content)
 
-    params1 = %{note: note, inserted_at: inserted_at, updated_at: note.updated_at,
+    params1 = %{note: note, inserted_at: inserted_at, updated_at: updated_at,
                   options: options, word_count: word_count}
     params2 = Note.decode_query_string(conn.query_string)
     params = Map.merge(params1, params2)
