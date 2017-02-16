@@ -119,7 +119,7 @@ defmodule LookupPhoenix.NoteController do
       options = %{mode: "show", process: "none"}
     end
 
-    inserted_at= Note.inserted_at(note)
+    inserted_at= Note.inserted_at_short(note)
     word_count = RenderText.word_count(note.content)
 
     params1 = %{note: note, inserted_at: inserted_at, updated_at: note.updated_at,

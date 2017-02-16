@@ -15,7 +15,7 @@
 
  <p style="margin-bottom:1em;margin-top:1rem;">
 
-  <span style="margin-left:0;"> <%= @inserted_at  %> </span>
+  <span style="margin-left:0;"> <%= @inserted_at %> </span>
 
 
   <span style="float:right;margin-right:8px;" ><%= link "Edit", to: note_path(@conn, :edit, @note, index: @index, id_string: @id_string) %></span>
