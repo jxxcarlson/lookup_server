@@ -141,6 +141,7 @@ defmodule LookupPhoenix.Note do
          where: note.user_id == ^user.id,
          order_by: [desc: note.inserted_at]
        case tag do
+         "all" -> query2 = query
          "none" -> query2 = query
          "public" -> query2 = from note in query, where: note.public == true
          "nonpublic" -> query2 = from note in query, where: note.public == false
