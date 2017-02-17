@@ -22,22 +22,21 @@ defmodule LookupPhoenix.Search do
     end
 
     def notes_for_user(user, options) do
-       IO.puts "NOTES FOR USER"
+
        [access, channel_name, user_id] = User.decode_channel(user)
        tag = options["tag"]
-       IO.puts "IN notes_for_user, tag = #{tag}"
-       IO.puts "IN notes_for_user, access = #{access}"
-       IO.puts "IN notes_for_user, channel_name = #{channel_name}"
-       IO.puts "IN notes_for_user, user_id = #{user_id}"
+
        query = Ecto.Query.from note in Note,
          where: note.user_id == ^user_id,
          order_by: [desc: note.inserted_at]
-       if Enum.member?(["all", "public"], channel_name) do
+       if Enum.member?(["all", "public", "nonpublic"], channel_name) do
          query2 = query
        else
          query2 = from note in query,
            where: ilike(note.tag_string, ^"%#{channel_name}%")
        end
+
+       Utility.report("access", access)
 
        Repo.all(query2)
        |> filter_public(access)
@@ -337,11 +336,13 @@ defmodule LookupPhoenix.Search do
     end
 
     def filter_public(list, access) do
-      if access == :public do
-        Enum.filter(list, fn(x) -> x.public == true end)
-       else
-         list
-       end
+
+      case access do
+        :public -> Enum.filter(list, fn(x) -> x.public == true end)
+        :nonpublic -> Enum.filter(list, fn(x) -> x.public == false end)
+        _ -> list
+      end
+
     end
 
 end

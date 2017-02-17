@@ -80,8 +80,10 @@ defmodule LookupPhoenix.User do
           end
         end
 
-        if channel_name == "public" do
-          access = :public
+        case channel_name do
+          "public" -> access = :public
+          "nonpublic" -> access = :nonpublic
+          _ -> :all
         end
 
         [access, channel_name, user_id]
