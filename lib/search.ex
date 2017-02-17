@@ -52,6 +52,13 @@ defmodule LookupPhoenix.Search do
        Repo.all(query)
     end
 
+    def all_public_notes_for_user(user) do
+      query = Ecto.Query.from note in Note,
+        where: note.user_id == ^user.id and note.public == true,
+        order_by: [desc: note.inserted_at]
+      Repo.all(query)
+    end
+
 
     def decode_query(query) do
       query
@@ -144,6 +151,8 @@ defmodule LookupPhoenix.Search do
     def tag_search(tag_list, user) do
        IO.puts "HERE IS Search.tag_search"
        [access, channel_name, user_id]= User.decode_channel(user)
+
+       Utility.report("decode_channel:", [access, channel_name, user_id])
 
        query1 = Ecto.Query.from note in Note,
           where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tag_list)}%")),

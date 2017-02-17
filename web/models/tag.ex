@@ -88,6 +88,14 @@ defmodule LookupPhoenix.Tag do
       # |> Enum.filter(fn(x) -> !ignorable_tag(x) end)
     end
 
+    def get_all_public_user_tags(user) do
+      IO.puts "GET TAGS HERE!"
+      notes = Search.all_public_notes_for_user(user)
+      IO.puts "Notes found: #{length(notes)}"
+      notes |> Enum.reduce([], fn(note, list) -> merge_tags_from_note(note, list) end)
+      # |> Enum.filter(fn(x) -> !ignorable_tag(x) end)
+    end
+
     def pretty(tag) do
       String.replace(tag, ":", "")
     end

@@ -2,14 +2,14 @@
   <%= link "Update tags", to: user_path(@conn, :update_tags), class: "btn btn-default" %>
 </span>
 
-<h4>Tags: <%= length(@user.tags) %></h4>
+<h4>Tags: <%= @ctag_count %></h4>
 
 
 
 
 <table class="table">
   <tbody>
-<%= for row <- Enum.chunk(@user.tags, 5, 5, []) do %>
+<%= for row <- Enum.chunk(@ctags, 5, 5, []) do %>
     <tr>
       <%= for tag <- row do %>
         <td><%= link LookupPhoenix.Tag.pretty(tag), to: search_path(@conn, :tag_search, tag) %> </td>

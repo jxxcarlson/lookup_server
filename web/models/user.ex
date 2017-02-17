@@ -131,9 +131,13 @@ defmodule LookupPhoenix.User do
     end
 
   def update_tags(user) do
-      # user = Repo.get!(User, user.id)
       tags = Tag.get_all_user_tags(user) |> Enum.sort
       params = %{"tags" => tags}
+      changeset = User.running_changeset(user, params)
+      Repo.update(changeset)
+
+      tags = Tag.get_all_public_user_tags(user) |> Enum.sort
+      params = %{"public_tags" => tags}
       changeset = User.running_changeset(user, params)
       Repo.update(changeset)
   end

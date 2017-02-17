@@ -52,10 +52,14 @@ defmodule LookupPhoenix.UserController do
      [access, channel_name, user_id] = User.decode_channel(user)
      if user_id == user.id do
        channel_user = user
+       ctags = user.tags
+       ctag_count = length(ctags)
      else
        channel_user = User |> Repo.get!(user_id)
+       ctags = user.public_tags
+       ctag_count = length(ctags)
      end
-     render conn, "tags.html", user: channel_user
+     render conn, "tags.html", user: channel_user, ctags: ctags, ctag_count: ctag_count
   end
 
   def update_tags(conn, _params) do
