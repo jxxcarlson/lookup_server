@@ -18,6 +18,7 @@ defmodule LookupPhoenix.User do
       field :password_hash, :string
       field :registration_code, :string
       field :tags, {:array, :string }
+      field :public_tags, {:array, :string }
       field :read_only, :boolean
       field :admin, :boolean
       field :number_of_searches, :integer
@@ -31,7 +32,7 @@ defmodule LookupPhoenix.User do
 
   def running_changeset(model, params \\ :empty) do
       model
-      |> cast(params, ~w(tags read_only number_of_searches search_filter channel), [] )
+      |> cast(params, ~w(tags public_tags read_only number_of_searches search_filter channel), [] )
   end
 
   def password_changeset(model, params \\ :empty) do
@@ -150,7 +151,7 @@ defmodule LookupPhoenix.User do
   def initialize_metadata(user) do
      IO.puts "1. initialize_metadata"
      # params = %{"tags" => [], "read_only" => false, "admin" => false, "number_of_searches"  => 0}
-     params = %{"tags" => [], "read_only" => false, "admin" => false,
+     params = %{"tags" => [], "public_tags" => [], "read_only" => false, "admin" => false,
         "number_of_searches"  => 0, "search_filter" => " ", "channel" => "#{user.username}.all"}
      changeset = User.running_changeset(user, params)
      Utility.report("changeset", changeset)
@@ -211,15 +212,14 @@ defmodule LookupPhoenix.User do
 
   ### ONE TIME ###
 
-  def fix_tags(user) do
-    new_tags = user.tags |> Enum.map(fn(tag) -> String.replace(tag, ":", "") end)
-    changeset = User.running_changeset(user, %{"tags" => new_tags, "search_filter" => " "})
-
-    Repo.update(changeset)
+  def set_public_tags(user) do
+      params = %{"public_tags" => []}
+      changeset = User.running_changeset(user, params)
+      Repo.update(changeset)
   end
 
-  def fix_all_tags do
-    User |> Repo.all |> Enum.map(fn(user) -> fix_tags(user) end)
+  def set_all_public_tags do
+    User |> Repo.all |> Enum.map(fn(user) -> set_public_tags(user) end)
   end
 
   def set_channel(user, channel_name) do
