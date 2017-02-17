@@ -7,7 +7,7 @@ input[type=checkbox]
   -moz-transform: scale(1.5); /* FF */
   -webkit-transform: scale(1.5); /* Safari and Chrome */
   -o-transform: scale(1.5); /* Opera */
-  padding: 10px;
+  padding: 2px;
 }
 
 /* Might want to wrap a span around your checkbox text */
@@ -45,7 +45,7 @@ input[type=checkbox]
       <%= error_tag f, :tag_string %>
 
 
-   <div class="form-check form-check-inline" style="display:inline; margin-left:20px;">
+   <div class="form-check form-inline" style="display:inline; margin-left:20px;">
      <label class="form-check-label"> Public &nbsp;
        <%= checkbox f, :public, class: "checkbox", value: @note.public %>
      </label>
@@ -63,7 +63,7 @@ input[type=checkbox]
       <span><%= submit "Save", class: "btn btn-primary", style: "width: 40%;", id: 'save' %>
 
       <%= link "Back", to: note_path(@conn, :index), id: 'notes', class: "btn btn-primary", style: "width: 30%;margin-right:2em;" %>
-      Word count: <%= @word_count %>
+      Words: <%= @word_count %>
       <span>
     <% end %>
   </div>
