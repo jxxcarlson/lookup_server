@@ -56,7 +56,7 @@ defmodule LookupPhoenix.UserController do
        ctag_count = length(ctags)
      else
        channel_user = User |> Repo.get!(user_id)
-       ctags = user.public_tags
+       ctags = channel_user.public_tags
        ctag_count = length(ctags)
      end
      render conn, "tags.html", user: channel_user, ctags: ctags, ctag_count: ctag_count
