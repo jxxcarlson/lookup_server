@@ -24,11 +24,13 @@
   <span style="float:right;margin-right:8px;" ><%= link "Back", to: note_path(@conn, :index) %></span>
 
   <%= if @note_count > 1 do %>
-  <span class: "btn btn-primary" style="float:right;margin-right:28px; font-weight:bold;" ><%= link ">|", to: note_path(@conn, :show, @last_id, index: @last_index, id_string: @id_string) %></span>
-  <span class: "btn btn-primary" style="float:right;margin-right:8px; font-weight:bold;" ><%= link ">>", to: note_path(@conn, :show, @next_id, index: @next_index, id_string: @id_string) %></span>
-  <span style="background-color:#35d; color: white; padding-left:5px; padding-right:8px; float:right;margin-right:8px;" ><%= @index + 1 %>:<%= @note_count %></span>
-  <span style="float:right;margin-right:9px; font-weight:bold;" ><%= link "<<", to: note_path(@conn, :show, @previous_id, index: @previous_index, id_string: @id_string) %></span>
-  <span style="float:right;margin-right:9px; font-weight:bold;" ><%= link "|<", to: note_path(@conn, :show, @first_id, index: 0, id_string: @id_string) %></span>
+
+    <span class: "btn btn-primary" style="float:right;margin-right:28px; font-weight:bold;" ><%= link ">|", to: note_path(@conn, :show, @last_id, index: @last_index, id_string: @id_string) %></span>
+    <span class: "btn btn-primary" style="float:right;margin-right:8px; font-weight:bold;" ><%= link ">>", to: note_path(@conn, :show, @next_id, index: @next_index, id_string: @id_string) %></span>
+    <span style="background-color:#35d; color: white; padding-left:5px; padding-right:8px; float:right;margin-right:8px;" ><%= @index + 1 %>:<%= @note_count %></span>
+    <span style="float:right;margin-right:9px; font-weight:bold;" ><%= link "<<", to: note_path(@conn, :show, @previous_id, index: @previous_index, id_string: @id_string) %></span>
+    <span style="float:right;margin-right:9px; font-weight:bold;" ><%= link "|<", to: note_path(@conn, :show, @first_id, index: 0, id_string: @id_string) %></span>
+
   <% end %>
 
 </p>
@@ -42,10 +44,14 @@
 
 <br><br>
 <p> <i><b><span><%= LookupPhoenix.Note.public_indicator(@note) %></b></span>, Last updated: <%= @updated_at %>
+
   <span style='margin-left:2em;'>ID: <%= @note.id %> </span>
   <span style='margin-left:2em;'>Word count: <%= @word_count %> </span>
   <span style='margin-left:2em;'>Tags: <%= @note.tag_string %></span></i>
   <span style="float:right;margin-right:8px;">
+  <span style='margin-left:2em;'>
+     <a href="mailto:someone?subject=<%= @note.title %>&body=<%= @email_body %>">Email Note</a>
+  </span>
 
   </p>
 <br>
