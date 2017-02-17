@@ -4,6 +4,7 @@ defmodule LookupPhoenix.Tag do
     alias LookupPhoenix.Note
     alias LookupPhoenix.Repo
     alias LookupPhoenix.Tag
+    alias LookupPhoenix.Search
 
     # A tag is string that starts with :, eg. :foo
     # get_tags(text) returns a list of the tags found in
@@ -81,7 +82,7 @@ defmodule LookupPhoenix.Tag do
 
     def get_all_user_tags(user) do
       IO.puts "GET TAGS HERE!"
-      notes = Search.notes_for_user(user, %{"tag" => "all", "sort_by" => "inserted_at", "direction" => "desc"})
+      notes = Search.all_notes_for_user(user)
       IO.puts "Notes found: #{length(notes)}"
       notes |> Enum.reduce([], fn(note, list) -> merge_tags_from_note(note, list) end)
       # |> Enum.filter(fn(x) -> !ignorable_tag(x) end)

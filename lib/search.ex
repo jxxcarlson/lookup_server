@@ -45,6 +45,13 @@ defmodule LookupPhoenix.Search do
 
     end
 
+    def all_notes_for_user(user) do
+       query = Ecto.Query.from note in Note,
+         where: note.user_id == ^user.id,
+         order_by: [desc: note.inserted_at]
+       Repo.all(query)
+    end
+
 
     def decode_query(query) do
       query

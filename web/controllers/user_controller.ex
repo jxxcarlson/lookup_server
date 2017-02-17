@@ -48,7 +48,14 @@ defmodule LookupPhoenix.UserController do
 
 
   def tags(conn, _params) do
-     render conn, "tags.html", user: conn.assigns.current_user
+     user = conn.assigns.current_user
+     [access, channel_name, user_id] = User.decode_channel(user)
+     if user_id == user.id do
+       channel_user = user
+     else
+       channel_user = User |> Repo.get!(user_id)
+     end
+     render conn, "tags.html", user: channel_user
   end
 
   def update_tags(conn, _params) do
