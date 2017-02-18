@@ -146,7 +146,7 @@ defmodule LookupPhoenix.NoteController do
 
         params1 = %{note: note, changeset: changeset,
                     word_count: word_count, locked: locked,
-                    conn: conn, tags: tags}
+                    conn: conn, tags: tags, note: note}
         params2 = Note.decode_query_string(conn.query_string)
         params = Map.merge(params1, params2)
 

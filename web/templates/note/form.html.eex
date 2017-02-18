@@ -41,7 +41,7 @@ input[type=checkbox]
 
   <div class="form-inline" style="margin-bottom:10px;">
       <%= label f, :tags, class: "control-label-inline" %>
-      <%= text_input f, :tag_string, class: "form-control", style: "width: 65%;", id: 'tags', placeholder: 'separate tags by commas'  %>
+      <%= text_input f, :tag_string, class: "form-control", style: "width: 66.25%;", id: 'tags', placeholder: 'separate tags by commas'  %>
       <%= error_tag f, :tag_string %>
 
 
@@ -62,7 +62,8 @@ input[type=checkbox]
     <% else %>
       <span><%= submit "Save", class: "btn btn-primary", style: "width: 40%;", id: 'save' %>
 
-      <%= link "Back", to: note_path(@conn, :index), id: 'notes', class: "btn btn-primary", style: "width: 30%;margin-right:2em;" %>
+      <%= link "Back", to: note_path(@conn, :index), id: 'notes', class: "btn btn-primary", style: "width: 15%;margin-right:0.1em;" %>
+      <%= link "Delete", to: note_path(@conn, :delete, @note), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-primary", style: "width: 15%;margin-right:2em;" %>
       Words: <%= @word_count %>
       <span>
     <% end %>
