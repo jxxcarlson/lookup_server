@@ -75,13 +75,17 @@ defmodule LookupPhoenix.UserController do
 
       # Ensure that the channel has the form a.b
       channel_parts = channel |> String.split(".")
-      if length(channel_parts) != 2 do
-        # use default channel
+      channel_parts_head = hd(channel_parts)
+      if channel_parts_head == "" do
         channel_parts = [user.username, "all"]
+      end
+      case length(channel_parts) do
+        1 -> [channel_user_name, channel_name] = [user.username, hd(channel_parts)]
+        2 -> [channel_user_name, channel_name] = channel_parts
+        _ -> [user.username, "all"]
       end
 
       # Ensure that the 'channel_user_name' is valid
-      [channel_user_name, channel_name]  = channel_parts
       if channel_user_name != user.username do
         channel_user = User.find_by_username(channel_user_name)
         if channel_user  == nil do
