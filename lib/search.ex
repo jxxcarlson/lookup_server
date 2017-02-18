@@ -33,7 +33,7 @@ defmodule LookupPhoenix.Search do
 
        case channel_name do
          "all" -> query2 = query
-         "pubic" -> query2 = query
+         "public" -> query2 = query
          "nonpublic" -> query2 = query
          "notag" ->
              query2 = from note in query,
