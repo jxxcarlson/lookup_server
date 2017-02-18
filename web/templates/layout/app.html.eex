@@ -70,6 +70,8 @@
            <%= if @current_user do %>
                  <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Home", to: page_path(@conn, :index), id: 'home' %> </li>
                  <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: note_path(@conn, :index), id: 'notes' %> </li>
+                  <!--                  <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: search_path(@conn, :recent, hours_before: 48, mode: "viewed") %> </li>
+ -->
                   <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "New", to: note_path(@conn, :new),   class: "", color: "blue", id: "new_note" %></li>
                  <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Tags", to: user_path(@conn, :tags), id: 'tags' %> </li>
                  <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Manual", to: page_path(@conn, :tips), id: 'tips' %> </li>
