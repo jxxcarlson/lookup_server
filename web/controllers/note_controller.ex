@@ -53,7 +53,7 @@ defmodule LookupPhoenix.NoteController do
      IO.puts "note_record.original_note_count = #{note_record.original_note_count}"
 
      if note_record.original_note_count > note_record.note_count do
-       noteCountString = "#{note_record.note_count} Random notes"
+       noteCountString = "#{note_record.note_count} Random notes from #{note_record.original_note_count}"
      else
        noteCountString = "#{note_record.note_count} Notes"
      end
