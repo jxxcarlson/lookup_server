@@ -123,7 +123,7 @@ defmodule LookupPhoenix.SearchController do
              update_message = "Recently updated"
           "created" ->
               notes = Search.created_before_date(hours_before, Timex.now, conn.assigns.current_user)
-              update_message = "Recently updated"
+              update_message = "Recently created"
           "viewed" ->
              notes = Search.viewed_before_date(hours_before, Timex.now, conn.assigns.current_user)
              update_message = "Recently viewed"
