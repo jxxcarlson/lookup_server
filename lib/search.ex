@@ -37,7 +37,7 @@ defmodule LookupPhoenix.Search do
          "nonpublic" -> query2 = query
          "notag" ->
              query2 = from note in query,
-               where: note.tag_string == ""
+               where: is_nil(note.tag_string) or note.tag_string == ""
          _ ->
              query2 = from note in query,
                where: ilike(note.tag_string, ^"%#{channel_name}%")
