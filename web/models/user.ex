@@ -17,8 +17,8 @@ defmodule LookupPhoenix.User do
       field :password, :string
       field :password_hash, :string
       field :registration_code, :string
-      field :tags, {:array, :string }
-      field :public_tags, {:array, :string }
+      field :tags, {:array, :map }
+      field :public_tags, {:array, :map }
       field :read_only, :boolean
       field :admin, :boolean
       field :number_of_searches, :integer
@@ -129,6 +129,8 @@ defmodule LookupPhoenix.User do
             changeset
         end
     end
+
+  # Enum.map(uu, fn(user) -> Repo.update(User.running_changeset(user, params)) end)
 
   def update_tags(user) do
       # tags = Tag.get_all_user_tags(user) |> Enum.sort

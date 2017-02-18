@@ -26,23 +26,14 @@ defmodule LookupPhoenix.Tag do
       get_tags_from_note(note)
     end
 
-    def fixTags(note) do
-      tag_list = content2taglist(note)
-
-      tag_string = tag_list
-      |> Enum.map( fn(tag) -> String.replace(tag, ":", "") end)
-      |>  Enum.join(", ")
-
-      content = RenderText.erase_words(note.content<> " ", tag_list)
-
-      tag_list = tag_list |> Enum.map( fn(tag) -> String.replace(tag, ":", "") end)
-
-      changeset = Note.changeset(note, %{"tags" => tag_list, "tag_string" => tag_string, "content" => content})
+    def initialize_tags(user) do
+      params = %{"tags" => [], "public_tags" => []}
+      changeset = changeset(user, params)
       Repo.update(changeset)
     end
 
-    def fix_all_tags do
-      Note |> Repo.all |> Enum.map(fn(note) -> fixTags(note) end)
+    def initialize_user_tag_fields do
+      User |> Repo.all |> Enum.map(fn(user) -> initialize_tags(user) end)
     end
 
     def str2tags(str) do
@@ -98,7 +89,7 @@ defmodule LookupPhoenix.Tag do
     end
 
     def pretty(tag) do
-      String.replace(tag, ":", "")
+      "#{tag["name"]} (#{tag["freq"]})"
     end
 
 
@@ -129,7 +120,7 @@ defmodule LookupPhoenix.Tag do
     #############
 
     # alias LookupPhoenix.Note; alias LookupPhoenix.User; alias LookupPhoenix.Tag; alias LookupPhoenix.Repo
-    #  alias LookupPhoenix.Utility; u = User |> Repo.get!(9);  ff = Tag.tag_frequencies(u)
+    #  alias LookupPhoenix.Utility; u = User |> Repo.get!(9);  ff = Tag.tag_frequencies(u,"all")
 
     def update_frequencies_for_tag(tag, freqs) do
       value = freqs[tag]
@@ -166,7 +157,8 @@ defmodule LookupPhoenix.Tag do
     end
 
     def tags_by_frequency(user, scope \\ "all") do
-      tag_frequencies(user, scope) |> Utility.proj1_2list
+      # tag_frequencies(user, scope) |> Utility.proj1_2list
+      tag_frequencies(user, scope) |> Enum.map( fn(pair) -> %{name: hd(pair), freq: hd(tl(pair))} end)
     end
 
 

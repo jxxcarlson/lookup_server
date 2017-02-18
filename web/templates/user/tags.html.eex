@@ -12,7 +12,7 @@
 <%= for row <- Enum.chunk(@ctags, 5, 5, []) do %>
     <tr>
       <%= for tag <- row do %>
-        <td><%= link LookupPhoenix.Tag.pretty(tag), to: search_path(@conn, :tag_search, tag) %> </td>
+        <td><%= link LookupPhoenix.Tag.pretty(tag), to: search_path(@conn, :tag_search, tag["name"]) %> </td>
       <% end %>
     </tr>
 <% end %>
