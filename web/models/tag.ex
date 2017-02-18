@@ -113,7 +113,7 @@ defmodule LookupPhoenix.Tag do
     end
 
     def merge_all_user_tags_into_map(user) do
-        Search.notes_for_user(user, %{"tag" => "all", "sort_by" => "created_at", "direction" => "desc"})
+        Search.notes_for_user(user, %{"tag" => "all", "sort_by" => "created_at", "direction" => "desc"}).notes
         |> Enum.reduce(%{}, fn(note, map) -> merge_tags_from_note_to_map(note, map) end)
     end
 

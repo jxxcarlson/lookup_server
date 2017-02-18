@@ -7,6 +7,8 @@ defmodule LookupPhoenix.Note do
   alias LookupPhoenix.User
   alias LookupPhoenix.Repo
   alias LookupPhoenix.Utility
+  alias LookupPhoenix.Constant
+  alias LookupPhoenix.Search
 
   schema "notes" do
     use Timex.Ecto.Timestamps
@@ -64,7 +66,9 @@ defmodule LookupPhoenix.Note do
      end
 
     def getDocumentsFromList(id_list) do
-      id_list |> Enum.map(fn(id) -> Repo.get!(Note, id) end)
+      notes = id_list |> Enum.map(fn(id) -> Repo.get!(Note, id) end)
+      |> Search.filter_random(Constant.random_note_threshold())
+      %{notes: notes, note_count: length(notes), original_note_count: length(id_list)}
     end
 
     def identity(text) do

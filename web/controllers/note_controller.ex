@@ -20,7 +20,7 @@ defmodule LookupPhoenix.NoteController do
           p = (100*expected_number_of_entries) / note_count
           notes = Search.random_notes_for_user(p, current_user, 7, tag)
        note_count <= 14 ->
-          notes = Search.notes_for_user(current_user, %{"tag" => tag, "sort_by" => "created_at", "direction" => "desc"})
+          notes = Search.notes_for_user(current_user, %{"tag" => tag, "sort_by" => "created_at", "direction" => "desc"}).notes
      end
 
      notes = Utility.add_index_to_maplist(notes)
@@ -39,18 +39,27 @@ defmodule LookupPhoenix.NoteController do
      length_of_id_list = length(id_list)
 
      case [mode, length_of_id_list] do
-       ["all", _] -> notes = Search.notes_for_user(user, %{"mode" => "all",
+       ["all", _] -> note_record = Search.notes_for_user(user, %{"mode" => "all",
+          "sort_by" => "inserted_at", "direction" => "desc"});
+       ["public", _] -> note_record = Search.notes_for_user(user, %{"mode" => "public",
           "sort_by" => "inserted_at", "direction" => "desc"})
-       ["public", _] -> notes = Search.notes_for_user(user, %{"mode" => "public",
-          "sort_by" => "inserted_at", "direction" => "desc"})
-       _ -> notes = Note.getDocumentsFromList(id_list)
+       _ -> note_record = Note.getDocumentsFromList(id_list)
 
      end
 
      options = %{mode: "index", process: "none"}
-     noteCountString = "#{length(notes)} Notes"
 
-     notes = Utility.add_index_to_maplist(notes)
+     IO.puts "note_record.note_count = #{note_record.note_count}"
+     IO.puts "note_record.original_note_count = #{note_record.original_note_count}"
+
+     if note_record.original_note_count > note_record.note_count do
+       noteCountString = "#{note_record.note_count} Random notes"
+     else
+       noteCountString = "#{note_record.note_count} Notes"
+     end
+
+
+     notes = Utility.add_index_to_maplist(note_record.notes)
      id_string = Note.extract_id_list(notes)
      params = %{notes: notes, id_string: id_string, noteCountString: noteCountString, options: options}
 

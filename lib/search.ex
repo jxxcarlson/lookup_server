@@ -6,6 +6,7 @@ defmodule LookupPhoenix.Search do
     alias LookupPhoenix.User
     alias LookupPhoenix.Repo
     alias LookupPhoenix.Utility
+    alias LookupPhoenix.Constant
 
 
     def count_for_user(user_id, tag \\ "none") do
@@ -38,10 +39,11 @@ defmodule LookupPhoenix.Search do
 
        Utility.report("access", access)
 
-       Repo.all(query2)
-       |> filter_public(access)
-       |> filter_random(30)
-       |> Note.memorize_notes(user.id)
+       notes = Repo.all(query2) |> filter_public(access)
+       original_note_count = length(notes)
+       filtered_notes = notes |> filter_random(Constant.random_note_threshold())
+       Note.memorize_notes(filtered_notes, user.id)
+       %{notes: filtered_notes, note_count: length(filtered_notes), original_note_count: original_note_count}
 
     end
 
@@ -220,7 +222,7 @@ defmodule LookupPhoenix.Search do
     def random_notes_for_user(p, user, truncate_at, tag) do
       [access, _channel_name, user_id]= User.decode_channel(user)
       random_ids(p)
-      |> Note.getDocumentsFromList
+      |> Note.getDocumentsFromList.notes
       |> filter_records_for_user(user_id)
       |> filter_public(access)
 
@@ -236,7 +238,7 @@ defmodule LookupPhoenix.Search do
           |> RandomList.mcut
 
           new_id_list = id_list
-          |> Note.getDocumentsFromList
+          |> Note.getDocumentsFromList.notes
           |> filter_records_for_user(user_id)
           Note.memorize_list(new_id_list, user_id)
           new_id_list

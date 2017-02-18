@@ -71,7 +71,7 @@ defmodule LookupPhoenix.SearchController do
               p = (100*expected_number_of_entries) / note_count
               notes = Search.random_notes_for_user(p, user, 7, "none")
            note_count <= 14 ->
-              notes = Search.notes_for_user(user, %{"tag" => channel_name, "sort_by" => "created_at", "direction" => "desc"})
+              notes = Search.notes_for_user(user, %{"tag" => channel_name, "sort_by" => "created_at", "direction" => "desc"}).notes
          end
 
          Utility.report("Number of randome notes:", Enum.count(notes))
