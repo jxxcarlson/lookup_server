@@ -5,6 +5,7 @@ defmodule LookupPhoenix.Tag do
     alias LookupPhoenix.Repo
     alias LookupPhoenix.Tag
     alias LookupPhoenix.Search
+    alias LookupPhoenix.Utility
 
     # A tag is string that starts with :, eg. :foo
     # get_tags(text) returns a list of the tags found in
@@ -124,6 +125,50 @@ defmodule LookupPhoenix.Tag do
         Search.notes_for_user(user, %{"tag" => "all", "sort_by" => "created_at", "direction" => "desc"})
         |> Enum.reduce(%{}, fn(note, map) -> merge_tags_from_note_to_map(note, map) end)
     end
+
+    #############
+
+    # alias LookupPhoenix.Note; alias LookupPhoenix.User; alias LookupPhoenix.Tag; alias LookupPhoenix.Repo
+    #  alias LookupPhoenix.Utility; u = User |> Repo.get!(9);  ff = Tag.tag_frequencies(u)
+
+    def update_frequencies_for_tag(tag, freqs) do
+      value = freqs[tag]
+      if value == nil do
+        freqs
+      else
+        new_freq = freqs[tag] + 1
+        Map.merge(freqs, %{tag => new_freq})
+      end
+    end
+
+    def update_frequencies_for_note(note, freqs) do
+       note.tags |> Enum.reduce(freqs, fn(tag, acc) -> update_frequencies_for_tag(tag, acc) end)
+    end
+
+    def update_frequencies_for_user(freqs, user) do
+      Search.all_notes_for_user(user)
+      |> Enum.reduce(freqs, fn(note, freqs) -> update_frequencies_for_note(note, freqs) end)
+    end
+
+    def tag_frequencies(user, scope) do
+      case scope do
+        "public" -> tags_to_process = Tag.get_all_public_user_tags(user)
+        _ -> tags_to_process = Tag.get_all_user_tags(user)
+      end
+
+      IO.puts "TAGS TO PROCESS: #{length(tags_to_process)}"
+
+      tags_to_process |> Enum.filter(fn(tag) -> tag != "" end)
+      |> Enum.reduce(%{}, fn(tag, acc) -> Map.merge(acc, %{tag => 0}) end)
+      |> update_frequencies_for_user(user)
+      |> Utility.map22list
+      |> Utility.sort2list("desc")
+    end
+
+    def tags_by_frequency(user, scope \\ "all") do
+      tag_frequencies(user, scope) |> Utility.proj1_2list
+    end
+
 
 
 end

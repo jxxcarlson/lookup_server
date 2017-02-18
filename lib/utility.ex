@@ -49,4 +49,23 @@ defmodule LookupPhoenix.Utility do
     |> Enum.reduce(%{}, fn(item, acc) -> Map.merge(acc, str2map(item)) end)
   end
 
+  def map22list(m) do
+    Map.keys(m) |> Enum.map( fn(key) -> [key, m[key]] end)
+  end
+
+  def sort2list(list, direction) do
+    case direction do
+      "desc" -> list |> Enum.sort(fn(e1, e2) -> hd(tl(e1)) > hd(tl(e2)) end)
+       _ -> list |> Enum.sort(fn(e1, e2) -> hd(tl(e1)) <= hd(tl(e2)) end)
+    end
+  end
+
+  def proj1_2list(list) do
+    Enum.map(list, fn(element) -> hd(element) end)
+  end
+
+  def proj2_2list(list) do
+    Enum.map(list, fn(element) -> hd(tl(element)) end)
+  end
+
 end

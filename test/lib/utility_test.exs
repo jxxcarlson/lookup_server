@@ -33,5 +33,25 @@ defmodule UtilityTest do
       IO.inspect output
    end
 
+   test "map22list" do
+     input = %{"foo" => 1, "bar" => 2}
+     expected_output = [["bar", 2], ["foo", 1]]
+     output = Utility.map22list(input)
+     assert output == expected_output
+   end
+
+   test "sort2list" do
+     input = [["foo",5], ["bar", 2], ["baz", 6]]
+     expected_output = [["baz", 6], ["foo", 5], ["bar", 2]]
+
+     output = Utility.sort2list(input, "desc")
+     assert output == expected_output
+
+     output = Utility.sort2list(input, "asc")
+     expected_output = [["bar", 2], ["foo", 5], ["baz", 6]]
+     assert output == expected_output
+
+   end
+
 
 end
