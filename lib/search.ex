@@ -30,11 +30,17 @@ defmodule LookupPhoenix.Search do
        query = Ecto.Query.from note in Note,
          where: note.user_id == ^user_id,
          order_by: [desc: note.inserted_at]
-       if Enum.member?(["all", "public", "nonpublic"], channel_name) do
-         query2 = query
-       else
-         query2 = from note in query,
-           where: ilike(note.tag_string, ^"%#{channel_name}%")
+
+       case channel_name do
+         "all" -> query2 = query
+         "pubic" -> query2 = query
+         "nonpublic" -> query2 = query
+         "notag" ->
+             query2 = from note in query,
+               where: note.tag_string == ""
+         _ ->
+             query2 = from note in query,
+               where: ilike(note.tag_string, ^"%#{channel_name}%")
        end
 
        Utility.report("access", access)
