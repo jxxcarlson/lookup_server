@@ -228,7 +228,8 @@ defmodule LookupPhoenix.Search do
     def random_notes_for_user(p, user, truncate_at, tag) do
       [access, _channel_name, user_id]= User.decode_channel(user)
       random_ids(p)
-      |> Note.getDocumentsFromList.notes
+      |> Note.getDocumentsFromList
+      |> Enum.map(fn(note_record) -> note_record.notes end)
       |> filter_records_for_user(user_id)
       |> filter_public(access)
 
@@ -244,7 +245,8 @@ defmodule LookupPhoenix.Search do
           |> RandomList.mcut
 
           new_id_list = id_list
-          |> Note.getDocumentsFromList.notes
+          |> Note.getDocumentsFromList
+          |> Enum.map(fn(note_record) -> note_record.notes end)
           |> filter_records_for_user(user_id)
           Note.memorize_list(new_id_list, user_id)
           new_id_list
