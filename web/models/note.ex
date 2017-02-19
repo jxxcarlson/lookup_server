@@ -226,8 +226,7 @@ defmodule LookupPhoenix.Note do
 
     def generate_time_limited_token(note, n_chars, hours_to_expiration) do
       token_record = Utility.generate_time_limited_token(n_chars,hours_to_expiration)
-      tokens = note.tokens || []
-      tokens = note.tokens ++ [token_record]
+      tokens = (note.tokens || []) ++ [token_record]
       changeset = Note.changeset(note, %{tokens: tokens})
       Repo.update(changeset)
       token_record
