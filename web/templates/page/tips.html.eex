@@ -34,6 +34,7 @@
  <li style="margin-top:1em;"><b>Advanced topics</b></li>
  <li><a href="#channels">Channels</a> </li>
  <li><a href="#public">Public notes</a> </li>
+ <li><a href="#share">Sharing notes</a> </li>
  <li><a href="#md">Mini markup</a> </li>
 
  <li style="margin-top:1em;"><b>Special topics</b></li>
@@ -188,6 +189,14 @@
    lookupnote accounts) can find those notes by setting <i>their</i> channel
    to <span>suw.bird</span>.
    </p>
+
+   <p class="heading" id="share">Sharing notes</p>
+
+   <p class="text">
+      Public notes can be shared by sending an email message.
+      Just click on <span>Email note</span>, which you will find at the bottom right
+      of the page which gives a full view of the note..
+      </p>
 
    <p class="heading" id="md">Mini markup</p><p class="text"><b>Short cuts.</b>
 
