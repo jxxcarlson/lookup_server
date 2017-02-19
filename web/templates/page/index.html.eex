@@ -4,7 +4,7 @@ span { color: darkred; font-weight:500;}
 </style>
 
 <%= if @conn.assigns.current_user == nil do  %>
- <div style="max-width:36em; margin-top:3em;">
+ <div style="max-width:36em; margin-top:4em;">
 
      <div class="jumbotron" style="">
        <div>
