@@ -14,13 +14,14 @@ defmodule LookupPhoenix.PublicController do
       else
           options = %{mode: "show", process: "none"}
           params = %{note: note, options: options}
-          case [note.public, note.shared] do
-            [true, _] -> render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Public"}))
-            [_, true] ->
+          case note.public do
+            true -> render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Public"}))
+            false ->
                if Note.match_token_array(token, note) do
                  render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Shared"}))
+               else
+                 render(conn, "error.html", params)
                end
-            _ ->  render(conn, "error.html", params)
           end
       end
       # match_token_array
