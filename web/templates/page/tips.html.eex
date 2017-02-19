@@ -24,16 +24,26 @@
 
  <ul class="toc">
 
+ <li><b>Getting started</b></li>
  <li><a href="#basics">The Basics</a> </li>
  <li><a href="#search">Search</a> </li>
  <li><a href="#taggs">Tags</a> </li>
  <li><a href="#links">Links to web pages, images, video, audio, and PDF files</a> </li>
  <li><a href="#iphone">Smart phones and tablets</a> </li>
+
+ <li style="margin-top:1em;"><b>Advanced topics</b></li>
+ <li><a href="#channels">Channels</a> </li>
+ <li><a href="#public">Public notes</a> </li>
  <li><a href="#md">Mini markup</a> </li>
+
+ <li style="margin-top:1em;"><b>Special topics</b></li>
  <li><a href="#math">Mathematical Formulas, LaTeX</a> </li>
  <li><a href="#chem">Chemical formulas, LaTeX</a> </li>
  <li><a href="#longer">Longer documents</a> </li>
-  <li><a href="#hotkeys">Keyboard shortcuts</a> </li>
+
+ <li style="margin-top:1em;"><b>Appendix</b></li>
+ <li><a href="#hotkeys">Keyboard shortcuts</a> </li>
+
 
 
  </ul>
@@ -86,17 +96,7 @@
   <p class="heading" id="taggs">Tags</p>
    <ul>
 
-    <li>Put tags in the note contents to help find the note in the future. Tags are
-      just words that can be  picked up by a search.  Thus we might put <span>quote</span>
-      in the body of every quote. Or use <span>:quote</span>.  Tags that
-      start with a colon will be added to your TAG list.</li>
-
-    <li>Search for notes with official tags like <span>:astronomy</span> by clicking on that
-     tag in the TAG list. Or just type it in the search box.  Searching for <span>:astro</span>
-     also works.</li>
-
-
-
+    <li>To add a tag to a note, put it in the <span>tag box</span> in the edit page. Separate tags by spaces.</li>
 
 
   </ul>
@@ -148,8 +148,48 @@
 
      </ul>
 
+   <p class="heading" id="channels">Channels</p>
 
-   <p class="heading" id="md">Mini markup</p>
+    <p class="text"><b>Basics.</b> In the figure below, the box on the left is where
+    you put your keywords for searches.  The box on the right is where
+    you set your <span>channel</span>  In the figure, the user is <span>demo</span>
+    and the channel is <span>demo.all</span>.  When LookupNotes is set to this
+    channel by the channel owner (<span>demo</span>), all of demo's notes are accesible to
+    searches. But if the channel is set to <span>demo.bird</span>, then only
+    notes tagged as <span>bird</span> are accessible.  Moreover, all notes
+    created in this channel will already be tagged <span>bird</span>. If you
+    put in the search term <span>blue</span> when the channel is set to <span>demo.bird</span>,
+    you will get a list of blue birds.  Channels are useful when you are working
+    on a single project for a while.
+    </p>
+
+    <img src="http://psurl.s3.amazonaws.com/lookupnote/search_and_channel_boxes.png" width=400>
+
+    <p class="text"><b>Channel format.</b>  Channels consist of two parts, a username and
+    a channel name, where the two are separated by a dot.  In most cases teh channel name is
+    a tag.  However, it can also be <span>all</span>, <span>public</span>, <span>nonpublic</span>,
+    or <span>notag</span>.
+    </p>
+
+
+    <p class="text"><b>Short cuts.</b>  (a) If you pres <span>RETURN</span> when
+    there is nothing in the channel box, the channel will
+    be set to <span>USERNAME.all</span>; (b) If you enter a word like <span>bird</span>
+    (no dots), the channel will be set to <span>USERNAM$.bird</span>;(c)  If you enter anything
+    that is invalid, e.g. a nonexistent username, the channel will be set to <span>USERNAME.all</span>.
+
+    </p>
+   <p class="heading" id="public">Public notes</p>
+
+   <p class="text">
+   Notes are can be declared to be public in the editor.  Public notes can
+   be read by users other than their author.  Thus, if user <span>sue</span> creates notes
+   in the channel <span>sue.bird</span>, then her students (who all have
+   lookupnote accounts) can find those notes by setting <i>their</i> channel
+   to <span>suw.bird</span>.
+   </p>
+
+   <p class="heading" id="md">Mini markup</p><p class="text"><b>Short cuts.</b>
 
    <p class="text">This section is optional. LookupNotes' markup language
    is much like <b>asciidoc</b> or <b>markdown</b>  Tt gives
