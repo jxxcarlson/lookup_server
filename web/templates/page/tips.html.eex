@@ -184,10 +184,10 @@
 
    <p class="text">
    Notes are can be declared to be public in the editor.  Public notes can
-   be read by users other than their author.  Thus, if user <span>sue</span> creates notes
-   in the channel <span>sue.bird</span>, then her students (who all have
-   lookupnote accounts) can find those notes by setting <i>their</i> channel
-   to <span>suw.bird</span>.
+   be read by users other than their author.  Thus, if user <span>sue</span>
+   sets the note titled <span>What Socrates had for Breakfast</span> to be public,
+   then her philolophy students can find it by setting their channel to <span>sue.all</span>,
+   then searching for <span>Socrates</span>.
    </p>
 
    <p class="heading" id="share">Sharing notes</p>
@@ -195,7 +195,12 @@
    <p class="text">
       Public notes can be shared by sending an email message.
       Just click on <span>Email note</span>, which you will find at the bottom right
-      of the page which gives a full view of the note..
+      of the page which gives a full view of the note.</p>
+
+       <p class="text">
+       You can also share notes
+      by email which are marked <span>shared</span>.  A shared note is not public.  It can only be
+      read by you and those with whom you have shared the note by email.
       </p>
 
    <p class="heading" id="md">Mini markup</p><p class="text"><b>Short cuts.</b>
@@ -293,7 +298,7 @@
        text, you must put the tag <span>latex</span>
       in the tags field of your note to activate LaTeX processing.</p>
 
-      <p class="text">  For example of <span>mhchem</span> in action,
+      <p class="text">  For examples of <span>mhchem</span> in action,
       sign in to <span>lookupnote.io</span> with user name
       <span>demo</span> and password <span>rundemo</span>, then
       search for <span>chem</span> or <span>chem example</span>.
