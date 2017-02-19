@@ -45,7 +45,7 @@ input[type=checkbox]
       <%= error_tag f, :tag_string %>
 
 
-   <div class="form-check form-inline" style="display:inline; margin-left:20px;">
+   <div class="form-check form-inline small hidden-xs" style="display:inline; margin-left:20px;">
      <label class="form-check-label-inline"> Public &nbsp;
        <%= checkbox f, :public, class: "checkbox", value: @note.public %>
      </label>
@@ -71,7 +71,7 @@ input[type=checkbox]
 <% end %>
 
 <script>
-    document.getElementById("content").style.height = (window.innerHeight - 400) + 'px'
+    document.getElementById("content").style.height = (window.innerHeight - 350) + 'px'
     console.log("window.innerHeight: " + window.innerHeight)
 </script>
 
