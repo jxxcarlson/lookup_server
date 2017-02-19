@@ -89,7 +89,7 @@ defmodule LookupPhoenix.Tag do
     end
 
     def pretty(tag) do
-      "#{tag["name"]} (#{tag["freq"]})"
+      "#{tag["name"]}, #{tag["freq"]}"
     end
 
 
