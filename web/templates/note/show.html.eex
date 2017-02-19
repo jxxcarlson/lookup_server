@@ -53,7 +53,7 @@
   <span class="small hidden-xs" style='margin-left:2em;'>Word count: <%= @word_count %> </span>
   <span style='margin-left:2em;'>Tags: <%= @note.tag_string %></span></i>
   <span style='margin-left:2em;'>
-     <a href="mailto:someone?subject=<%= @note.title %>&body=<%= @email_body %>">Email Note</a>
+     <a href="mailto:someone?subject=<%=@note.title %>&body=<%= @email_body %>">Email Note</a>
   </span>
 
   </p>
