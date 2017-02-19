@@ -6,7 +6,7 @@
     p {font-size:1.7rem; max-width:25em;}
 </style>
 
-<h3>Demo</h3>
+<h3 style="margin-top:2em;">Demo</h3>
 
 <p> <%= link "Sign in", to: session_path(@conn, :new) %> to Lookupnote.io with user name <span>demo</span> and
 password <span>rundemo</span> to see what one user's set of notes looks like.</p>
