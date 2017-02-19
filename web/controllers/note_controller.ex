@@ -131,10 +131,19 @@ defmodule LookupPhoenix.NoteController do
     updated_at= Note.updated_at_short(note)
     word_count = RenderText.word_count(note.content)
 
-    email_body = "This note courtesy of http://www.lookupnote.io\n\n" <> note.content |> String.replace("\n", "%0D%0A")
+    message_part_1 = "This note is courtesy of http://www.lookupnote.io\n\n"
+    message_part_2= "It is available at http://www.lookupnote.io/public/"
 
-    email_body = "This note is courtesy of http://www.lookupnote.io\n\n\It is available at http://www.lookupnote.io/public/#{note.id}"
+    if note.shared do
+      token_record = Note.generate_time_limited_token(note, 10, 240)
+      message_part_3= "#{note.id}?#{token_record.token}"
+    else
+      message_part_3= "#{note.id}"
+    end
+
+    email_body = message_part_1 <> message_part_2 <> message_part_3
       |> String.replace("\n", "%0D%0A")
+
     params1 = %{note: note, inserted_at: inserted_at, updated_at: updated_at,
                   options: options, word_count: word_count, email_body: email_body}
     params2 = Note.decode_query_string(conn.query_string)
@@ -185,6 +194,9 @@ defmodule LookupPhoenix.NoteController do
 
   def update(conn, %{"id" => id, "note" => note_params}) do
 
+
+    Utility.report("note_params", note_params)
+
     note = Repo.get!(Note, id)
     user = conn.assigns.current_user
 
@@ -195,7 +207,8 @@ defmodule LookupPhoenix.NoteController do
 
     new_params = %{"content" => new_content, "title" => new_title,
       "edited_at" => Timex.now, "tag_string" => note_params["tag_string"],
-      "tags" => tags, "public" => note_params["public"]}
+      "tags" => tags, "public" => note_params["public"],
+      "shared" => note_params["shared"], "tokens" => note_params["tokens"]}
 
     changeset = Note.changeset(note, new_params)
 

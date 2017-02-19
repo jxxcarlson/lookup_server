@@ -21,6 +21,9 @@ defmodule LookupPhoenix.Note do
     field :tag_string, :string
     field :tags, {:array, :string}
     field :public, :boolean
+    field :shared, :boolean
+    field :tokens, {:array, :map}
+
 
      belongs_to :user, LookupPhoenix.User
 
@@ -32,7 +35,8 @@ defmodule LookupPhoenix.Note do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :tags, :user_id, :viewed_at, :edited_at, :tag_string, :public])
+    |> cast(params, [:title, :content, :tags, :user_id, :viewed_at,
+       :edited_at, :tag_string, :public, :shared, :tokens])
     |> validate_required([:title, :content])
   end
 
@@ -217,10 +221,23 @@ defmodule LookupPhoenix.Note do
       Repo.update(changeset)
     end
 
+
+    # Utility.generate_time_limited_token(10,240)
+
+    def generate_time_limited_token(note, n_chars, hours_to_expiration) do
+      token_record = Utility.generate_time_limited_token(n_chars,hours_to_expiration)
+      tokens = note.tokens ++ [token_record]
+      changeset = Note.changeset(note, %{tokens: tokens})
+      Repo.update(changeset)
+      token_record
+    end
+
     ## test
     def erase_string_in_all_notes(str) do
          Note |> Repo.all |> Enum.map(fn(note) -> Note.erase_string(note, str) end)
      end
+
+
 
      ## INIT (ONE-TIME) ##
 

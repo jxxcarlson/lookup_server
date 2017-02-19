@@ -51,6 +51,12 @@ input[type=checkbox]
      </label>
    </div>
 
+    <div class="form-check form-inline small hidden-xs" style="display:inline; margin-left:20px;">
+     <label class="form-check-label-inline"> Shared &nbsp;
+       <%= checkbox f, :shared, class: "checkbox", value: @note.shared %>
+     </label>
+   </div>
+
    </div>
 
    <input type="hidden" name="index" value= <%=@index %> >
