@@ -52,9 +52,11 @@
   <span class="small hidden-xs" style='margin-left:2em;'>ID: <%= @note.id %> </span>
   <span class="small hidden-xs" style='margin-left:2em;'>Word count: <%= @word_count %> </span>
   <span style='margin-left:2em;'>Tags: <%= @note.tag_string %></span></i>
-  <span style='margin-left:2em;'>
-     <a href="mailto:someone?subject=<%=@note.title %>&body=<%= @email_body %>">Email Note</a>
-  </span>
+  <%= if @note.public or @note.shared do %>
+    <span style='margin-left:2em;'>
+      <%= link "Email Note", to: note_path(@conn, :mailto, @note.id, index: @next_index, id_string: @id_string) %>
+    </span>
+  <% end %>
 
   </p>
 <br>

@@ -131,6 +131,26 @@ defmodule LookupPhoenix.NoteController do
     updated_at= Note.updated_at_short(note)
     word_count = RenderText.word_count(note.content)
 
+    params1 = %{note: note, inserted_at: inserted_at, updated_at: updated_at,
+                  options: options, word_count: word_count}
+    params2 = Note.decode_query_string(conn.query_string)
+    params = Map.merge(params1, params2)
+
+    # {:ok, updated_at } = note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
+    # IO.puts "UPDATED AT: #{updated_at}"
+    render(conn, "show.html", params)
+  end
+
+  def mailto(conn, %{"id" => id}) do
+
+
+
+   params2 = Note.decode_query_string(conn.query_string)
+
+    Utility.report("params2", params2)
+
+
+    note = Repo.get!(Note, id)
     message_part_1 = "This note is courtesy of http://www.lookupnote.io\n\n"
     message_part_2= "It is available at http://www.lookupnote.io/public/"
 
@@ -142,16 +162,15 @@ defmodule LookupPhoenix.NoteController do
     end
 
     email_body = message_part_1 <> message_part_2 <> message_part_3
-      |> String.replace("\n", "%0D%0A")
+          |> String.replace("\n", "%0D%0A")
 
-    params1 = %{note: note, inserted_at: inserted_at, updated_at: updated_at,
-                  options: options, word_count: word_count, email_body: email_body}
-    params2 = Note.decode_query_string(conn.query_string)
+    # @current_id, index: @index, id_string: @id_string, note: @note
+
+    params1 = %{note: note, email_body: email_body}
+
     params = Map.merge(params1, params2)
 
-    # {:ok, updated_at } = note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
-    # IO.puts "UPDATED AT: #{updated_at}"
-    render(conn, "show.html", params)
+    render(conn, "mailto.html", params)
   end
 
 
