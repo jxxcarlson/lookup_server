@@ -15,9 +15,9 @@ defmodule LookupPhoenix.PublicController do
           options = %{mode: "show", process: "none"}
           params = %{note: note, options: options}
           case [note.public, note.shared] do
-            [true, _] -> render(conn, "show.html", params)
+            [true, _] -> render(conn, "show.html", params, title: "LookupNotes: Public")
             [_, true] ->
-               if Note.match_token_array(token, note) do render(conn, "show.html", params) end
+               if Note.match_token_array(token, note) do render(conn, "show.html", params, title: "LookupNotes: Shared") end
             _ ->  render(conn, "error.html", params)
           end
       end
