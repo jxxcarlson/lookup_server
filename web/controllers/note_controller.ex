@@ -131,8 +131,10 @@ defmodule LookupPhoenix.NoteController do
     updated_at= Note.updated_at_short(note)
     word_count = RenderText.word_count(note.content)
 
+    sharing_is_authorized = conn.assigns.current_user.id == note.user_id
+
     params1 = %{note: note, inserted_at: inserted_at, updated_at: updated_at,
-                  options: options, word_count: word_count}
+                  options: options, word_count: word_count, sharing_is_authorized: sharing_is_authorized}
     params2 = Note.decode_query_string(conn.query_string)
     params = Map.merge(params1, params2)
 
@@ -151,15 +153,16 @@ defmodule LookupPhoenix.NoteController do
     note = Repo.get!(Note, id)
     message_part_1 = "This note is courtesy of http://www.lookupnote.io\n\n"
     message_part_2= "It is available at http://www.lookupnote.io/public/"
+    message_part_4 = "\n\n\n------\nIf you wish to sign up for an account on lookupnote.io,\n please use this registation code: student "
 
-    if note.shared do
+    if note.public == false do
       token_record = Note.generate_time_limited_token(note, 10, 240)
       message_part_3= "#{note.id}?#{token_record.token}"
     else
       message_part_3= "#{note.id}"
     end
 
-    email_body = message_part_1 <> message_part_2 <> message_part_3
+    email_body = message_part_1 <> message_part_2 <> message_part_3 <> message_part_4
           |> String.replace("\n", "%0D%0A")
 
     # @current_id, index: @index, id_string: @id_string, note: @note
