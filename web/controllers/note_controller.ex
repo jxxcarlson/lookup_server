@@ -131,7 +131,7 @@ defmodule LookupPhoenix.NoteController do
     updated_at= Note.updated_at_short(note)
     word_count = RenderText.word_count(note.content)
 
-    email_body = "This note courtesy of http://www.lookupnote.io\n\n" <> note.content |> String.replace("\n", "%0D%0A")l
+    email_body = "This note courtesy of http://www.lookupnote.io\n\n" <> note.content |> String.replace("\n", "%0D%0A")
 
     email_body = "This note is courtesy of http://www.lookupnote.io\n\n\It is available at http://www.lookupnote.io/public/#{note.id}"
       |> String.replace("\n", "%0D%0A")
