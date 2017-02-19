@@ -143,8 +143,6 @@ defmodule LookupPhoenix.NoteController do
 
   def mailto(conn, %{"id" => id}) do
 
-
-
    params2 = Note.decode_query_string(conn.query_string)
 
     Utility.report("params2", params2)
@@ -172,8 +170,6 @@ defmodule LookupPhoenix.NoteController do
 
     render(conn, "mailto.html", params)
   end
-
-
 
 
   def edit(conn, %{"id" => id}) do

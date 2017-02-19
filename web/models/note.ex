@@ -232,6 +232,14 @@ defmodule LookupPhoenix.Note do
       token_record
     end
 
+    def match_token(given_token, token_record) do
+      token_record["token"] == given_token
+    end
+
+    def match_token_array(given_token, note) do
+      Enum.reduce(note.tokens, false, fn(token_record, acc) -> match_token(given_token, token_record) or acc end)
+    end
+
     ## test
     def erase_string_in_all_notes(str) do
          Note |> Repo.all |> Enum.map(fn(note) -> Note.erase_string(note, str) end)

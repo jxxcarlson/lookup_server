@@ -7,18 +7,21 @@ defmodule LookupPhoenix.PublicController do
 
   def show(conn, %{"id" => id}) do
       note  = Repo.get(Note, id)
+      token = conn.query_string
+      Utility.report("token", token)
       if note == nil do
           render(conn, "error.html", %{})
       else
           options = %{mode: "show", process: "none"}
           params = %{note: note, options: options}
-          if note.public do
-            render(conn, "show.html", params)
-          else
-            render(conn, "error.html", params)
+          case [note.public, note.shared] do
+            [true, _] -> render(conn, "show.html", params)
+            [_, true] ->
+               if Note.match_token_array(token, note) do render(conn, "show.html", params) end
+            _ ->  render(conn, "error.html", params)
           end
       end
-
+      # match_token_array
 
   end
 

@@ -78,4 +78,5 @@ defmodule LookupPhoenix.Utility do
     %{token: token, expiration: expiration}
   end
 
+
 end
