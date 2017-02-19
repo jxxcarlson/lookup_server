@@ -1,0 +1,10 @@
+<!-- NAVIGATION BAR -->
+ <ol class="breadcrumb text-right" style="background-color:#d9d9d9">
+
+    <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Home", to: page_path(@conn, :index), id: 'home' %> </li>
+    <li class="small hidden-xs" style="font-size:1.25em; color:cornflowerblue; float:left;"> <%= link "Manual", to: page_path(@conn, :tips), id: 'tips' %> </li>
+
+    <li class="link1"> <%= link "Sign up", to: user_path(@conn, :new) %> </li>
+    <li class="link1"> <%= link "Sign in", to: session_path(@conn, :new) %> </li>
+
+</ol>

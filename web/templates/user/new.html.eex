@@ -1,64 +1,11 @@
-<style>
-p { max-width:400px;}
-ul { margin-left:-10px;}
-li {width: 340px;margin-bottom:10px;}
-</style>
 
 
-<h1>New User</h1>
 
-<%= form_for @changeset, user_path(@conn, :create), fn f -> %>
-    <div class="form-group">
-        <%= text_input f, :name, placeholder: "Your name - will be private", class: "form-control" %>
-    </div>
-    <div class="form-group">
-        <%= text_input f, :username, placeholder: "Username - your public identity, use to sign in", class: "form-control" %>
-    </div>
-    <div class="form-group">
-        <%= text_input f, :email, placeholder: "Email - will be private", class: "form-control" %>
-    </div>
-    <div class="form-group">
-        <%= text_input f, :password, placeholder: "Password", class: "form-control" %>
-    </div>
-    <div class="form-group">
-            <%= text_input f, :registration_code, placeholder: "Registration code", class: "form-control" %>
-    </div>
-    <%= submit "Please create my account.", class: "btn btn-primary" %>
-    <span style="font-size:1.25em; color:cornflowerblue;margin-left:20px;">
-      <%= link "Cancel", to: page_path(@conn, :index), id: 'home' %>
-    </span>
-<% end %>
+<h1 style="margin-top:1em;">New User</h1>
+
+<%= render "_form.html", changeset: @changeset, conn: @conn %>
 
 
 
 <br>
-
-<h4>Note</h4>
-
-<p>In order to provide a pleasant, productive, ad-free experience, LookupNote will eventually become
-a paid service.  Here is how it will work, once the beta test period is over.</p>
-
-<div style="">
-
-<ul>
-
-<li>There is a one-month free trial period</li>
-
-<li>After the trial period, the annual fee will be <b>low</b>.  It has not
-yet been set, but expect something on the order of $12,
-with half that for students.</li>
-
-<li>Accounts never die.  If at any time you decide that the annual fee is not for you,
-your account is &quot;frozen&quot; when the annual paid period expires. This means it will function normally
-in all respects, except that you can no longer create or edit notes. Your
-account can be unfrozen at any time.
-</li>
-
-<li>There will be no advertisements.  The identity and data of LookupNote users will not be shared with anyone.
-</li>
-
-</ul>
-
-</div>
-
-<p>Your LookupNote Team</p>
+<%= render "_note.html"  %>
