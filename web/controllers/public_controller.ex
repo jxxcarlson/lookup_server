@@ -14,7 +14,11 @@ defmodule LookupPhoenix.PublicController do
       if note == nil do
           render(conn, "error.html", %{})
       else
-          options = %{mode: "show", process: "none"}
+         if Enum.member?(note.tags, "latex") do
+            options = %{mode: "show", process: "latex"}
+          else
+            options = %{mode: "show", process: "none"}
+          end
           params1 = %{note: note, options: options, site: site}
           params2 = Note.decode_query_string(conn.query_string)
           params = Map.merge(params1, params2)

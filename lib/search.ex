@@ -394,5 +394,12 @@ defmodule LookupPhoenix.Search do
 
     end
 
+    def getDocumentsFromList(id_list) do
+      notes = id_list |> Enum.map(fn(id) -> Repo.get!(Note, id) end)
+      |> filter_random(Constant.random_note_threshold())
+      %{notes: notes, note_count: length(notes), original_note_count: length(id_list)}
+    end
+
+
 end
 
