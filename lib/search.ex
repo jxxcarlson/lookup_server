@@ -53,6 +53,29 @@ defmodule LookupPhoenix.Search do
 
     end
 
+    def notes_for_channel(channel, options) do
+
+        [channel_user, channel_name] = String.split(channel, ".")
+        user = User.find_by_username(channel_user)
+        if user == nil do
+          user = User.find_by_username("demo")
+          channel_name = "public"
+        end
+
+        tag = options["tag"]
+
+        query = Ecto.Query.from note in Note,
+          where: note.user_id == ^user.id and note.public == true,
+          order_by: [desc: note.inserted_at]
+
+        notes = Repo.all(query)
+        original_note_count = length(notes)
+        filtered_notes = notes |> filter_random(Constant.random_note_threshold())
+        Note.memorize_notes(filtered_notes, user.id)
+        %{notes: filtered_notes, note_count: length(filtered_notes), original_note_count: original_note_count}
+
+   end
+
     def all_notes_for_user(user) do
        query = Ecto.Query.from note in Note,
          where: note.user_id == ^user.id,

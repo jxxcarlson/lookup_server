@@ -3,9 +3,10 @@ defmodule LookupPhoenix.PublicController do
     alias LookupPhoenix.Note
     alias LookupPhoenix.User
     alias LookupPhoenix.Utility
+    alias LookupPhoenix.Search
 
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => id, "site" => site}) do
       note  = Repo.get(Note, id)
       token = conn.query_string
       Utility.report("token", token)
@@ -13,7 +14,7 @@ defmodule LookupPhoenix.PublicController do
           render(conn, "error.html", %{})
       else
           options = %{mode: "show", process: "none"}
-          params = %{note: note, options: options}
+          params = %{note: note, options: options, site: site}
           case note.public do
             true -> render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Public"}))
             false ->
@@ -26,6 +27,15 @@ defmodule LookupPhoenix.PublicController do
       end
       # match_token_array
 
+  end
+
+  def index(conn, %{"site" => site}) do
+    channel = "#{site}.public"
+    note_record = Search.notes_for_channel(channel, %{})
+    notes = Utility.add_index_to_maplist(note_record.notes)
+    id_string = Note.extract_id_list(notes)
+    params = %{site: site, notes: notes, note_count: length(notes), id_string: id_string}
+    render(conn, "index.html", params)
   end
 
 end

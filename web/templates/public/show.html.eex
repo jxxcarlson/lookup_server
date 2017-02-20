@@ -13,9 +13,15 @@
 
 <h1 style="font-size:1.75em;margin-top:1.25em;margin-bottom:0.75em;""><%= @title %></h1>
 
+
+
 <div style="font-size: 1.2em; margin-top:-0.5em;">
 
     <span style="font-size:1.8rem; font-style:bold; margin-bottom:0"> <%= @note.title  %> </span>
+
+    <span style="float:right">
+      <%= link "Back", to: public_path(@conn, :index, @site), class: "" %>
+    </span>
 
     <div id="rendered_text" style="background-color: #f4f4f4; padding-left: 1em;clear: right; padding-top:1em; overflow: scroll; height: 150px; white-space:pre-line;"><%= raw(String.trim(RenderText.transform(@note.content, @options))) %> </div>
 

@@ -37,6 +37,8 @@ defmodule LookupPhoenix.Router do
     get "/demo", PageController, :demo
 
     get "/public/:id", PublicController, :show
+    get "/site/:site", PublicController, :index
+
     get "/mailto/:id", NoteController, :mailto
 
 
