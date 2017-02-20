@@ -1,0 +1,21 @@
+
+<div style="font-size: 1.2em; margin-top:-0.5em;">
+
+  <%= if @note_count > 1 do %>
+
+    <span style="float:left;margin-right:9px; font-weight:bold;" ><%= link "first", to: public_path(@conn, :show, @first_id, index: 0, id_string: @id_string, site: @site) %></span>
+    <span style="float:left;margin-right:9px; font-weight:bold;" ><%= link "prev", to: public_path(@conn, :show, @previous_id, index: @previous_index, id_string: @id_string, site: @site) %></span>
+    <span style="background-color:#35d; color: white; padding-left:5px; padding-right:8px; float:left;margin-right:8px;" ><%= @index + 1 %>:<%= @note_count %></span>
+    <span style="float:left;margin-right:8px; font-weight:bold;" ><%= link "next", to: public_path(@conn, :show, @next_id, index: @next_index, id_string: @id_string, site: @site) %></span>
+    <span style="float:left;margin-right:28px; font-weight:bold;" ><%= link "last", to: public_path(@conn, :show, @last_id, index: @last_index, id_string: @id_string, site: @site) %></span>
+
+
+  <% end %>
+
+
+    <span style="float:right">
+      <%= link "Back", to: public_path(@conn, :index, @site), class: "" %>
+    </span>
+
+</div>
+
