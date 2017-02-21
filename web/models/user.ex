@@ -149,12 +149,8 @@ defmodule LookupPhoenix.User do
   end
 
   def update_channel(user,channel) do
-       # [username, user_channel] = String.split(channel, ".")
-       # user = User.find_by_username(username)
-        Utility.report("user", user.id)
         params = %{"channel" => channel}
         changeset = User.running_changeset(user, params)
-        Utility.report("changeset for channel", changeset)
         Repo.update(changeset)
     end
 
@@ -222,6 +218,13 @@ defmodule LookupPhoenix.User do
     Enum.map(users, fn(user) -> initialize_metadata(user) end)
   end
 
+    def set_channel(user, channel) do
+      params = %{"channel" => channel}
+      IO.puts "I AM GOING TO DEFINITELY SET YOUR CHANNEL TO #{channel}"
+      changeset = User.running_changeset(user, params)
+      Repo.update(changeset)
+    end
+
   ### ONE TIME ###
 
   def set_public_tags(user) do
@@ -233,21 +236,5 @@ defmodule LookupPhoenix.User do
   def set_all_public_tags do
     User |> Repo.all |> Enum.map(fn(user) -> set_public_tags(user) end)
   end
-
-  def set_channel(user, channel_name) do
-    username = user.username
-    update_channel(user, "${username}.${channel_name}")
-  end
-
-  def set_all_channels(channel_name) do
-    User
-    |> Repo.all
-    # |> Enum.map(fn(user) -> set_channel(user, "all") end)
-    |> Enum.map(fn(user) -> update_channel(user, "#{user.username}.#{channel_name}") end)
-  end
-
-
-
-  # alias LookupPhoenix.User; alias LookupPhoenix.Repo; alias LookupPhoenix.Tagr;  alias LookupPhoenix.Note; u =  User |> Repo.get!(9)
 
   end

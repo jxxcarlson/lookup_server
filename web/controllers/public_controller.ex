@@ -42,6 +42,7 @@ defmodule LookupPhoenix.PublicController do
     channel = "#{site}.public"
     if conn.assigns.current_user != nil do
       User.set_channel( conn.assigns.current_user, channel)
+      IO.puts "I HAVE SET YOUR CHANNEL TO #{channel}"
     end
     note_record = Search.notes_for_channel(channel, %{})
     notes = Utility.add_index_to_maplist(note_record.notes)
