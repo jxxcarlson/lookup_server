@@ -6,7 +6,6 @@ defmodule LookupPhoenix.Router do
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
-    plug :put_resp_cookie
   end
 
   pipeline :api do
