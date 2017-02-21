@@ -7,13 +7,28 @@ defmodule LookupPhoenix.SearchController do
     alias LookupPhoenix.User
     alias LookupPhoenix.Utility
 
+    def cookies(conn, cookie_name) do
+           conn.cookies[cookie_name]
+    end
+
 
     def index(conn, %{"search" => %{"query" => query}}) do
 
-      User.increment_number_of_searches(conn.assigns.current_user)
+      current_user = conn.assigns.current_user
 
-      notes = Search.search(query, conn.assigns.current_user)
-      Note.memorize_notes(notes, conn.assigns.current_user.id)
+      if current_user == nil do
+        site = cookies(conn,"site")
+        channel_user = User.find_by_username(site)
+        user = channel_user
+      else
+        user = current_user
+        User.increment_number_of_searches(user)
+      end
+
+      notes = Search.search(query, user)
+      if current_user != nil do
+        Note.memorize_notes(notes, current_user.id)
+      end
 
       notes = Utility.add_index_to_maplist(notes)
       id_string = Note.extract_id_list(notes)
