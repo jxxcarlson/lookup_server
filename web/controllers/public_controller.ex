@@ -44,7 +44,10 @@ defmodule LookupPhoenix.PublicController do
     notes = Utility.add_index_to_maplist(note_record.notes)
     id_string = Note.extract_id_list(notes)
     params = %{site: site, notes: notes, note_count: length(notes), id_string: id_string}
-    render(conn, "index.html", params)
+    conn
+      |> put_resp_cookie("channel", channel)
+      |> put_resp_cookie("site", site)
+      |> render("index.html", params)
   end
 
 end
