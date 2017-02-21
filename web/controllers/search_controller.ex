@@ -20,12 +20,14 @@ defmodule LookupPhoenix.SearchController do
         site = cookies(conn,"site")
         channel_user = User.find_by_username(site)
         user = channel_user
+        query2 = from note in query, where: note.public == true
       else
+        query2 = query
         user = current_user
         User.increment_number_of_searches(user)
       end
 
-      notes = Search.search(query, user)
+      notes = Search.search(query2, user)
       if current_user != nil do
         Note.memorize_notes(notes, current_user.id)
       end
@@ -39,7 +41,9 @@ defmodule LookupPhoenix.SearchController do
         _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found"
       end
 
-      render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: noteCountString)
+      IO.puts "XXX: SearchController, index, notes: #{length(notes)}"
+
+      render(conn, "index.html", site: site, notes: notes, id_string: id_string, noteCountString: noteCountString)
 
 
     end
