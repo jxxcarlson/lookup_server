@@ -17,9 +17,11 @@ span { color: darkred; font-weight:500;}
      <div style="font-size: 1.5rem;">
      <p><span>LookupNote</span> is a tool for storing and finding random snippets
      of information of all kinds &mdash; text, links to web pages, even images,
-     audio, and video.  Look at the <%= link "Demo", to: page_path(@conn, :demo) %>
-     to see LookupNote in action.
+     audio, and video.
      </p>
+
+     <p><i>Go to the <a href="http://www.lookupnote.io/site/demo" target="_blank" >DEMO</a>
+          to see LookupNote in action.</i></p>
 
      <p><span>LookupNote</span> is your personal mini search engine.
      Safe, secure, always there when you need it.</p>
@@ -32,7 +34,7 @@ span { color: darkred; font-weight:500;}
 
      <BR>
 
-      <p><span><%= link "Try the Demo", to: page_path(@conn, :demo) %></span>
+      <p>
 
       <span style="margin-left:15px;"> <%= link "Sign up for a free trial", to: user_path(@conn, :new) %> </span></p>
 
@@ -52,14 +54,8 @@ span { color: darkred; font-weight:500;}
        </div>
      </div>
 
-     <!-- <p style="font-size:1.5rem; max-width:25em;">Sign in with user name <span>demo</span> and
-                    password <span>rundemo</span> to see what one user's set of notes looks like.
-                    Try searching for <span>astro</span> and <span>earth</span>.  Try out the <span>TAGS</span>
-                    tab.  Try clicking on the <span>nature</span> and <span>number</span> tags.
-                    And don't forget the <span>Random</span> button!</p>
-    -->
 
-    <p><span><%= link "LookupNote Demo", to: page_path(@conn, :demo) %></span></p>
+    <p><a href="http://www.lookupnote.io/site/demo" target="_blank" >DEMO</a></p>
 
     <p>Take a look at the <span><%= link "User Manual", to: page_path(@conn, :tips) %></span> for advanced features:
    code formatting, mini markup, and LaTeX for mathematics and chemistry. </p>
