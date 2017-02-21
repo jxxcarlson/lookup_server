@@ -4,8 +4,8 @@
     <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Home", to: page_path(@conn, :index), id: 'home' %> </li>
     <li class="small hidden-xs" style="font-size:1.25em; color:cornflowerblue; float:left;"> <%= link "Manual", to: page_path(@conn, :tips), id: 'tips' %> </li>
 
-    <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: note_path(@conn, :index), id: 'notes' %> </li>
-
+    <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: link_name(@conn)  %>  </li>
+    <span style="font-size:1.2em; font-weight:bol; margin-right: 2em;"> <%= cookies(@conn, "site") %> </span>
 
     <li class="link1"> <%= link "Sign up", to: user_path(@conn, :new) %> </li>
     <li class="link1"> <%= link "Sign in", to: session_path(@conn, :new) %> </li>

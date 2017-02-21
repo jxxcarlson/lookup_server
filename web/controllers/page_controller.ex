@@ -3,7 +3,7 @@ defmodule LookupPhoenix.PageController do
 
   def index(conn, _params) do
     conn
-      Plug.Conn.cookies(conn, "channel") > IO.puts
+      # Plug.Conn.cookies(conn, "channel") > IO.puts
       # <%= Plug.Conn.cookies(@conn, "site") %>
       render conn, "index.html"
   end
