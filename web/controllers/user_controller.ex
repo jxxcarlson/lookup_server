@@ -7,6 +7,7 @@ defmodule LookupPhoenix.UserController do
   alias LookupPhoenix.Repo
   alias LookupPhoenix.Utility
   alias LookupPhoenix.SearchController
+  alias LookupPhoenix.Constant
 
 
   def index(conn, _params) do
@@ -46,20 +47,32 @@ defmodule LookupPhoenix.UserController do
       end
     end
 
+    def filter_by_frequency(tag_list, threshold) do
+      Enum.filter(tag_list, fn(tag) -> tag["freq"] > Constant.tag_frequency_threshold() end)
+    end
+
+
 
   def tags(conn, _params) do
+  IO.puts "HEY, TAGS!!"
      user = conn.assigns.current_user
      [access, channel_name, user_id] = User.decode_channel(user)
      if user_id == user.id do
        channel_user = user
        ctags = user.tags
+       original_tag_count = length(ctags)
+       ctags = ctags |> filter_by_frequency(Constant.tag_frequency_threshold())
        ctag_count = length(ctags)
      else
        channel_user = User |> Repo.get!(user_id)
        ctags = channel_user.public_tags
+       original_tag_count = length(ctags)
+       ctags = ctags |> filter_by_frequency(Constant.tag_frequency_threshold())
+       original_tag_count = length(ctags)
        ctag_count = length(ctags)
      end
-     render conn, "tags.html", user: channel_user, ctags: ctags, ctag_count: ctag_count
+     render conn, "tags.html", user: channel_user,
+        ctags: ctags, ctag_count: ctag_count, original_tag_count: original_tag_count
   end
 
   def update_tags(conn, _params) do
@@ -100,6 +113,8 @@ defmodule LookupPhoenix.UserController do
       User.update_channel(user, channel)
       conn |> redirect(to: note_path(conn, :index, mode: "all"))
     end
+
+
 
   def new(conn, _params) do
     changeset = User.changeset(%User{})
