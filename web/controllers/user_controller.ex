@@ -69,7 +69,7 @@ defmodule LookupPhoenix.UserController do
      Utility.report("In User.tags, user is", user)
      [access, channel_name, user_id] = User.decode_channel(user)
      access = real_access || access
-     if user_id == user.id do
+     if user_id == user.id and real_access != "public" do
        channel_user = user
        ctags = user.tags
        original_tag_count = length(ctags)

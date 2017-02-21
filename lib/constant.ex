@@ -5,7 +5,7 @@ defmodule LookupPhoenix.Constant do
   end
 
   def tag_frequency_threshold do
-    1
+    0
   end
 
 end

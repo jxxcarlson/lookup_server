@@ -10,7 +10,6 @@ defmodule LookupPhoenix.Search do
 
 
     def count_for_user(user_id, tag \\ "none") do
-      Utility.report("Search.count_for_user, user_id:", user_id)
       query = Ecto.Query.from note in Note,
          select: note.id,
          where: note.user_id == ^user_id
@@ -42,8 +41,6 @@ defmodule LookupPhoenix.Search do
              query2 = from note in query,
                where: ilike(note.tag_string, ^"%#{channel_name}%")
        end
-
-       Utility.report("access", access)
 
        notes = Repo.all(query2) |> filter_public(access)
        original_note_count = length(notes)
@@ -156,15 +153,11 @@ defmodule LookupPhoenix.Search do
        [access, channel_name, user_id]= User.decode_channel(user)
 
        [tags, terms] = split_query_terms(query_terms)
-       Utility.report("TAGS AND TERMS:", [tags, terms])
        tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
-
 
       if !Enum.member?(["all", "public"], channel_name) do
          tags = [channel_name|tags]
       end
-
-     Utility.report("search_with_non_empty_arg, user_id", user_id)
 
       case tags do
         [] -> query = basic_query(user_id, access, hd(terms), :term)
@@ -188,8 +181,6 @@ defmodule LookupPhoenix.Search do
 
     def search(query, user) do
 
-      Utility.report("IN SEARCH (545), user is", user)
-
       case query  do
         nil -> IO.puts "NIL qery string"
         "" -> IO.puts "Empty query string"
@@ -208,16 +199,35 @@ defmodule LookupPhoenix.Search do
        conn.cookies[cookie_name]
     end
 
-    def tag_search(tag_list, user) do
-       IO.puts "HERE IS Search.tag_search"
+    def tag_search(tag_list, conn) do
+
+      current_user = conn.assigns.current_user
+
+     if current_user == nil do
+       real_access = :public
+       channel_user_name = cookies(conn, "site")
+       user = User.find_by_username(channel_user_name)
+       if user == nil do
+         user = User.find_by_username("demo")
+       end
+     else
+       user = current_user
+     end
+
+     [access, channel_name, user_id] = User.decode_channel(user)
+     access = real_access || access
+
        [access, channel_name, user_id]= User.decode_channel(user)
 
-       Utility.report("decode_channel:", [access, channel_name, user_id])
+       if Enum.member?(tag_list, "/public") do
+         tag_list = tl(tag_list)
+       end
 
        query1 = Ecto.Query.from note in Note,
           where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tag_list)}%")),
           order_by: [desc: note.updated_at]
-        if Enum.member?(["all", "public"], channel_name)  do
+
+       if Enum.member?(["all", "public"], channel_name)  do
          query2 = query1
        else
          query2 = from note in query1,
@@ -227,7 +237,7 @@ defmodule LookupPhoenix.Search do
           :all -> query3 = query2
           :public -> query3 = from note in query2, where: note.public == ^true
        end
-       result = Repo.all(query3)
+       Repo.all(query1)
     end
 
 
