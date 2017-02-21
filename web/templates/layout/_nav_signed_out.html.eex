@@ -5,6 +5,8 @@
     <li class="small hidden-xs" style="font-size:1.25em; color:cornflowerblue; float:left;"> <%= link "Manual", to: page_path(@conn, :tips), id: 'tips' %> </li>
 
     <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: link_name(@conn)  %>  </li>
+    <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Tags", to: user_path(@conn, :tags), id: 'tags' %> </li>
+
     <span style="font-size:1.2em; font-weight:bol; margin-right: 2em;"> <%= cookies(@conn, "site") %> </span>
 
 

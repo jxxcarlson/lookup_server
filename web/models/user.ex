@@ -194,9 +194,11 @@ defmodule LookupPhoenix.User do
   end
 
   def increment_number_of_searches(user) do
-    params = %{"number_of_searches" => user.number_of_searches + 1}
-    changeset = User.running_changeset(user, params)
-    Repo.update(changeset)
+    if user != nil do
+      params = %{"number_of_searches" => user.number_of_searches + 1}
+      changeset = User.running_changeset(user, params)
+      Repo.update(changeset)
+    end
   end
 
   # say 'set_demo("edit")' or 'set_demo("locked")'

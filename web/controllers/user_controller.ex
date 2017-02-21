@@ -51,12 +51,24 @@ defmodule LookupPhoenix.UserController do
       Enum.filter(tag_list, fn(tag) -> tag["freq"] > Constant.tag_frequency_threshold() end)
     end
 
-
+    def cookies(conn, cookie_name) do
+      conn.cookies[cookie_name]
+    end
 
   def tags(conn, _params) do
   IO.puts "HEY, TAGS!!"
      user = conn.assigns.current_user
+     if user == nil do
+       real_access = "public"
+       channel_user_name = cookies(conn, "site")
+       user = User.find_by_username(channel_user_name)
+       if user == nil do
+         user = User.find_by_username("demo")
+       end
+     end
+     Utility.report("In User.tags, user is", user)
      [access, channel_name, user_id] = User.decode_channel(user)
+     access = real_access || access
      if user_id == user.id do
        channel_user = user
        ctags = user.tags

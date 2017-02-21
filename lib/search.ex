@@ -204,6 +204,10 @@ defmodule LookupPhoenix.Search do
       end
     end
 
+    def cookies(conn, cookie_name) do
+       conn.cookies[cookie_name]
+    end
+
     def tag_search(tag_list, user) do
        IO.puts "HERE IS Search.tag_search"
        [access, channel_name, user_id]= User.decode_channel(user)

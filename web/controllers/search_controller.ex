@@ -8,7 +8,7 @@ defmodule LookupPhoenix.SearchController do
     alias LookupPhoenix.Utility
 
     def cookies(conn, cookie_name) do
-           conn.cookies[cookie_name]
+       conn.cookies[cookie_name]
     end
 
 
@@ -52,12 +52,25 @@ defmodule LookupPhoenix.SearchController do
           IO.puts "TAG SEARCH"
           user = conn.assigns.current_user
 
+
+          if user == nil do
+             real_access = "public"
+             site = cookies(conn, "site")
+             user = User.find_by_username(site)
+             if user == nil do
+               user = User.find_by_username("demo")
+             end
+          end
+
+          Utility.report("In Search.tag_search, user is", user)
+
           User.increment_number_of_searches(conn.assigns.current_user)
 
-          queryList = String.split(query)
+          if real_access == "public" do
+            query = "/public " <> query
+          end
 
-          Utility.report("In tag_search of search controller,queryList is", queryList)
-          Utility.report("In tag_search of search controller, current user has",user.id)
+          queryList = String.split(query)
 
           notes = Search.tag_search(queryList, user)
           noteCount = length(notes)
@@ -72,7 +85,7 @@ defmodule LookupPhoenix.SearchController do
             _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found with tag #{query}"
           end
 
-          render(conn, "index.html", notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
+          render(conn, "index.html", site: site, notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
 
      end
 
