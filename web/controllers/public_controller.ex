@@ -40,6 +40,9 @@ defmodule LookupPhoenix.PublicController do
 
   def index(conn, %{"site" => site}) do
     channel = "#{site}.public"
+    if conn.assigns.current_user != nil do
+      User.set_channel( conn.assigns.current_user, channel)
+    end
     note_record = Search.notes_for_channel(channel, %{})
     notes = Utility.add_index_to_maplist(note_record.notes)
     id_string = Note.extract_id_list(notes)
