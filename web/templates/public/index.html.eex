@@ -25,10 +25,7 @@
 
 </script>
 
-
 <div style="height: 2px; background-color:#ddd; margin-top:18px;margin-bottom:1em;"></div>
-
-<span style="magin-top:0;font-size:1.4em;"> Site: <%= @site %> </span>
 
 <div style="overflow: scroll; height:400px;" id="table_div">
 <table class="table">

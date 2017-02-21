@@ -11,7 +11,7 @@
 
 </style>
 
-<p style="font-size:1.8em; font-style:bold; margin-top:1.5em; margin-bottom:1.5em"> <%= @site %>: <%= @note.title  %> </p>
+<p style="font-size:1.8em; font-style:bold; margin-top:1.5em; margin-bottom:1.5em"> <%= @note.title  %> </p>
 
 
 <%= render "_nav.html", note: @note, conn: @conn, first_id: @first_id,

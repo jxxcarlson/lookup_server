@@ -103,11 +103,15 @@ defmodule LookupPhoenix.Search do
     # the second consists of the remainging elements
     def split_query_terms(query_terms) do
       tags = Enum.filter(query_terms, fn(term) -> String.first(term) == "/" end)
+      |> Enum.filter(fn(term) -> term != "" end)
       terms = Enum.filter(query_terms, fn(term) -> String.first(term) != "/" end)
+      |> Enum.filter(fn(term) -> term != "" end)
       [tags, terms]
     end
 
     def basic_query(user_id, access, term, type) do
+
+
 
         query1 = from note in Note, where: note.user_id == ^user_id
 
@@ -123,7 +127,17 @@ defmodule LookupPhoenix.Search do
 
         if type == :tag do
 
-          query3 = from note in query2, where: ilike(note.tag_string, ^"%#{term}%")
+          if term == "public" do
+
+            query3 = from note in query2, where: note.public == true
+
+          else
+
+            query3 = from note in query2, where: ilike(note.tag_string, ^"%#{term}%")
+
+          end
+
+
 
         else
 
@@ -142,6 +156,7 @@ defmodule LookupPhoenix.Search do
        [access, channel_name, user_id]= User.decode_channel(user)
 
        [tags, terms] = split_query_terms(query_terms)
+       Utility.report("TAGS AND TERMS:", [tags, terms])
        tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
 
 
@@ -172,6 +187,16 @@ defmodule LookupPhoenix.Search do
 
 
     def search(query, user) do
+
+      Utility.report("IN SEARCH (545), user is", user)
+
+      case query  do
+        nil -> IO.puts "NIL qery string"
+        "" -> IO.puts "Empty query string"
+        _ -> Utility.report("query", query)
+      end
+
+      # for testing: query = "code"
       query_terms = decode_query(query)
       case query_terms do
         [] -> []
