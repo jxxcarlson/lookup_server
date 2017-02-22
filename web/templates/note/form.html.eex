@@ -60,7 +60,7 @@ input[type=checkbox]
 
   <div class="form-group" style="display:inline">
     <%= if @locked do %>
-      <%= link "Back!!", to: note_path(@conn, :index), id: 'notes' %>
+      <%= link "    Back!!", to: note_path(@conn, :index), id: 'notes' %>
     <% else %>
       <span><%= submit "Save", class: "btn btn-primary", style: "width: 40%;", id: 'save' %>
 

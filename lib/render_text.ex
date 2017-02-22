@@ -51,6 +51,7 @@ defmodule RenderText do
     def linkify(text, options) do
       text
       # |> simplifyURLs
+      |> makeAudioPlayer
       |> makeImageLinks(options)
       |> makeFormattedImageLinks(options)
       |> makeUserLinks
@@ -115,6 +116,12 @@ defmodule RenderText do
     # http://foo.io/ladidah/mo/stuff => <a href="http://foo.io/ladida/foo.io"" target=\"_blank\">foo.io/ladidah</a>
     def makeUserLinks(text) do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=~\?#!@_%-']*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
+    end
+
+    def makeAudioPlayer(text) do
+
+       Regex.replace(~r/(http|https):\/\/(.*(mp3))/i, " "<>text<>" ", "<audio controls> <source src=\"\\0\" type=\"audio/\\3\" >Your browser does not support the audio element.</audio>")
+
     end
 
     def makeImageLinks1(text, options) do
