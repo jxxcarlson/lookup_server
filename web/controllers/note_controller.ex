@@ -30,18 +30,20 @@ defmodule LookupPhoenix.NoteController do
   def index(conn, _params) do
 
      user = conn.assigns.current_user
-
+     qsMap = Utility.qs2map(conn.query_string)
 
      channel = Utility.qs2map(conn.query_string)["set_channel"]
-     if channel != nil do
+     if channel != nil and channel != user.channel do
+       IO.puts "channel: #{channel}"
        User.set_channel(user, channel)
+       # redirect(conn, to: note_path(:index, mode: "all"))
      end
 
 
      [access, channel_name, user_id] = User.decode_channel(user)
 
      id_list = Note.recall_list(user.id)
-     qsMap = Utility.qs2map(conn.query_string)
+     # qsMap = Utility.qs2map(conn.query_string)
      mode = qsMap["mode"]
      channel =
      length_of_id_list = length(id_list)
@@ -71,7 +73,12 @@ defmodule LookupPhoenix.NoteController do
      id_string = Note.extract_id_list(notes)
      params = %{notes: notes, id_string: id_string, noteCountString: noteCountString, options: options}
 
-     render(conn, "index.html", params)
+     if qsMap["set_channel"] == nil do
+       render(conn, "index.html", params)
+     else
+       redirect(conn, to: "/notes?mode=all")
+     end
+
   end
 
   def read_only_message(conn) do
