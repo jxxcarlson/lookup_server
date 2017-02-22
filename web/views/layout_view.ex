@@ -7,7 +7,7 @@ defmodule LookupPhoenix.LayoutView do
 
   def link_name(conn) do
     cookie_name = "site"
-    "site/#{cookies(conn, cookie_name)}"
+    "/site/#{cookies(conn, cookie_name)}"
   end
 
 end
