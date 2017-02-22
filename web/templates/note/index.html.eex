@@ -42,47 +42,11 @@
 </div>
 
 <div style="height: 2px; background-color:#ddd; margin-top:18px;margin-bottom:-18px;"></div>
-
-<div style="overflow: scroll; height:400px;" id="table_div">
-<table class="table">
-  <thead>
-    <tr>
-      <th class="hidden-xs"></th>
-      <th>Title</th>
-      <th class="hidden-xs">P</th>
-      <th class="hidden-xs">Date</th>
-      <th>Content</th>
-
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for note <- @notes do %>
-    <tr>
-
-      <td class="hidden-xs" style="max-width:2em"> <%= note.index + 1 %> </td>
-
-      <td style=""> <%= link note.title, to: note_path(@conn, :show, note, index: note.index,
-         id_string: @id_string), class: "" %> </td>
-
-      <td class="hidden-xs" style="max-width:2em"> <%= LookupPhoenix.Utility.xForTrue(note.public) %> </td>
-      <td class="hidden-xs small" style="max-width:6em"> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td>
-
-      <td style="width:35%"><%= raw(RenderText.format_for_index(note.content)) %></td>
-
-      <td class="text-right hidden-xs" style="max-width:4em">
-          <%= link "Edit", to: note_path(@conn, :edit, note, index: note.index, id_string: @id_string), class: "btn btn-default btn-xs" %>
-      </td>
-      <td class="text-right hidden-xs" style="max-width:4em">
-        <%= if @current_user.read_only == false do %>
-          <%= link "Delete", to: note_path(@conn, :delete, note), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-default btn-xs" %>
-        <% end %>
-      </td>
-    </tr>
+<%= if @current_user == nil do %>
+  <%= render "_public_able.html", current_user: @current_user, conn: @conn, id_string: @id_string, notes: @notes %>
+<% else %>
+  <%= render "_table.html", current_user: @current_user, conn: @conn, id_string: @id_string, notes: @notes %>
 <% end %>
-  </tbody>
-</table>
-</div>
 
 
 <script>
