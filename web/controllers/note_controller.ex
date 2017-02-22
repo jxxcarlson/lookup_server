@@ -30,6 +30,14 @@ defmodule LookupPhoenix.NoteController do
   def index(conn, _params) do
 
      user = conn.assigns.current_user
+
+
+     channel = Utility.qs2map(conn.query_string)["set_channel"]
+     if channel != nil do
+       User.set_channel(user, channel)
+     end
+
+
      [access, channel_name, user_id] = User.decode_channel(user)
 
      id_list = Note.recall_list(user.id)
