@@ -53,6 +53,13 @@ defmodule LookupPhoenix.NoteController do
           "sort_by" => "inserted_at", "direction" => "desc"});
        ["public", _] -> note_record = Search.notes_for_user(user, %{"mode" => "public",
           "sort_by" => "inserted_at", "direction" => "desc"})
+       [_, number_of_notes_remembered] ->
+          if number_of_notes_remembered > 0 do
+            note_record = Search.getDocumentsFromList(id_list)
+          else
+            note_record = Search.notes_for_user(user, %{"mode" => "all",
+                      "sort_by" => "inserted_at", "direction" => "desc"});
+          end
        _ -> note_record = Search.getDocumentsFromList(id_list)
 
      end
