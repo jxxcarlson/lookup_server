@@ -49,7 +49,8 @@ defmodule LookupPhoenix.SearchController do
 
     def tag_search(conn, %{"query" => query}) do
 
-          IO.puts "TAG SEARCH"
+          IO.puts "TAG SEARCH #{query}"
+          query = String.trim(query)
           user = conn.assigns.current_user
 
 
