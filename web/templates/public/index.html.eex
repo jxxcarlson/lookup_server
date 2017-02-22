@@ -25,7 +25,11 @@
 
 </script>
 
+   <%= link "Lead", to: "tag_search lead_article", class: "btn btn-default btn-s", id: "lead" %>
+
+
 <div style="height: 2px; background-color:#ddd; margin-top:18px;margin-bottom:1em;"></div>
+
 
 <div style="overflow: scroll; height:400px;" id="table_div">
 <table class="table">
