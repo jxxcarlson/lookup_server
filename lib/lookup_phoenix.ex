@@ -15,6 +15,7 @@ defmodule LookupPhoenix do
       supervisor(LookupPhoenix.Endpoint, []),
       # Start your own worker by calling: LookupPhoenix.Worker.start_link(arg1, arg2, arg3)
       # worker(LookupPhoenix.Worker, [arg1, arg2, arg3]),
+      worker(LookupPhoenix.Periodically, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
