@@ -6,7 +6,7 @@
    <%= end %>
    </span>
 
- <!--  <span class="hidden-xs" style="float:left; margin-top:20px; margin-left:18px; margin-right:8px;">Site</span>
+  <span class="hidden-xs" style="float:left; margin-top:20px; margin-left:18px; margin-right:8px;">Site</span>
    <span style="float:left;">
 
       <%= form_for @conn, public_path(@conn, :site),[name: :data], fn f -> %>
@@ -14,7 +14,7 @@
       <%= end %>
 
   </span>
--->
+
 
 
  </div>
