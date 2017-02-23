@@ -114,7 +114,7 @@ defmodule LookupPhoenix.Search do
 
         if access == :public do
 
-          query2 = from note in query1, where: note.public == ^true
+          query2 = from note in query1, where: note.public == true
 
         else
 
