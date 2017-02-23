@@ -157,9 +157,13 @@ defmodule LookupPhoenix.Search do
        [tags, terms] = split_query_terms(query_terms)
        tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
 
+       Utility.report("1. [tags, terms]", [tags, terms])
+
       if !Enum.member?(["all", "public"], channel_name) do
          tags = [channel_name|tags]
       end
+
+      Utility.report("2. [tags, terms]", [tags, terms])
 
       case tags do
         [] -> query = basic_query(user_id, access, hd(terms), :term)
@@ -171,9 +175,11 @@ defmodule LookupPhoenix.Search do
       end
 
       result = Repo.all(query)
+      # IO.puts("FIRST STEP:")
+      # result  |> Enum.map(fn(note) -> IO.puts(note.title) end)
       # |> Note.filter_records_for_user(user_id)
-      # |> filter_notes_with_tag_list(tags)
-      # |> filter_records_with_term_list(terms)
+      |> filter_notes_with_tag_list(tags)
+      |> filter_records_with_term_list(terms)
 
       Note.memorize_list(result, user_id)
       Enum.map(result, fn (record) -> record.id end)
@@ -252,12 +258,13 @@ defmodule LookupPhoenix.Search do
 
     def filter_records_with_term(list, term) do
 
-      Enum.filter(list, fn(x) -> String.contains?(String.downcase(x.title), term) or String.contains?(String.downcase(x.content), term) end)
+      Enum.filter(list, fn(x) -> String.contains?(String.downcase(x.title), term) or String.contains?(x.tag_string, term) or String.contains?(String.downcase(x.content), term) end)
 
     end
 
 
     def filter_records_with_term_list(list, term_list) do
+        Utility.report("filter_records_with_term_list", {list, term_list})
 
       case {list, term_list} do
         {list,[]} -> list

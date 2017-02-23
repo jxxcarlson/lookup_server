@@ -273,14 +273,17 @@ defmodule LookupPhoenix.Note do
       end
 
 
-    def set_public(note, value) do
-      params = %{"public" => value}
+    def set_tag_string(note, value) do
+      params = %{"tag_string" => value}
         changeset = Note.changeset(note, params)
       Repo.update(changeset)
     end
 
-    def init_all_public(value) do
-       Note |> Repo.all |> Enum.map(fn(note) -> Note.set_public(note, value) end)
+    def set_bad_tags(value) do
+       Note
+       |> Repo.all
+       |> Enum.filter(fn(note) -> note.tag_string == nil end)
+       |> Enum.map(fn(note) -> Note.set_tag_string(note, value) end)
     end
 
 end
