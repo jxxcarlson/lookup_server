@@ -164,7 +164,7 @@ defmodule LookupPhoenix.NoteController do
     updated_at= Note.updated_at_short(note)
     word_count = RenderText.word_count(note.content)
 
-    sharing_is_authorized = conn.assigns.current_user.id == note.user_id
+    sharing_is_authorized = true #  conn.assigns.current_user.id == note.user_id
 
     params1 = %{note: note, inserted_at: inserted_at, updated_at: updated_at,
                   options: options, word_count: word_count, sharing_is_authorized: sharing_is_authorized}

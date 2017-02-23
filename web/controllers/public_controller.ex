@@ -7,14 +7,12 @@ defmodule LookupPhoenix.PublicController do
 
 
    def share(conn, %{"id" => id}) do
-         note  = Repo.get(Note, id)
+         note  = Repo.get!(Note, id)
          token = conn.query_string
          Utility.report("id", id)
          Utility.report("token", token)
          user = Repo.get(User, note.user_id)
          site = user.username
-
-         note = Repo.get!(Note, id)
 
          options = %{mode: "show", process: "none"}
          params = %{note: note, site: site, options: options}
@@ -22,10 +20,10 @@ defmodule LookupPhoenix.PublicController do
          Utility.report("[note.public, note.shared]", [note.public, note.shared])
 
          case [note.public, note.shared] do
-            [true, _] -> render(conn, "share.html", params)
+            [true, _] -> render(conn, "share.html", params) |> put_resp_cookie("site", site)
             [_, true] ->
                if Note.match_token_array(token, note) do render(conn, "share.html", params) end
-            _ ->  render(conn, "error.html", params)
+            _ ->  render(conn, "error.html", params) |> put_resp_cookie("site", site)
           end
 
      end
