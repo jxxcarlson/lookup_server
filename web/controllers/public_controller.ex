@@ -34,12 +34,14 @@ defmodule LookupPhoenix.PublicController do
           end
       end
       # match_token_array
-
-
   end
 
-  def index(conn, %{"site" => site}) do
-    channel = "#{site}.public"
+  # def index(conn, %{"site" => site}) do
+  def index(conn, params) do
+    # Utility.report('CONN . ASSIGNS', conn.request_path)
+
+    site = params["site"]
+    channel = "demo.public"
     if conn.assigns.current_user != nil do
       User.set_channel( conn.assigns.current_user, channel)
       IO.puts "I HAVE SET YOUR CHANNEL TO #{channel}"
@@ -53,5 +55,13 @@ defmodule LookupPhoenix.PublicController do
       |> put_resp_cookie("site", site)
       |> render("index.html", params)
   end
+
+  def site(conn, params) do
+     site = params["data"]["site"]
+     IO.puts "site = #{site}"
+     conn |> redirect(to: "/site/#{site}")
+
+  end
+
 
 end
