@@ -13,6 +13,7 @@
     </div>
     <div class="form-group">
             <%= text_input f, :registration_code, placeholder: "Registration code", class: "form-control" %>
+            <span>Use registration code <b>student</b> (for students) or <b>lattice</b> (for others) .
     </div>
     <%= submit "Please create my account.", class: "btn btn-primary" %>
     <span style="font-size:1.25em; color:cornflowerblue;margin-left:20px;">

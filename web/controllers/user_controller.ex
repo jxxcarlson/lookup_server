@@ -162,7 +162,7 @@ defmodule LookupPhoenix.UserController do
     preflight_check = cond do
       user_params["registration_code"] == "" ->
            {:error, "Sorry, a registration code is required."}
-      Enum.member?(["ladidah", "student", "uahs"], user_params["registration_code"]) == false ->
+      Enum.member?(["lattice", "student", "uahs"], user_params["registration_code"]) == false ->
            {:error, "Sorry, that is not a valid registration code."}
       true -> {:ok, :proceed}
     end
