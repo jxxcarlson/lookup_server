@@ -108,19 +108,21 @@ defmodule LookupPhoenix.Search do
 
     def basic_query(user_id, access, term, type) do
 
-
-
         query1 = from note in Note, where: note.user_id == ^user_id
+
+        #############################################
 
         if access == :public do
 
-          query2 = from note in query1, where: note.public == ^ true
+          query2 = from note in query1, where: note.public == ^true
 
         else
 
           query2 = query1
 
         end
+
+        #############################################
 
         if type == :tag do
 
@@ -134,13 +136,13 @@ defmodule LookupPhoenix.Search do
 
           end
 
-
-
         else
 
           query3 = from note in query2, where: ilike(note.title, ^"%#{term}%") or ilike(note.tag_string, ^"%#{term}%") or ilike(note.content, ^"%#{term}%")
 
         end
+
+        #############################################
 
         query4 = from note in  query3, order_by: [desc: note.inserted_at]
 
