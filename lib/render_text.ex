@@ -120,7 +120,7 @@ defmodule RenderText do
 
     def makeAudioPlayer(text) do
 
-       Regex.replace(~r/(http|https):\/\/(.*(mp3))/i, " "<>text<>" ", "<audio controls> <source src=\"\\0\" type=\"audio/\\3\" >Your browser does not support the audio element.</audio>")
+       Regex.replace(~r/(http|https):\/\/(.*(mp3|wav))/i, " "<>text<>" ", "<audio controls> <source src=\"\\0\" type=\"audio/\\3\" >Your browser does not support the audio element.</audio>")
 
     end
 

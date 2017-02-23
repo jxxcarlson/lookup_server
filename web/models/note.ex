@@ -275,16 +275,26 @@ defmodule LookupPhoenix.Note do
 
     def set_tag_string(note, value) do
       params = %{"tag_string" => value}
-        changeset = Note.changeset(note, params)
+      changeset = Note.changeset(note, params)
       Repo.update(changeset)
     end
 
-    def set_bad_tags(value) do
+    def set_bad_tags do
        Note
        |> Repo.all
        |> Enum.filter(fn(note) -> note.tag_string == nil end)
-       |> Enum.map(fn(note) -> Note.set_tag_string(note, value) end)
+       |> Enum.map(fn(note) -> Note.set_tag_string(note, "") end)
     end
+
+    def count_bad_tags do
+       Note
+       |> Repo.all
+       |> Enum.filter(fn(note) -> (note.tag_string == nil) or (note.tag_string == "-") end)
+       |> Enum.reduce(0,fn(note, acc) -> acc + 1 end)
+    end
+
+
+
 
 end
 

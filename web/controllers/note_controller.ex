@@ -112,17 +112,28 @@ defmodule LookupPhoenix.NoteController do
       new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
 
+      tag_string = note_params["tag_string"]
+
       if !Enum.member?(["all", "public"], channel_name) do
-        tagstring = [note_params["tag_string"], channel_name] |> Enum.join(", ")
-      else
-        tagstring = note_params["tag_string"]
+        tag_string = [tag_string, channel_name] |> Enum.join(", ")
       end
 
-      tags = Tag.str2tags(tagstring)
+      if tag_string == nil do
+        tag_string = ""
+      end
+
+      if tag_string == "" do
+        tags = []
+      else
+        tags = Tag.str2tags(tag_string)
+      end
+
+      IO.puts "TAG STRING = [#{tag_string}]"
+      Utility.report("TAG", tags)
 
       new_params = %{"content" => new_content, "title" => new_title,
          "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now,
-         "tag_string" => tagstring, "tags" => tags, "public" => false}
+         "tag_string" => "  ", "tags" => tags, "public" => false}
       changeset = Note.changeset(%Note{}, new_params)
 
       case Repo.insert(changeset) do
