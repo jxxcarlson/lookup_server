@@ -172,8 +172,8 @@ defmodule LookupPhoenix.Search do
 
       result = Repo.all(query)
       # |> Note.filter_records_for_user(user_id)
-      |> filter_notes_with_tag_list(tags)
-      |> filter_records_with_term_list(terms)
+      # |> filter_notes_with_tag_list(tags)
+      # |> filter_records_with_term_list(terms)
 
       Note.memorize_list(result, user_id)
       Enum.map(result, fn (record) -> record.id end)
