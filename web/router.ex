@@ -1,11 +1,23 @@
 defmodule LookupPhoenix.Router do
   use LookupPhoenix.Web, :router
 
+  # def assign_kv(conn, key_values) do
+  #    Enum.reduce key_values, conn, fn {k, v}, conn ->
+  #      Plug.Conn.assign(conn, k, v)
+  #    end
+  # end
+
+  def assign_kv(conn, kv) do
+    [k,v] = kv
+    conn = Plug.Conn.assign(conn, k, v)
+  end
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
+    # plug :assign_kv, ["site", "foobar"]
 
 
     plug :put_secure_browser_headers

@@ -40,6 +40,8 @@ defmodule LookupPhoenix.PublicController do
   def index(conn, params) do
     # Utility.report('CONN . ASSIGNS', conn.request_path)
 
+    IO.puts "conn.request_path = #{conn.request_path}"
+
     site = params["site"]
     channel = "demo.public"
     if conn.assigns.current_user != nil do
