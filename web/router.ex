@@ -50,6 +50,7 @@ defmodule LookupPhoenix.Router do
     get "/tips", PageController, :tips
     get "/demo", PageController, :demo
 
+    get "/share/:id", PublicController, :share
     get "/public/:id", PublicController, :show
     get "/site/:site", PublicController, :index
     post "/site", PublicController, :site

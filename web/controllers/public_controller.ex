@@ -5,6 +5,36 @@ defmodule LookupPhoenix.PublicController do
     alias LookupPhoenix.Utility
     alias LookupPhoenix.Search
 
+   def show(conn, %{"id" => id}) do
+        note  = Repo.get(Note, id)
+        token = conn.query_string
+        Utility.report("token", token)
+
+        if note == nil do
+            render(conn, "error.html", %{})
+        else
+           if Enum.member?(note.tags, "latex") do
+              options = %{mode: "show", process: "latex"}
+            else
+              options = %{mode: "show", process: "none"}
+            end
+            params1 = %{note: note, options: options, site: site}
+            params2 = Note.decode_query_string(conn.query_string)
+            params = Map.merge(params1, params2)
+
+            case note.public do
+              true -> render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Public"}))
+              false ->
+                 if Note.match_token_array(token, note) do
+                   render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Shared"}))
+                 else
+                   render(conn, "error.html", params)
+                 end
+            end
+        end
+        # match_token_array
+    end
+
 
   def show(conn, %{"id" => id, "site" => site}) do
       note  = Repo.get(Note, id)
