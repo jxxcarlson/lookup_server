@@ -185,7 +185,7 @@ defmodule LookupPhoenix.NoteController do
 
     note = Repo.get!(Note, id)
     message_part_1 = "This note is courtesy of http://www.lookupnote.io\n\n"
-    message_part_2= "It is available at http://www.lookupnote.io/public/"
+    message_part_2= "It is available at http://www.lookupnote.io/share/"
     message_part_4 = "\n\n\n------\nIf you wish to sign up for an account on lookupnote.io,\n please use this registation code: student "
 
     if note.public == false do

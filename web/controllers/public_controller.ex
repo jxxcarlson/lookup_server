@@ -6,55 +6,30 @@ defmodule LookupPhoenix.PublicController do
     alias LookupPhoenix.Search
 
 
-   def share1(conn, %{"id" => id}) do
+   def share(conn, %{"id" => id}) do
          note  = Repo.get(Note, id)
          token = conn.query_string
+         Utility.report("id", id)
          Utility.report("token", token)
-         if note == nil do
-             render(conn, "error.html", %{})
-         else
-             options = %{mode: "show", process: "none"}
-             params = %{note: note, options: options}
-             case [note.public, note.shared] do
-               [true, _] -> render(conn, "share.html", params, title: "LookupNotes: Public")
-               [_, true] ->
-                  if Note.match_token_array(token, note) do render(conn, "share.html", params, title: "LookupNotes: Shared") end
-               _ ->  render(conn, "error.html", params)
-             end
-         end
-         # match_token_array
+         user = Repo.get(User, note.user_id)
+         site = user.username
+
+         note = Repo.get!(Note, id)
+
+         options = %{mode: "show", process: "none"}
+         params = %{note: note, site: site, options: options}
+
+         Utility.report("[note.public, note.shared]", [note.public, note.shared])
+
+         case [note.public, note.shared] do
+            [true, _] -> render(conn, "share.html", params)
+            [_, true] ->
+               if Note.match_token_array(token, note) do render(conn, "share.html", params) end
+            _ ->  render(conn, "error.html", params)
+          end
 
      end
 
-   def share(conn, %{"id" => id}) do
-        note  = Repo.get(Note, id)
-        token = conn.query_string
-        Utility.report("token", token)
-
-        if note == nil do
-            render(conn, "error.html", %{})
-        else
-           if Enum.member?(note.tags, "latex") do
-              options = %{mode: "show", process: "latex"}
-            else
-              options = %{mode: "show", process: "none"}
-            end
-            params1 = %{note: note, options: options, site: site}
-            params2 = Note.decode_query_string(conn.query_string)
-            params = Map.merge(params1, params2)
-
-            case note.public do
-              true -> render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Public"}))
-              false ->
-                 if Note.match_token_array(token, note) do
-                   render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Shared"}))
-                 else
-                   render(conn, "error.html", params)
-                 end
-            end
-        end
-        # match_token_array
-    end
 
 
   def show(conn, %{"id" => id, "site" => site}) do
@@ -75,10 +50,10 @@ defmodule LookupPhoenix.PublicController do
           params = Map.merge(params1, params2)
 
           case note.public do
-            true -> render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Public"}))
+            true -> render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Public"})) |> put_resp_cookie("site", site)
             false ->
                if Note.match_token_array(token, note) do
-                 render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Shared"}))
+                 render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Shared"})) |> put_resp_cookie("site", site)
                else
                  render(conn, "error.html", params)
                end
