@@ -70,7 +70,7 @@
          <%= if @current_user do %>
            <%= render "_nav_signed_in.html", conn: @conn, current_user: @current_user %>
          <% else %>
-            <%= render "_nav_signed_out.html", conn: @conn %>
+            <%= render "_nav_signed_out.html", conn: @conn, site: cookies(@conn, "site") %>
          <% end %>
 
 
@@ -83,7 +83,7 @@
          <!-- SEARCH BOX AND CHANNEL SELECTOR -->
          <div style="margin-top:-22.5px; margin-bottom:0; width:100%">
              <%= if @current_user == nil do %>
-                <%= render "_public_search.html", conn: @conn, site: cookies(@conn, "site") %>
+                 <%= render "_public_search.html", conn: @conn, site: cookies(@conn, "site") %>
               <% else %>
                 <%= render "_search.html", conn: @conn %>
              <% end %>

@@ -11,7 +11,7 @@
 
 </style>
 
-<h1 style="font-size:2em;margin-top:1.25em;margin-bottom:1.5em;"">Shared note</h1>
+<h1 style="font-size:2em;margin-top:1.25em;margin-bottom:1.5em;"><%= link "Shared note", to: "/site/#{@site}" %></h1>
 
 <div style="font-size: 1.2em; margin-top:-0.5em;">
 

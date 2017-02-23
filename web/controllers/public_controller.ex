@@ -14,16 +14,18 @@ defmodule LookupPhoenix.PublicController do
          user = Repo.get(User, note.user_id)
          site = user.username
 
+         Utility.report("PUBLIC_C . SHARE . SITE:", site)
+
          options = %{mode: "show", process: "none"}
          params = %{note: note, site: site, options: options}
 
          Utility.report("[note.public, note.shared]", [note.public, note.shared])
 
          case [note.public, note.shared] do
-            [true, _] -> render(conn, "share.html", params) |> put_resp_cookie("site", site)
+            [true, _] -> render(conn, "share.html", params) # |> put_resp_cookie("site", site)
             [_, true] ->
                if Note.match_token_array(token, note) do render(conn, "share.html", params) end
-            _ ->  render(conn, "error.html", params) |> put_resp_cookie("site", site)
+            _ ->  render(conn, "error.html", params) # |> put_resp_cookie("site", site)
           end
 
      end

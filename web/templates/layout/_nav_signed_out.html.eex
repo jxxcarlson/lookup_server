@@ -7,6 +7,8 @@
     <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: link_name(@conn)  %>  </li>
     <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Tags", to: user_path(@conn, :tags), id: 'tags' %> </li>
 
+   <li style="font-size:1.25em; color:darkred  ; float:left;"> Site: <%= @site %> </li>
+
     <li class="link1"> <%= link "Sign up", to: user_path(@conn, :new) %> </li>
     <li class="link1"> <%= link "Sign in", to: session_path(@conn, :new) %> </li>
 
