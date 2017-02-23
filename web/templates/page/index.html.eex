@@ -11,6 +11,8 @@ span { color: darkred; font-weight:500;}
           <h2 style="color:darkred; font-size:3em;">www.lookupnote.io</h2>
 
           <p>Please sign in or register</p>
+
+          <p>Try the <a href="http://www.lookupnote.io/site/demo" target="_blank" ><b>Demo!</b></a> </p>
        </div>
      </div>
 
@@ -19,9 +21,6 @@ span { color: darkred; font-weight:500;}
      of information of all kinds &mdash; text, links to web pages, even images,
      audio, and video.
      </p>
-
-     <p><i>Go to the <a href="http://www.lookupnote.io/site/demo" target="_blank" >DEMO</a>
-          to see LookupNote in action.</i></p>
 
      <p><span>LookupNote</span> is your personal mini search engine.
      Safe, secure, always there when you need it.</p>
@@ -60,7 +59,7 @@ span { color: darkred; font-weight:500;}
     <p>Take a look at the <span><%= link "User Manual", to: page_path(@conn, :tips) %></span> for advanced features:
    code formatting, mini markup, and LaTeX for mathematics and chemistry. </p>
 
-    <br><br>
+    <br>
      <span>Contact: jxxcarlson at gmail</span>
 
      <!-- <%= link "Tips", to: page_path(@conn, :tips), class: "btn btn-default btn-xs" %> -->
