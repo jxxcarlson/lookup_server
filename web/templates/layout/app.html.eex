@@ -79,16 +79,6 @@
             <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
             <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
          </div>
-
-         <!-- SEARCH BOX AND CHANNEL SELECTOR -->
-         <div style="margin-top:-22.5px; margin-bottom:0; width:100%">
-             <%= if @current_user == nil do %>
-                 <%= render "_public_search.html", conn: @conn, site: cookies(@conn, "site") %>
-              <% else %>
-                <%= render "_search.html", conn: @conn %>
-             <% end %>
-         </div>
-
          
 
     </header>
