@@ -8,4 +8,8 @@ defmodule LookupPhoenix.Constant do
     0
   end
 
+  def default_site_id do
+    23
+  end
+
 end

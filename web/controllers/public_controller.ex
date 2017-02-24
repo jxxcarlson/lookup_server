@@ -4,6 +4,7 @@ defmodule LookupPhoenix.PublicController do
     alias LookupPhoenix.User
     alias LookupPhoenix.Utility
     alias LookupPhoenix.Search
+    alias LookupPhoenix.Constant
 
 
    def share(conn, %{"id" => id}) do
@@ -65,17 +66,34 @@ defmodule LookupPhoenix.PublicController do
   # def index(conn, %{"site" => site}) do
   def index(conn, params) do
     # Utility.report('CONN . ASSIGNS', conn.request_path)
-
+    qsMap = Utility.qs2map(conn.query_string)
     IO.puts "INDEX, conn.request_path = #{conn.request_path}"
 
     site = params["site"]
     channel = "#{site}.public"
+    user = User.find_by_username(channel)
+
+    # Ensure that site, channel, user a well-defined
+    if user == nil do
+      user = Repo.get!(User, Constant.default_site_id())
+      site = user.username
+      channel = "#{site}.public"
+    end
+
     if conn.assigns.current_user != nil do
       User.set_channel( conn.assigns.current_user, channel)
       IO.puts "I HAVE SET YOUR CHANNEL TO #{channel}"
     end
-    note_record = Search.notes_for_channel(channel, %{})
-    notes = Utility.add_index_to_maplist(note_record.notes)
+
+    if qsMap["random"] == "one" do
+      note_record = Search.notes_for_channel(channel, %{})
+      notes = note_record.notes |> Utility.random_element
+      notes = Utility.add_index_to_maplist([notes])
+    else
+      note_record = Search.notes_for_channel(channel, %{})
+      notes = Utility.add_index_to_maplist(note_record.notes)
+    end
+    
     id_string = Note.extract_id_list(notes)
     params = %{site: site, notes: notes, note_count: length(notes), id_string: id_string}
     conn

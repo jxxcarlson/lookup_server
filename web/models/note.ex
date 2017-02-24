@@ -180,12 +180,20 @@ defmodule LookupPhoenix.Note do
    end
 
 
-    def notes_for_user(user_id) do
+    def notes_for_user(user_id, option \\ "none") do
       query = Ecto.Query.from note in Note,
         select: note.id,
         where: note.user_id == ^user_id
-      Repo.all(query)
+      if option == "public" do
+        query2 = from  note in query,
+          where: note.public == true
+      else
+        query2 = query
+      end
+      Repo.all(query2)
     end
+
+
 
      def set_public_for_user(user_id, value) do
         options = %{}

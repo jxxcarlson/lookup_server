@@ -78,5 +78,9 @@ defmodule LookupPhoenix.Utility do
     %{token: token, expiration: expiration}
   end
 
+  def random_element(list) do
+    list |> Enum.shuffle |> hd
+  end
+
 
 end
