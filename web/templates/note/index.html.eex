@@ -25,8 +25,9 @@
 </script>
 
  <!-- SEARCH BOX AND CHANNEL SELECTOR -->
+
  <div style="margin-top:0; margin-bottom:0; width:100%">
-     <%= if @current_user == nil or true do %>
+     <%= if @current_user == nil do %>
          <%= render "_public_search.html", conn: @conn, site: cookies(@conn, "site") %>
       <% else %>
         <%= render "_search.html", conn: @conn %>
@@ -41,8 +42,9 @@
 </div>
 
 <div style="height: 2px; background-color:#ddd; margin-top:18px;margin-bottom:-18px;"></div>
+
 <%= if @current_user == nil do %>
-  <%= render "_public_able.html", current_user: @current_user, conn: @conn, id_string: @id_string, notes: @notes %>
+  <%= render "_public_table.html", current_user: @current_user, conn: @conn, id_string: @id_string, notes: @notes %>
 <% else %>
   <%= render "_table.html", current_user: @current_user, conn: @conn, id_string: @id_string, notes: @notes %>
 <% end %>

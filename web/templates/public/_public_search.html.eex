@@ -1,6 +1,5 @@
-<div style="margin-top:0; margin-bottom:0; width:100%">
+<div style="clear: eft; margin-top:0; margin-bottom:0; width:100%">
 
-   <p> HELLO! </p>
    <span style="float:left;">
    <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
        <%= text_input f, :query, placeholder: "Public search ...", autocorrect: "off", autocapitalize: "off", style: "display:inline-block; margin-top:-18px; margin-bottom:3px; width:190px; height:35px; font-size:1.8rem; background-color:#eee;", id: "search_notes" %>
@@ -17,7 +16,7 @@
 
   </span>
 
-
+<br></br>
 
 
  </div>

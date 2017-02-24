@@ -93,35 +93,31 @@ defmodule LookupPhoenix.UserController do
     # render conn, "tags.html", user: conn.assigns.current_user
   end
 
+  # Assumption: the current user exists
   def update_channel(conn, params) do
       IO.puts "UPDATE CHANNEL"
       user = conn.assigns.current_user
-      channel = (params["set"])["channel"]
+      channel_record = (params["set"])["channel"]
 
       # Ensure that the channel has the form a.b
-      channel_parts = channel |> String.split(".")
-      channel_parts_head = hd(channel_parts)
-      if channel_parts_head == "" do
-        channel_parts = [user.username, "all"]
+      channel_parts = channel_record |> String.split(".")
+      channel_owner_name = hd(channel_parts)
+
+      # Ensure that the channel_owner_name is valid
+      channel_user = User.find_by_username(channel_owner_name)
+      if channel_user == nil do
+        channel_owner_name = user.username
+        channel_parts = [channel_owner_name, "all"]
       end
+
       case length(channel_parts) do
-        1 -> [channel_user_name, channel_name] = [user.username, hd(channel_parts)]
-        2 -> [channel_user_name, channel_name] = channel_parts
+        1 -> channel_name = "all"
+        2 -> [_, channel_name] = channel_parts
         _ -> [user.username, "all"]
       end
 
-      # Ensure that the 'channel_user_name' is valid
-      if channel_user_name != user.username do
-        channel_user = User.find_by_username(channel_user_name)
-        if channel_user  == nil do
-          IO.puts "NIL USER "
-          # default to username of current user
-          channel_user_name = user.username
-        end
-      end
-
       # Assemble the channel from known valid parts and save it
-      channel = "#{channel_user_name}.#{channel_name}"
+      channel = "#{channel_owner_name}.#{channel_name}"
       User.update_channel(user, channel)
       conn |> redirect(to: note_path(conn, :index, mode: "all"))
     end
