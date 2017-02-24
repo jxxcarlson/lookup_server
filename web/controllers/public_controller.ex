@@ -13,7 +13,7 @@ defmodule LookupPhoenix.PublicController do
          Utility.report("token", token)
          user = Repo.get(User, note.user_id)
          site = user.username
-         plug LookupPhoenix.Plug.Site, site: site
+         # plug LookupPhoenix.Plug.Site, site: site
 
          Utility.report("PUBLIC_C . SHARE . SITE:", site)
 
