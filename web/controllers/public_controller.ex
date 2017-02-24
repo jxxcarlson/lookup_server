@@ -14,6 +14,7 @@ defmodule LookupPhoenix.PublicController do
          Utility.report("token", token)
          user = Repo.get(User, note.user_id)
          site = user.username
+         # plug LookupPhoenix.Plug.Site, site: site
 
          Utility.report("PUBLIC_C . SHARE . SITE:", site)
 
@@ -23,7 +24,7 @@ defmodule LookupPhoenix.PublicController do
          Utility.report("[note.public, note.shared]", [note.public, note.shared])
 
          case [note.public, note.shared] do
-            [true, _] -> render(conn, "share.html", params) # |> put_resp_cookie("site", site)
+            [true, _] ->  render(conn, "share.html", params) # redirect(conn, to: public_path(conn, :show, params))
             [_, true] ->
                if Note.match_token_array(token, note) do render(conn, "share.html", params) end
             _ ->  render(conn, "error.html", params) #                                                                                     `````````````````|> put_resp_cookie("site", site)
