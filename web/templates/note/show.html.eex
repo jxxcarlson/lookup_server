@@ -62,7 +62,7 @@
 <br>
 
 <script>
-    document.getElementById("rendered_text").style.height = (window.innerHeight - 270) + 'px'
+    document.getElementById("rendered_text").style.height = (window.innerHeight - 280) + 'px'
 
     var answer_head = document.getElementById("QQ");
     var answer_tail = document.getElementById("QQA");

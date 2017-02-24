@@ -133,7 +133,7 @@ defmodule LookupPhoenix.NoteController do
 
       new_params = %{"content" => new_content, "title" => new_title,
          "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now,
-         "tag_string" => "  ", "tags" => tags, "public" => false}
+         "tag_string" => tag_string, "tags" => tags, "public" => false}
       changeset = Note.changeset(%Note{}, new_params)
 
       case Repo.insert(changeset) do
