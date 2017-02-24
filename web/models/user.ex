@@ -152,7 +152,7 @@ defmodule LookupPhoenix.User do
         params = %{"channel" => channel}
         changeset = User.running_changeset(user, params)
         Repo.update(changeset)
-    end
+  end
 
   def initialize_metadata(user) do
      IO.puts "1. initialize_metadata"

@@ -1,5 +1,6 @@
 defmodule LookupPhoenix.PublicController do
   use LookupPhoenix.Web, :controller
+  # plug LookupPhoenix.Plug.Site, site: "foo"
     alias LookupPhoenix.Note
     alias LookupPhoenix.User
     alias LookupPhoenix.Utility
@@ -14,6 +15,7 @@ defmodule LookupPhoenix.PublicController do
          Utility.report("token", token)
          user = Repo.get(User, note.user_id)
          site = user.username
+
          # plug LookupPhoenix.Plug.Site, site: site
 
          Utility.report("PUBLIC_C . SHARE . SITE:", site)

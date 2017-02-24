@@ -61,7 +61,11 @@ defmodule LookupPhoenix.SearchController do
              if user == nil do
                user = User.find_by_username("demo")
              end
+          else
+             site = user.username
           end
+
+
 
           Utility.report("In Search.tag_search, user is", user)
 
@@ -72,6 +76,13 @@ defmodule LookupPhoenix.SearchController do
           end
 
           queryList = String.split(query)
+
+          if conn.assigns.current_user != nil do
+            tag = hd(queryList)
+            channel = "#{site}.#{tag}"
+            User.update_channel(user,channel)
+          end
+
 
           notes = Search.tag_search(queryList, conn)
           noteCount = length(notes)
