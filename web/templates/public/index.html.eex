@@ -25,7 +25,7 @@
 
 </script>
 
-   <%= link "Lead", to: "/tag_search lead_article", class: "btn btn-default btn-s", style: "background-color:cornflowerblue; color:white", id: "lead" %>
+   <%= link "Lead articles", to: "/tag_search lead_article", class: "btn btn-default btn-s", style: "background-color:cornflowerblue; color:white", id: "lead" %>
 
 
 
