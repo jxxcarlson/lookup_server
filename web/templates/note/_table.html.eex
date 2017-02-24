@@ -17,13 +17,13 @@
 
       <td class="hidden-xs" style="max-width:2em"> <%= note.index + 1 %> </td>
 
-      <td style=""> <%= link note.title, to: note_path(@conn, :show, note, index: note.index,
+      <td style="width-35%"> <%= link note.title, to: note_path(@conn, :show, note, index: note.index,
          id_string: @id_string), class: "" %> </td>
 
       <td class="hidden-xs" style="max-width:2em"> <%= LookupPhoenix.Utility.xForTrue(note.public) %> </td>
       <td class="hidden-xs small" style="max-width:6em"> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td>
 
-      <td style="width:35%"><%= raw(RenderText.format_for_index(note.content)) %></td>
+      <td style="max-width:300px    "><%= raw(RenderText.format_for_index(note.content)) %></td>
 
       <td class="text-right hidden-xs" style="max-width:4em">
           <%= link "Edit", to: note_path(@conn, :edit, note, index: note.index, id_string: @id_string), class: "btn btn-default btn-xs" %>

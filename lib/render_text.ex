@@ -51,6 +51,7 @@ defmodule RenderText do
     def linkify(text, options) do
       text
       # |> simplifyURLs
+      |> makeYouTubePlayer(options)
       |> makeAudioPlayer
       |> makeImageLinks(options)
       |> makeFormattedImageLinks(options)
@@ -163,6 +164,20 @@ defmodule RenderText do
        end
 
     end
+
+    def makeYouTubePlayer(text, options) do
+       case options[:mode] do
+         "show" ->
+           Regex.replace(~r/(https:\/\/youtu.be\/(.*))($|\s)/rU, " "<>text<>" ", "<iframe width=\"640\" height=\"360\" src=\"https://www.youtube.com/embed/\\2\"  frameborder=\"0\" allowfullscreen></iframe>")
+         "index" ->
+           Regex.replace(~r/(https:\/\/youtu.be\/(.*))($|\s)/rU, " "<>text<>" ", "<iframe width=\"213\" height=\"120\" src=\"https://www.youtube.com/embed/\\2\"  frameborder=\"0\" allowfullscreen></iframe>")
+         #_ ->
+         #  Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
+       end
+
+    end
+
+    # (https://youtu.*)($|\s)
 
     def formatHeading1(text) do
       Regex.replace(~r/^== (.*)$/mU, text, "<h1>\\1</h1>\n")
