@@ -71,7 +71,7 @@ defmodule LookupPhoenix.PublicController do
 
     site = params["site"]
     channel = "#{site}.public"
-    user = User.find_by_username(channel)
+    user = User.find_by_username(site)
 
     # Ensure that site, channel, user a well-defined
     if user == nil do
@@ -93,7 +93,7 @@ defmodule LookupPhoenix.PublicController do
       note_record = Search.notes_for_channel(channel, %{})
       notes = Utility.add_index_to_maplist(note_record.notes)
     end
-    
+
     id_string = Note.extract_id_list(notes)
     params = %{site: site, notes: notes, note_count: length(notes), id_string: id_string}
     conn
