@@ -337,7 +337,7 @@ defmodule RenderText do
 
    def collate_one(id, str) do
      note = Repo.get!(Note, id)
-     str <> " \n\n " <> note.content
+     str <> "\n\n" <> "== " <> note.title <> "\n\n" <> note.content <> "\n\n"
    end
 
    def collate(id_list) do
