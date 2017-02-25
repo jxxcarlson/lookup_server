@@ -30,11 +30,13 @@ defmodule LookupPhoenix.PublicController do
             options = Map.merge(options, %{collate: false})
         end
 
+        Utility.report("OPTIONS", options)
+
          # plug LookupPhoenix.Plug.Site, site: site
 
          Utility.report("PUBLIC_C . SHARE . SITE:", site)
 
-         options = %{mode: "show", process: "none"}
+         # options = %{mode: "show", process: "none"}
          params = %{note: note, site: site, options: options}
 
          Utility.report("[note.public, note.shared]", [note.public, note.shared])
@@ -54,8 +56,6 @@ defmodule LookupPhoenix.PublicController do
       note  = Repo.get(Note, id)
       token = conn.query_string
       Utility.report("token", token)
-
-      options = %{mode: "show"}
 
       if note == nil do
           render(conn, "error.html", %{})

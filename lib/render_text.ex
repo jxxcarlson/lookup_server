@@ -5,7 +5,8 @@ defmodule RenderText do
 
 ############# PUBLIC ##################
 
-    def transform(input_text, options \\ %{mode: "show", process: "none"}) do
+    def transform(input_text, options \\ %{mode: "show", process: "none", collate: false}) do
+      Utility.report("TT, OPTIONS", options)
       if options.collate == true do
         id_list = String.split(input_text, ",")
         |> Enum.map(fn(item) -> String.trim(item) end)
