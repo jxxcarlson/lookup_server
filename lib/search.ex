@@ -150,7 +150,7 @@ defmodule LookupPhoenix.Search do
 
     end
 
-   def search_with_non_empty_arg(query_terms, user) do
+   def search_with_non_empty_arg(query_terms, user, options) do
 
        [access, channel_name, user_id]= User.decode_channel(user)
 
@@ -158,10 +158,13 @@ defmodule LookupPhoenix.Search do
        tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
 
        Utility.report("1. [tags, terms]", [tags, terms])
+       Utility.report("1. CHANNEL",channel_name)
 
-      if !Enum.member?(["all", "public"], channel_name) do
+      if !Enum.member?(["all", "public"], channel_name) and options.user_signed_in do
          tags = [channel_name|tags]
       end
+
+      Utility.report("2. CHANNEL",channel_name)
 
       Utility.report("2. [tags, terms]", [tags, terms])
 
@@ -187,7 +190,7 @@ defmodule LookupPhoenix.Search do
     end
 
 
-    def search(query, user) do
+    def search(query, user, options) do
 
       case query  do
         nil -> IO.puts "NIL qery string"
@@ -199,7 +202,7 @@ defmodule LookupPhoenix.Search do
       query_terms = decode_query(query)
       case query_terms do
         [] -> []
-        _ -> search_with_non_empty_arg(query_terms, user)
+        _ -> search_with_non_empty_arg(query_terms, user, options)
       end
     end
 

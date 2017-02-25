@@ -246,7 +246,20 @@ defmodule LookupPhoenix.Note do
          Note |> Repo.all |> Enum.map(fn(note) -> Note.erase_string(note, str) end)
      end
 
+    def add_options(options, note) do
 
+        if Enum.member?(note.tags, "latex") do
+            options = Map.merge(options, %{process: "latex"})
+        else
+            options = Map.merge(options, %{process: "none"})
+        end
+
+        if Enum.member?(note.tags, "collate") do
+            options = Map.merge(options, %{collate: true, user_id: note.user_id})
+        else
+            options = Map.merge(options, %{collate: false})
+        end
+    end
 
      ## INIT (ONE-TIME) ##
 

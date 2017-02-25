@@ -16,19 +16,7 @@ defmodule LookupPhoenix.PublicController do
          user = Repo.get(User, note.user_id)
          site = user.username
 
-        options = %{mode: "show"}
-
-        if Enum.member?(note.tags, "latex") do
-            options = Map.merge(options, %{process: "latex"})
-        else
-            options = Map.merge(options, %{process: "none"})
-        end
-
-        if Enum.member?(note.tags, "collate") do
-            options = Map.merge(options, %{collate: true, user_id: note.user_id})
-        else
-            options = Map.merge(options, %{collate: false})
-        end
+         options = %{mode: "show"} |> Note.add_options(note)
 
         Utility.report("OPTIONS", options)
 
@@ -60,18 +48,7 @@ defmodule LookupPhoenix.PublicController do
       if note == nil do
           render(conn, "error.html", %{})
       else
-         if Enum.member?(note.tags, "latex") do
-            options = %{mode: "show", process: "latex"}
-          else
-            options = %{mode: "show", process: "none"}
-          end
-
-          if Enum.member?(note.tags, "collate") do
-                options = Map.merge(options, %{collate: true, user_id: note.user_id})
-              else
-                options = Map.merge(options, %{collate: false})
-          end
-
+          options = %{mode: "show"} |> Note.add_options(note)
           params1 = %{note: note, options: options, site: site}
           params2 = Note.decode_query_string(conn.query_string)
           params = Map.merge(params1, params2)

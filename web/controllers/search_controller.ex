@@ -26,7 +26,8 @@ defmodule LookupPhoenix.SearchController do
         User.increment_number_of_searches(user)
       end
 
-      notes = Search.search(query, user)
+      user_signed_in = current_user != nil
+      notes = Search.search(query, user, %{user_signed_in: user_signed_in})
       if current_user != nil do
         Note.memorize_notes(notes, current_user.id)
       end
