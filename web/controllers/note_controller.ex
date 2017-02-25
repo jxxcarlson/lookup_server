@@ -237,6 +237,7 @@ defmodule LookupPhoenix.NoteController do
         conn
         |> put_flash(:info, "Note updated successfully.")
         |> redirect(to: note_path(conn, :show, note, params))
+        Utility.report("doUpdate, params", params)
         # |> redirect(to: note_path(conn, :index))
       {:error, changeset} ->
         render(conn, "edit.html", note: note, changeset: changeset)
@@ -265,8 +266,10 @@ defmodule LookupPhoenix.NoteController do
 
 
     if ((user.read_only == false) and (note.user_id ==  user.id)) do
+      IO.puts "DO UPDATE"
       doUpdate(note, changeset, conn)
     else
+      IO.puts "READ ONLY MESSAGE"
       read_only_message(conn)
     end
   end
