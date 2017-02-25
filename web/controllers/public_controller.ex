@@ -16,6 +16,20 @@ defmodule LookupPhoenix.PublicController do
          user = Repo.get(User, note.user_id)
          site = user.username
 
+        options = %{mode: "show"}
+
+        if Enum.member?(note.tags, "latex") do
+            options = Map.merge(options, %{process: "latex"})
+        else
+            options = Map.merge(options, %{process: "none"})
+        end
+
+        if Enum.member?(note.tags, "collate") do
+            options = Map.merge(options, %{collate: true, user_id: note.user_id})
+        else
+            options = Map.merge(options, %{collate: false})
+        end
+
          # plug LookupPhoenix.Plug.Site, site: site
 
          Utility.report("PUBLIC_C . SHARE . SITE:", site)
@@ -41,6 +55,8 @@ defmodule LookupPhoenix.PublicController do
       token = conn.query_string
       Utility.report("token", token)
 
+      options = %{mode: "show"}
+
       if note == nil do
           render(conn, "error.html", %{})
       else
@@ -49,6 +65,13 @@ defmodule LookupPhoenix.PublicController do
           else
             options = %{mode: "show", process: "none"}
           end
+
+          if Enum.member?(note.tags, "collate") do
+                options = Map.merge(options, %{collate: true, user_id: note.user_id})
+              else
+                options = Map.merge(options, %{collate: false})
+          end
+
           params1 = %{note: note, options: options, site: site}
           params2 = Note.decode_query_string(conn.query_string)
           params = Map.merge(params1, params2)
