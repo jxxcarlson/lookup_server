@@ -24,6 +24,7 @@ defmodule LookupPhoenix.User do
       field :number_of_searches, :integer
       field :search_filter, :string
       field :channel, :string
+      field :preferences, :map
 
       has_many :notes, LookupPhoenix.Note
 
