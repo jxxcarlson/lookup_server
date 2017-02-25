@@ -1,8 +1,20 @@
 defmodule RenderText do
+  alias LookupPhoenix.Repo
+  alias LookupPhoenix.Note
+  alias LookupPhoenix.Utility
 
 ############# PUBLIC ##################
 
-    def transform(text, options \\ %{mode: "show", process: "none"}) do
+    def transform(input_text, options \\ %{mode: "show", process: "none"}) do
+      if options.collate == true do
+        id_list = String.split(input_text, ",")
+        |> Enum.map(fn(item) -> String.trim(item) end)
+        |> Enum.map(fn(item) -> String.to_integer(item) end)
+        Utility.report("ID LIST", id_list)
+        text = collate(id_list)
+      else
+        text = input_text
+      end
       text
       |> String.trim
       |> padString
@@ -321,6 +333,15 @@ defmodule RenderText do
 
    def formatXREF(text) do
      Regex.replace(~r/xref::([0-9]*)\[(.*)\]/, text, "<a href=\"https://lookupnote.herokuapp.com/notes/\\1?index=0&previous=\\1&next=\\1&id_string=\\1\">\\2</a>")
+   end
+
+   def collate_one(id, str) do
+     note = Repo.get!(Note, id)
+     str <> " \n\n " <> note.content
+   end
+
+   def collate(id_list) do
+     Enum.reduce(id_list, "", fn(id, acc) -> collate_one(id, acc) end)
    end
 
 end

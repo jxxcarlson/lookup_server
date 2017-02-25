@@ -1,3 +1,5 @@
+
+
 defmodule LookupPhoenix.User do
   use LookupPhoenix.Web, :model
 
@@ -24,7 +26,7 @@ defmodule LookupPhoenix.User do
       field :number_of_searches, :integer
       field :search_filter, :string
       field :channel, :string
-      field :preferences, :map
+      embeds_one :preferences, Preferences
 
       has_many :notes, LookupPhoenix.Note
 

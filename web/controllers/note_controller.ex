@@ -154,11 +154,21 @@ defmodule LookupPhoenix.NoteController do
     note = Repo.get!(Note, id)
 
     Note.update_viewed_at(note)
+
+    options = %{mode: "show"}
+
     if Enum.member?(note.tags, "latex") do
-      options = %{mode: "show", process: "latex"}
+      options = Map.merge(options, %{process: "latex"})
     else
-      options = %{mode: "show", process: "none"}
+      options = Map.merge(options, %{process: "none"})
     end
+
+    if Enum.member?(note.tags, "collate") do
+      options = Map.merge(options, %{collate: true})
+    else
+      options = Map.merge(options, %{collate: false})
+    end
+
 
     inserted_at= Note.inserted_at_short(note)
     updated_at= Note.updated_at_short(note)
