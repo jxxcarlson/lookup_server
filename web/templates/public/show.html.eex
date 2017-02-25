@@ -25,6 +25,12 @@
   height: 150px; white-space:pre-line;"><%= raw(String.trim(RenderText.transform(@note.content, @options))) %> </div>
 
 
+      <span>
+        <%= link "Email Note", to: note_path(@conn, :mailto, @note.id, index: @next_index, id_string: @id_string) %>
+      </span>
+
+
+
 
 
 <script>
