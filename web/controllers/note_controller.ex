@@ -155,20 +155,7 @@ defmodule LookupPhoenix.NoteController do
 
     Note.update_viewed_at(note)
 
-    options = %{mode: "show"}
-
-    if Enum.member?(note.tags, "latex") do
-      options = Map.merge(options, %{process: "latex"})
-    else
-      options = Map.merge(options, %{process: "none"})
-    end
-
-    if Enum.member?(note.tags, "collate") do
-      options = Map.merge(options, %{collate: true, user_id: note.user_id})
-    else
-      options = Map.merge(options, %{collate: false})
-    end
-
+    options = %{mode: "show"} |> Note.add_options(note)
 
     inserted_at= Note.inserted_at_short(note)
     updated_at= Note.updated_at_short(note)
