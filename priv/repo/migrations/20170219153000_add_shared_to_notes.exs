@@ -6,4 +6,5 @@ defmodule LookupPhoenix.Repo.Migrations.AddSharedToNotes do
       add :shared, :boolean, default: false
     end
   end
+
 end
