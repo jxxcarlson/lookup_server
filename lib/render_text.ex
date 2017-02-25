@@ -10,6 +10,7 @@ defmodule RenderText do
         id_list = String.split(input_text, ",")
         |> Enum.map(fn(item) -> String.trim(item) end)
         |> Enum.map(fn(item) -> String.to_integer(item) end)
+        |> RenderText.filter_id_list(options.user_id)
         Utility.report("ID LIST", id_list)
         text = collate(id_list)
       else
@@ -342,6 +343,16 @@ defmodule RenderText do
 
    def collate(id_list) do
      Enum.reduce(id_list, "", fn(id, acc) -> collate_one(id, acc) end)
+   end
+
+   # Need tests for this:
+   def ok_to_collate(user_id, id) do
+     note = Repo.get!(Note, id)
+     note.public || note.user_id == user_id
+   end
+
+   def filter_id_list(id_list, user_id) do
+     id_list |> Enum.filter(fn(id) -> ok_to_collate(user_id, id) end)
    end
 
 end

@@ -164,7 +164,7 @@ defmodule LookupPhoenix.NoteController do
     end
 
     if Enum.member?(note.tags, "collate") do
-      options = Map.merge(options, %{collate: true})
+      options = Map.merge(options, %{collate: true, user_id: note.user_id})
     else
       options = Map.merge(options, %{collate: false})
     end
