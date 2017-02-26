@@ -27,27 +27,31 @@ defmodule LookupPhoenix.NoteController do
 
   end
 
-  def index(conn, params) do
-  
-    Utility.report("INDEX", params)
+  def setup_index(conn, params) do
+      Utility.report("INDEX, params", params)
 
-     user = conn.assigns.current_user
-     qsMap = Utility.qs2map(conn.query_string)
+      user = conn.assigns.current_user
+      qsMap = Utility.qs2map(conn.query_string)
 
-     channel = Utility.qs2map(conn.query_string)["set_channel"]
-     if channel != nil and channel != user.channel do
-       User.set_channel(user, channel)
-     end
+      Utility.report("INDEX. qsMap", qsMap)
+
+      channel = Utility.qs2map(conn.query_string)["set_channel"]
+      if channel != nil and channel != user.channel do
+        User.set_channel(user, channel)
+      end
 
 
-     [access, channel_name, user_id] = User.decode_channel(user)
+      [access, channel_name, user_id] = User.decode_channel(user)
 
-     id_list = Note.recall_list(user.id)
-     mode = qsMap["mode"]
-     channel =
-     length_of_id_list = length(id_list)
+      id_list = Note.recall_list(user.id)
+      mode = qsMap["mode"]
+      # channel =
 
-     case [mode, length_of_id_list] do
+      [mode, id_list, qsMap, user]
+  end
+
+  def get_note_record(mode, id_list, user) do
+    case [mode, length(id_list)] do
        ["all", _] -> note_record = Search.notes_for_user(user, %{"mode" => "all",
           "sort_by" => "inserted_at", "direction" => "desc"});
        ["public", _] -> note_record = Search.notes_for_user(user, %{"mode" => "public",
@@ -62,7 +66,12 @@ defmodule LookupPhoenix.NoteController do
        _ -> note_record = Search.getDocumentsFromList(id_list)
 
      end
+  end
 
+  def index(conn, params) do
+  
+     [mode, id_list, qsMap, user]  = setup_index(conn, params)
+     note_record = get_note_record(mode, id_list, user)
      options = %{mode: "index", process: "none"}
 
      if note_record.original_note_count > note_record.note_count do
@@ -70,7 +79,6 @@ defmodule LookupPhoenix.NoteController do
      else
        noteCountString = "#{note_record.note_count} Notes"
      end
-
 
      notes = Utility.add_index_to_maplist(note_record.notes)
      id_string = Note.extract_id_list(notes)
@@ -100,13 +108,10 @@ defmodule LookupPhoenix.NoteController do
     end
   end
 
-  def create(conn, %{"note" => note_params}) do
-    if (conn.assigns.current_user.read_only == true) do
-         read_only_message(conn)
-    else
-      [access, channel_name, user_id] = User.decode_channel(conn.assigns.current_user)
-      new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
-      new_title = Regex.replace(~r/ß/, note_params["title"], "")
+
+  #### Code for create note ####
+
+  def get_tags(note_params, channel_name) do
 
       tag_string = note_params["tag_string"]
 
@@ -124,26 +129,41 @@ defmodule LookupPhoenix.NoteController do
         tags = Tag.str2tags(tag_string)
       end
 
-      IO.puts "TAG STRING = [#{tag_string}]"
-      Utility.report("TAG", tags)
+      [tag_string, tags]
+  end
 
+  def setup(conn, note_params) do
+      [access, channel_name, user_id] = User.decode_channel(conn.assigns.current_user)
+      [tag_string, tags] = get_tags(note_params, channel_name)
+      new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
+      new_title = Regex.replace(~r/ß/, note_params["title"], "")
       new_params = %{"content" => new_content, "title" => new_title,
          "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now,
          "tag_string" => tag_string, "tags" => tags, "public" => false}
       changeset = Note.changeset(%Note{}, new_params)
+  end
 
+  def create(conn, %{"note" => note_params}) do
+    if (conn.assigns.current_user.read_only == true) do
+         read_only_message(conn)
+    else
+      changeset = setup(conn, note_params)
       case Repo.insert(changeset) do
         {:ok, _note} ->
           [_note.id] ++ Note.recall_list(conn.assigns.current_user.id)
           |> Note.memorize_list(conn.assigns.current_user.id)
           conn
           |> put_flash(:info, "Note created successfully: #{_note.id}")
-          |> redirect(to: note_path(conn, :index, active_notes: [_note.id]), options: %{random: false})
+          |> redirect(to: note_path(conn, :index, active_notes: [_note.id],
+               options: %{random: false}))
         {:error, changeset} ->
           render(conn, "new.html", changeset: changeset)
       end
     end
   end
+
+
+  ##########################################################
 
   def show(conn, %{"id" => id}) do
 

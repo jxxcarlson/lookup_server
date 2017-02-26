@@ -71,7 +71,6 @@ defmodule LookupPhoenix.User do
   end
 
     def decode_channel(user) do
-        Utility.report("In user.ex, decode_channel, user is::", user)
         user_id = user.id
         access = :public
 

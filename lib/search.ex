@@ -44,10 +44,15 @@ defmodule LookupPhoenix.Search do
 
        notes = Repo.all(query2) |> filter_public(access)
        original_note_count = length(notes)
-       if options.random == nil or options.random == true do
-         filtered_notes = notes |> filter_random(Constant.random_note_threshold())
-       else
-         filtered_notes = notes
+       cond do
+         !Enum.member?(Map.keys(options), :random) ->
+            filtered_notes = notes |> filter_random(Constant.random_note_threshold())
+         options.random == true ->
+            filtered_notes = notes |> filter_random(Constant.random_note_threshold())
+         options.random == false ->
+            filtered_notes = notes
+          true ->
+            filter_notes = notes
        end
 
        Note.memorize_notes(filtered_notes, user.id)
