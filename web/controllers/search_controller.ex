@@ -50,27 +50,21 @@ defmodule LookupPhoenix.SearchController do
 
     def tag_search(conn, %{"query" => query}) do
 
-          IO.puts "TAG SEARCH #{query}"
           query = String.trim(query)
-          user = conn.assigns.current_user
-
-
+          current_user = conn.assigns.current_user
+          user_from_cookies = User.find_by_username(cookies(conn, "site"))
+          user = user_from_cookies || current_user
           if user == nil do
              real_access = "public"
-             site = cookies(conn, "site")
-             user = User.find_by_username(site)
-             if user == nil do
-               user = User.find_by_username("demo")
-             end
+             user = User.find_by_username("demo")
           else
-             site = user.username
+             real_access = ""
           end
+          site = user.username
 
-
-
-          Utility.report("In Search.tag_search, user is", user)
-
-          User.increment_number_of_searches(conn.assigns.current_user)
+          if current_user != nil do
+            User.increment_number_of_searches(conn.assigns.current_user)
+          end
 
           if real_access == "public" do
             query = "/public " <> query
@@ -84,13 +78,11 @@ defmodule LookupPhoenix.SearchController do
             User.update_channel(user,channel)
           end
 
-
           notes = Search.tag_search(queryList, conn)
           noteCount = length(notes)
           Note.memorize_notes(notes, user.id)
 
           notes_with_index = Utility.add_index_to_maplist(notes)
-          Utility.report("notes_with_index", notes_with_index)
           id_string = Note.extract_id_list(notes)
 
           case noteCount do
