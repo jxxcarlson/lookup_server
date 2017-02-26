@@ -37,8 +37,13 @@ defmodule LookupPhoenix.User do
 
   def running_changeset(model, params \\ :empty) do
       model
-      |> cast(params, ~w(preferences tags public_tags read_only number_of_searches search_filter channel), [] )
+      |> cast(params, ~w(public blurb tags public_tags read_only number_of_searches search_filter channel), [] )
   end
+
+  def preferences_changeset(model, params \\ :empty) do
+        model
+        |> cast(params, ~w(preferences), [] )
+    end
 
 
   def password_changeset(model, params \\ :empty) do
@@ -156,6 +161,16 @@ defmodule LookupPhoenix.User do
   def update_channel(user,channel) do
         params = %{"channel" => channel}
         changeset = User.running_changeset(user, params)
+        Repo.update(changeset)
+  end
+
+  def update_user(user,params) do
+     changeset = User.running_changeset(user, params)
+      Repo.update(changeset)
+  end
+
+  def update_preferences(user,params) do
+       changeset = User.preferences_changeset(user, params)
         Repo.update(changeset)
   end
 
