@@ -112,5 +112,10 @@ defmodule LookupPhoenix.PublicController do
 
   end
 
+  def site_index(conn, _params) do
+    params = %{users: User.public_users}
+    conn |> render("site_index.html", params)
+  end
+
 
 end

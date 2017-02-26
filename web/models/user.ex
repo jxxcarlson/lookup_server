@@ -130,6 +130,10 @@ defmodule LookupPhoenix.User do
     Repo.one(from u in User, where: u.username == ^username)
    end
 
+   def public_users do
+     Repo.all(from u in User, where: u.public == true)
+   end
+
 
   def set_read_only(changeset, value) do
         case changeset do

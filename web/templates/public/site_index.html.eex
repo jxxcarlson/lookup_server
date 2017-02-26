@@ -1,0 +1,23 @@
+<div style="overflow: scroll; height:400px;" id="table_div">
+<table class="table">
+  <thead>
+    <tr>
+      <th>Site</th>
+      <th>Blurb</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for user <- @users do %>
+    <tr>
+
+      <td style="width:20%"> <%= link user.username, to: "/site/#{user.id}" %> </td>
+
+      <td style="width:80%"><%= user.blurb %></td>
+
+
+    </tr>
+<% end %>
+  </tbody>
+</table>
+</div>
