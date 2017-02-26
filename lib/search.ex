@@ -44,7 +44,12 @@ defmodule LookupPhoenix.Search do
 
        notes = Repo.all(query2) |> filter_public(access)
        original_note_count = length(notes)
-       filtered_notes = notes |> filter_random(Constant.random_note_threshold())
+       if options.random == nil or options.random == true do
+         filtered_notes = notes |> filter_random(Constant.random_note_threshold())
+       else
+         filtered_notes = notes
+       end
+
        Note.memorize_notes(filtered_notes, user.id)
        %{notes: filtered_notes, note_count: length(filtered_notes), original_note_count: original_note_count}
 
