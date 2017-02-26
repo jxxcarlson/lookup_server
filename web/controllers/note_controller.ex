@@ -28,7 +28,7 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def setup_index(conn, params) do
- 
+
       user = conn.assigns.current_user
       qsMap = Utility.qs2map(conn.query_string)
 
@@ -65,7 +65,7 @@ defmodule LookupPhoenix.NoteController do
           else
             note_record = Search.notes_for_user(user, %{"mode" => "all",
                       "sort_by" => "inserted_at", "direction" => "desc",
-                      random: options.random});
+                      random: options["random"]});
           end
        _ -> note_record = Search.getDocumentsFromList(id_list)
 

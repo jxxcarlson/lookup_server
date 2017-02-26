@@ -23,6 +23,15 @@ defmodule LookupPhoenix.Search do
 
     def notes_for_user(user, options) do
 
+       if Enum.member?(Map.keys(options), "random") do
+         IO.puts "Search, notes_for_user, key random exists"
+       else
+         IO.puts "Search, notes_for_user, key random does NOT exist"
+         options = Map.merge(options, %{random: true})
+       end
+
+       Utility.report("Search, notes_for_user", options)
+
        [access, channel_name, user_id] = User.decode_channel(user)
        tag = options["tag"]
 
