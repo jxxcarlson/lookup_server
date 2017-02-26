@@ -54,6 +54,7 @@ defmodule LookupPhoenix.Router do
     get "/public/:id", PublicController, :show
     get "/site/:site", PublicController, :index
     get "/sites", PublicController, :site_index
+    get "/random_site", PublicController, :random_site
     post "/site", PublicController, :site
 
     get "/mailto/:id", NoteController, :mailto

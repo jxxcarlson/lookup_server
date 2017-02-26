@@ -27,7 +27,7 @@
 
    <%= link "Lead articles", to: "/tag_search lead_article", class: "btn btn-default btn-s", style: "background-color:cornflowerblue; color:white", id: "lead" %>
    <%= link "More articles", to: "/site/#{@site}", class: "btn btn-default btn-s", id: "more_articles" %>
-   <%= link "Another site", to: "/site/demo", class: "btn btn-default btn-s", id: "more_articles" %>
+   <%= link "Random site", to: "/random_site", class: "btn btn-default btn-s", id: "more_articles" %>
    <%= link "Random article", to: "/site/#{@site}?random=one", class: "btn btn-default btn-s", id: "more_articles" %>
 
 

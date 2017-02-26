@@ -69,7 +69,11 @@ defmodule LookupPhoenix.PublicController do
   # def index(conn, %{"site" => site}) do
   def index(conn, params) do
     # Utility.report('CONN . ASSIGNS', conn.request_path)
+
+    IO.puts "PUBLIC . INDEX"
+    Utility.report("params", params)
     qsMap = Utility.qs2map(conn.query_string)
+
     IO.puts "INDEX, conn.request_path = #{conn.request_path}"
 
     site = params["site"]
@@ -115,6 +119,12 @@ defmodule LookupPhoenix.PublicController do
   def site_index(conn, _params) do
     params = %{users: User.public_users}
     conn |> render("site_index.html", params)
+  end
+
+  def random_site(conn, _params) do
+      user = User.public_users |> Utility.random_element
+      IO.puts "RANDOM SITE, USER = #{user.username}"
+      conn |> redirect(to: "/site/#{user.username}")
   end
 
 
