@@ -28,9 +28,7 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def setup_index(conn, params) do
-      Utility.report("INDEX, params", params)
-      Utility.report("INDEX, params.random", params["random"])
-
+ 
       user = conn.assigns.current_user
       qsMap = Utility.qs2map(conn.query_string)
 
@@ -40,10 +38,6 @@ defmodule LookupPhoenix.NoteController do
         params["random"] == "true" -> random_display = true
         true -> random_display = true
       end
-
-      Utility.report("INDEX. qsMap", qsMap)
-      Utility.report("qsMap, foobaar" , qsMap["foobaar"])
-      IO.puts "qsMap, random" <> qsMap["random"]
 
       channel = Utility.qs2map(conn.query_string)["set_channel"]
       if channel != nil and channel != user.channel do
