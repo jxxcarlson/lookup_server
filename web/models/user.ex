@@ -38,6 +38,11 @@ defmodule LookupPhoenix.User do
       |> cast(params, ~w(tags public_tags read_only number_of_searches search_filter channel), [] )
   end
 
+    def preferences_changeset(model, params \\ :empty) do
+        model
+        |> cast_embed( "preferences" )
+    end
+
   def password_changeset(model, params \\ :empty) do
         model
         |> cast(params, ~w(password_hash), [] )
