@@ -26,7 +26,9 @@ defmodule LookupPhoenix.User do
       field :number_of_searches, :integer
       field :search_filter, :string
       field :channel, :string
-      embeds_one :preferences, Preferences
+      field :preferences, :map
+      field :public, :boolean
+      field :blurb, :string
 
       has_many :notes, LookupPhoenix.Note
 
@@ -35,13 +37,9 @@ defmodule LookupPhoenix.User do
 
   def running_changeset(model, params \\ :empty) do
       model
-      |> cast(params, ~w(tags public_tags read_only number_of_searches search_filter channel), [] )
+      |> cast(params, ~w(preferences tags public_tags read_only number_of_searches search_filter channel), [] )
   end
 
-    def preferences_changeset(model, params \\ :empty) do
-        model
-        |> cast_embed( "preferences" )
-    end
 
   def password_changeset(model, params \\ :empty) do
         model

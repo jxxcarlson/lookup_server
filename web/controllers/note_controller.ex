@@ -54,6 +54,7 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def get_note_record(mode, id_list, user, options) do
+    IO.puts "GET NOTE FOR RECORD"
     case [mode, length(id_list)] do
        ["all", _] -> note_record = Search.notes_for_user(user, %{"mode" => "all",
           "sort_by" => "inserted_at", "direction" => "desc"});
