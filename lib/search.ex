@@ -45,8 +45,6 @@ defmodule LookupPhoenix.Search do
        notes = Repo.all(query2) |> filter_public(access)
        original_note_count = length(notes)
        cond do
-         !Enum.member?(Map.keys(options), :random) ->
-            filtered_notes = notes |> filter_random(Constant.random_note_threshold())
          options.random == true ->
             filtered_notes = notes |> filter_random(Constant.random_note_threshold())
          options.random == false ->

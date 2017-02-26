@@ -29,17 +29,26 @@ defmodule LookupPhoenix.NoteController do
 
   def setup_index(conn, params) do
       Utility.report("INDEX, params", params)
+      Utility.report("INDEX, params.random", params["random"])
 
       user = conn.assigns.current_user
       qsMap = Utility.qs2map(conn.query_string)
 
+      cond do
+        params["random"] == nil -> random_display = true
+        params["random"] == "false" -> random_display = false
+        params["random"] == "true" -> random_display = true
+        true -> random_display = true
+      end
+
       Utility.report("INDEX. qsMap", qsMap)
+      Utility.report("qsMap, foobaar" , qsMap["foobaar"])
+      IO.puts "qsMap, random" <> qsMap["random"]
 
       channel = Utility.qs2map(conn.query_string)["set_channel"]
       if channel != nil and channel != user.channel do
         User.set_channel(user, channel)
       end
-
 
       [access, channel_name, user_id] = User.decode_channel(user)
 
@@ -47,10 +56,10 @@ defmodule LookupPhoenix.NoteController do
       mode = qsMap["mode"]
       # channel =
 
-      [mode, id_list, qsMap, user]
+      [mode, id_list, qsMap, random_display, user]
   end
 
-  def get_note_record(mode, id_list, user) do
+  def get_note_record(mode, id_list, user, options) do
     case [mode, length(id_list)] do
        ["all", _] -> note_record = Search.notes_for_user(user, %{"mode" => "all",
           "sort_by" => "inserted_at", "direction" => "desc"});
@@ -61,7 +70,8 @@ defmodule LookupPhoenix.NoteController do
             note_record = Search.getDocumentsFromList(id_list)
           else
             note_record = Search.notes_for_user(user, %{"mode" => "all",
-                      "sort_by" => "inserted_at", "direction" => "desc"});
+                      "sort_by" => "inserted_at", "direction" => "desc",
+                      random: options.random});
           end
        _ -> note_record = Search.getDocumentsFromList(id_list)
 
@@ -70,9 +80,13 @@ defmodule LookupPhoenix.NoteController do
 
   def index(conn, params) do
   
-     [mode, id_list, qsMap, user]  = setup_index(conn, params)
-     note_record = get_note_record(mode, id_list, user)
+     [mode, id_list, qsMap, random_display, user]  = setup_index(conn, params)
+     note_record = get_note_record(mode, id_list, user, %{random_display: random_display})
+
      options = %{mode: "index", process: "none"}
+
+     Utility.report("INDEX: qsMap", qsMap)
+     Utility.report("options, random_display", random_display )
 
      if note_record.original_note_count > note_record.note_count do
        noteCountString = "#{note_record.note_count} Random notes from #{note_record.original_note_count}"
@@ -154,8 +168,7 @@ defmodule LookupPhoenix.NoteController do
           |> Note.memorize_list(conn.assigns.current_user.id)
           conn
           |> put_flash(:info, "Note created successfully: #{_note.id}")
-          |> redirect(to: note_path(conn, :index, active_notes: [_note.id],
-               options: %{random: false}))
+          |> redirect(to: note_path(conn, :index, active_notes: [_note.id], random: "no"))
         {:error, changeset} ->
           render(conn, "new.html", changeset: changeset)
       end
@@ -244,7 +257,7 @@ defmodule LookupPhoenix.NoteController do
     index = conn.params["index"]
     id_string = conn.params["id_string"]
     params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
-    params = Map.merge(params, %{options: %{random: false}})
+    params = Map.merge(params, random: "no")
 
     case Repo.update(changeset) do
       {:ok, note} ->
