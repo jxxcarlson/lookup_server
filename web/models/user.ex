@@ -170,7 +170,7 @@ defmodule LookupPhoenix.User do
   end
 
   def update_preferences(user,prefs) do
-       changeset = User.preferences_changeset(user, %{settings: prefs})
+       changeset = User.preferences_changeset(user, %{preferences: prefs})
         Repo.update(changeset)
   end
 
