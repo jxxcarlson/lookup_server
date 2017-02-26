@@ -34,7 +34,7 @@ defmodule LookupPhoenix.Search do
          else
            options = Map.merge(options, %{random: false})
          end
-        end
+       end
 
        Utility.report("Search, notes_for_user", options)
 
@@ -97,9 +97,18 @@ defmodule LookupPhoenix.Search do
 
         tag = options["tag"]
 
-        query = Ecto.Query.from note in Note,
-          where: note.user_id == ^user.id and note.public == true,
-          order_by: [desc: note.inserted_at]
+        IO.puts "NOTES FOR CHANNEL, YAY!!"
+
+        if User.get_preference(user, "sort_by") == "idx" do
+            query = Ecto.Query.from note in Note,
+               where: note.user_id == ^user.id and note.public == true,
+               order_by: [asc: note.idx]
+        else
+            query = Ecto.Query.from note in Note,
+               where: note.user_id == ^user.id and note.public == true,
+               order_by: [desc: note.inserted_at]
+        end
+
 
         notes = Repo.all(query)
         original_note_count = length(notes)
