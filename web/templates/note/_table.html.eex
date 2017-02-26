@@ -15,7 +15,9 @@
 <%= for note <- @notes do %>
     <tr>
 
-      <td class="hidden-xs" style="max-width:2em"> <%= note.index + 1 %> </td>
+      <!-- <td class="hidden-xs" style="max-width:2em"> <%= note.index + 1 %> </td> -->
+
+      <td class="hidden-xs" style="max-width:2em"> <%= if note.idx > -1 do note.idx end %> </td>
 
       <td style="width-35%"> <%= link note.title, to: note_path(@conn, :show, note, index: note.index,
          id_string: @id_string), class: "" %> </td>

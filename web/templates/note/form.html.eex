@@ -44,16 +44,21 @@ input[type=checkbox]
       <%= text_input f, :tag_string, class: "form-control", style: "width: 65.5%;", id: 'tags', placeholder: 'separate tags by commas'  %>
       <%= error_tag f, :tag_string %>
 
+      <div class="form-check form-inline small hidden-xs" style="display:inline; margin-left:20px;">
+      <%= label f, :idx, class: "control-label-inline" %>
+         <%= text_input f, :idx, class: "form-control", style: "width: 50px", id: 'idx', placeholder: 'separate tags by commas'  %>
+       <%= error_tag f, :idx %>
+       </div>
 
-   <div class="form-check form-inline small hidden-xs" style="display:inline; margin-left:20px;">
-     <label class="form-check-label-inline"> Public &nbsp;
-       <%= checkbox f, :public, class: "checkbox", value: @note.public %>
-     </label>
-   </div>
+      <div class="form-check form-inline small hidden-xs" style="display:inline; margin-left:20px;">
+         <label class="form-check-label-inline"> Public &nbsp;
+           <%= checkbox f, :public, class: "checkbox", value: @note.public %>
+         </label>
+      </div>
+
+  </div>
 
 
-
-   </div>
 
    <input type="hidden" name="index" value= <%=@index %> >
    <input type="hidden" name="id_string" value=<%= @id_string %> >

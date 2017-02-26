@@ -23,21 +23,40 @@ defmodule LookupPhoenix.Search do
 
     def notes_for_user(user, options) do
 
+       IO.puts "NOTES FOR USER, YAY!!"
+
        if Enum.member?(Map.keys(options), "random") do
          IO.puts "Search, notes_for_user, key random exists"
        else
          IO.puts "Search, notes_for_user, key random does NOT exist"
-         options = Map.merge(options, %{random: true})
-       end
+         if User.get_preference(user, "sort_by") == "idx" do
+           options = Map.merge(options, %{random: false})
+         else
+           options = Map.merge(options, %{random: false})
+         end
+        end
 
        Utility.report("Search, notes_for_user", options)
 
        [access, channel_name, user_id] = User.decode_channel(user)
        tag = options["tag"]
 
-       query = Ecto.Query.from note in Note,
-         where: note.user_id == ^user_id,
-         order_by: [desc: note.inserted_at]
+       cond do
+         User.get_preference(user, "sort_by") == "idx" ->
+            IO.puts "SORT BY IDX"
+            query = Ecto.Query.from note in Note,
+                    where: note.user_id == ^user_id,
+                    order_by: [asc: note.idx]
+         true ->
+           IO.puts "SORT BY CREATION DATE"
+           query = Ecto.Query.from note in Note,
+                    where: note.user_id == ^user_id,
+                    order_by: [desc: note.inserted_at]
+
+
+       end
+
+
 
        case channel_name do
          "all" -> query2 = query

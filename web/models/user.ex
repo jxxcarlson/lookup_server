@@ -169,9 +169,17 @@ defmodule LookupPhoenix.User do
       Repo.update(changeset)
   end
 
-  def update_preferences(user,params) do
-       changeset = User.preferences_changeset(user, params)
+  def update_preferences(user,prefs) do
+       changeset = User.preferences_changeset(user, %{settings: prefs})
         Repo.update(changeset)
+  end
+
+  def get_preference(user, pref) do
+    cond do
+      user.preferences == nil -> ""
+      !Enum.member?(Map.keys(user.preferences), pref) -> ""
+      true -> user.preferences[pref]
+    end
   end
 
   def initialize_metadata(user) do
