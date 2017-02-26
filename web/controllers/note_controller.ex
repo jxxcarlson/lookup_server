@@ -251,7 +251,7 @@ defmodule LookupPhoenix.NoteController do
     index = conn.params["index"]
     id_string = conn.params["id_string"]
     params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
-    params = Map.merge(params, random: "no")
+    params = Map.merge(params, %{random: "no"})
 
     case Repo.update(changeset) do
       {:ok, note} ->
