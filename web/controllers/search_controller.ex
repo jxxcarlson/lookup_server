@@ -78,7 +78,13 @@ defmodule LookupPhoenix.SearchController do
             User.update_channel(user,channel)
           end
 
+          Utility.report("CURRENT USER", current_user)
+
           notes = Search.tag_search(queryList, conn)
+          if current_user == nil || user_from_cookies != current_user do
+            notes = Enum.filter(notes, fn(x) -> x.public == true end)
+          end
+
           noteCount = length(notes)
           Note.memorize_notes(notes, user.id)
 
