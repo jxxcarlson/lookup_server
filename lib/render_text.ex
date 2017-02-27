@@ -79,6 +79,7 @@ defmodule RenderText do
     def apply_markdown(text) do
       text
       |> padString
+      |> formatVerbatim
       |> formatCode
       |> formatInlineCode
       |> padString
@@ -91,11 +92,12 @@ defmodule RenderText do
       |> formatItems
       |> formatAnswer
       |> highlight
-      |> formatStrike
       |> formatXREF
       |> formatHeading1
       |> formatHeading2
       |> formatHeading3
+
+      #|> formatStrike
 
     end
 
@@ -245,7 +247,7 @@ defmodule RenderText do
       Regex.replace(~r/\`(.*)\`/U, text, "<tt style='color:darkred; font-weight:400'>\\1</tt>")
     end
 
-    def formatCode(text) do
+    def formatVerbatim(text) do
       Regex.replace(~r/----(?:\r\n|[\r\n])(.*)(?:\r\n|[\r\n])----/msr, text, "<pre style='margin-bottom:-1.2em;;'>\\1</pre>")
     end
 
@@ -269,6 +271,10 @@ defmodule RenderText do
 
     def formatChemBlock(text) do
       Regex.replace(~r/chem::\[(.*)\]/U, text, "$$\\ce{\\1}$$")
+    end
+
+    def formatCode(text) do
+      Regex.replace(~r/\[code\]\n--\n(.*)\n--/mU, text, "<pre><code>\\n#\\1\\n</code></pre>")
     end
 
     def formatAnswer(text) do
@@ -297,6 +303,11 @@ defmodule RenderText do
                       <script type="text/javascript" async
                               src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
                    </script>
+
+                   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+                   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+                   <script>hljs.initHighlightingOnLoad();</script>
+
 
 """
 

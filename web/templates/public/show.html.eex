@@ -2,12 +2,12 @@
 
 <style>
 
-    .answer_head{ color: blue;}
+        .answer_head{ color: blue;}
 
-    .hide_answer{ color: blue; display:none }
-    .show_answer{color: blue; display:inline}
+        .hide_answer{ color: blue; display:none }
+        .show_answer{color: blue; display:inline}
 
-    .navarrow { float:right; font-weight:bold;}
+        .navarrow { float:right; font-weight:bold;}
 
 </style>
 

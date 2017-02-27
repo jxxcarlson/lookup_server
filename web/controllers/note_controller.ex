@@ -68,7 +68,7 @@ defmodule LookupPhoenix.NoteController do
           if number_of_notes_remembered > 0 do
             IO.puts "BRANCH 3"; note_record = Search.getDocumentsFromList(id_list, options);
           else
-            IO.puts "SEARCH NOTE FOR USER with options, random_display = " <> options["random_display"] <> " -- BRANCH 4"
+            IO.puts "SEARCH NOTE FOR USER with options, random_display = "#  <> options["random_display"] <> " -- BRANCH 4"
             note_record = Search.notes_for_user(user, %{"mode" => "all",
                       "sort_by" => "inserted_at", "direction" => "desc",
                       random: options["random_display"]});
