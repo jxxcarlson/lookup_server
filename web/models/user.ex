@@ -188,12 +188,15 @@ defmodule LookupPhoenix.User do
 
   def initialize_metadata(user) do
      IO.puts "1. initialize_metadata"
-     # params = %{"tags" => [], "read_only" => false, "admin" => false, "number_of_searches"  => 0}
-     params = %{"tags" => [], "public_tags" => [], "read_only" => false, "admin" => false,
-        "number_of_searches"  => 0, "search_filter" => " ", "channel" => "#{user.username}.all"}
+     params = %{ "public" => false,  "blurb" => "-", "tags" => [], "public_tags" => [], "read_only" => false, "admin" => false,
+        "number_of_searches"  => 0, "search_filter" => "-", "channel" => "#{user.username}.all"}
      changeset = User.running_changeset(user, params)
-     Utility.report("changeset", changeset)
+     params2 = %{"preferences" => %{}}
+     changeset2 = User.preferences_changeset(user, params2)
+     Utility.report("XXXXXXXX: changeset", changeset)
+     Utility.report("YYYYYYYY: changeset", changeset2)
      Repo.update(changeset)
+     Repo.update(changeset2)
      IO.puts "2. initialize_metadata"
   end
 
@@ -268,5 +271,17 @@ defmodule LookupPhoenix.User do
   def set_all_public_tags do
     User |> Repo.all |> Enum.map(fn(user) -> set_public_tags(user) end)
   end
+
+  def fix_public(user) do
+    if user.public == nil do
+       params = %{"public" => false}
+       changeset = User.running_changeset(user, params)
+       Repo.update(changeset)
+    end
+   end
+
+   # def apply_to_users(ff) do
+   #  User |> Repo.all |> Enum.map(fn(user) -> ff(user) end)
+   # end
 
   end

@@ -19,6 +19,7 @@ defmodule RenderText do
       end
       text
       |> String.trim
+      # |> formatVerbatim
       |> padString
       |> linkify(options)
       |> apply_markdown
@@ -274,6 +275,10 @@ defmodule RenderText do
        Regex.replace(~r/answer:\[(.*)\]/U, text, "<p><span id=\"QQ\" class=\"answer_head\">Answer:</span> <span id=\"QQA\" class=\"hide_answer\">\\1</span></p>")
     end
 
+    def formatVerbatim(text) do
+      Regex.replace(~r/verbatim:\[(.*)\]/U, text, "<pre>\\1</pre>")
+    end
+
     def scrubTags(text) do
       Regex.replace(~r/\s:.*\s/, " " <> text <> " ",    " ")
     end
@@ -334,7 +339,7 @@ defmodule RenderText do
    # https://lookupnote.herokuapp.com/notes/439?index=0&previous=439&next=439&id_list=439
 
    def formatXREF(text) do
-     Regex.replace(~r/xref::([0-9]*)\[(.*)\]/, text, "<a href=\"https://lookupnote.herokuapp.com/notes/\\1?index=0&previous=\\1&next=\\1&id_string=\\1\">\\2</a>")
+     Regex.replace(~r/xref::([0-9]*)\[(.*)\]/U, text, "<a href=\"https://lookupnote.herokuapp.com/notes/\\1?index=0&previous=\\1&next=\\1&id_string=\\1\">\\2</a>")
    end
 
    def collate_one(id, str) do
