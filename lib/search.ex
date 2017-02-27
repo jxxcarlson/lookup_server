@@ -347,7 +347,7 @@ defmodule LookupPhoenix.Search do
     def random_notes_for_user(p, user, truncate_at, tag) do
       [access, _channel_name, user_id]= User.decode_channel(user)
       random_ids(p)
-      |> Note.getDocumentsFromList
+      |> Note.getDocumentsFromList(%{random_display: true})
       |> Enum.map(fn(note_record) -> note_record.notes end)
       |> filter_records_for_user(user_id)
       |> filter_public(access)
@@ -364,7 +364,7 @@ defmodule LookupPhoenix.Search do
           |> RandomList.mcut
 
           new_id_list = id_list
-          |> Note.getDocumentsFromList
+          |> Note.getDocumentsFromList(%{random_display: true})
           |> Enum.map(fn(note_record) -> note_record.notes end)
           |> filter_records_for_user(user_id)
           Note.memorize_list(new_id_list, user_id)
@@ -490,9 +490,11 @@ defmodule LookupPhoenix.Search do
 
     end
 
-    def getDocumentsFromList(id_list) do
+    def getDocumentsFromList(id_list, options \\ %{}) do
       notes = id_list |> Enum.map(fn(id) -> Repo.get!(Note, id) end)
-      |> filter_random(Constant.random_note_threshold())
+      if options.random_display == true do
+        notes = notes |> filter_random(Constant.random_note_threshold())
+      end
       %{notes: notes, note_count: length(notes), original_note_count: length(id_list)}
     end
 

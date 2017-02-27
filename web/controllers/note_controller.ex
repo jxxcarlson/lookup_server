@@ -32,12 +32,16 @@ defmodule LookupPhoenix.NoteController do
       user = conn.assigns.current_user
       qsMap = Utility.qs2map(conn.query_string)
 
+       Utility.report("1. INDEX: qsMap", qsMap)
+
       cond do
         params["random"] == nil -> random_display = true
-        params["random"] == "false" -> random_display = false
-        params["random"] == "true" -> random_display = true
+        params["random"] == "no" -> random_display = false
+        params["random"] == "yes" -> random_display = true
         true -> random_display = true
       end
+
+      Utility.report("1. options, random_display", random_display)
 
       channel = Utility.qs2map(conn.query_string)["set_channel"]
       if channel != nil and channel != user.channel do
@@ -56,19 +60,20 @@ defmodule LookupPhoenix.NoteController do
   def get_note_record(mode, id_list, user, options) do
     IO.puts "GET NOTE FOR RECORD"
     case [mode, length(id_list)] do
-       ["all", _] -> note_record = Search.notes_for_user(user, %{"mode" => "all",
+       ["all", _] -> IO.puts "BRANCH 1"; note_record = Search.notes_for_user(user, %{"mode" => "all",
           "sort_by" => "inserted_at", "direction" => "desc"});
-       ["public", _] -> note_record = Search.notes_for_user(user, %{"mode" => "public",
-          "sort_by" => "inserted_at", "direction" => "desc"})
+       ["public", _] ->  IO.puts "BRANCH 2"; note_record = Search.notes_for_user(user, %{"mode" => "public",
+          "sort_by" => "inserted_at", "direction" => "desc"});
        [_, number_of_notes_remembered] ->
           if number_of_notes_remembered > 0 do
-            note_record = Search.getDocumentsFromList(id_list)
+            IO.puts "BRANCH 3"; note_record = Search.getDocumentsFromList(id_list, options);
           else
+            IO.puts "SEARCH NOTE FOR USER with options, random_display = " <> options["random_display"] <> " -- BRANCH 4"
             note_record = Search.notes_for_user(user, %{"mode" => "all",
                       "sort_by" => "inserted_at", "direction" => "desc",
-                      random: options["random"]});
+                      random: options["random_display"]});
           end
-       _ -> note_record = Search.getDocumentsFromList(id_list)
+       _ ->  IO.puts "BRANCH 5"; note_record = Search.getDocumentsFromList(id_list, options);
 
      end
   end
@@ -80,8 +85,8 @@ defmodule LookupPhoenix.NoteController do
 
      options = %{mode: "index", process: "none"}
 
-     Utility.report("INDEX: qsMap", qsMap)
-     Utility.report("options, random_display", random_display )
+     Utility.report("2. INDEX: qsMap", qsMap)
+     Utility.report("2. options, random_display", random_display )
 
      if note_record.original_note_count > note_record.note_count do
        noteCountString = "#{note_record.note_count} Random notes from #{note_record.original_note_count}"
@@ -320,7 +325,7 @@ defmodule LookupPhoenix.NoteController do
 
        conn
        |> put_flash(:info, "Note deleted successfully.")
-       |> redirect(to: note_path(conn, :index))
+       |> redirect(to: note_path(conn, :index, random: "no"))
     end
   end
 
