@@ -45,6 +45,8 @@ defmodule LookupPhoenix.Router do
     get "/update_tags", UserController, :update_tags
     post "/update_channel", UserController, :update_channel
     post "/toggle_lock", UserController, :toggle_lock
+    get "/preferences", UserController, :show_preferences
+    post "/preferences", UserController, :update_preferences
 
 
     get "/tips", PageController, :tips

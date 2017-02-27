@@ -54,6 +54,9 @@ defmodule LookupPhoenix.SearchController do
           current_user = conn.assigns.current_user
           user_from_cookies = User.find_by_username(cookies(conn, "site"))
           user = user_from_cookies || current_user
+
+
+
           if user == nil do
              real_access = "public"
              user = User.find_by_username("demo")

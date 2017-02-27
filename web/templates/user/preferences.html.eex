@@ -1,0 +1,39 @@
+<h3>Preferences for <%= @user.username %></h3>
+
+<%= form_for @changeset, user_path(@conn, :show_preferences), fn f -> %>
+
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label f, :blurb, class: "control-label" %>
+    <%= textarea f, :blurb, class: "form-control",  value: @current_user.blurb, id: 'blurb',
+        style: "width:60%;height:150px;"%>
+    <%= error_tag f, :blurb %>
+  </div>
+
+
+
+  <div class="form-check form-inline hidden-xs" style="display:inline; margin-left:0;">
+     <label class="form-check-label-inline"> Public &nbsp;
+       <%= checkbox f, :public, class: "checkbox", value: @current_user.public %>
+     </label>
+  </div>
+
+  <br><br>
+
+   <div class="form-group" style="display:inline">
+
+        <span><%= submit "Save", class: "btn btn-primary", style: "width: 40%;", id: 'save' %> </span>
+
+    </div>
+
+  </div>
+
+
+
+
+<% end %>

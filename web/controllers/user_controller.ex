@@ -175,6 +175,32 @@ defmodule LookupPhoenix.UserController do
 
   end
 
+  def show_preferences(conn, params) do
+    Utility.report("XXX: show_preferences, params", params)
+    changeset = User.running_changeset(%User{}, params)
+    render conn, "preferences.html", changeset: changeset, user: conn.assigns.current_user
+  end
+
+  def update_preferences(conn, %{"user" => user_params}) do
+    # changeset = User.running_changeset(%User{}, user_params)
+    IO.puts "USER (u_p) = #{conn.assigns.current_user.username}"
+    changeset = User.running_changeset(conn.assigns.current_user, user_params)
+    Utility.report("PREFERENCES CHANGESET", changeset)
+
+    case Repo.update(changeset) do
+      {:ok, user} ->
+        IO.puts "User, update_preferences, :ok"
+
+        conn
+        |> LookupPhoenix.Auth.login(user)
+        |> put_flash(:info, "Your preferences have been updated")
+        |> redirect(to: "/sites")
+      {:error, changeset} ->
+        IO.puts "ERROR in createUser"
+        render(conn, "preferences .html", changeset: changeset)
+    end
+  end
+
   defp authenticate(conn, _opts) do
     if conn.assigns.current_user do
       conn

@@ -13,6 +13,7 @@
          <li class="small hidden-xs" style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Users", to: user_path(@conn, :index), id: 'users' %> </li>
      <% end %>
 
+     <li style="font-size:1.25em; color:darkred; float:left;"><%= link :Prefs, to: "/preferences" %></li>
      <li style="font-size:1.25em; color:darkred; float:left;"><%= link :Sites, to: "/sites" %></li>
      <li class="link1 small hidden-xs"><span style="font-weight:bold; color:black"><%= link @current_user.username, to: "/notes?set_channel=#{@current_user.username}.all" %></span>: <%= LookupPhoenix.Search.count_for_user(@current_user.id) %> Notes</li>
      <li class="link1">
