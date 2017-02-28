@@ -19,7 +19,7 @@ defmodule RenderText do
       end
       text
       |> String.trim
-      # |> formatVerbatim
+      |> formatCode
       |> padString
       |> linkify(options)
       |> apply_markdown
@@ -79,8 +79,8 @@ defmodule RenderText do
     def apply_markdown(text) do
       text
       |> padString
-      |> formatVerbatim
       |> formatCode
+      |> formatVerbatim
       |> formatInlineCode
       |> padString
       |> formatBold
@@ -274,7 +274,9 @@ defmodule RenderText do
     end
 
     def formatCode(text) do
-      Regex.replace(~r/\[code\]\n--\n(.*)\n--/mU, text, "<pre><code>\\n#\\1\\n</code></pre>")
+      out = Regex.replace(~r/\[code\][\r\n]--[\r\n](.*)[\r\n]--[\r\n]/msU, text, "<pre><code>\\n#\\1\\n</code></pre>")
+      IO.puts "OUTPUT OF FORMAT CODE: #{out}"
+      out
     end
 
     def formatAnswer(text) do
