@@ -32,20 +32,27 @@ defmodule LookupPhoenix.Utility do
     |> Enum.reduce(%{}, fn(item, acc) -> Map.merge(acc, %{List.first(item) => List.last(item)}) end )
   end
 
-  def str2map(str) do
-    parts = String.split(str,"=")
+  def str2map(str, sep \\ "=") do
+    parts = String.split(str,sep)
     if length(parts) == 2 do
       [key, value] = parts
-      %{key => value}
+      %{key => String.trim(value)}
     else
       %{"foo" => "bar"}
     end
 
   end
 
+  # "foo: bar, baz: 1" => %{"foo" => "bar", "baz" => "1"}
+  def str22map(str, sep \\ "=") do
+    map = %{}
+    String.split(str, ",") |> Enum.map(fn(item) -> String.trim(item) end)
+    |> Enum.reduce(map, fn(str, acc) -> Map.merge(acc, str2map(str, sep)) end)
+  end
+
   def qs2map(string) do
     string
-    |> String.split( "&")
+    |> String.split( ",")
     |> Enum.reduce(%{}, fn(item, acc) -> Map.merge(acc, str2map(item)) end)
   end
 
@@ -80,6 +87,14 @@ defmodule LookupPhoenix.Utility do
 
   def random_element(list) do
     list |> Enum.shuffle |> hd
+  end
+
+
+
+  def map2string(map) do
+    keys = Map.keys(map)
+    Enum.reduce(keys, [], fn(key, acc) -> acc ++ [key <> ": " <> map[key]] end)
+    |> Enum.join(", ")
   end
 
 

@@ -178,7 +178,8 @@ defmodule LookupPhoenix.UserController do
   def show_preferences(conn, params) do
     Utility.report("XXX: show_preferences, params", params)
     changeset = User.running_changeset(%User{}, params)
-    render conn, "preferences.html", changeset: changeset, user: conn.assigns.current_user
+    preferences_changeset = User.preferences_changeset(%User{}, params)
+    render conn, "preferences.html", changeset: changeset, preferences_changeset: preferences_changeset, user: conn.assigns.current_user
   end
 
   def update_preferences(conn, %{"user" => user_params}) do

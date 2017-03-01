@@ -52,10 +52,15 @@ defmodule LookupPhoenix.SearchController do
 
           query = String.trim(query)
           current_user = conn.assigns.current_user
-          user_from_cookies = User.find_by_username(cookies(conn, "site"))
+
+          if is_nil(cookies(conn, "site")) do
+            user_from_cookies = nil
+          else
+            user_from_cookies = User.find_by_username(cookies(conn, "site"))
+          end
+
+          user_from_cookies =
           user = user_from_cookies || current_user
-
-
 
           if user == nil do
              real_access = "public"
