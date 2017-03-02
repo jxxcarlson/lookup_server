@@ -252,7 +252,7 @@ defmodule LookupPhoenix.NoteController do
 
   end
 
-  def doUpdate(note, changeset, conn) do
+  def doUpdate(note, changeset, save_option, conn) do
 
     index = conn.params["index"]
     id_string = conn.params["id_string"]
@@ -261,20 +261,21 @@ defmodule LookupPhoenix.NoteController do
 
     case Repo.update(changeset) do
       {:ok, note} ->
-        conn
-        |> put_flash(:info, "Note updated successfully.")
-        |> redirect(to: note_path(conn, :show, note, params))
-        Utility.report("doUpdate, params", params)
-        # |> redirect(to: note_path(conn, :index))
+        # |> put_flash(:info, "Note updated successfully.")
+        if save_option == "exit" do
+          conn |> redirect(to: note_path(conn, :show, note, params))
+        else
+          conn |> redirect(to: note_path(conn, :edit, note, params))
+        end
       {:error, changeset} ->
         render(conn, "edit.html", note: note, changeset: changeset)
     end
   end
 
-  def update(conn, %{"id" => id, "note" => note_params}) do
-
+  def update(conn, %{"id" => id, "note" => note_params, "save_option" => save_option}) do
 
     Utility.report("note_params", note_params)
+    Utility.report("save_option", save_option)
 
     note = Repo.get!(Note, id)
     user = conn.assigns.current_user
@@ -295,7 +296,7 @@ defmodule LookupPhoenix.NoteController do
 
     if ((user.read_only == false) and (note.user_id ==  user.id)) do
       IO.puts "DO UPDATE"
-      doUpdate(note, changeset, conn)
+      doUpdate(note, changeset, save_option, conn)
     else
       IO.puts "READ ONLY MESSAGE"
       read_only_message(conn)

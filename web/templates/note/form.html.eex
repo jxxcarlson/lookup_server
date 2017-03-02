@@ -67,9 +67,11 @@ input[type=checkbox]
     <%= if @locked do %>
       <%= link "    Back!!", to: note_path(@conn, :index), id: 'notes' %>
     <% else %>
-      <span><%= submit "Save", class: "btn btn-primary", style: "width: 40%;", id: 'save' %>
+      <span><%= submit "Save & Exit", name: "save_option", value: "exit", class: "btn btn-primary", style: "width: 31%;", id: 'save1' %>
 
-      <%= link "Back", to: note_path(@conn, :index), id: 'notes', class: "btn btn-primary", style: "width: 30%;margin-right:2em;" %>
+      <%= submit "Save", name: "save_option", value: "continue", class: "btn btn-primary", style: "width: 19%;", id: 'save1' %>
+
+      <%= link "Back", to: note_path(@conn, :index), id: 'notes', class: "btn btn-primary", style: "width: 19%;margin-right:2em;" %>
 
       Words: <%= @word_count %>
       <span>
