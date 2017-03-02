@@ -36,6 +36,7 @@ input[type=checkbox]
   <div class="form-group">
     <%= label f, :content, class: "control-label" %>
     <%= textarea f, :content, class: "form-control", style: "height:200px; overflow: scroll", id: 'content' %>
+
     <%= error_tag f, :content %>
   </div>
 
