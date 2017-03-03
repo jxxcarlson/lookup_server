@@ -85,6 +85,7 @@ defmodule RenderText do
       |> padString
       |> formatBold
       |> formatItalic
+      |> indexWord
       |> formatMDash
       |> formatNDash
       |> formatRed
@@ -259,6 +260,10 @@ defmodule RenderText do
 
     def formatItalic(text) do
        Regex.replace(~r/(\s)_(.*)_(\s)/U, text, "\\1<i>\\2</i>\\3")
+    end
+
+    def indexWord(text) do
+      Regex.replace(~r/index:\[(.*)\]/U, text, "<span class=\"index_word\">\\1</span>")
     end
 
     def formatRed(text) do
