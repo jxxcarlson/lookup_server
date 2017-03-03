@@ -252,7 +252,7 @@ defmodule LookupPhoenix.NoteController do
 
   end
 
-  def doUpdate(note, changeset, save_option, conn) do
+  def doUpdate(note, changeset, save_option, conn, new_params) do
 
     index = conn.params["index"]
     id_string = conn.params["id_string"]
@@ -265,8 +265,19 @@ defmodule LookupPhoenix.NoteController do
         if save_option == "exit" do
           conn |> redirect(to: note_path(conn, :show, note, params))
         else
-          conn |> redirect(to: note_path(conn, :edit, note, params))
-          conn |> render "edit.html", %{"id" => note.id}
+          # conn |> redirect(to: note_path(conn, :edit, note, params))
+          locked = conn.assigns.current_user.read_only
+                  word_count = RenderText.word_count(note.content)
+                  tags = Note.tags2string(note)
+
+          params1 = %{note: note, changeset: changeset,
+                              word_count: word_count, locked: locked,
+                              conn: conn, tags: tags, note: note}
+                  simulated_query_string = "index=0&id_string=#{note.id}"
+                  params2 = Note.decode_query_string(simulated_query_string)
+                  params = Map.merge(params1, params2)
+                  params = Map.merge(params, new_params)
+          conn |> render "edit.html", params
         end
       {:error, changeset} ->
         render(conn, "edit.html", note: note, changeset: changeset)
@@ -297,7 +308,7 @@ defmodule LookupPhoenix.NoteController do
 
     if ((user.read_only == false) and (note.user_id ==  user.id)) do
       IO.puts "DO UPDATE"
-      doUpdate(note, changeset, save_option, conn)
+      doUpdate(note, changeset, save_option, conn, new_params)
     else
       IO.puts "READ ONLY MESSAGE"
       read_only_message(conn)

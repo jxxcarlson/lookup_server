@@ -139,10 +139,12 @@ defmodule LookupPhoenix.Note do
    def decode_query_string(q_string) do
 
 
+      IO.puts "QUERY STRING: #{q_string}"
       # Example: q_string=index=4&id_list=35%2C511%2C142%2C525%2C522%2C531%2C233
       query_data = q_string|> Utility.parse_query_string
 
       # Get inputs
+      IO.puts "QUERY DATA[INDEX] = " <> query_data["index"]
       index = query_data["index"]; {index, _} = Integer.parse index
       id_string = query_data["id_string"] |> String.replace("%2C", ",")
       id_list = String.split(id_string, ",")
