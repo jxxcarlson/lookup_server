@@ -92,9 +92,13 @@ defmodule LookupPhoenix.Utility do
 
 
   def map2string(map) do
-    keys = Map.keys(map)
-    Enum.reduce(keys, [], fn(key, acc) -> acc ++ [key <> ": " <> map[key]] end)
-    |> Enum.join(", ")
+    if is_nil(map) do
+      ""
+    else
+      keys = Map.keys(map)
+          Enum.reduce(keys, [], fn(key, acc) -> acc ++ [key <> ": " <> map[key]] end)
+          |> Enum.join(", ")
+    end
   end
 
 
