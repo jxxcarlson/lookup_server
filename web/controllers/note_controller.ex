@@ -266,6 +266,7 @@ defmodule LookupPhoenix.NoteController do
           conn |> redirect(to: note_path(conn, :show, note, params))
         else
           conn |> redirect(to: note_path(conn, :edit, note, params))
+          conn |> render "edit.html", %{"id" => note.id}
         end
       {:error, changeset} ->
         render(conn, "edit.html", note: note, changeset: changeset)
