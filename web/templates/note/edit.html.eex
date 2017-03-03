@@ -44,12 +44,9 @@
                    <% end %>
 
 
-<%= render "expanded_live_form.html", changeset: @changeset,
+<%= render "form.html", changeset: @changeset,
        action: note_path(@conn, :update, @note),
        locked: @locked, word_count: @word_count, conn: @conn, index: @index, id_string: @id_string, note: @note  %>
-
-
-
 
 
 
