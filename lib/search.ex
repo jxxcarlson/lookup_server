@@ -21,44 +21,42 @@ defmodule LookupPhoenix.Search do
       length Repo.all(query2)
     end
 
-    def notes_for_user(user, options) do
+############### notes_for_user #############################
 
-       IO.puts "NOTES FOR USER, YAY!!"
-
+    def ensure_random_is_set(user, user_id, options) do
        if Enum.member?(Map.keys(options), "random") do
          IO.puts "Search, notes_for_user, key random exists"
        else
          IO.puts "Search, notes_for_user, key random does NOT exist"
+         # Do not randomize notes if there is a defined sort order preference
          if User.get_preference(user, "sort_by") == "idx" do
            options = Map.merge(options, %{random: false})
          else
+           # This weird? WTF?
            options = Map.merge(options, %{random: false})
          end
        end
+       options
+    end
 
-       Utility.report("Search, notes_for_user", options)
+    def initial_query(user, user_id) do
+      cond do
+               User.get_preference(user, "sort_by") == "idx" ->
+                  IO.puts "SORT BY IDX"
+                  query = Ecto.Query.from note in Note,
+                          where: note.user_id == ^user_id,
+                          order_by: [asc: note.idx]
+               true ->
+                 IO.puts "SORT BY CREATION DATE"
+                 query = Ecto.Query.from note in Note,
+                          where: note.user_id == ^user_id,
+                          order_by: [desc: note.inserted_at]
+             end
+    end
 
-       [access, channel_name, user_id] = User.decode_channel(user)
-       tag = options["tag"]
+    def second_query(query, channel_name) do
 
-       cond do
-         User.get_preference(user, "sort_by") == "idx" ->
-            IO.puts "SORT BY IDX"
-            query = Ecto.Query.from note in Note,
-                    where: note.user_id == ^user_id,
-                    order_by: [asc: note.idx]
-         true ->
-           IO.puts "SORT BY CREATION DATE"
-           query = Ecto.Query.from note in Note,
-                    where: note.user_id == ^user_id,
-                    order_by: [desc: note.inserted_at]
-
-
-       end
-
-
-
-       case channel_name do
+        case channel_name do
          "all" -> query2 = query
          "public" -> query2 = query
          "nonpublic" -> query2 = query
@@ -70,21 +68,38 @@ defmodule LookupPhoenix.Search do
                where: ilike(note.tag_string, ^"%#{channel_name}%")
        end
 
-       notes = Repo.all(query2) |> filter_public(access)
-       original_note_count = length(notes)
+    end
+
+    def filter_notes(notes, options) do
        cond do
          options.random == true ->
             filtered_notes = notes |> filter_random(Constant.random_note_threshold())
          options.random == false ->
             filtered_notes = notes
           true ->
-            filter_notes = notes
+            filtered_notes = notes
        end
+    end
+
+
+    def notes_for_user(user, options) do
+       IO.puts "NOTES FOR USER, YAY!!"
+       [access, channel_name, user_id] = User.decode_channel(user)
+       options = ensure_random_is_set(user, user_id, options)
+       Utility.report("Search, notes_for_user", options)
+       tag = options["tag"]
+
+       query = initial_query(user, user_id) |> second_query(channel_name)
+       notes = Repo.all(query) |> filter_public(access)
+       original_note_count = length(notes)
+       # Apply random filter if the set of found note is too large, unless countermanded
+       filtered_notes = filter_notes(notes, options)
 
        Note.memorize_notes(filtered_notes, user.id)
        %{notes: filtered_notes, note_count: length(filtered_notes), original_note_count: original_note_count}
-
     end
+
+##################################
 
     def notes_for_channel(channel, options) do
 
