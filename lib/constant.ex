@@ -12,4 +12,8 @@ defmodule LookupPhoenix.Constant do
     23
   end
 
+  def home_site do
+    "http://www.lookupnote.io"
+  end
+
 end
