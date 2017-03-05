@@ -72,9 +72,10 @@ defmodule LookupPhoenix.Tag do
       |> Enum.member?(tag)
     end
 
-    def get_all_user_tags(user) do
+    # scope = :all | :public
+    def get_all_user_tags(scope, user) do
       IO.puts "GET TAGS HERE!"
-      notes = Search.all_notes_for_user(user)
+      notes = Search.all_notes_for_user(scope, user)
       IO.puts "Notes found: #{length(notes)}"
       notes |> Enum.reduce([], fn(note, list) -> merge_tags_from_note(note, list) end)
       # |> Enum.filter(fn(x) -> !ignorable_tag(x) end)
@@ -82,7 +83,7 @@ defmodule LookupPhoenix.Tag do
 
     def get_all_public_user_tags(user) do
       IO.puts "GET TAGS HERE!"
-      notes = Search.all_public_notes_for_user(user)
+      notes = Search.all_notes_for_user(:public, user)
       IO.puts "Notes found: #{length(notes)}"
       notes |> Enum.reduce([], fn(note, list) -> merge_tags_from_note(note, list) end)
       # |> Enum.filter(fn(x) -> !ignorable_tag(x) end)
@@ -137,15 +138,12 @@ defmodule LookupPhoenix.Tag do
     end
 
     def update_frequencies_for_user(freqs, user) do
-      Search.all_notes_for_user(user)
+      Search.all_notes_for_user(:all, user)
       |> Enum.reduce(freqs, fn(note, freqs) -> update_frequencies_for_note(note, freqs) end)
     end
 
-    def tag_frequencies(user, scope) do
-      case scope do
-        "public" -> tags_to_process = Tag.get_all_public_user_tags(user)
-        _ -> tags_to_process = Tag.get_all_user_tags(user)
-      end
+    def tag_frequencies(scope, user) do
+      tags_to_process = Tag.all_user_tags(scope, user)
 
       IO.puts "TAGS TO PROCESS: #{length(tags_to_process)}"
 
@@ -156,9 +154,9 @@ defmodule LookupPhoenix.Tag do
       |> Utility.sort2list("desc")
     end
 
-    def tags_by_frequency(user, scope \\ "all") do
+    def tags_by_frequency(scope, user) do
       # tag_frequencies(user, scope) |> Utility.proj1_2list
-      tag_frequencies(user, scope) |> Enum.map( fn(pair) -> %{name: hd(pair), freq: hd(tl(pair))} end)
+      tag_frequencies(scope, user) |> Enum.map( fn(pair) -> %{name: hd(pair), freq: hd(tl(pair))} end)
     end
 
 

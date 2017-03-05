@@ -89,8 +89,6 @@ defmodule LookupPhoenix.Utility do
     list |> Enum.shuffle |> hd
   end
 
-
-
   def map2string(map) do
     if is_nil(map) do
       ""

@@ -169,17 +169,15 @@ defmodule LookupPhoenix.SearchController do
 
         case mode do
           "updated" ->
-             notes = Search.updated_before_date(hours_before, Timex.now, conn.assigns.current_user)
+             notes = Search.after_date(:updated, :desc, hours_before, Timex.now, conn.assigns.current_user)
              update_message = "Recently updated"
           "created" ->
-              notes = Search.created_before_date(hours_before, Timex.now, conn.assigns.current_user)
+              notes = Search.after_date(:created, :desc, hours_before, Timex.now, conn.assigns.current_user)
               update_message = "Recently created"
           "viewed" ->
-             notes = Search.viewed_before_date(hours_before, Timex.now, conn.assigns.current_user)
+             notes = Search.after_date(:viewed, :desc, hours_before, Timex.now, conn.assigns.current_user)
              update_message = "Recently viewed"
         end
-
-
 
         note_count = length(notes)
         Note.memorize_notes(notes, conn.assigns.current_user.id)
