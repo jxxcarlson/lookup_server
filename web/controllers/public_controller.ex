@@ -66,18 +66,15 @@ defmodule LookupPhoenix.PublicController do
       # match_token_array
   end
 
-  # def index(conn, %{"site" => site}) do
-  def index(conn, params) do
-    # Utility.report('CONN . ASSIGNS', conn.request_path)
+  def get_channel(site_string) do
+    # Define site and channel, with default channel = "public"
+    # site_string = params["site"]
+    if !String.contains?(site_string, ".") do
+      site_string = site_string <> ".public"
+    end
+    [site, channel_name] = String.split(site_string, ".")
+    channel = "#{site}.#{channel_name}"
 
-    IO.puts "PUBLIC . INDEX"
-    Utility.report("params", params)
-    qsMap = Utility.qs2map(conn.query_string)
-
-    IO.puts "INDEX, conn.request_path = #{conn.request_path}"
-
-    site = params["site"]
-    channel = "#{site}.public"
     user = User.find_by_username(site)
 
     # Ensure that site, channel, user a well-defined
@@ -86,11 +83,24 @@ defmodule LookupPhoenix.PublicController do
       site = user.username
       channel = "#{site}.public"
     end
+    [site, channel_name, channel]
+  end
 
-    if conn.assigns.current_user != nil do
-      User.set_channel( conn.assigns.current_user, channel)
-      IO.puts "I HAVE SET YOUR CHANNEL TO #{channel}"
-    end
+  # def index(conn, %{"site" => site}) do
+  def index(conn, params) do
+
+    qsMap = Utility.qs2map(conn.query_string)
+
+    IO.puts "PUBLIC . INDEX"
+    Utility.report("params", params)
+    IO.puts "INDEX, conn.request_path = #{conn.request_path}"
+
+    [site, channel_name, channel] = get_channel(params["site"])
+
+    # if conn.assigns.current_user != nil do
+    #   User.set_channel( conn.assigns.current_user, channel)
+    #  IO.puts "I HAVE SET YOUR CHANNEL TO #{channel}"
+    # end
 
     if qsMap["random"] == "one" do
       note_record = Search.notes_for_channel(channel, %{})

@@ -307,7 +307,7 @@ defmodule LookupPhoenix.Note do
        Note
        |> Repo.all
        |> Enum.filter(fn(note) -> note.tag_string == nil end)
-       |> Enum.map(fn(note) -> Note.set_tag_string(note, "") end)
+       |> Enum.map(fn(note) -> Note.set_tag_string(note, "-") end)
     end
 
     def count_bad_tags do

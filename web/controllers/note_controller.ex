@@ -127,22 +127,25 @@ defmodule LookupPhoenix.NoteController do
 
   def get_tags(note_params, channel_name) do
 
-      tag_string = note_params["tag_string"]
+      # Normalize tag_string name and ensure that is non-nil and non-empty
+      tag_string = note_params["tag_string"] || ""
+      if is_nil(channel_name) do channel_name = "all" end
+      IO.puts "tag_string: [#{tag_string}]"
+      IO.puts "tag_string - nil?: #{is_nil(tag_string)}"
+      IO.puts "channel_name: #{channel_name}"
 
-      if !Enum.member?(["all", "public"], channel_name) do
-        tag_string = [tag_string, channel_name] |> Enum.join(", ")
+      cond  do
+        !Enum.member?(["all", "public"], channel_name) and tag_string != "" ->
+          tag_string = [tag_string, channel_name] |> Enum.join(", ")
+        !Enum.member?(["all", "public"], channel_name) and tag_string == ""  ->
+          tag_string = channel_name
+        tag_string == "" -> tag_string = "-"
+        tag_string != "" -> tag_string
       end
 
-      if tag_string == nil do
-        tag_string = ""
-      end
+      tags = Tag.str2tags(tag_string)
 
-      if tag_string == "" do
-        tags = []
-      else
-        tags = Tag.str2tags(tag_string)
-      end
-
+      Utility.report("XXX: tag info", [tag_string, tags])
       [tag_string, tags]
   end
 

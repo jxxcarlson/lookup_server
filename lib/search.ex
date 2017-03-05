@@ -40,19 +40,24 @@ defmodule LookupPhoenix.Search do
        %{notes: filtered_notes, note_count: length(filtered_notes), original_note_count: original_note_count}
     end
 
-    def notes_for_channel(channel, options) do
 
-        [channel_user, channel_name] = String.split(channel, ".")
-        user = User.find_by_username(channel_user)
-        if user == nil do
-          user = User.find_by_username("demo")
-          channel_name = "public"
-        end
+    defp set_channel(channel, options) do
+      [channel_user_name, channel_name] = String.split(channel, ".")
+      if channel_user_name == nil do
+        channel_user = User.find_by_username("demo")
+        channel_name = "public"
+      else
+        channel_user = User.find_by_username(channel_user_name)
+      end
 
-        tag = options["tag"]
+      # Let tag, if present, take precedence over chanel_name
+      tag = options["tag"]
+      channel_name = tag || channel_name
+      [channel_user, channel_user_name, channel_name]
+    end
 
-        IO.puts "NOTES FOR CHANNEL, YAY!!"
 
+    defp set_query(user, channel_name) do
         if User.get_preference(user, "sort_by") == "idx" do
             query = Ecto.Query.from note in Note,
                where: note.user_id == ^user.id and note.public == true,
@@ -63,13 +68,26 @@ defmodule LookupPhoenix.Search do
                order_by: [desc: note.inserted_at]
         end
 
+        if channel_name != "public" do
+          IO.puts "SELECTING NOTES IN CHANNEL"
+          query2 = from note in query, where: ilike(note.tag_string, ^"%#{channel_name}%")
+        else
+          IO.puts "IGNORING CHANNEL"
+          query2 = query
+        end
+    end
+
+    def notes_for_channel(channel, options) do
+
+        [channel_user, channel_user_name, channel_name] = set_channel(channel, options)
+        IO.puts "notes_for_channel: #{channel_user.username}"
+        query = set_query(channel_user, channel_name)
 
         notes = Repo.all(query)
         original_note_count = length(notes)
         filtered_notes = notes |> filter_random(Constant.random_note_threshold())
-        Note.memorize_notes(filtered_notes, user.id)
+        Note.memorize_notes(filtered_notes, channel_user.id)
         %{notes: filtered_notes, note_count: length(filtered_notes), original_note_count: original_note_count}
-
    end
 
     def all_notes_for_user(scope, user) do
@@ -409,17 +427,17 @@ defmodule LookupPhoenix.Search do
 
     defp filter_records_with_term(list, term) do
 
-
-      Utility.report("filter_records_with_term", [length(list),term])
+      Utility.report("XXX: filter_records_with_term", [length(list),term])
+      Enum.map(list, fn(x) -> IO.puts("#{x.id}, #{x.title}, ts: #{x.tag_string}")end )
       Enum.filter(list, fn(x) -> String.contains?(String.downcase(x.title), term) or String.contains?(x.tag_string, term) or String.contains?(String.downcase(x.content), term) end)
-      # Enum.filter(list, fn(x) -> String.contains?(String.downcase(x.title), term) end)
-
 
     end
 
 
     defp filter_records_with_term_list(list, term_list) do
-        Utility.report("filter_records_with_term_list", {list, term_list})
+
+        info = {Enum.map(list, fn(x) -> "#{x.id}: #{x.title}, #{x.tag_string}" end), term_list}
+        Utility.report("XX: filter_records_with_term_list", info)
 
       case {list, term_list} do
         {list,[]} -> list
