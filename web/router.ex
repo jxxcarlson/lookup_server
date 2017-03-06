@@ -40,7 +40,7 @@ defmodule LookupPhoenix.Router do
     get "/tags", UserController, :tags
 
     post "/search", SearchController, :index
-    get "/tag_search:query", SearchController, :tag_search
+    get "/tag_search/:query", SearchController, :tag_search
 
     get "/update_tags", UserController, :update_tags
     post "/update_channel", UserController, :update_channel

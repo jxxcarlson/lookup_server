@@ -48,63 +48,83 @@ defmodule LookupPhoenix.SearchController do
 
     end
 
+    ################# tag_search ###############
+
+    defp tag_search_set_user(conn) do
+
+      current_user = conn.assigns.current_user
+      qsMap = Utility.qs2map(conn.query_string)
+      site = qsMap["site"]
+      IO.puts "site = #{site}"
+      Utility.report("qsMap", qsMap)
+
+      site_user = User.find_by_username(site)
+
+      if site_user == current_user do
+        access = :all
+      else
+        access = :public
+      end
+
+      [site, current_user, site_user, access]
+    end
+
+    defp tag_search_set_query_list(query, access) do
+        query = String.trim(query)
+      if access == :public do
+        query = "/public " <> query
+      end
+      String.split(query)
+    end
+
+    defp tag_search_update_channel(conn,  site, query_list) do
+        if conn.assigns.current_user != nil do
+        tag = hd(query_list)
+        channel = "#{site}.#{tag}"
+        User.update_channel(conn.assigns.current_user, channel)
+      end
+    end
+
     def tag_search(conn, %{"query" => query}) do
 
-          query = String.trim(query)
-          current_user = conn.assigns.current_user
+      Utility.report("tag search query" , query)
 
-          if is_nil(cookies(conn, "site")) do
-            user_from_cookies = nil
-          else
-            user_from_cookies = User.find_by_username(cookies(conn, "site"))
-          end
+      [site, current_user, site_user, access] = tag_search_set_user(conn)
 
-          user_from_cookies =
-          user = user_from_cookies || current_user
+      if current_user != nil do
+        User.increment_number_of_searches(current_user)
+      end
 
-          if user == nil do
-             real_access = "public"
-             user = User.find_by_username("demo")
-          else
-             real_access = ""
-          end
-          site = user.username
+      query_list = tag_search_set_query_list(query, access)
 
-          if current_user != nil do
-            User.increment_number_of_searches(conn.assigns.current_user)
-          end
+      tag_search_update_channel(conn,  site, query_list)
 
-          if real_access == "public" do
-            query = "/public " <> query
-          end
+      # Utility.report("CURRENT USER", current_user.username)
+      Utility.report("QUERY LIST", query_list)
 
-          queryList = String.split(query)
+      notes = Search.tag_search(query_list, conn)
 
-          if conn.assigns.current_user != nil do
-            tag = hd(queryList)
-            channel = "#{site}.#{tag}"
-            User.update_channel(user,channel)
-          end
+      # if current_user == nil || site_user != current_user do
+      # notes = Enum.filter(notes, fn(x) -> x.public == true end)
+      # end
 
-          Utility.report("CURRENT USER", current_user)
+      IO.puts "NOTES FOUND IN TAG_SEARCH: #{length(notes)}"
 
-          notes = Search.tag_search(queryList, conn)
-          if current_user == nil || user_from_cookies != current_user do
-            notes = Enum.filter(notes, fn(x) -> x.public == true end)
-          end
+      noteCount = length(notes)
+      if current_user != nil do
+        Note.memorize_notes(notes, current_user.id)
+      end
 
-          noteCount = length(notes)
-          Note.memorize_notes(notes, user.id)
 
-          notes_with_index = Utility.add_index_to_maplist(notes)
-          id_string = Note.extract_id_list(notes)
+      notes_with_index = Utility.add_index_to_maplist(notes)
+      id_string = Note.extract_id_list(notes)
 
-          case noteCount do
-            1 -> noteCountString = "1 Note found with tag #{query}"
-            _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found with tag #{query}"
-          end
+      case noteCount do
+        1 -> noteCountString = "1 Note found with tag #{query}"
+        _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found with tag #{query}"
+      end
 
-          render(conn, "index.html", site: site, notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
+      render(conn, "index.html", site: site, notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
 
      end
 
@@ -135,28 +155,6 @@ defmodule LookupPhoenix.SearchController do
            _ -> countReportString = "#{length(notes)} Random notes"
          end
          render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: countReportString)
-
-    end
-
-
-    def random(conn, _params) do
-
-        IO.puts "HERE IS RANDOM"
-        user = conn.assigns.current_user
-        expected_number_of_entries = 14
-
-        [access, channel_name, user_id] = User.decode_channel(user)
-
-         User.increment_number_of_searches(conn.assigns.current_user)
-
-        if Enum.member?(["all", "public"], channel_name) do
-          raw_random(conn, expected_number_of_entries)
-        else
-          notes = Search.tag_search([channel_name], conn) |> RandomList.mcut |> Utility.add_index_to_maplist
-          noteCountString = "#{length(notes)} random notes"
-          id_string = notes |> Enum.map(fn(note) -> note.id end) |> Enum.join(",")
-          render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: noteCountString, index: 0)
-        end
 
     end
 

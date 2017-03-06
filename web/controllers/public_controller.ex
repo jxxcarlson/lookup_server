@@ -122,7 +122,9 @@ defmodule LookupPhoenix.PublicController do
   def site(conn, params) do
      site = params["data"]["site"]
      IO.puts "site = #{site}"
-     conn |> redirect(to: "/site/#{site}")
+     conn
+     |> put_resp_cookie("site", site)
+     |> redirect(to: "/site/#{site}")
 
   end
 
