@@ -98,8 +98,9 @@ defmodule LookupPhoenix.UserController do
   end
 
   def update_tags(conn, _params) do
-    User.update_tags(conn.assigns.current_user)
-    conn |> redirect(to: user_path(conn, :tags))
+    current_user = conn.assigns.current_user
+    User.update_tags(current_user)
+    conn |> redirect(to: "/tags/#{current_user.username}")
     # render conn, "tags.html", user: conn.assigns.current_user
   end
 

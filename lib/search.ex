@@ -52,6 +52,7 @@ defmodule LookupPhoenix.Search do
         %{notes: filtered_notes, note_count: length(filtered_notes), original_note_count: original_note_count}
    end
 
+   # scope = :all|:public
     def all_notes_for_user(scope, user) do
        case scope do
          :all -> query = Ecto.Query.from note in Note,

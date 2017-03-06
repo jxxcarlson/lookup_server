@@ -142,8 +142,9 @@ defmodule LookupPhoenix.Tag do
       |> Enum.reduce(freqs, fn(note, freqs) -> update_frequencies_for_note(note, freqs) end)
     end
 
+    # scope = :all|:public
     def tag_frequencies(scope, user) do
-      tags_to_process = Tag.all_user_tags(scope, user)
+      tags_to_process = Tag.get_all_user_tags(scope, user)
 
       IO.puts "TAGS TO PROCESS: #{length(tags_to_process)}"
 
@@ -154,6 +155,7 @@ defmodule LookupPhoenix.Tag do
       |> Utility.sort2list("desc")
     end
 
+    # scope = :all|:public
     def tags_by_frequency(scope, user) do
       # tag_frequencies(user, scope) |> Utility.proj1_2list
       tag_frequencies(scope, user) |> Enum.map( fn(pair) -> %{name: hd(pair), freq: hd(tl(pair))} end)

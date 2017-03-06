@@ -1,5 +1,7 @@
 <span style="float:right">
-  <%= link "Update tags", to: user_path(@conn, :update_tags), class: "btn btn-default" %>
+  <%= if @conn.assigns.current_user != nil do %>
+    <%= link "Update tags", to: user_path(@conn, :update_tags), class: "btn btn-default" %>
+  <% end %>
 </span>
 
 <%= if @conn.assigns.current_user != nil do %>
