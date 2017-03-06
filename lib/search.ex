@@ -279,6 +279,7 @@ defmodule LookupPhoenix.Search do
     end
 
     defp query_for_tag_search(user_id, tag_list, channel_name, access) do
+      Utility.report("INPUTE FOR QUERIES", [user_id, tag_list, channel_name, access])
       IO.puts "HEAD, TAGLIST = #{hd(tag_list)}"
       query1 = Ecto.Query.from note in Note,
         where: note.user_id == ^user_id,

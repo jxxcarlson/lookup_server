@@ -77,7 +77,7 @@ defmodule LookupPhoenix.SearchController do
       String.split(query)
     end
 
-    defp tag_search_update_channel(conn,  site, query_list) do
+    defp tag_search_update_channel(conn, site, query_list) do
         if conn.assigns.current_user != nil do
         tag = hd(query_list)
         channel = "#{site}.#{tag}"
@@ -97,7 +97,7 @@ defmodule LookupPhoenix.SearchController do
 
       query_list = tag_search_set_query_list(query, access)
 
-      tag_search_update_channel(conn,  site, query_list)
+      tag_search_update_channel(conn, site, query_list)
 
       # Utility.report("CURRENT USER", current_user.username)
       Utility.report("QUERY LIST", query_list)
