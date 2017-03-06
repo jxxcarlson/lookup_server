@@ -196,8 +196,6 @@ defmodule LookupPhoenix.Note do
       Repo.all(query2)
     end
 
-
-
      def set_public_for_user(user_id, value) do
         options = %{}
         notes_for_user(user_id)|> Enum.map(fn(note) -> Note.set_public(note, value) end)

@@ -58,19 +58,28 @@ defmodule LookupPhoenix.UserController do
   def tags(conn, %{"username" => username}) do
       IO.puts "HEY, TAGS!!, username = #{username}"
 
+      current_user = conn.assigns.current_user
+
       channel_user_name = cookies(conn, "site")
 
       user = User.find_by_username(username)
       if user == nil do
         user = User.find_by_username("demo")
       end
-      real_access = true
+
+      cond do
+        current_user == nil ->
+            real_access = :public
+        current_user.username != channel_user_name ->
+            real_access = :public
+        true -> real_access = :all
+      end
 
      Utility.report("In User.tags, user is", user)
      [access, channel_name, user_id] = User.decode_channel(user)
 
      access = real_access || access
-     if user_id == user.id and real_access != "public" do
+     if user_id == user.id and real_access != :public do
        channel_user = user
        ctags = user.tags
        original_tag_count = length(ctags)
