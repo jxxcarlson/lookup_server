@@ -22,7 +22,6 @@ defmodule LookupPhoenix.Search do
       length Repo.all(query2)
     end
 
-
     def notes_for_user(user, options) do
        IO.puts "NOTES FOR USER, YAY!!"
        [access, channel_name, user_id] = User.decode_channel(user)
@@ -40,48 +39,11 @@ defmodule LookupPhoenix.Search do
        %{notes: filtered_notes, note_count: length(filtered_notes), original_note_count: original_note_count}
     end
 
-
-    defp set_channel(channel, options) do
-      [channel_user_name, channel_name] = String.split(channel, ".")
-      if channel_user_name == nil do
-        channel_user = User.find_by_username("demo")
-        channel_name = "public"
-      else
-        channel_user = User.find_by_username(channel_user_name)
-      end
-
-      # Let tag, if present, take precedence over chanel_name
-      tag = options["tag"]
-      channel_name = tag || channel_name
-      [channel_user, channel_user_name, channel_name]
-    end
-
-
-    defp set_query(user, channel_name) do
-        if User.get_preference(user, "sort_by") == "idx" do
-            query = Ecto.Query.from note in Note,
-               where: note.user_id == ^user.id and note.public == true,
-               order_by: [asc: note.idx]
-        else
-            query = Ecto.Query.from note in Note,
-               where: note.user_id == ^user.id and note.public == true,
-               order_by: [desc: note.inserted_at]
-        end
-
-        if channel_name != "public" do
-          IO.puts "SELECTING NOTES IN CHANNEL"
-          query2 = from note in query, where: ilike(note.tag_string, ^"%#{channel_name}%")
-        else
-          IO.puts "IGNORING CHANNEL"
-          query2 = query
-        end
-    end
-
     def notes_for_channel(channel, options) do
 
         [channel_user, channel_user_name, channel_name] = set_channel(channel, options)
         IO.puts "notes_for_channel: #{channel_user.username}"
-        query = set_query(channel_user, channel_name)
+        query = set_query_for_channel_search(channel_user, channel_name)
 
         notes = Repo.all(query)
         original_note_count = length(notes)
@@ -130,49 +92,14 @@ defmodule LookupPhoenix.Search do
     end
 
     def tag_search(tag_list, conn) do
+      [access, channel_name, user_id] = setup_for_tag_search(conn)
 
-      current_user = conn.assigns.current_user
+      if Enum.member?(tag_list, "/public") do
+        tag_list = tl(tag_list)
+      end
 
-     if current_user == nil do
-       real_access = :public
-       channel_user_name = cookies(conn, "site")
-       user = User.find_by_username(channel_user_name)
-       if user == nil do
-         user = User.find_by_username("demo")
-       end
-     else
-       user = current_user
-     end
-
-     [access, channel_name, user_id] = User.decode_channel(user)
-     access = real_access || access
-
-       [access, channel_name, user_id]= User.decode_channel(user)
-
-       if Enum.member?(tag_list, "/public") do
-         tag_list = tl(tag_list)
-       end
-
-       query1 = Ecto.Query.from note in Note,
-          where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{List.first(tag_list)}%")),
-          order_by: [desc: note.updated_at]
-
-       if Enum.member?(["all", "public"], channel_name)  do
-         query2 = query1
-       else
-         query2 = from note in query1,
-           where: ilike(note.tag_string, ^"%#{channel_name}%")
-       end
-       case access do
-          :all -> query3 = query2
-          :public -> query3 = from note in query2, where: note.public == ^true
-       end
-       Repo.all(query1)
-    end
-
-
-    def filter_records_for_user(list, user_id) do
-      Enum.filter(list, fn(x) -> x.user_id == user_id end)
+      query_for_tag_search(user_id, tag_list, channel_name, access)
+      |> Repo.all
     end
 
 
@@ -186,39 +113,6 @@ defmodule LookupPhoenix.Search do
       |> filter_public(access)
 
       |> RandomList.truncateAt(truncate_at)
-    end
-
-    #### DATE-TIME ####
-
-    def after_date_query(query_type, order, user_id, then) do
-      case {query_type, order} do
-        {:viewed, :asc} ->
-          query  = Ecto.Query.from note in Note,
-            where: note.user_id == ^user_id and note.viewed_at >= ^then,
-            order_by: [asc: note.viewed_at]
-        {:viewed, :desc} ->
-          query  = Ecto.Query.from note in Note,
-            where: note.user_id == ^user_id and note.viewed_at >= ^then,
-            order_by: [desc: note.viewed_at]
-
-        {:updated, :asc} ->
-           query  = Ecto.Query.from note in Note,
-             where: note.user_id == ^user_id and note.updated_at >= ^then,
-             order_by: [asc: note.updated_at]
-        {:updated, :desc} ->
-           query  = Ecto.Query.from note in Note,
-             where: note.user_id == ^user_id and note.updated_at >= ^then,
-             order_by: [desc: note.updated_at]
-
-        {:created, :asc} ->
-           query  = Ecto.Query.from note in Note,
-             where: note.user_id == ^user_id and note.inserted_at >= ^then,
-             order_by: [asc: note.inserted_at]
-        {:created, :desc} ->
-           query  = Ecto.Query.from note in Note,
-             where: note.user_id == ^user_id and note.inserted_at >= ^then,
-             order_by: [desc: note.inserted_at]
-        end
     end
 
     # Return the user's notes that are viewed, updated, or created after
@@ -321,8 +215,120 @@ defmodule LookupPhoenix.Search do
        end
     end
 
+    defp filter_records_for_user(list, user_id) do
+      Enum.filter(list, fn(x) -> x.user_id == user_id end)
+    end
 
-##################################
+    ############ NOTES FOR CHANNEL ######
+
+    defp set_channel(channel, options) do
+      [channel_user_name, channel_name] = String.split(channel, ".")
+      if channel_user_name == nil do
+        channel_user = User.find_by_username("demo")
+        channel_name = "public"
+      else
+        channel_user = User.find_by_username(channel_user_name)
+      end
+
+      # Let tag, if present, take precedence over chanel_name
+      tag = options["tag"]
+      channel_name = tag || channel_name
+      [channel_user, channel_user_name, channel_name]
+    end
+
+
+    defp set_query_for_channel_search(user, channel_name) do
+        if User.get_preference(user, "sort_by") == "idx" do
+            query = Ecto.Query.from note in Note,
+               where: note.user_id == ^user.id and note.public == true,
+               order_by: [asc: note.idx]
+        else
+            query = Ecto.Query.from note in Note,
+               where: note.user_id == ^user.id and note.public == true,
+               order_by: [desc: note.inserted_at]
+        end
+
+        if channel_name != "public" do
+          IO.puts "SELECTING NOTES IN CHANNEL"
+          query2 = from note in query, where: ilike(note.tag_string, ^"%#{channel_name}%")
+        else
+          IO.puts "IGNORING CHANNEL"
+          query2 = query
+        end
+    end
+
+    ############ TAG SEARCH ##########
+
+    defp setup_for_tag_search(conn) do
+      if conn.assigns.current_user == nil do
+        real_access = :public
+        channel_user_name = cookies(conn, "site")
+        user = User.find_by_username(channel_user_name)
+        if user == nil do
+         user = User.find_by_username("demo")
+        end
+      else
+        user = conn.assigns.current_user
+      end
+
+      [access, channel_name, user_id] = User.decode_channel(user)
+      access = real_access || access
+      [access, channel_name, user_id]
+    end
+
+    defp query_for_tag_search(user_id, tag_list, channel_name, access) do
+      query1 = Ecto.Query.from note in Note,
+        where: (note.user_id == ^user_id and ilike(note.tag_string, ^"%#{hd(tag_list)}%")),
+        order_by: [desc: note.updated_at]
+
+      if Enum.member?(["all", "public"], channel_name)  do
+         query2 = query1
+      else
+         query2 = from note in query1,
+           where: ilike(note.tag_string, ^"%#{channel_name}%")
+      end
+
+      case access do
+          :all -> query3 = query1
+          :public -> query3 = from note in query1, where: note.public == ^true
+      end
+      query3
+    end
+
+    #### DATE-TIME ####
+
+    defp after_date_query(query_type, order, user_id, then) do
+      case {query_type, order} do
+        {:viewed, :asc} ->
+          query  = Ecto.Query.from note in Note,
+            where: note.user_id == ^user_id and note.viewed_at >= ^then,
+            order_by: [asc: note.viewed_at]
+        {:viewed, :desc} ->
+          query  = Ecto.Query.from note in Note,
+            where: note.user_id == ^user_id and note.viewed_at >= ^then,
+            order_by: [desc: note.viewed_at]
+
+        {:updated, :asc} ->
+           query  = Ecto.Query.from note in Note,
+             where: note.user_id == ^user_id and note.updated_at >= ^then,
+             order_by: [asc: note.updated_at]
+        {:updated, :desc} ->
+           query  = Ecto.Query.from note in Note,
+             where: note.user_id == ^user_id and note.updated_at >= ^then,
+             order_by: [desc: note.updated_at]
+
+        {:created, :asc} ->
+           query  = Ecto.Query.from note in Note,
+             where: note.user_id == ^user_id and note.inserted_at >= ^then,
+             order_by: [asc: note.inserted_at]
+        {:created, :desc} ->
+           query  = Ecto.Query.from note in Note,
+             where: note.user_id == ^user_id and note.inserted_at >= ^then,
+             order_by: [desc: note.inserted_at]
+        end
+    end
+
+    ##################################
 
 
     # Input: a list of query terms
