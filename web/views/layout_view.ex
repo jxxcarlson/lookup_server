@@ -10,4 +10,10 @@ defmodule LookupPhoenix.LayoutView do
     "/site/#{cookies(conn, cookie_name)}"
   end
 
+   def site_name(conn) do
+      cookie_name = "site"
+      "#{cookies(conn, cookie_name)}" || "demo"
+    end
+
+
 end

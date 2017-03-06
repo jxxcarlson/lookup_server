@@ -121,10 +121,18 @@ defmodule LookupPhoenix.PublicController do
 
   def site(conn, params) do
      site = params["data"]["site"]
+     current_user = conn.assigns.current_user
      IO.puts "site = #{site}"
-     conn
-     |> put_resp_cookie("site", site)
-     |> redirect(to: "/site/#{site}")
+     if current_user != nil and current_user.username == site do
+        conn
+        |> put_resp_cookie("site", site)
+        |> redirect(to: "/notes")
+     else
+        conn
+        |> put_resp_cookie("site", site)
+        |> redirect(to: "/site/#{site}")
+     end
+
 
   end
 

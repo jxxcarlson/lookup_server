@@ -78,12 +78,13 @@ defmodule LookupPhoenix.NoteController do
      end
   end
 
+   def cookies(conn, cookie_name) do
+     conn.cookies[cookie_name]
+   end
+
   def index(conn, params) do
 
      current_user = conn.assigns.current_user
-     if current_user != nil do
-       conn |> put_resp_cookie("site", current_user.username)
-     end
   
      [mode, id_list, qsMap, random_display, user]  = setup_index(conn, params)
      note_record = get_note_record(mode, id_list, user, %{random_display: random_display})
@@ -104,9 +105,13 @@ defmodule LookupPhoenix.NoteController do
      params2 = %{current_user: current_user, notes: notes, id_string: id_string, noteCountString: noteCountString, options: options}
 
      if qsMap["set_channel"] == nil do
-       render(conn, "index.html", params2)
+       conn
+       |> put_resp_cookie("site", current_user.username)
+       |> render("index.html", params2)
      else
-       redirect(conn, to: "/notes?mode=all")
+       conn
+       |> put_resp_cookie("site", current_user.username)
+       |> redirect(to: "/notes?mode=all")
      end
 
   end

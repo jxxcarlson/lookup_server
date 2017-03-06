@@ -15,7 +15,7 @@
     <tr>
       <%= for tag <- row do %>
         <!-- <td><%= link LookupPhoenix.Tag.pretty(tag), to: search_path(@conn, :tag_search, tag["name"]) %> </td> -->
-        <td><%= link LookupPhoenix.Tag.pretty(tag), to: 'tag_search/#{tag["name"]}?site=#{@user.username}' %> </td>
+        <td><%= link LookupPhoenix.Tag.pretty(tag), to: '/tag_search/#{tag["name"]}?site=#{@user.username}' %> </td>
       <% end %>
     </tr>
 <% end %>

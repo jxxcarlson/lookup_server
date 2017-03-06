@@ -37,9 +37,10 @@ defmodule LookupPhoenix.Router do
 
     get "/random", SearchController, :random
     get "/recent", SearchController, :recent
-    get "/tags", UserController, :tags
+    get "/tags/:username", UserController, :tags
 
     post "/search", SearchController, :index
+    get "/tag_search/:query", SearchController, :tag_search
     get "/tag_search/:query", SearchController, :tag_search
 
     get "/update_tags", UserController, :update_tags

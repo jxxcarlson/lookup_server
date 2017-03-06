@@ -55,19 +55,20 @@ defmodule LookupPhoenix.UserController do
       conn.cookies[cookie_name]
     end
 
-  def tags(conn, _params) do
-  IO.puts "HEY, TAGS!!"
-     user = conn.assigns.current_user
-     if user == nil do
-       real_access = "public"
-       channel_user_name = cookies(conn, "site")
-       user = User.find_by_username(channel_user_name)
-       if user == nil do
-         user = User.find_by_username("demo")
-       end
-     end
+  def tags(conn, %{"username" => username}) do
+      IO.puts "HEY, TAGS!!, username = #{username}"
+
+      channel_user_name = cookies(conn, "site")
+
+      user = User.find_by_username(username)
+      if user == nil do
+        user = User.find_by_username("demo")
+      end
+      real_access = true
+
      Utility.report("In User.tags, user is", user)
      [access, channel_name, user_id] = User.decode_channel(user)
+
      access = real_access || access
      if user_id == user.id and real_access != "public" do
        channel_user = user
