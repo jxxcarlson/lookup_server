@@ -197,7 +197,7 @@ defmodule LookupPhoenix.NoteController do
 
     Note.update_viewed_at(note)
 
-    options = %{mode: "show"} |> Note.add_options(note)
+    options = %{mode: "show", username: conn.assigns.current_user.username} |> Note.add_options(note)
 
     inserted_at= Note.inserted_at_short(note)
     updated_at= Note.updated_at_short(note)

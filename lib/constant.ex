@@ -16,4 +16,7 @@ defmodule LookupPhoenix.Constant do
     "http://www.lookupnote.io"
   end
 
+  def not_found_note do
+    "demo.not_found"
+  end
 end

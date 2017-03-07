@@ -283,14 +283,14 @@ defmodule LookupPhoenix.Note do
     end
 
     def get(id) do
+      IO.puts "Note.get(#{id})"
       cond do
-        is_integer(id) -> Repo.get!(Note, id)
-        Regex.match?(~r/^[A-Za-z].*/, id) -> find_by_identifier(id)
-        true -> Repo.get!(Note, id)
+        is_integer(id) -> note = Repo.get!(Note, id)
+        Regex.match?(~r/^[A-Za-z].*/, id) -> note = find_by_identifier(id)
+        true -> note = Repo.get!(Note, id)
       end
+      note || find_by_identifier(Constant.not_found_note())
     end
-
-
 
      ## INIT (ONE-TIME) ##
 

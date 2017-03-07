@@ -8,14 +8,9 @@ defmodule RenderText do
 ############# PUBLIC ##################
 
     def transform(input_text, options \\ %{mode: "show", process: "none", collate: false}) do
-      Utility.report("TT, OPTIONS", options)
+      Utility.report("Text Transform, OPTIONS", options)
       if options.collate == true do
-        id_list = String.split(input_text, ",")
-        |> Enum.map(fn(item) -> String.trim(item) end)
-        |> Enum.map(fn(item) -> String.to_integer(item) end)
-        |> RenderText.filter_id_list(options.user_id)
-        Utility.report("ID LIST", id_list)
-        text = collate(id_list)
+        text = collate(input_text, options.username)
       else
         text = input_text
       end
@@ -367,14 +362,38 @@ defmodule RenderText do
      Regex.replace(~r/xref::([0-9]*)\[(.*)\]/U, text, "<a href=\"https://lookupnote.herokuapp.com/notes/\\1?index=0&previous=\\1&next=\\1&id_string=\\1\">\\2</a>")
    end
 
+   ########## collate ###########
+
+   def prepare_item(item, prefix) do
+       cond do
+         is_integer(item) -> item = Repo.get!(Note, item).identifier
+         Regex.match?(~r/^[1-9].[0-9]*/, item) -> item = Repo.get!(Note, String.to_integer(item)).identifier
+         true -> item = "#{prefix}.#{item}"
+       end
+   end
+
+   def prepare_for_collation(text, username) do
+     # split input into lines
+     a = String.split(String.trim(text), ["\n", "\r", "\r\n"])
+     # remove empty titems
+     |> Enum.filter(fn(item) -> item != "" end)
+     # remove comments:
+     |> Enum.map(fn(item) -> Regex.replace(~r/(.*)\s*\#.*$/U, item, "\\1") end)
+     |> Enum.map(fn(item) -> prepare_item(item, username) end)
+     |> Enum.filter(fn(item) -> Regex.match?(~r/^#{username}\./, item) end)
+   end
+
    def collate_one(id, str) do
-     note = Repo.get!(Note, id)
+     note = Note.get(id)
      str <> "\n\n" <> "== " <> note.title <> "\n\n" <> note.content <> "\n\n"
    end
 
-   def collate(id_list) do
-     Enum.reduce(id_list, "", fn(id, acc) -> collate_one(id, acc) end)
+   def collate(input_text, username) do
+     prepare_for_collation(input_text, username)
+     |> Enum.reduce("", fn(id, acc) -> collate_one(id, acc) end)
    end
+
+
 
    # Need tests for this:
    def ok_to_collate(user_id, id) do
@@ -386,4 +405,5 @@ defmodule RenderText do
      id_list |> Enum.filter(fn(id) -> ok_to_collate(user_id, id) end)
    end
 
+   ######################################
 end

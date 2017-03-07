@@ -11,6 +11,7 @@ defmodule LookupPhoenix.PublicController do
    def share(conn, %{"id" => id}) do
          note = Note.get(id)
          token = conn.query_string
+         Utility.report("NOTE", note)
          Utility.report("id", id)
          Utility.report("token", token)
          user = Repo.get(User, note.user_id)
