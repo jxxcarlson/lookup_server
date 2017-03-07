@@ -193,6 +193,7 @@ defmodule LookupPhoenix.NoteController do
 
   def show(conn, %{"id" => id}) do
 
+
     note = Repo.get!(Note, id)
 
     Note.update_viewed_at(note)
@@ -206,7 +207,8 @@ defmodule LookupPhoenix.NoteController do
     sharing_is_authorized = true #  conn.assigns.current_user.id == note.user_id
 
     params1 = %{note: note, inserted_at: inserted_at, updated_at: updated_at,
-                  options: options, word_count: word_count, sharing_is_authorized: sharing_is_authorized}
+                  options: options, word_count: word_count,
+                  sharing_is_authorized: sharing_is_authorized, current_id: note.id}
     params2 = Note.decode_query_string(conn.query_string)
     params = Map.merge(params1, params2)
 
@@ -272,35 +274,42 @@ defmodule LookupPhoenix.NoteController do
     params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
     params = Map.merge(params, %{random: "no"})
 
+    locked = conn.assigns.current_user.read_only
+          word_count = RenderText.word_count(note.content)
+          tags = Note.tags2string(note)
+
+    params1 = %{note: note, changeset: changeset,
+                      word_count: word_count, locked: locked,
+                      conn: conn, tags: tags, note: note}
+    simulated_query_string = "index=0&id_string=#{note.id}"
+    params2 = Note.decode_query_string(simulated_query_string)
+    params = Map.merge(params1, params2)
+    params = Map.merge(params, new_params)
+
     case Repo.update(changeset) do
       {:ok, note} ->
-        # |> put_flash(:info, "Note updated successfully.")
         if save_option == "exit" do
-          conn |> redirect(to: note_path(conn, :show, note, params))
+          conn
+          # |> put_flash(:info, "Note updated successfully.")
+          |> redirect(to: note_path(conn, :show, note, params))
         else
           # conn |> redirect(to: note_path(conn, :edit, note, params))
-          locked = conn.assigns.current_user.read_only
-                  word_count = RenderText.word_count(note.content)
-                  tags = Note.tags2string(note)
-
-          params1 = %{note: note, changeset: changeset,
-                              word_count: word_count, locked: locked,
-                              conn: conn, tags: tags, note: note}
-                  simulated_query_string = "index=0&id_string=#{note.id}"
-                  params2 = Note.decode_query_string(simulated_query_string)
-                  params = Map.merge(params1, params2)
-                  params = Map.merge(params, new_params)
-          conn |> render "edit.html", params
+          conn
+          |> put_flash(:info, "Note updated successfully.")
+          |> render "edit.html", params
         end
       {:error, changeset} ->
-        render(conn, "edit.html", note: note, changeset: changeset)
+          conn
+          |> put_flash(:info, "ERROR - is the identifier you proposed unique?")
+          |> render "edit.html", params
+          # |> render("edit.html", note: note, changeset: changeset)
+          #|> render("edit.html", note: note, params: changeset, note_count: 1,
+          #   current_id: note.id, index: params["index"], id_string: params["id_string"],
+          #   last_id: params["last_id"], last_index: 0)
     end
   end
 
   def update(conn, %{"id" => id, "note" => note_params, "save_option" => save_option}) do
-
-    Utility.report("note_params", note_params)
-    Utility.report("save_option", save_option)
 
     note = Repo.get!(Note, id)
     user = conn.assigns.current_user
@@ -314,16 +323,13 @@ defmodule LookupPhoenix.NoteController do
       "edited_at" => Timex.now, "tag_string" => note_params["tag_string"],
       "tags" => tags, "public" => note_params["public"],
       "shared" => note_params["shared"], "tokens" => note_params["tokens"],
-      "idx" => note_params["idx"]}
+      "idx" => note_params["idx"], "identifier" => note_params["identifier"]}
 
     changeset = Note.changeset(note, new_params)
 
-
     if ((user.read_only == false) and (note.user_id ==  user.id)) do
-      IO.puts "DO UPDATE"
       doUpdate(note, changeset, save_option, conn, new_params)
     else
-      IO.puts "READ ONLY MESSAGE"
       read_only_message(conn)
     end
   end

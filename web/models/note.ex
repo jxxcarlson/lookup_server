@@ -23,7 +23,7 @@ defmodule LookupPhoenix.Note do
     field :shared, :boolean
     field :tokens, {:array, :map}
     field :idx, :integer
-
+    field :identifier, :string
 
      belongs_to :user, LookupPhoenix.User
 
@@ -36,7 +36,8 @@ defmodule LookupPhoenix.Note do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:title, :content, :tags, :user_id, :viewed_at,
-       :edited_at, :tag_string, :public, :shared, :tokens, :idx])
+       :edited_at, :tag_string, :public, :shared, :tokens, :idx, :identifier])
+    |> unique_constraint(:identifier)
     |> validate_required([:title, :content])
   end
 
