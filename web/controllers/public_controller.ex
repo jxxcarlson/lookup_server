@@ -9,7 +9,7 @@ defmodule LookupPhoenix.PublicController do
 
 
    def share(conn, %{"id" => id}) do
-         note  = Repo.get!(Note, id)
+         note = Note.get(id)
          token = conn.query_string
          Utility.report("id", id)
          Utility.report("token", token)
@@ -41,16 +41,23 @@ defmodule LookupPhoenix.PublicController do
 
 
   def show(conn, %{"id" => id, "site" => site}) do
-      note  = Repo.get(Note, id)
+      note = Note.get(id)
       token = conn.query_string
       Utility.report("token", token)
 
       if note == nil do
           render(conn, "error.html", %{})
       else
+          conn_query_string = conn.query_string || ""
+          if conn_query_string == "" do
+            query_string = "index=0&id_string=#{note.id}"
+          else
+            query_string = conn_query_string
+          end
+
           options = %{mode: "show"} |> Note.add_options(note)
           params1 = %{note: note, options: options, site: site}
-          params2 = Note.decode_query_string(conn.query_string)
+          params2 = Note.decode_query_string(query_string)
           params = Map.merge(params1, params2)
 
           case note.public do

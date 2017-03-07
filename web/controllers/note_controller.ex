@@ -193,8 +193,7 @@ defmodule LookupPhoenix.NoteController do
 
   def show(conn, %{"id" => id}) do
 
-
-    note = Repo.get!(Note, id)
+    note = Note.get(id)
 
     Note.update_viewed_at(note)
 
@@ -209,7 +208,16 @@ defmodule LookupPhoenix.NoteController do
     params1 = %{note: note, inserted_at: inserted_at, updated_at: updated_at,
                   options: options, word_count: word_count,
                   sharing_is_authorized: sharing_is_authorized, current_id: note.id}
-    params2 = Note.decode_query_string(conn.query_string)
+
+
+    conn_query_string = conn.query_string || ""
+    if conn_query_string == "" do
+      query_string = "index=0&id_string=#{note.id}"
+    else
+      query_string = conn_query_string
+    end
+    params2 = Note.decode_query_string(query_string)
+
     params = Map.merge(params1, params2)
 
     # {:ok, updated_at } = note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
@@ -229,11 +237,17 @@ defmodule LookupPhoenix.NoteController do
     message_part_2= "It is available at http://www.lookupnote.io/share/"
     message_part_4 = "\n\n\n------\nIf you wish to sign up for an account on lookupnote.io,\n please use this registation code: student "
 
+    if note.identifier == nil do
+      note_id = note.id
+    else
+      note_id = note.identifier
+    end
+
     if note.public == false do
       token_record = Note.generate_time_limited_token(note, 10, 240)
-      message_part_3= "#{note.id}?#{token_record.token}"
+      message_part_3= "#{note_id}?#{token_record.token}"
     else
-      message_part_3= "#{note.id}"
+      message_part_3= "#{note_id}"
     end
 
     email_body = message_part_1 <> message_part_2 <> message_part_3 <> message_part_4
@@ -274,18 +288,26 @@ defmodule LookupPhoenix.NoteController do
     params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
     params = Map.merge(params, %{random: "no"})
 
-    locked = conn.assigns.current_user.read_only
-          word_count = RenderText.word_count(note.content)
-          tags = Note.tags2string(note)
+    if save_option != "exit" do
+        locked = conn.assigns.current_user.read_only
+                    word_count = RenderText.word_count(note.content)
+                    tags = Note.tags2string(note)
 
-    params1 = %{note: note, changeset: changeset,
-                      word_count: word_count, locked: locked,
-                      conn: conn, tags: tags, note: note}
-    simulated_query_string = "index=0&id_string=#{note.id}"
-    params2 = Note.decode_query_string(simulated_query_string)
-    params = Map.merge(params1, params2)
-    params = Map.merge(params, new_params)
+              params1 = %{note: note, changeset: changeset,
+                                word_count: word_count, locked: locked,
+                                conn: conn, tags: tags, note: note}
+              simulated_query_string = "index=0&id_string=#{note.id}"
+              params2 = Note.decode_query_string(simulated_query_string)
+              params = Map.merge(params1, params2)
+              params = Map.merge(params, new_params)
 
+    end
+
+    Utility.report("CHANGESET 1", changeset)
+    current_user = conn.assigns.current_user
+    changeset = Ecto.Changeset.update_change(changeset, :identifier, fn(ident) -> Note.normalize_identifier(current_user, ident) end)
+
+    Utility.report("CHANGESET 2", changeset)
     case Repo.update(changeset) do
       {:ok, note} ->
         if save_option == "exit" do
@@ -299,7 +321,7 @@ defmodule LookupPhoenix.NoteController do
           |> render "edit.html", params
         end
       {:error, changeset} ->
-          conn
+            conn
           |> put_flash(:info, "ERROR - is the identifier you proposed unique?")
           |> render "edit.html", params
           # |> render("edit.html", note: note, changeset: changeset)

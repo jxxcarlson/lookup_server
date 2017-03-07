@@ -139,7 +139,6 @@ defmodule LookupPhoenix.Note do
 
    def decode_query_string(q_string) do
 
-
       IO.puts "QUERY STRING: #{q_string}"
       # Example: q_string=index=4&id_list=35%2C511%2C142%2C525%2C522%2C531%2C233
       query_data = q_string|> Utility.parse_query_string
@@ -262,6 +261,36 @@ defmodule LookupPhoenix.Note do
             options = Map.merge(options, %{collate: false})
         end
     end
+
+    # If user is "joe"
+    # joe.foobar => joe.foobar
+    # hoho.foobar => joe.foobar
+    # foobar => joe.foobar
+    def normalize_identifier(user, identifier) do
+      if String.contains?(identifier, ".") do
+        identifier_parts = String.split(identifier, ".")
+        if hd(identifier_parts) == user.username do
+        identifier = tl(identifier_parts) |> Enum.join(".")
+        end
+      end
+      "#{user.username}.#{identifier}"
+    end
+
+    def find_by_identifier(identifier) do
+      query = Ecto.Query.from note in Note,
+              where: note.identifier == ^identifier
+      Repo.one(query)
+    end
+
+    def get(id) do
+      cond do
+        is_integer(id) -> Repo.get!(Note, id)
+        Regex.match?(~r/^[A-Za-z].*/, id) -> find_by_identifier(id)
+        true -> Repo.get!(Note, id)
+      end
+    end
+
+
 
      ## INIT (ONE-TIME) ##
 
