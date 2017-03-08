@@ -68,7 +68,7 @@ defmodule LookupPhoenix.Search do
     def decode_query(query) do
       query
       |> String.downcase
-      # |> String.replace("/", " /")
+      |> String.replace("/", " /")
       |> String.split(~r/\s/)
     end
 
