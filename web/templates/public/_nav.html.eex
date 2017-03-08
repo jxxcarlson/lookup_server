@@ -12,7 +12,7 @@
 
   <% end %>
 
-
+    <span class="standard" >Channel <%= @channela %></span>
     <span style="float:right">
       <%= link "Back", to: public_path(@conn, :index, @site), class: "" %>
     </span>

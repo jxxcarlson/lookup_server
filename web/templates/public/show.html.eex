@@ -17,7 +17,7 @@
 <%= render "_nav.html", note: @note, conn: @conn, first_id: @first_id,
     last_id: @last_id, next_id: @next_id, previous_id: @previous_id, note_count: @note_count,
      id_string: @id_string, site: @site, previous_index: @previous_index, index: @index,
-      next_index: @next_index, last_index: @last_index %>
+      next_index: @next_index, last_index: @last_index, channela: @channela%>
 
       <div style="clear:both;">&nbsp;</div>
 

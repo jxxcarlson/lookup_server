@@ -2,6 +2,13 @@
 
 <style>
 
+span.standard {
+
+ float:right;
+ margin-right:8px;
+
+}
+
 
 h1 {font-size: 1.7em;margin-bottom:-1.7em;}
 h2 {font-size: 1.3em;margin-bottom:-2.4em;}
@@ -31,8 +38,10 @@ h4 {font-size: 1.0em; margin-bottom:-3.5em;}
 
 
 
-  <span style="float:right;margin-right:8px;" ><%= link "Edit", to: note_path(@conn, :edit, @note, index: @index, id_string: @id_string) %></span>
-  <span style="float:right;margin-right:8px;" ><%= link "Back", to: note_path(@conn, :index) %></span>
+
+  <span class="standard" ><%= link "Edit", to: note_path(@conn, :edit, @note, index: @index, id_string: @id_string) %></span>
+  <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %></span>
+  <span class="standard" >Channel <%= @channela %></span>
 
   <%= if @note_count > 1 do %>
 

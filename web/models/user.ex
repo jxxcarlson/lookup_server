@@ -163,6 +163,7 @@ defmodule LookupPhoenix.User do
   end
 
   def update_channel(user,channel) do
+        IO.puts "XXX: Changing channel to #{channel} for user #{user.username}"
         params = %{"channel" => channel}
         changeset = User.running_changeset(user, params)
         Repo.update(changeset)

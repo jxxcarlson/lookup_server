@@ -189,12 +189,17 @@ defmodule LookupPhoenix.NoteController do
     end
   end
 
+  def set_channel(conn, params) do
+    Utility.report("SET CHANNEL", params)
+    render "index.html"
+  end
 
   ##########################################################
 
   def show(conn, %{"id" => id}) do
 
     note = Note.get(id)
+    user = Repo.get!(User, note.user_id)
 
     Note.update_viewed_at(note)
 
@@ -211,7 +216,7 @@ defmodule LookupPhoenix.NoteController do
 
     params1 = %{note: note, inserted_at: inserted_at, updated_at: updated_at,
                   options: options, word_count: word_count,
-                  sharing_is_authorized: sharing_is_authorized, current_id: note.id}
+                  sharing_is_authorized: sharing_is_authorized, current_id: note.id, channela: user.channel}
 
 
     conn_query_string = conn.query_string || ""

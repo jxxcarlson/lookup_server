@@ -43,6 +43,7 @@ defmodule LookupPhoenix.PublicController do
 
   def show(conn, %{"id" => id, "site" => site}) do
       note = Note.get(id)
+      user = Repo.get!(User, note.user_id)
       token = conn.query_string
       Utility.report("token", token)
 
@@ -57,7 +58,7 @@ defmodule LookupPhoenix.PublicController do
           end
 
           options = %{mode: "show"} |> Note.add_options(note)
-          params1 = %{note: note, options: options, site: site}
+          params1 = %{note: note, options: options, site: site, channela: user.channel}
           params2 = Note.decode_query_string(query_string)
           params = Map.merge(params1, params2)
 
