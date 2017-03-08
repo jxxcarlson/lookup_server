@@ -1,0 +1,120 @@
+<style>
+
+h1 {font-size: 1.7em;margin-bottom:-1.7em;}
+h2 {font-size: 1.3em;margin-bottom:-2.4em;}
+h3 {font-size: 1.0em;margin-bottom:-3em;}
+h4 {font-size: 1.0em; margin-bottom:-3.5em;}
+
+.index_word{ color: darkred; }
+
+.answer_head{ color: blue;}
+
+.hide_answer{ color: blue; display:none }
+.show_answer{color: blue; display:inline}
+
+.navarrow { float:right; font-weight:bold;}
+
+input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(1.5); /* IE */
+  -moz-transform: scale(1.5); /* FF */
+  -webkit-transform: scale(1.5); /* Safari and Chrome */
+  -o-transform: scale(1.5); /* Opera */
+  padding: 2px;
+}
+
+/* Might want to wrap a span around your checkbox text */
+.checkboxtext
+{
+  /* Checkbox text */
+  font-size: 110%;
+  display: inline;
+}
+</style>
+
+
+<%= form_for @changeset, @action, fn f -> %>
+
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label f, :title, class: "control-label" %>
+    <%= text_input f, :title, class: "form-control", id: 'title'  %>
+    <%= error_tag f, :title %>
+  </div>
+
+  <!-- INPUT -->
+
+
+  <div id="edit_and_diplay_text" style="margin-top:-2em;left:20%;">
+     <div class="form-group" style="margin-left:-30%; width:80%; float:left; margin-top:3em;" %>
+       <%= textarea f, :content, class: "form-control", style: "height:200px; overflow: scroll", id: 'content3' %>
+       <%= error_tag f, :content %>
+     </div>
+
+     <div id="rendered_text3" style="float: left; background-color: #f4f4f4; margin-right:-30%; width: 80%; padding-left: 1em;padding-right: 1em; margin-top:3em; clear: right; padding-top:1em; overflow: scroll; height: 150px; white-space:pre-line;"><%= raw(String.trim(RenderText.transform(@note.content, %{collate: "no", mode: "show", process: "latex"}))) %> </div>
+  </div>
+
+
+  <!-- INPUT END -->
+
+  <div class="form-inline" style="margin-bottom:10px; clear: left; left:0;margin-left:-30%;margin-right:-30%">
+
+      <div class="form-check form-inline" style="display:inline; margin-left:0;">
+        <%= label f, :tags, class: "control-label-inline" %>
+        <%= text_input f, :tag_string, class: "form-control", style: "width: 40%;", id: 'tags', placeholder: 'separate tags by commas'  %>
+        <%= error_tag f, :tag_string %>
+      </div>
+
+      <div class="form-check form-inline" style="display:inline; margin-left:20px;">
+          <%= text_input f, :identifier, class: "form-control", style: "width: 30%", id: 'identifier', placeholder: 'Unique identifier'  %>
+          <%= error_tag f, :identifier %>
+      </div>
+
+      <div class="form-check form-inline" style="display:inline; margin-left:20px;">
+         <%= label f, :idx, class: "control-label-inline" %>
+           <%= text_input f, :idx, class: "form-control", style: "width: 50px", id: 'idx', placeholder: 'separate tags by commas'  %>
+          <%= error_tag f, :idx %>
+      </div>
+
+      <div class="form-check form-inline" style="display:inline; margin-left:20px;">
+         <label class="form-check-label-inline"> Public &nbsp;
+           <%= checkbox f, :public, class: "checkbox", value: @note.public %>
+         </label>
+      </div>
+
+  </div>
+
+
+
+   <input type="hidden" name="index" value= <%=@index %> >
+   <input type="hidden" name="id_string" value=<%= @id_string %> >
+
+  <div class="form-group" style="display:inline">
+    <%= if @locked do %>
+      <%= link "    Back!!", to: note_path(@conn, :index), id: 'notes' %>
+    <% else %>
+      <span><%= submit "Save & Exit", name: "save_option", value: "exit", class: "btn btn-primary", style: "width: 31%;", id: 'save1' %>
+
+      <%= submit "Save", name: "save_option", value: "continue", class: "btn btn-primary", style: "width: 19%;", id: 'save1' %>
+
+      <%= link "Back", to: note_path(@conn, :index), id: 'notes', class: "btn btn-primary", style: "width: 19%;margin-right:2em;" %>
+
+      Words: <%= @word_count %>
+      <span>
+    <% end %>
+  </div>
+
+<% end %>
+
+<script>
+    document.getElementById("content3").style.height = (window.innerHeight - 300) + 'px'
+    document.getElementById("rendered_text3").style.height = (window.innerHeight - 300) + 'px'
+    console.log("window.innerHeight: " + window.innerHeight)
+</script>
+

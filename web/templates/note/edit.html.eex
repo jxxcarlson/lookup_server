@@ -26,6 +26,8 @@
 
     </script>
 
+  <div style="margin-top:3em;">
+
   <span style="float:right;" ><%= link "Show", to: note_path(@conn, :show, @current_id, index: @index,
                      id_string: @id_string, note: @note), class: "" %>
   </span>
@@ -42,12 +44,43 @@
   <span style="float:right;margin-right:9px;" ><%= link "First", to: note_path(@conn, :edit, @first_id, index: @first_index, id_string: @id_string) %></span>
 
                    <% end %>
+  </div>
 
+<!-- SMALL -->
 
-<%= render "form.html", changeset: @changeset,
-       action: note_path(@conn, :update, @note),
-       locked: @locked, word_count: @word_count, conn: @conn, index: @index, id_string: @id_string, note: @note  %>
+<div id="edit_and_display_text-xs" class="form-group visible-xs-block" >
 
+  <%= render "_edit_form_1.html", changeset: @changeset,
+       action: note_path(@conn, :update, @note),locked: @locked,
+       word_count: @word_count, conn: @conn, index: @index,
+       id_string: @id_string, note: @note
+  %>
+
+</div>
+
+<!-- MEDIUM -->
+
+ <div id="edit_and_display_text" style="margin-top:-2em;" class="hidden-xs hidden-lg">
+
+  <%= render "_edit_form_2.html", changeset: @changeset,
+       action: note_path(@conn, :update, @note),locked: @locked,
+       word_count: @word_count, conn: @conn, index: @index,
+       id_string: @id_string, note: @note
+  %>
+
+</div>
+
+<!-- LARGE -->
+
+ <div id="edit_and_diplay_text" style="margin-top:-2em;left:20%;" class="hidden-xs visible-lg-block">
+
+  <%= render "_edit_form_3.html", changeset: @changeset,
+       action: note_path(@conn, :update, @note),locked: @locked,
+       word_count: @word_count, conn: @conn, index: @index,
+       id_string: @id_string, note: @note
+  %>
+
+</div>
 
 
 
