@@ -5,7 +5,7 @@ defmodule LookupPhoenix.Constant do
   end
 
   def tag_frequency_threshold do
-    1
+    2
   end
 
   def default_site_id do

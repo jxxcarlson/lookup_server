@@ -67,6 +67,13 @@ defmodule LookupPhoenix.Utility do
     end
   end
 
+  def sort_on_key(list, key, direction) do
+      case direction do
+        "desc" -> list |> Enum.sort(fn(e1, e2) -> e1[key] > e2[key] end)
+         _ -> list |> Enum.sort(fn(e1, e2) -> e1[key] <= e2[key] end)
+      end
+    end
+
   def proj1_2list(list) do
     Enum.map(list, fn(element) -> hd(element) end)
   end

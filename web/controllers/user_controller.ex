@@ -81,13 +81,13 @@ defmodule LookupPhoenix.UserController do
      access = real_access || access
      if user_id == user.id and real_access != :public do
        channel_user = user
-       ctags = user.tags
+       ctags = user.tags |> Utility.sort_on_key("name", "asc")
        original_tag_count = length(ctags)
        ctags = ctags |> filter_by_frequency(Constant.tag_frequency_threshold())
        ctag_count = length(ctags)
      else
        channel_user = User |> Repo.get!(user_id)
-       ctags = channel_user.public_tags
+       ctags = channel_user.public_tags |> Utility.sort_on_key("name", "asc")
        original_tag_count = length(ctags)
        ctags = ctags |> filter_by_frequency(Constant.tag_frequency_threshold())
        original_tag_count = length(ctags)
