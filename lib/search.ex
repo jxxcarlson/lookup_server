@@ -290,8 +290,9 @@ defmodule LookupPhoenix.Search do
       if Enum.member?(["all", "public"], channel_name)  do
          query2 = query1
       else
-         query2 = from note in query1,
-           where: ilike(note.tag_string, ^"%#{channel_name}%")
+         query2 = from note in query1, where: ^channel_name in note.tags
+         # query2 = from note in query1, where: ilike(note.tag_string, ^"%#{channel_name}%")
+
       end
 
       case access do

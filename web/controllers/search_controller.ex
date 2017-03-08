@@ -97,7 +97,8 @@ defmodule LookupPhoenix.SearchController do
 
       query_list = tag_search_set_query_list(query, access)
 
-      tag_search_update_channel(conn, site, query_list)
+      # DISABLE THIS FOR NOW
+      # tag_search_update_channel(conn, site, query_list)
 
       # Utility.report("CURRENT USER", current_user.username)
       Utility.report("QUERY LIST", query_list)
