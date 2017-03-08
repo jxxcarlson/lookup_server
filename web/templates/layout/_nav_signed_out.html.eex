@@ -7,6 +7,7 @@
            <span class="caret"></span>
          </button>
          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+           <li style="color:darkred;"><%= link @site, to: "/site/#{@site}" %></li>
            <li><%= link :Sites, to: "/sites" %></li>
            <li><%= link "Tags", to: "/tags/#{site_name(@conn)}", id: 'tags' %> </li>
 
@@ -22,8 +23,6 @@
     <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Home", to: page_path(@conn, :index), id: 'home' %> </li>
 
     <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: link_name(@conn)  %>  </li>
-
-   <li style="font-size:1.25em; color:cornflowerblue; float:left;"> Site: <%= link @site, to: "/site/#{@site}" %></li>
 
     <li class="link1"> <%= link "Sign up", to: user_path(@conn, :new) %> </li>
     <li class="link1"> <%= link "Sign in", to: session_path(@conn, :new) %> </li>
