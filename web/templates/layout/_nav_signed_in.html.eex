@@ -1,7 +1,7 @@
 <!-- NAVIGATION BAR -->
 
 
- <ol class="breadcrumb text-right" style="background-color:#d9d9d9">
+ <ol class="breadcrumb text-right" style="background-color:#d9d9d9;height:40px;">
 
  <li style="margin-left:1em; font-size:1.25em; color:cornflowerblue; float:right;">
         <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
