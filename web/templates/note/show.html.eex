@@ -71,7 +71,7 @@ h4 {font-size: 1.0em; margin-bottom:-3.5em;}
 <br>
 
 <script>
-    document.getElementById("rendered_text").style.height = (window.innerHeight - 280) + 'px'
+    document.getElementById("rendered_text").style.height = (window.innerHeight - 230) + 'px'
 
     var answer_head = document.getElementById("QQ");
     var answer_tail = document.getElementById("QQA");
