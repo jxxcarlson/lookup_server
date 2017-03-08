@@ -292,6 +292,19 @@ defmodule LookupPhoenix.Note do
       note || find_by_identifier(Constant.not_found_note())
     end
 
+    defp random_string(length) do
+       :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
+    end
+
+    def make_identifier(prefix, title, length) do
+      title2 = Regex.replace(~r/[^a-zA-Z0-9\-\._                                                            ]/, title, "")
+      part1 = prefix <> "." <> title2
+      |> String.downcase
+      |> String.replace(" ", "_")
+      part2 = random_string(4)
+      part1 <> "." <> part2
+    end
+
      ## INIT (ONE-TIME) ##
 
      def init_viewed_at(note) do
@@ -329,6 +342,22 @@ defmodule LookupPhoenix.Note do
       params = %{"tag_string" => value}
       changeset = Note.changeset(note, params)
       Repo.update(changeset)
+    end
+
+    def set_identifier(note) do
+      if note.identifier == nil do
+          user = Repo.get!(User, note.user_id)
+          identifier = make_identifier(user.username, note.title, 4)
+          params = %{"identifier" => identifier}
+          changeset = Note.changeset(note, params)
+          Repo.update(changeset)
+       end
+     end
+
+    def set_identifiers do
+      Note
+      |> Repo.all
+      |> Enum.map(fn(note) -> Note.set_identifier(note) end)
     end
 
     def set_bad_tags do

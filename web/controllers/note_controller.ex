@@ -164,9 +164,10 @@ defmodule LookupPhoenix.NoteController do
       [tag_string, tags] = get_tags(note_params, channel_name)
       new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
+      identifier = Note.make_identifier(conn.assigns.current_user.username, new_title, 4)
       new_params = %{"content" => new_content, "title" => new_title,
          "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now,
-         "tag_string" => tag_string, "tags" => tags, "public" => false}
+         "tag_string" => tag_string, "tags" => tags, "public" => false, "identifier" => identifier}
       changeset = Note.changeset(%Note{}, new_params)
   end
 

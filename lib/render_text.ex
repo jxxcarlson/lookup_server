@@ -9,12 +9,7 @@ defmodule RenderText do
 
     def transform(input_text, options \\ %{mode: "show", process: "none", collate: false}) do
       Utility.report("Text Transform, OPTIONS", options)
-      if options.collate == true do
-        text = collate(input_text, options.username)
-      else
-        text = input_text
-      end
-      text
+      collate(input_text, options)
       |> String.trim
       |> formatCode
       |> padString
@@ -55,12 +50,12 @@ defmodule RenderText do
     ############# PRIVATE ##################
 
 
-    def padString(text) do
+    defp padString(text) do
       "\n" <> text <> "\n"
     end
 
 
-    def linkify(text, options) do
+    defp linkify(text, options) do
       text
       # |> simplifyURLs
       |> makeYouTubePlayer(options)
@@ -74,7 +69,7 @@ defmodule RenderText do
       |> String.trim
     end
 
-    def apply_markdown(text) do
+    defp apply_markdown(text) do
       text
       |> padString
       |> formatCode
@@ -100,7 +95,7 @@ defmodule RenderText do
 
     end
 
-    def getURLs(text) do
+    defp getURLs(text) do
       Regex.scan(~r/((http|https):\/\/\S*)\s/, " " <> text <> " ", [:all])
       |> Enum.map(fn(x) -> hd(tl(x)) end)
     end
@@ -109,27 +104,27 @@ defmodule RenderText do
        Enum.map(url_list, fn(x) -> [x, hd(String.split(x, "?"))] end)
     end
 
-    def simplify_one_URL(substitution_item, text) do
+    defp simplify_one_URL(substitution_item, text) do
       target = hd(substitution_item)
       replacement = hd(tl(substitution_item))
       String.replace(text, target, replacement)
     end
 
-    def simplifyURLs(text) do
+    defp simplifyURLs(text) do
       url_substitution_list = text |> getURLs |> prepURLs
       Enum.reduce(url_substitution_list, text, fn(substitution_item, text) -> simplify_one_URL(substitution_item, text) end)
     end
 
-    def preprocessImageURLs(text) do
+    defp preprocessImageURLs(text) do
       Regex.replace(~r/[^:]((http|https):\/\/\S*\.(jpg|jpeg|png|gif))\s/i, text, " image::\\1 ")
     end
 
-    def makeDumbLinks(text) do
+    defp makeDumbLinks(text) do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=\?#!@_%]*)\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">LINK</a> ")
     end
 
     # ha ha http://foo.bar.io/a/b/c blah blah => 1: http://foo.bar.io/a/b/c, 3: foo.bar.io
-    def makeSmartLinks(text) do
+    defp makeSmartLinks(text) do
        #Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-_%-]*)([\/?=#]\S*|))\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
        Regex.replace(~r/\s((http|https):\/\/([a-zA-Z0-9\.\-_%-']*)([\/?=#]\S*|))\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
@@ -139,17 +134,17 @@ defmodule RenderText do
     end
 
     # http://foo.io/ladidah/mo/stuff => <a href="http://foo.io/ladida/foo.io"" target=\"_blank\">foo.io/ladidah</a>
-    def makeUserLinks(text) do
+    defp makeUserLinks(text) do
       Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=~\?#!@_%-']*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
     end
 
-    def makeAudioPlayer(text) do
+    defp makeAudioPlayer(text) do
 
        Regex.replace(~r/(http|https):\/\/(.*(mp3|wav))/i, " "<>text<>" ", "<audio controls> <source src=\"\\0\" type=\"audio/\\3\" >Your browser does not support the audio element.</audio>")
 
     end
 
-    def makeImageLinks1(text, options) do
+    defp makeImageLinks1(text, options) do
        case options[:mode] do
          "index" ->
            Regex.replace(~r/\simage::(.*(png|jpg|jpeg|gif))\s/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
@@ -161,7 +156,7 @@ defmodule RenderText do
 
     end
 
-    def makeImageLinks(text, options) do
+    defp makeImageLinks(text, options) do
        case options[:mode] do
          "index" ->
            Regex.replace(~r/(http|https):\/\/(.*(png|jpg|jpeg|gif))(\s|$)/i, " "<>text<>" ", " <img src=\"\\0\" width=\"120px\" height=\"120px\" > ")
@@ -173,7 +168,7 @@ defmodule RenderText do
 
     end
 
-    def makeFormattedImageLinks(text, options) do
+    defp makeFormattedImageLinks(text, options) do
        case options[:mode] do
          "index" ->
            Regex.replace(~r/((http|https):\/\/(.*(png|jpg|jpeg|gif)))\[(.*)\]/i, " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
@@ -185,7 +180,7 @@ defmodule RenderText do
 
     end
 
-    def makeYouTubePlayer(text, options) do
+    defp makeYouTubePlayer(text, options) do
        case options[:mode] do
          "show" ->
            Regex.replace(~r/(https:\/\/youtu.be\/(.*))($|\s)/rU, " "<>text<>" ", "<iframe width=\"640\" height=\"360\" src=\"https://www.youtube.com/embed/\\2\"  frameborder=\"0\" allowfullscreen></iframe>")
@@ -199,109 +194,109 @@ defmodule RenderText do
 
     # (https://youtu.*)($|\s)
 
-    def formatHeading1(text) do
+    defp formatHeading1(text) do
       Regex.replace(~r/^== (.*)$/mU, text, "<h1>\\1</h1>\n")
     end
 
-    def formatHeading2(text) do
+    defp formatHeading2(text) do
        Regex.replace(~r/^=== (.*)$/mU, text, "<h2>\\1</h2>\n")
     end
 
-   def formatHeading3(text) do
+   defp formatHeading3(text) do
        Regex.replace(~r/^==== (.*)$/mU, text, "<h3>\\1</h3>\n")
    end
 
-   def formatHeading4(text) do
+   defp formatHeading4(text) do
           Regex.replace(~r/^==== (.*)$/mU, text, "<h4>\\1</h4>\n")
       end
 
 
-    def formatNDash(text) do
+    defp formatNDash(text) do
       # \s(--)\s
       Regex.replace(~r/\s(--) /, text, " &ndash; ")
     end
 
-    def formatMDash(text) do
+    defp formatMDash(text) do
        Regex.replace(~r/\s(---) /, text, " &mdash; ")
     end
 
-    def formatStrike(text) do
+    defp formatStrike(text) do
        # Regex.replace(~r/(^|\s)-([^-]*)-(\s)/U, text, " <span style='text-decoration: line-through'>\\2</span> \\3")
        Regex.replace(~r/(^|\s)-([^-\s]*)-(\s)/U, text, "\\1<span style='text-decoration: line-through;color:darkred'>\\2</span>\\3")
     end
 
-    def getItems(text) do
+    defp getItems(text) do
       Regex.scan(~r/^- (\S*.*)[\n\r]/msU, "\n" <> text)
       |> Enum.map(fn(x) -> hd(tl(x)) end)
       |> Enum.map(fn(item) -> String.trim(item) end)
     end
 
 
-    def formatItems(text) do
+    defp formatItems(text) do
        getItems(text)
        |> Enum.reduce(text, fn(item, text) -> String.replace(text, "- " <> item, formatItem(item)) end)
     end
 
-    def formatItem  (item) do
+    defp formatItem  (item) do
       "<span style='margin-left:2em; text-indent:-0.7em;display:inline-block;margin-bottom:0.3em;'>-  #{item}</span>"
     end
 
-    def formatInlineCode(text) do
+    defp formatInlineCode(text) do
       Regex.replace(~r/\`(.*)\`/U, text, "<tt style='color:darkred; font-weight:400'>\\1</tt>")
     end
 
-    def formatVerbatim(text) do
+    defp formatVerbatim(text) do
       Regex.replace(~r/----(?:\r\n|[\r\n])(.*)(?:\r\n|[\r\n])----/msr, text, "<pre style='margin-bottom:-1.2em;;'>\\1</pre>")
     end
 
     # ``\n(.*)\n```
 
-    def formatBold(text) do
+    defp formatBold(text) do
        Regex.replace(~r/(\*(.*)\*)/U, text, "<strong>\\2</strong>")
     end
 
-    def formatItalic(text) do
+    defp formatItalic(text) do
        Regex.replace(~r/(\s)_(.*)_(\s)/U, text, "\\1<i>\\2</i>\\3")
     end
 
-    def indexWord(text) do
+    defp indexWord(text) do
       Regex.replace(~r/index:\[(.*)\]/U, text, "<span class=\"index_word\">\\1</span>")
     end
 
-    def formatRed(text) do
+    defp formatRed(text) do
        Regex.replace(~r/red:\[(.*)\]/U, text, "<span style='color:darkred;'>\\1</span>")
     end
 
-    def formatChem(text) do
+    defp formatChem(text) do
       Regex.replace(~r/chem:\[(.*)\]/U, text, "$\\ce{\\1}$")
     end
 
-    def formatChemBlock(text) do
+    defp formatChemBlock(text) do
       Regex.replace(~r/chem::\[(.*)\]/U, text, "$$\\ce{\\1}$$")
     end
 
-    def formatCode(text) do
+    defp formatCode(text) do
       out = Regex.replace(~r/\[code\][\r\n]--[\r\n](.*)[\r\n]--[\r\n]/msU, text, "<pre><code>\\n#\\1\\n</code></pre>")
       IO.puts "OUTPUT OF FORMAT CODE: #{out}"
       out
     end
 
-    def formatAnswer(text) do
+    defp formatAnswer(text) do
        Regex.replace(~r/answer:\[(.*)\]/U, text, "<p><span id=\"QQ\" class=\"answer_head\">Answer:</span> <span id=\"QQA\" class=\"hide_answer\">\\1</span></p>")
     end
 
-    def formatVerbatim(text) do
+    defp formatVerbatim(text) do
       Regex.replace(~r/verbatim:\[(.*)\]/U, text, "<pre>\\1</pre>")
     end
 
-    def scrubTags(text) do
+    defp scrubTags(text) do
       Regex.replace(~r/\s:.*\s/, " " <> text <> " ",    " ")
     end
 
 
 
 
-    def insert_mathjax!(text) do
+    defp insert_mathjax!(text) do
 
         text <>  """
 
@@ -323,7 +318,7 @@ defmodule RenderText do
     end
 
 
-    def insert_mathjax(text, options) do
+    defp insert_mathjax(text, options) do
       if options[:process] == "latex" do
         text = insert_mathjax!(text)
       else
@@ -331,7 +326,7 @@ defmodule RenderText do
       end
     end
 
-   def makePDFLinks(text, options) do
+   defp makePDFLinks(text, options) do
      case options[:mode] do
        "index" ->
           Regex.replace(~r/display::((http|https):(.*(pdf)))\s/U, " "<>text<>" ", "<a href=\"\\1\" target=\"_blank\">PDF FILE</a>")
@@ -348,31 +343,48 @@ defmodule RenderText do
       |> length
    end
 
-   def erase_words(text, kill_words) do
+   defp erase_words(text, kill_words) do
      Enum.reduce(kill_words, text, fn(kill_word, text) -> String.replace(text, "#{kill_word} ", "") end)
    end
 
-   def highlight(text) do
+   defp highlight(text) do
      Regex.replace(~r/#(\S.*)#/U, text, "<span style='color:darkred;'>\\1</span>")
    end
 
    # https://lookupnote.herokuapp.com/notes/439?index=0&previous=439&next=439&id_list=439
 
-   def formatXREF(text) do
+   defp formatXREF(text) do
      Regex.replace(~r/xref::([0-9]*)\[(.*)\]/U, text, "<a href=\"https://lookupnote.herokuapp.com/notes/\\1?index=0&previous=\\1&next=\\1&id_string=\\1\">\\2</a>")
    end
 
    ########## collate ###########
 
-   def prepare_item(item, prefix) do
+   defp random_string(length) do
+     :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
+   end
+
+   def get_identifier(id) do
+     note = Repo.get!(Note, id)
+     if note.identifier == nil do
+       identifier = note.username <> "." <> random_string(4) <> "-" <> random_string(4)
+       params = %{"identifier" => identifier}
+       changeset = Note.changeset(note, params)
+       Repo.update(changeset)
+     else
+       Repo.get!(Note, id).identifier
+     end
+     identifier
+   end
+
+   defp prepare_item(item, prefix) do
        cond do
-         is_integer(item) -> item = Repo.get!(Note, item).identifier
-         Regex.match?(~r/^[1-9].[0-9]*/, item) -> item = Repo.get!(Note, String.to_integer(item)).identifier
-         true -> item = "#{prefix}.#{item}"
+         is_integer(item) -> Repo.get!(Note, item).identifier
+         Regex.match?(~r/^[1-9].[0-9]*/, item) -> Repo.get!(Note, String.to_integer(item)).identifier
+         true -> "#{prefix}.#{item}"
        end
    end
 
-   def prepare_for_collation(text, username) do
+   defp prepare_for_collation(text, username) do
      # split input into lines
      a = String.split(String.trim(text), ["\n", "\r", "\r\n"])
      # remove empty titems
@@ -380,28 +392,33 @@ defmodule RenderText do
      # remove comments:
      |> Enum.map(fn(item) -> Regex.replace(~r/(.*)\s*\#.*$/U, item, "\\1") end)
      |> Enum.map(fn(item) -> prepare_item(item, username) end)
-     |> Enum.filter(fn(item) -> Regex.match?(~r/^#{username}\./, item) end)
+     Utility.report("AAAA", a)
+     a |> Enum.filter(fn(item) -> Regex.match?(~r/^#{username}\./, item) end)
    end
 
-   def collate_one(id, str) do
+   defp collate_one(id, str) do
      note = Note.get(id)
      str <> "\n\n" <> "== " <> note.title <> "\n\n" <> note.content <> "\n\n"
    end
 
-   def collate(input_text, username) do
-     prepare_for_collation(input_text, username)
-     |> Enum.reduce("", fn(id, acc) -> collate_one(id, acc) end)
+   defp collate(input_text, options) do
+     if options.collate == true do
+        prepare_for_collation(input_text, options.username)
+        |> Enum.reduce("", fn(id, acc) -> collate_one(id, acc) end)
+      else
+        input_text
+      end
    end
 
 
 
    # Need tests for this:
-   def ok_to_collate(user_id, id) do
+   defp ok_to_collate(user_id, id) do
      note = Repo.get!(Note, id)
      note.public || note.user_id == user_id
    end
 
-   def filter_id_list(id_list, user_id) do
+   defp filter_id_list(id_list, user_id) do
      id_list |> Enum.filter(fn(id) -> ok_to_collate(user_id, id) end)
    end
 
