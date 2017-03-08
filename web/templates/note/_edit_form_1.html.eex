@@ -61,7 +61,7 @@ input[type=checkbox]
 
   <div class="form-inline" style="margin-bottom:10px; clear: left;">
       <%= label f, :tags, class: "control-label-inline" %>
-      <%= text_input f, :tag_string, class: "form-control", style: "width: 45.5%;", id: 'tags', placeholder: 'separate tags by commas'  %>
+      <%= text_input f, :tag_string, class: "form-control", style: "width: 90%;", id: 'tags', placeholder: 'separate tags by commas'  %>
       <%= error_tag f, :tag_string %>
 
       <div class="form-check form-inline small hidden-xs" style="display:inline; margin-left:20px;">
