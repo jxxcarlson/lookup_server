@@ -200,6 +200,9 @@ defmodule LookupPhoenix.NoteController do
 
     options = %{mode: "show", username: conn.assigns.current_user.username} |> Note.add_options(note)
 
+
+    Utility.report("OPTIONS IN NOTE:SHOW", options)
+
     inserted_at= Note.inserted_at_short(note)
     updated_at= Note.updated_at_short(note)
     word_count = RenderText.word_count(note.content)

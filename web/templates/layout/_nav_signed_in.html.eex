@@ -13,21 +13,21 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li><%= link "Home", to: page_path(@conn, :index), id: 'home' %></li>
           <li><%= link :Sites, to: "/sites" %></li>
           <li><%= link "Tags", to: "/tags/#{site_name(@conn)}", id: 'tags' %> </li>
-          <li><%= link :Prefs, to: "/preferences" %></li>
+          <li><%= link :Preferences, to: "/preferences" %></li>
 
 
           <li role="separator" class="divider"></li>
           <li><%= link "Guide", to: "/site/guide", id: 'guide' %></li>
           <%= if @current_user.admin == true do %>
-                   <li> <%= link "Users", to: user_path(@conn, :index), id: 'users' %> </li>
+             <li role="separator" class="divider"></li>
+             <li> <%= link "Users", to: user_path(@conn, :index), id: 'users' %> </li>
            <% end %>
 
         </ul>
  </li>
-
-     <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Home", to: page_path(@conn, :index), id: 'home' %> </li>
 
      <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: note_path(@conn, :index), id: 'notes' %> </li>
 

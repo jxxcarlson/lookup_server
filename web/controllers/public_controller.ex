@@ -19,7 +19,7 @@ defmodule LookupPhoenix.PublicController do
 
          options = %{mode: "show"} |> Note.add_options(note)
 
-        Utility.report("OPTIONS", options)
+        Utility.report("OPTIONS IN PUBLIC:SHARE", options)
 
          # plug LookupPhoenix.Plug.Site, site: site
 
