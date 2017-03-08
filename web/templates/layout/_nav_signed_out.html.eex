@@ -1,4 +1,11 @@
 <!-- NAVIGATION BAR -->
+
+ <span style="float:left;margin-top:-9px;margin-left:4px;">
+      <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
+          <%= text_input f, :query, placeholder: "Search ...", autocorrect: "off", autocapitalize: "off", style: "display:inline-block; margin-top:-18px; margin-bottom:3px; width:190px; height:35px; font-size:1.8rem; background-color:#eee;", id: "search_notes" %>
+      <%= end %>
+ </span>
+
  <ol class="breadcrumb text-right" style="background-color:#d9d9d9">
 
  <li class="dropdown" style="float:right; margin-top:-6px;margin-left:1em;">
@@ -11,8 +18,6 @@
            <li style="font-weight:bold;"><%= link @site, to: "/site/#{@site}" %></li>
            <li><%= link :Sites, to: "/sites" %></li>
            <li><%= link "Tags", to: "/tags/#{site_name(@conn)}", id: 'tags' %> </li>
-
-
 
            <li role="separator" class="divider"></li>
            <li><%= link "Guide", to: "/site/guide", id: 'guide' %></li>

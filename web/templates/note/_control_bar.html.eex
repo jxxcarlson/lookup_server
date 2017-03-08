@@ -6,4 +6,6 @@
    <%= link "Viewed", to: search_path(@conn, :recent, hours_before: 25, mode: "viewed"), class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:0px;" %>
    <%= link "Updated", to: search_path(@conn, :recent, hours_before: 100, mode: "updated"), class: "btn btn-default btn-s", id: "less_recent_notes" %>
    <%= link "Created", to: search_path(@conn, :recent, hours_before: 100, mode: "created"), class: "hidden-xs btn btn-default btn-s", id: "less_recent_notes" %>
+   <span style="float:right; margin-right:5px;margin-top:4px;"><%= @conn.assigns.current_user.channel %> <span>
+
 </div>

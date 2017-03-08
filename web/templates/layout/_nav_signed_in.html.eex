@@ -1,11 +1,23 @@
 <!-- NAVIGATION BAR -->
 
 
+
+ <span style="float:left;margin-top:-9px;margin-left:4px;">
+      <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
+          <%= text_input f, :query, placeholder: "Search ...", autocorrect: "off", autocapitalize: "off", style: "display:inline-block; margin-top:-18px; margin-bottom:3px; width:190px; height:35px; font-size:1.8rem; background-color:#eee;", id: "search_notes" %>
+      <%= end %>
+ </span>
+
  <ol class="breadcrumb text-right" style="background-color:#d9d9d9;height:40px;">
 
  <li style="margin-left:1em; font-size:1.25em; color:cornflowerblue; float:right;">
         <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
    </li>
+
+
+
+
+
 
 <li class="dropdown" style="float:right; margin-top:-6px;">
         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -14,6 +26,10 @@
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
           <li><%= link "Home", to: page_path(@conn, :index), id: 'home' %></li>
+          <!-- <li><%= link "Notes", to: link_name(@conn)  %></li>  -->
+          <li><%= link "#{@current_user.username}: get all", to: "/notes?set_channel=#{@current_user.username}.all" %></li>
+
+          <li role="separator" class="divider"></li>
           <li><%= link :Sites, to: "/sites" %></li>
           <li><%= link "Tags", to: "/tags/#{site_name(@conn)}", id: 'tags' %> </li>
           <li><%= link :Preferences, to: "/preferences" %></li>
@@ -32,12 +48,6 @@
      <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: note_path(@conn, :index), id: 'notes' %> </li>
 
      <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "New", to: note_path(@conn, :new),   class: "", color: "blue", id: "new_note" %></li>
-
-
-
-
-   <li class="link1 small hidden-xs"><span style="font-weight:bold; color:black"><%= link @current_user.username, to: "/notes?set_channel=#{@current_user.username}.all" %></span>: <%= LookupPhoenix.Search.count_for_user(@current_user.id) %> Notes</li>
-
 
 
 
