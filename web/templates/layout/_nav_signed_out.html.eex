@@ -1,13 +1,28 @@
 <!-- NAVIGATION BAR -->
  <ol class="breadcrumb text-right" style="background-color:#d9d9d9">
 
+ <li class="dropdown" style="float:right; margin-top:-6px;margin-left:1em;">
+         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+           Tools
+           <span class="caret"></span>
+         </button>
+         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+           <li><%= link :Sites, to: "/sites" %></li>
+           <li><%= link "Tags", to: "/tags/#{site_name(@conn)}", id: 'tags' %> </li>
+
+
+
+           <li role="separator" class="divider"></li>
+           <li><%= link "Guide", to: "/site/guide", id: 'guide' %></li>
+
+
+         </ul>
+  </li>
+
     <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Home", to: page_path(@conn, :index), id: 'home' %> </li>
 
     <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: link_name(@conn)  %>  </li>
-    <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Tags", to: "/tags/#{site_name(@conn)}", id: 'tags' %> </li>
 
-<li class="small hidden-xs" style="font-size:1.25em; color:cornflowerblue; float:left;"> <%= link "Guide", to: "/site/guide", id: 'guide' %> </li>
-   <li style="font-size:1.25em; color:darkred; float:left;"><%= link :Sites, to: "/sites" %></li>
    <li style="font-size:1.25em; color:cornflowerblue; float:left;"> Site: <%= link @site, to: "/site/#{@site}" %></li>
 
     <li class="link1"> <%= link "Sign up", to: user_path(@conn, :new) %> </li>

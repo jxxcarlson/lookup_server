@@ -1,24 +1,44 @@
 <!-- NAVIGATION BAR -->
+
+
  <ol class="breadcrumb text-right" style="background-color:#d9d9d9">
+
+ <li style="margin-left:1em; font-size:1.25em; color:cornflowerblue; float:right;">
+        <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
+   </li>
+
+<li class="dropdown" style="float:right; margin-top:-6px;">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          Tools
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li><%= link :Sites, to: "/sites" %></li>
+          <li><%= link "Tags", to: "/tags/#{site_name(@conn)}", id: 'tags' %> </li>
+          <li><%= link :Prefs, to: "/preferences" %></li>
+
+
+          <li role="separator" class="divider"></li>
+          <li><%= link "Guide", to: "/site/guide", id: 'guide' %></li>
+          <%= if @current_user.admin == true do %>
+                   <li> <%= link "Users", to: user_path(@conn, :index), id: 'users' %> </li>
+           <% end %>
+
+        </ul>
+ </li>
 
      <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Home", to: page_path(@conn, :index), id: 'home' %> </li>
 
      <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Notes", to: note_path(@conn, :index), id: 'notes' %> </li>
 
      <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "New", to: note_path(@conn, :new),   class: "", color: "blue", id: "new_note" %></li>
-     <li style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Tags", to: "/tags/#{site_name(@conn)}", id: 'tags' %> </li>
 
-     <li class="small hidden-xs" style="font-size:1.25em; color:cornflowerblue; float:left;"> <%= link "Guide", to: "/site/guide", id: 'guide' %> </li>
 
-     <%= if @current_user.admin == true do %>
-         <li class="small hidden-xs" style="font-size:1.25em; color:cornflowerblue  ; float:left;"> <%= link "Users", to: user_path(@conn, :index), id: 'users' %> </li>
-     <% end %>
 
-     <li style="font-size:1.25em; color:darkred; float:left;"><%= link :Prefs, to: "/preferences" %></li>
-     <li style="font-size:1.25em; color:darkred; float:left;"><%= link :Sites, to: "/sites" %></li>
-     <li class="link1 small hidden-xs"><span style="font-weight:bold; color:black"><%= link @current_user.username, to: "/notes?set_channel=#{@current_user.username}.all" %></span>: <%= LookupPhoenix.Search.count_for_user(@current_user.id) %> Notes</li>
-     <li class="link1">
-        <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
-     </li>
+
+   <li class="link1 small hidden-xs"><span style="font-weight:bold; color:black"><%= link @current_user.username, to: "/notes?set_channel=#{@current_user.username}.all" %></span>: <%= LookupPhoenix.Search.count_for_user(@current_user.id) %> Notes</li>
+
+
+
 
 </ol>
