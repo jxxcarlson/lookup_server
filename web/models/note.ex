@@ -289,6 +289,8 @@ defmodule LookupPhoenix.Note do
         Regex.match?(~r/^[A-Za-z].*/, id) -> note = find_by_identifier(id)
         true -> note = Repo.get!(Note, id)
       end
+      IO.puts "Note.get => title = #{note.title}"
+      note
       # note = note || find_by_identifier(Constant.not_found_note())
       # Repo.preload(note, :user).user
       # note

@@ -384,26 +384,29 @@ defmodule RenderText do
        end
    end
 
-   defp prepare_for_collation(text, username) do
+   defp prepare_for_collation(text) do
      # split input into lines
-     a = String.split(String.trim(text), ["\n", "\r", "\r\n"])
-     # remove empty titems
+     [user_info|data] = String.split(String.trim(text), ["\n", "\r", "\r\n"])
+     # remove empty items
      |> Enum.filter(fn(item) -> item != "" end)
      # remove comments:
      |> Enum.map(fn(item) -> Regex.replace(~r/(.*)\s*\#.*$/U, item, "\\1") end)
-     |> Enum.map(fn(item) -> prepare_item(item, username) end)
-     Utility.report("AAAA", a)
-     a |> Enum.filter(fn(item) -> Regex.match?(~r/^#{username}\./, item) end)
+     [_, username] = String.split(user_info, "=")
+     Utility.report("AAAA", [user_info, data])
+     data |> Enum.map(fn(item) -> prepare_item(item, username) end)
+     |> Enum.filter(fn(item) -> Regex.match?(~r/^#{username}\./, item) end)
    end
 
    defp collate_one(id, str) do
+     IO.puts "collate_one, id = #{id}"
      note = Note.get(id)
+     IO.puts "collate_one, title = #{note.title}"
      str <> "\n\n" <> "== " <> note.title <> "\n\n" <> note.content <> "\n\n"
    end
 
    defp collate(input_text, options) do
      if options.collate == true do
-        prepare_for_collation(input_text, options.username)
+        prepare_for_collation(input_text)
         |> Enum.reduce("", fn(id, acc) -> collate_one(id, acc) end)
       else
         input_text

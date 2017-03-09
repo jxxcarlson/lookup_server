@@ -33,3 +33,7 @@ bird.tan_yellow      # 439
 bird.yellow          # 437
 520
 
+bird.thrush               # 443
+bird.finch
+bird.small
+bird.yellow
