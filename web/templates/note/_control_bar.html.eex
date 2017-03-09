@@ -19,13 +19,14 @@
 
 <div style="clear: left; font-size:1.2em; margin-top:0px; background-color:#eee; padding:5px; height:40px;">
 
-<div style="height:40px;"
+<div style="height:40px;margin-top:-20px;">
 
-
+  <span class="hide-xs">
    <%= form_for @conn, note_path(@conn, :set_channel), [name: :set], fn f -> %>
         <%= text_input f, :channel, placeholder: "Enter channel ...", autocorrect: "off", autocapitalize: "off", value: @conn.assigns.current_user.channel, class: "channel", id: "search_notes" %>
-        <%= submit "cc", name: "save_option", value: "continue", class: "btn btn-primary", style: "width: 20px;", id: 'save1', style: "float:right;margin-right:6px;" %>
+        <!-- <%= submit "cc", name: "save_option", value: "continue", class: "btn btn-primary", style: "width: 20px;", id: 'save1', style: "float:right;margin-right:6px;" %> -->
     <%= end %>
+  <span>
 
    <%= link "Get", to: note_path(@conn, :index, mode: "all"), class: "btn btn-default btn-s", id: "all_notes", style: "" %>
    <!-- <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-s", id: "random_notes", style: "" %> -->
