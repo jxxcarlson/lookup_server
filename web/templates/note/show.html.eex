@@ -41,7 +41,7 @@ h4 {font-size: 1.0em; margin-bottom:-3.5em;}
 
   <span class="standard" ><%= link "Edit", to: note_path(@conn, :edit, @note, index: @index, id_string: @id_string) %></span>
   <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %></span>
-  <span class="standard" >Channel <%= @channela %></span>
+  <span class="standard hidden-xs" >Channel <%= @channela %></span>
 
   <%= if @note_count > 1 do %>
 
