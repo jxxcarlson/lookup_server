@@ -37,14 +37,18 @@ defmodule LookupPhoenix.User do
 
   def running_changeset(model, params \\ :empty) do
       model
-      |> cast(params, ~w(public blurb tags public_tags read_only number_of_searches search_filter channel), [] )
+      cast(params, ~w(public blurb tags public_tags read_only number_of_searches search_filter channel), [] )
   end
 
   def preferences_changeset(model, params \\ :empty) do
-        model
-        |> cast(params, ~w(preferences), [] )
-    end
+      model
+      |> cast(params, ~w(preferences), [] )
+  end
 
+  def channel_changeset(model, params \\ :empty) do
+        model
+        |> cast(params, ~w(channel), [] )
+  end
 
   def password_changeset(model, params \\ :empty) do
         model
@@ -216,7 +220,7 @@ defmodule LookupPhoenix.User do
   def set_name(user, value) do
     params = %{"name" => value}
     changeset = User.changeset(user, params)
-       Repo.update(changeset)
+    Repo.update(changeset)
   end
 
   def init_number_of_searches(user) do
@@ -254,12 +258,17 @@ defmodule LookupPhoenix.User do
     Enum.map(users, fn(user) -> initialize_metadata(user) end)
   end
 
-    def set_channel(user, channel) do
-      params = %{"channel" => channel}
-      IO.puts "I AM GOING TO DEFINITELY SET YOUR CHANNEL TO #{channel}"
-      changeset = User.running_changeset(user, params)
-      Repo.update(changeset)
-    end
+  def set_channel(user, channel) do
+    params = %{"channel" => channel}
+    IO.puts "I AM GOING TO DEFINITELY SET YOUR CHANNEL TO #{channel}"
+    Utility.report("params = ", params)
+
+    changeset = User.running_changeset(User, params)
+
+
+    Utility.report("CHANGESET FOR SET CHANNEL", changeset)
+    Repo.update(changeset)
+  end
 
   ### ONE TIME ###
 

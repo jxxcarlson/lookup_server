@@ -190,8 +190,12 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def set_channel(conn, params) do
-    Utility.report("SET CHANNEL", params)
-    render "index.html"
+    channel = params["set"]["channel"]
+    IO.puts "I WILL SET THE CHANNEL TO: #{channel}"
+    Utility.report("SET CHANNEL PARAMS:", params)
+    User.update_channel(conn.assigns.current_user, channel)
+   # render(conn, "index.html")
+   redirect(conn, to: note_path(conn, :index))
   end
 
   ##########################################################
