@@ -56,7 +56,7 @@ span { color: darkred; font-weight:500;}
 
     <p>Try the <a href="http://www.lookupnote.io/site/demo" target="_blank" >DEMO</a></p>
 
-    <p>Take a look at the <span><%= link "User Manual", to: page_path(@conn, :tips) %></span> for advanced features:
+    <p>Take a look at the <span><%= link "User Guide", to: "/site/guide" %></span> for advanced features:
    code formatting, mini markup, and LaTeX for mathematics and chemistry. </p>
 
     <br>
