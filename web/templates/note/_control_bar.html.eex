@@ -21,7 +21,7 @@
 
 <div style="height:40px;margin-top:-20px;">
 
-  <span class="hide-xs">
+  <span class="hidden-xs">
    <%= form_for @conn, note_path(@conn, :set_channel), [name: :set], fn f -> %>
         <%= text_input f, :channel, placeholder: "Enter channel ...", autocorrect: "off", autocapitalize: "off", value: @conn.assigns.current_user.channel, class: "channel", id: "search_notes" %>
         <!-- <%= submit "cc", name: "save_option", value: "continue", class: "btn btn-primary", style: "width: 20px;", id: 'save1', style: "float:right;margin-right:6px;" %> -->
