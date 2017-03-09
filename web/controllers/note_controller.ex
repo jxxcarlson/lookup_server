@@ -87,6 +87,7 @@ defmodule LookupPhoenix.NoteController do
      current_user = conn.assigns.current_user
   
      [mode, id_list, qsMap, random_display, user]  = setup_index(conn, params)
+
      note_record = get_note_record(mode, id_list, user, %{random_display: random_display})
 
      options = %{mode: "index", process: "none"}
@@ -103,6 +104,7 @@ defmodule LookupPhoenix.NoteController do
      notes = Utility.add_index_to_maplist(note_record.notes)
      id_string = Note.extract_id_list(notes)
      params2 = %{current_user: current_user, notes: notes, id_string: id_string, noteCountString: noteCountString, options: options}
+
 
      if qsMap["set_channel"] == nil do
        conn
@@ -195,7 +197,8 @@ defmodule LookupPhoenix.NoteController do
     Utility.report("SET CHANNEL PARAMS:", params)
     User.update_channel(conn.assigns.current_user, channel)
    # render(conn, "index.html")
-   redirect(conn, to: note_path(conn, :index))
+   ##redirect(conn, to: note_path(conn, :index))
+   redirect(conn, to: "/notes?random=no")
   end
 
   ##########################################################

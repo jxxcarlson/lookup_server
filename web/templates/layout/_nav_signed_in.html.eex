@@ -37,6 +37,8 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li style="color:darkred; font-weight:bold; margin-left:1.5em;"><%= @conn.assigns.current_user.username %></li>
+
           <li><%= link "Home", to: page_path(@conn, :index), id: 'home' %></li>
           <!-- <li><%= link "Notes", to: link_name(@conn)  %></li>  -->
           <li><%= link "All notes", to: "/notes?set_channel=#{@current_user.username}.all" %></li>
@@ -48,7 +50,7 @@
           <li><%= link :Preferences, to: "/preferences" %></li>
 
           <li role="separator" class="divider"></li>
-          <li><%= link "Guide", to: "/site/guide", id: 'guide' %></li>
+          <li><%= link "User Guide", to: "/site/guide", id: 'guide' %></li>
 
           <%= if @current_user.admin == true do %>
              <li role="separator" class="divider"></li>
