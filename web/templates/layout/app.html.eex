@@ -69,7 +69,7 @@
 
     <div class="container">
 
-     <span class="visible-xs" style="margin-top:-9px;margin-left:4px;">
+     <span class="visible-xs" style="margin-top:-9px;margin-left:4px;width:100%">
           <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
               <%= text_input f, :query, placeholder: "Search ...", autocorrect: "off", autocapitalize: "off", class: "searchbar", id: "search_notes" %>
           <%= end %>
