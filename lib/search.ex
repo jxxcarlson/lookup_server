@@ -92,13 +92,11 @@ defmodule LookupPhoenix.Search do
 
         end
 
-        if type == :tag do
+        case type do
 
-          query3 = from note in query2, where: ilike(note.tag_string, ^"%#{term}%")
-
-        else
-
-          query3 = from note in query2, where: ilike(note.title, ^"%#{term}%") or ilike(note.tag_string, ^"%#{term}%") or ilike(note.content, ^"%#{term}%")
+          :tag -> query3 = from note in query2, where: ilike(note.tag_string, ^"%#{term}%")
+          :text -> query3 = from note in query2, where: ilike(note.title, ^"%#{term}%") or ilike(note.tag_string, ^"%#{term}%") or ilike(note.content, ^"%#{term}%")
+          _ ->   query3 = from note in query2, where: ilike(note.title, ^"%#{term}%") or ilike(note.tag_string, ^"%#{term}%")
 
         end
 
@@ -114,7 +112,16 @@ defmodule LookupPhoenix.Search do
 
        [tags, terms] = split_query_terms(query_terms)
        tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
+       search_options = Enum.filter(terms, fn(term) -> String.starts_with?(term, "-") end) || []
+       terms = Enum.filter(terms, fn(term) -> !String.starts_with?(term, "-") end)
 
+       cond do
+         Enum.member?(search_options, "-t") -> type = :text
+         tags != [ ] -> type = :tag
+         true -> type = :standard
+       end
+
+       Utility.report("SEARCH - TAGS, TERMS, OPTIONS, TYPE", [tags, terms, search_options, type])
 
       if !Enum.member?(["all", "public"], channel_name) do
          tags = [channel_name|tags]
@@ -123,10 +130,10 @@ defmodule LookupPhoenix.Search do
      Utility.report("search_with_non_empty_arg, user_id", user_id)
 
       case tags do
-        [] -> query = basic_query(user_id, access, hd(terms), :term)
+        [] -> query = basic_query(user_id, access, hd(terms), type)
               terms = tl(terms)
 
-        _ -> query = query = basic_query(user_id, access, hd(tags), :tag)
+        _ -> query = query = basic_query(user_id, access, hd(tags), type)
              tags = tl(tags)
 
       end
