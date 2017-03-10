@@ -210,7 +210,10 @@ defmodule LookupPhoenix.NoteController do
 
     Note.update_viewed_at(note)
 
-    options = %{mode: "show", username: conn.assigns.current_user.username} |> Note.add_options(note)
+    # Note.add_options(note) -- adds the options
+    #    process: "latex" | "none"
+    #    collate: true | false
+    options = %{mode: "show", username: conn.assigns.current_user.username, public: note.public} |> Note.add_options(note)
 
 
     Utility.report("OPTIONS IN NOTE:SHOW", options)

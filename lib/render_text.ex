@@ -384,7 +384,7 @@ defmodule RenderText do
        end
    end
 
-   defp prepare_for_collation(text) do
+   defp prepare_for_collation(text, options) do
      # split input into lines
      [user_info|data] = String.split(String.trim(text), ["\n", "\r", "\r\n"])
      # remove empty items
@@ -392,25 +392,36 @@ defmodule RenderText do
      # remove comments:
      |> Enum.map(fn(item) -> Regex.replace(~r/(.*)\s*\#.*$/U, item, "\\1") end)
      [_, username] = String.split(user_info, "=")
-     Utility.report("AAAA", [user_info, data])
+
      data |> Enum.map(fn(item) -> prepare_item(item, username) end)
      |> Enum.filter(fn(item) -> Regex.match?(~r/^#{username}\./, item) end)
    end
 
    defp collate_one(id, str) do
-     IO.puts "collate_one, id = #{id}"
      note = Note.get(id)
-     IO.puts "collate_one, title = #{note.title}"
      str <> "\n\n" <> "== " <> note.title <> "\n\n" <> note.content <> "\n\n"
    end
 
+   defp collate_one_public(id, str) do
+     note = Note.get(id)
+     if note.public == true do
+       str <> "\n\n" <> "== " <> note.title <> "\n\n" <> note.content <> "\n\n"
+     else
+       str
+     end
+   end
+
    defp collate(input_text, options) do
-     if options.collate == true do
-        prepare_for_collation(input_text)
-        |> Enum.reduce("", fn(id, acc) -> collate_one(id, acc) end)
-      else
-        input_text
-      end
+     cond do
+       options.collate == true && options.public == true ->
+         prepare_for_collation(input_text, options)
+                 |> Enum.reduce("", fn(id, acc) -> collate_one_public(id, acc) end)
+       options.collate == true && options.public == false ->
+         prepare_for_collation(input_text, options)
+          |> Enum.reduce("", fn(id, acc) -> collate_one(id, acc) end)
+       true ->
+          input_text
+     end
    end
 
 
