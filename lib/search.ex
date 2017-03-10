@@ -398,15 +398,15 @@ defmodule LookupPhoenix.Search do
          true -> type = :standard
        end
 
-<<<<<<< HEAD
-      if !Enum.member?(["all", "public"], channel_name) and options.user_signed_in do
-=======
-       Utility.report("SEARCH - TAGS, TERMS, OPTIONS, TYPE", [tags, terms, search_options, type])
 
-      if !Enum.member?(["all", "public"], channel_name) do
->>>>>>> search
+      #! if !Enum.member?(["all", "public"], channel_name) and options.user_signed_in do
+
+     Utility.report("SEARCH - TAGS, TERMS, OPTIONS, TYPE", [tags, terms, search_options, type])
+
+    if !Enum.member?(["all", "public"], channel_name) do
+
          tags = [channel_name|tags]
-      end
+    end
 
       case tags do
         [] -> query = basic_query(user_id, access, hd(terms), type)
