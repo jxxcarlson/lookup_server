@@ -206,6 +206,14 @@ defmodule LookupPhoenix.NoteController do
   def show(conn, %{"id" => id}) do
 
     note = Note.get(id)
+
+    if Enum.member?(note.tags, ":toc") do
+      text = note.content
+      lines =  String.split(String.trim(text), ["\n", "\r", "\r\n"])
+      first_line  = hd(lines)
+      [id2, _] = String.split(first_line, ",")
+      redirect(conn, to: "/show2/#{note.id}/#{id2}")
+    end
     user = Repo.get!(User, note.user_id)
 
     Note.update_viewed_at(note)
@@ -243,6 +251,56 @@ defmodule LookupPhoenix.NoteController do
     # IO.puts "UPDATED AT: #{updated_at}"
     render(conn, "show.html", params)
   end
+
+  def show2(conn, %{"id" => id, "id2" => id2}) do
+
+      IO.puts "UUU id = #{id}"
+      IO.puts "UUU id2 = #{id2}"
+
+      note = Note.get(id)
+      note2 = Note.get(id2)
+      user = Repo.get!(User, note.user_id)
+
+      Note.update_viewed_at(note)
+
+      # Note.add_options(note) -- adds the options
+      #    process: "latex" | "none"
+      #    collate: true | false
+      options = %{mode: "show", username: conn.assigns.current_user.username, public: note.public} |> Note.add_options(note)
+      options2 = %{mode: "show", username: conn.assigns.current_user.username, public: note.public} |> Note.add_options(note2)
+
+      rendered_text = String.trim(RenderText.transform(note.content, options))
+      rendered_text2 = String.trim(RenderText.transform(note2.content, options2))
+
+
+      Utility.report("OPTIONS IN NOTE:SHOW", options)
+
+      inserted_at= Note.inserted_at_short(note)
+      updated_at= Note.updated_at_short(note)
+      word_count = RenderText.word_count(note.content)
+
+      sharing_is_authorized = true #  conn.assigns.current_user.id == note.user_id
+
+      params1 = %{note: note, note2: note2, rendered_text: rendered_text, rendered_text2: rendered_text2,
+                    inserted_at: inserted_at, updated_at: updated_at,
+                    options: options, word_count: word_count,
+                    sharing_is_authorized: sharing_is_authorized, current_id: note.id, channela: user.channel}
+
+
+      conn_query_string = conn.query_string || ""
+      if conn_query_string == "" do
+        query_string = "index=0&id_string=#{note.id}"
+      else
+        query_string = conn_query_string
+      end
+      params2 = Note.decode_query_string(query_string)
+
+      params = Map.merge(params1, params2)
+
+      # {:ok, updated_at } = note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
+      # IO.puts "UPDATED AT: #{updated_at}"
+      render(conn, "show2.html", params)
+    end
 
   def mailto(conn, %{"id" => id}) do
 
@@ -290,7 +348,7 @@ defmodule LookupPhoenix.NoteController do
         word_count = RenderText.word_count(note.content)
         tags = Note.tags2string(note)
 
-        rendered_text = RenderText.transform(note.content, %{collate: "no", mode: "show", process: "latex"})
+        rendered_text = RenderText.transform(note.content, %{collate: "no", toc: false, mode: "show", process: "latex"})
 
         params1 = %{note: note, changeset: changeset,
                     word_count: word_count, locked: locked,
@@ -333,7 +391,9 @@ defmodule LookupPhoenix.NoteController do
     params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
     params = Map.merge(params, %{random: "no"})
 
-    rendered_text = RenderText.transform(new_content, %{collate: "no", mode: "show", process: "latex"})
+
+    # rendered_text = RenderText.transform(new_content, %{collate: "no", mode: "show", process: "latex"})
+    rendered_text = RenderText.transform(new_content, Note.add_options(%{mode: "show"}, note))
 
     if save_option != "exit"  do
       params = params_for_save(conn, note, params, changeset, rendered_text)

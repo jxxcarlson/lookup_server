@@ -249,16 +249,26 @@ defmodule LookupPhoenix.Note do
 
     def add_options(options, note) do
 
-        if Enum.member?(note.tags, "latex") do
+        IO.puts "HI THERE! ADD OPTONS HERE"
+
+        options = Map.merge(options, %{note_id: note.id})
+
+        if Enum.member?(note.tags, ":latex") do
             options = Map.merge(options, %{process: "latex"})
         else
             options = Map.merge(options, %{process: "none"})
         end
 
-        if Enum.member?(note.tags, "collate") do
+        if Enum.member?(note.tags, ":collate") do
             options = Map.merge(options, %{collate: true, user_id: note.user_id})
         else
             options = Map.merge(options, %{collate: false})
+        end
+
+    if Enum.member?(note.tags, ":toc") do
+            options = Map.merge(options, %{toc: true, user_id: note.user_id})
+        else
+            options = Map.merge(options, %{toc: false})
         end
     end
 

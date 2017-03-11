@@ -1,0 +1,121 @@
+
+
+<style>
+
+span.standard {
+
+ float:right;
+ margin-right:8px;
+
+}
+
+
+h1 {font-size: 1.7em;margin-bottom:-1.7em;}
+h2 {font-size: 1.3em;margin-bottom:-2.4em;}
+h3 {font-size: 1.0em;margin-bottom:-3em;}
+h4 {font-size: 1.0em; margin-bottom:-3.5em;}
+
+.index_word{ color: darkred; }
+
+.answer_head{ color: blue;}
+
+.hide_answer{ color: blue; display:none }
+.show_answer{color: blue; display:inline}
+
+.navarrow { float:right; font-weight:bold;}
+
+.rendered_text1x {
+  float:left;
+  background-color: #ddddff;
+  padding-left: 1em;
+  margin-top:3em;
+  clear: right; padding-top:1em;
+  overflow: scroll;
+  height: 150px;
+  width: 20%;
+  white-space:pre-line;
+}
+
+.rendered_text2x {
+  float:left;
+  background-color: #f4f4f4;
+  padding-left: 1em;
+  margin-top:3em;
+  clear: right; padding-top:1em;
+  overflow: scroll;
+  height: 150px;
+  width: 80%;
+  white-space:pre-line;
+}
+
+</style>
+
+<div style="font-size: 1.2em; margin-top:-0.5em;">
+
+ <span style="font-size:2.1rem; font-style:bold; margin-bottom:0"> <%= @note.title  %> </span>
+
+ <p style="margin-bottom:1em;margin-top:1rem;">
+
+  <!-- <span class="small hidden-xs" style="margin-left:0;"> <%= @inserted_at %> </span> -->
+  <span class="small hidden-xs" style="float:left; margin-right:3em;margin-top:2px;"> <%= @inserted_at %> </span>
+
+
+
+
+  <span class="standard" ><%= link "Edit Master", to: note_path(@conn, :edit, @note, index: @index, id_string: @id_string) %> </span>
+  <span class="standard" ><%= link "Edit Note", to: note_path(@conn, :edit, @note2, index: @index, id_string: @id_string) %>  | </span>
+  <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %> | </span>
+  <span class="standard hidden-xs" >Channel <%= @channela %></span>
+
+
+</p>
+
+
+<div id="rendered_text1x" class="rendered_text1x">
+   <%= raw(@rendered_text) %>
+</div>
+
+<div id="rendered_text2x" class="rendered_text2x">
+   <%= raw(@rendered_text2) %>
+</div>
+
+
+
+</div>
+
+
+<p style="margin-top:1em;"> <i>
+  <span class="small hidden-xs"><b><%= LookupPhoenix.Note.public_indicator(@note) %></b>, Last updated: <%= @updated_at %></span>
+
+  <span class="small hidden-xs" style='margin-left:2em;'>ID: <%= @note.id %> </span>
+  <span class="small hidden-xs" style='margin-left:2em;'>Word count: <%= @word_count %> </span>
+  <span style='margin-left:2em;'>Tags: <%= @note.tag_string %></span></i>
+  <%= if @sharing_is_authorized do %>
+    <span style='margin-left:2em;'>
+      <%= link "Email Note", to: note_path(@conn, :mailto, @note.id, index: @next_index, id_string: @id_string) %>
+    </span>
+  <% end %>
+
+  </p>
+<br>
+
+<script>
+    document.getElementById("rendered_text1x").style.height = (window.innerHeight - 230) + 'px'
+    document.getElementById("rendered_text2x").style.height = (window.innerHeight - 230) + 'px'
+
+    var answer_head = document.getElementById("QQ");
+    var answer_tail = document.getElementById("QQA");
+    answer_head.classname = "answer_head"
+        answer_head.addEventListener("click",function(e){
+          if (answer_tail.className == "hide_answer") {
+            answer_tail.className = "show_answer"
+          } else {
+             answer_tail.className = "hide_answer";
+          }
+
+        });
+
+</script>
+
+
+

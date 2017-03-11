@@ -9,6 +9,7 @@ defmodule RenderText do
 
     def transform(text, options \\ %{mode: "show", process: "none", collate: false}) do
       collate(text, options)
+      processTOC(text, options)
       |> String.trim
       |> formatCode
       |> padString
@@ -353,8 +354,14 @@ defmodule RenderText do
    # https://lookupnote.herokuapp.com/notes/439?index=0&previous=439&next=439&id_list=439
 
    defp formatXREF(text) do
-     Regex.replace(~r/xref::([0-9]*)\[(.*)\]/U, text, "<a href=\"https://lookupnote.herokuapp.com/notes/\\1?index=0&previous=\\1&next=\\1&id_string=\\1\">\\2</a>")
+     # Regex.replace(~r/xref::([0-9]*)\[(.*)\]/U, text, "<a href=\"#{Constant.home_site}/notes/\\1?index=0&previous=\\1&next=\\1&id_string=\\1\">\\2</a>")
+     Regex.replace(~r/xref::(.*)\[(.*)\]/U, text, "<a href=\"#{Constant.home_site}/notes/\\1?index=0&previous=\\1&next=\\1&id_string=\\1\">\\2</a>")
    end
+
+   defp formatXREF2(text) do
+        # Regex.replace(~r/xref::([0-9]*)\[(.*)\]/U, text, "<a href=\"#{Constant.home_site}/notes/\\1?index=0&previous=\\1&next=\\1&id_string=\\1\">\\2</a>")
+        Regex.replace(~r/xref::(.*)\[(.*)\]/U, text, "<a href=\"#{Constant.home_site}/notes/\\1?mode=aside</a>")
+      end
 
    ########## collate ###########
 
@@ -423,7 +430,41 @@ defmodule RenderText do
      end
    end
 
+  ######## processTOC #######
 
+    defp make_toc_item(line, master_note_id) do
+      [id, label] = String.split(line, ",")
+      "<p><a href=\"#{Constant.home_site}/show2/#{master_note_id}/#{id}\">#{label}</a></p>"
+    end
+
+    defp prepare_toc(text, options) do
+       # split input into lines
+       lines = String.split(String.trim(text), ["\n", "\r", "\r\n"])
+       # remove empty items
+       |> Enum.filter(fn(item) -> item != "" end)
+       # remove comments:
+       |> Enum.map(fn(item) -> Regex.replace(~r/(.*)\s*\#.*$/U, item, "\\1") end)
+       |> Enum.map(fn(line) -> make_toc_item(line, options.note_id) end)
+    end
+
+    defp do_processTOC(text, options) do
+      prepare_toc(text, options)
+      |> Enum.reduce("", fn(item, acc) -> acc <> item end)
+    end
+
+    defp processTOC(text, options) do
+      Utility.report("processTOC, options", options)
+      cond do
+        options.toc == true -> do_processTOC(text, options)
+        options.toc == false ->  text
+
+        end
+    end
+
+
+
+
+  ############################
 
    # Need tests for this:
    defp ok_to_collate(user_id, id) do
