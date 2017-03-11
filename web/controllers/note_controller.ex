@@ -302,7 +302,30 @@ defmodule LookupPhoenix.NoteController do
 
   end
 
-  def doUpdate(note, changeset, new_content, save_option, conn, new_params) do
+  defp params_for_save(conn, note, params, changeset, rendered_text) do
+    locked = conn.assigns.current_user.read_only
+    word_count = RenderText.word_count(note.content)
+
+    params1 = %{note: note, changeset: changeset,
+                            word_count: word_count, locked: locked,
+                            conn: conn, rendered_text: rendered_text}
+
+     params = Map.merge(params, params1)
+  end
+
+  defp doUpdate(note, user, id, note_params, save_option, conn) do
+
+    new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
+    new_title = Regex.replace(~r/ß/, note_params["title"], "")
+
+    tags = Tag.str2tags(note_params["tag_string"])
+
+    new_params = Map.merge(note_params, %{"content" => new_content, "title" => new_title,
+        "tags" => tags, "edited_at" => Timex.now})
+
+    changeset = Note.changeset(note, new_params)
+    current_user = conn.assigns.current_user
+    changeset = Ecto.Changeset.update_change(changeset, :identifier, fn(ident) -> Note.normalize_identifier(current_user, ident) end)
 
 
     index = conn.params["index"]
@@ -310,29 +333,11 @@ defmodule LookupPhoenix.NoteController do
     params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
     params = Map.merge(params, %{random: "no"})
 
-
-    current_user = conn.assigns.current_user
-    changeset = Ecto.Changeset.update_change(changeset, :identifier, fn(ident) -> Note.normalize_identifier(current_user, ident) end)
-
-    # rendered_text = RenderText.transform(changeset.changes.content, %{collate: "no", mode: "show", process: "latex"})
     rendered_text = RenderText.transform(new_content, %{collate: "no", mode: "show", process: "latex"})
 
     if save_option != "exit"  do
-        locked = conn.assigns.current_user.read_only
-        word_count = RenderText.word_count(note.content)
-        tags = Note.tags2string(note)
-
-        params1 = %{note: note, changeset: changeset,
-                            word_count: word_count, locked: locked,
-                            conn: conn, tags: tags, note: note,
-                            rendered_text: rendered_text}
-        simulated_query_string = "index=0&id_string=#{note.id}"
-        params2 = Note.decode_query_string(simulated_query_string)
-        params = Map.merge(params1, params2)
-        params = Map.merge(params, new_params)
-
-     end
-
+      params = params_for_save(conn, note, params, changeset, rendered_text)
+    end
 
 
     Utility.report("CHANGESET 2", changeset)
@@ -343,19 +348,14 @@ defmodule LookupPhoenix.NoteController do
           # |> put_flash(:info, "Note updated successfully.")
           |> redirect(to: note_path(conn, :show, note, params))
         else
-          # conn |> redirect(to: note_path(conn, :edit, note, params))
           conn
           |> render "edit.html", params
-          # |> redirect(to: note_path(conn, :edit, note, params))
         end
       {:error, changeset} ->
-            conn
+          conn
           |> put_flash(:info, "ERROR - is the identifier you proposed unique?")
           |> render "edit.html", params
-          # |> render("edit.html", note: note, changeset: changeset)
-          #|> render("edit.html", note: note, params: changeset, note_count: 1,
-          #   current_id: note.id, index: params["index"], id_string: params["id_string"],
-          #   last_id: params["last_id"], last_index: 0)
+
     end
   end
 
@@ -364,21 +364,8 @@ defmodule LookupPhoenix.NoteController do
     note = Repo.get!(Note, id)
     user = conn.assigns.current_user
 
-    new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
-    new_title = Regex.replace(~r/ß/, note_params["title"], "")
-
-    tags = Tag.str2tags(note_params["tag_string"])
-
-    new_params = %{"content" => new_content, "title" => new_title,
-      "edited_at" => Timex.now, "tag_string" => note_params["tag_string"],
-      "tags" => tags, "public" => note_params["public"],
-      "shared" => note_params["shared"], "tokens" => note_params["tokens"],
-      "idx" => note_params["idx"], "identifier" => note_params["identifier"]}
-
-    changeset = Note.changeset(note, new_params)
-
     if ((user.read_only == false) and (note.user_id ==  user.id)) do
-      doUpdate(note, changeset, new_content, save_option, conn, new_params)
+      doUpdate(note, user, id, note_params, save_option, conn)
     else
       read_only_message(conn)
     end
