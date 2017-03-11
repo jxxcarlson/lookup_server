@@ -7,9 +7,8 @@ defmodule RenderText do
 
 ############# PUBLIC ##################
 
-    def transform(input_text, options \\ %{mode: "show", process: "none", collate: false}) do
-      Utility.report("Text Transform, OPTIONS", options)
-      collate(input_text, options)
+    def transform(text, options \\ %{mode: "show", process: "none", collate: false}) do
+      collate(text, options)
       |> String.trim
       |> formatCode
       |> padString

@@ -10,7 +10,7 @@ span { color: darkred; font-weight:500;}
        <div>
           <h2 style="color:darkred; font-size:3em;">www.lookupnote.io</h2>
 
-          <p>Please sign in or register</p>
+          <p>Please <a href="/sessions/new">sign in</a> or <a href="/users/new">register</a></p>
 
           <p>Try the <a href="http://www.lookupnote.io/site/demo" target="_blank" ><b>Demo!</b></a> </p>
        </div>
@@ -29,7 +29,7 @@ span { color: darkred; font-weight:500;}
 
      <p><span>Advanced features</span> for those who need them: code formatting, mini markup and
       LaTeX for mathemtical and chemical formulas.
-      For more information, click on the <span>Manual</span> tab when you are signed in.</p>
+      For more information, see the <a href="/site/guide">User Guide</a>.
 
      <BR>
 

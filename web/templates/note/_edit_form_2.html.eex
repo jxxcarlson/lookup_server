@@ -31,6 +31,22 @@ input[type=checkbox]
   font-size: 110%;
   display: inline;
 }
+
+.rendered_text {
+  float: left;
+  background-color: #f4f4f4;
+  margin-right:0;
+  width: 50%;
+  padding-left: 1em;
+  padding-right: 1em;
+  margin-top:0x;
+  clear: right;
+  padding-top:1em;
+  overflow: scroll;
+  height: 150px;
+  white-space:pre-line;
+}
+
 </style>
 
 
@@ -57,7 +73,9 @@ input[type=checkbox]
        <%= error_tag f, :content %>
      </div>
 
-     <div id="rendered_text2" style="margin-left: 52%; background-color: #f4f4f4; width: 50%; padding-left: 1em;padding-right: 1em; margin-top:3em; clear: right; padding-top:1em; overflow: scroll; height: 150px; white-space:pre-line;"><%= raw(String.trim(RenderText.transform(@note.content, %{collate: "no", mode: "show", process: "latex"}))) %> </div>
+   <div id="rendered_text2a" class="rendered_text">
+       <%= raw(@rendered_text) %>
+     </div>
   </div>
 
 
@@ -113,7 +131,7 @@ input[type=checkbox]
 
 <script>
     document.getElementById("content2").style.height = (window.innerHeight - 300) + 'px'
-    document.getElementById("rendered_text2").style.height = (window.innerHeight - 300) + 'px'
+    document.getElementById("rendered_text2a").style.height = (window.innerHeight - 300) + 'px'
     console.log("window.innerHeight: " + window.innerHeight)
 </script>
 

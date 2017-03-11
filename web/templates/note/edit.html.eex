@@ -65,7 +65,7 @@
   <%= render "_edit_form_2.html", changeset: @changeset,
        action: note_path(@conn, :update, @note),locked: @locked,
        word_count: @word_count, conn: @conn, index: @index,
-       id_string: @id_string, note: @note
+       id_string: @id_string, note: @note, rendered_text: @rendered_text
   %>
 
 </div>
@@ -77,7 +77,7 @@
   <%= render "_edit_form_3.html", changeset: @changeset,
        action: note_path(@conn, :update, @note),locked: @locked,
        word_count: @word_count, conn: @conn, index: @index,
-       id_string: @id_string, note: @note
+       id_string: @id_string, note: @note, rendered_text: @rendered_text
   %>
 
 </div>

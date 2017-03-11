@@ -290,9 +290,11 @@ defmodule LookupPhoenix.NoteController do
         word_count = RenderText.word_count(note.content)
         tags = Note.tags2string(note)
 
+        rendered_text = RenderText.transform(note.content, %{collate: "no", mode: "show", process: "latex"})
+
         params1 = %{note: note, changeset: changeset,
                     word_count: word_count, locked: locked,
-                    conn: conn, tags: tags, note: note}
+                    conn: conn, tags: tags, note: note, rendered_text: rendered_text}
         params2 = Note.decode_query_string(conn.query_string)
         params = Map.merge(params1, params2)
 
@@ -300,31 +302,38 @@ defmodule LookupPhoenix.NoteController do
 
   end
 
-  def doUpdate(note, changeset, save_option, conn, new_params) do
+  def doUpdate(note, changeset, new_content, save_option, conn, new_params) do
+
 
     index = conn.params["index"]
     id_string = conn.params["id_string"]
     params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
     params = Map.merge(params, %{random: "no"})
 
-    if save_option != "exit" do
-        locked = conn.assigns.current_user.read_only
-                    word_count = RenderText.word_count(note.content)
-                    tags = Note.tags2string(note)
 
-              params1 = %{note: note, changeset: changeset,
-                                word_count: word_count, locked: locked,
-                                conn: conn, tags: tags, note: note}
-              simulated_query_string = "index=0&id_string=#{note.id}"
-              params2 = Note.decode_query_string(simulated_query_string)
-              params = Map.merge(params1, params2)
-              params = Map.merge(params, new_params)
-
-    end
-
-    Utility.report("CHANGESET 1", changeset)
     current_user = conn.assigns.current_user
     changeset = Ecto.Changeset.update_change(changeset, :identifier, fn(ident) -> Note.normalize_identifier(current_user, ident) end)
+
+    # rendered_text = RenderText.transform(changeset.changes.content, %{collate: "no", mode: "show", process: "latex"})
+    rendered_text = RenderText.transform(new_content, %{collate: "no", mode: "show", process: "latex"})
+
+    if save_option != "exit"  do
+        locked = conn.assigns.current_user.read_only
+        word_count = RenderText.word_count(note.content)
+        tags = Note.tags2string(note)
+
+        params1 = %{note: note, changeset: changeset,
+                            word_count: word_count, locked: locked,
+                            conn: conn, tags: tags, note: note,
+                            rendered_text: rendered_text}
+        simulated_query_string = "index=0&id_string=#{note.id}"
+        params2 = Note.decode_query_string(simulated_query_string)
+        params = Map.merge(params1, params2)
+        params = Map.merge(params, new_params)
+
+     end
+
+
 
     Utility.report("CHANGESET 2", changeset)
     case Repo.update(changeset) do
@@ -336,8 +345,8 @@ defmodule LookupPhoenix.NoteController do
         else
           # conn |> redirect(to: note_path(conn, :edit, note, params))
           conn
-          |> put_flash(:info, "Note updated successfully.")
           |> render "edit.html", params
+          # |> redirect(to: note_path(conn, :edit, note, params))
         end
       {:error, changeset} ->
             conn
@@ -369,7 +378,7 @@ defmodule LookupPhoenix.NoteController do
     changeset = Note.changeset(note, new_params)
 
     if ((user.read_only == false) and (note.user_id ==  user.id)) do
-      doUpdate(note, changeset, save_option, conn, new_params)
+      doUpdate(note, changeset, new_content, save_option, conn, new_params)
     else
       read_only_message(conn)
     end
