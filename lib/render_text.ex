@@ -9,7 +9,7 @@ defmodule RenderText do
 
     def transform(text, options \\ %{mode: "show", process: "none", collate: false}) do
       collate(text, options)
-      processTOC(text, options)
+      |> processTOC(options)
       |> String.trim
       |> formatCode
       |> padString
@@ -434,16 +434,22 @@ defmodule RenderText do
 
     defp make_toc_item(line, master_note_id) do
       [id, label] = String.split(line, ",")
-      "<p><a href=\"#{Constant.home_site}/show2/#{master_note_id}/#{id}\">#{label}</a></p>"
+      cond do
+        id == "title" ->
+          "<p class=\"title\">#{label}</p>"
+        true ->
+          "<p><a href=\"#{Constant.home_site}/show2/#{master_note_id}/#{id}\">#{label}</a></p>"
+      end
     end
 
     defp prepare_toc(text, options) do
        # split input into lines
        lines = String.split(String.trim(text), ["\n", "\r", "\r\n"])
-       # remove empty items
-       |> Enum.filter(fn(item) -> item != "" end)
        # remove comments:
        |> Enum.map(fn(item) -> Regex.replace(~r/(.*)\s*\#.*$/U, item, "\\1") end)
+       # remove empty items
+       |> Enum.filter(fn(item) -> item != "" end)
+       # Make TOC items
        |> Enum.map(fn(line) -> make_toc_item(line, options.note_id) end)
     end
 
@@ -454,11 +460,14 @@ defmodule RenderText do
 
     defp processTOC(text, options) do
       Utility.report("processTOC, options", options)
-      cond do
-        options.toc == true -> do_processTOC(text, options)
-        options.toc == false ->  text
-
-        end
+      IO.puts "options.toc = #{options.toc}"
+      if options.toc == true do
+        IO.puts "PROCESSING AS TOC ..."
+        do_processTOC(text, options)
+      else
+        IO.puts "IN PROCESS_TOC, PASSING TEXT UNCHANGED ..."
+        text
+      end
     end
 
 

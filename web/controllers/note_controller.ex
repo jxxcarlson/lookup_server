@@ -203,17 +203,11 @@ defmodule LookupPhoenix.NoteController do
 
   ##########################################################
 
-  def show(conn, %{"id" => id}) do
 
-    note = Note.get(id)
+  def do_show(conn, note) do
 
-    if Enum.member?(note.tags, ":toc") do
-      text = note.content
-      lines =  String.split(String.trim(text), ["\n", "\r", "\r\n"])
-      first_line  = hd(lines)
-      [id2, _] = String.split(first_line, ",")
-      redirect(conn, to: "/show2/#{note.id}/#{id2}")
-    end
+   IO.puts("DO SHOW")
+
     user = Repo.get!(User, note.user_id)
 
     Note.update_viewed_at(note)
@@ -222,7 +216,7 @@ defmodule LookupPhoenix.NoteController do
     #    process: "latex" | "none"
     #    collate: true | false
     options = %{mode: "show", username: conn.assigns.current_user.username, public: note.public} |> Note.add_options(note)
-
+    rendered_text = String.trim(RenderText.transform(note.content, options))
 
     Utility.report("OPTIONS IN NOTE:SHOW", options)
 
@@ -232,7 +226,8 @@ defmodule LookupPhoenix.NoteController do
 
     sharing_is_authorized = true #  conn.assigns.current_user.id == note.user_id
 
-    params1 = %{note: note, inserted_at: inserted_at, updated_at: updated_at,
+    params1 = %{note: note, rendered_text: rendered_text,
+                  inserted_at: inserted_at, updated_at: updated_at,
                   options: options, word_count: word_count,
                   sharing_is_authorized: sharing_is_authorized, current_id: note.id, channela: user.channel}
 
@@ -250,6 +245,27 @@ defmodule LookupPhoenix.NoteController do
     # {:ok, updated_at } = note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
     # IO.puts "UPDATED AT: #{updated_at}"
     render(conn, "show.html", params)
+  end
+
+
+  def do_show2(conn, note) do
+      text = note.content
+      lines =  String.split(String.trim(text), ["\n", "\r", "\r\n"])
+      first_line  = hd(lines)
+      [id2, _] = String.split(first_line, ",")
+      redirect(conn, to: "/show2/#{note.id}/#{id2}")
+  end
+
+  def show(conn, %{"id" => id}) do
+
+    note = Note.get(id)
+
+    if Enum.member?(note.tags, ":toc") do
+      do_show2(conn, note)
+    else
+      do_show(conn, note)
+    end
+
   end
 
   def show2(conn, %{"id" => id, "id2" => id2}) do
@@ -371,7 +387,7 @@ defmodule LookupPhoenix.NoteController do
      params = Map.merge(params, params1)
   end
 
-  defp doUpdate(note, user, id, note_params, save_option, conn) do
+  defp doUpdate(note, note_params, save_option, conn) do
 
     new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
     new_title = Regex.replace(~r/ß/, note_params["title"], "")
@@ -393,7 +409,7 @@ defmodule LookupPhoenix.NoteController do
 
 
     # rendered_text = RenderText.transform(new_content, %{collate: "no", mode: "show", process: "latex"})
-    rendered_text = RenderText.transform(new_content, Note.add_options(%{mode: "show"}, note))
+    rendered_text = RenderText.transform(new_content, Note.add_options(%{mode: "show", public: note.public}, note))
 
     if save_option != "exit"  do
       params = params_for_save(conn, note, params, changeset, rendered_text)
@@ -411,7 +427,7 @@ defmodule LookupPhoenix.NoteController do
           conn
           |> render "edit.html", params
         end
-      {:error, changeset} ->
+      {:error, _changeset} ->
           conn
           |> put_flash(:info, "ERROR - is the identifier you proposed unique?")
           |> render "edit.html", params
@@ -425,7 +441,7 @@ defmodule LookupPhoenix.NoteController do
     user = conn.assigns.current_user
 
     if ((user.read_only == false) and (note.user_id ==  user.id)) do
-      doUpdate(note, user, id, note_params, save_option, conn)
+      doUpdate(note, note_params, save_option, conn)
     else
       read_only_message(conn)
     end
@@ -458,9 +474,6 @@ defmodule LookupPhoenix.NoteController do
     end
   end
 
-  def grab(conn, url) do
-
-  end
 
 
 

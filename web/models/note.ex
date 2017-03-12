@@ -196,11 +196,6 @@ defmodule LookupPhoenix.Note do
       Repo.all(query2)
     end
 
-     def set_public_for_user(user_id, value) do
-        options = %{}
-        notes_for_user(user_id)|> Enum.map(fn(note) -> Note.set_public(note, value) end)
-     end
-
     def erase_string(note, str) do
        new_conent = String.replace(note.content, str, "")
        params = %{"content" => new_conent}

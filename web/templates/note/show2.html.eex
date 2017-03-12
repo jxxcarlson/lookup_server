@@ -48,28 +48,36 @@ h4 {font-size: 1.0em; margin-bottom:-3.5em;}
   white-space:pre-line;
 }
 
+p {
+  margin-top:0;
+  margin-bottom:4px;
+}
+
+p.title {
+  margin-top:12px;
+  margin-bottom:4px;
+  color: darkred;
+  font-style: bold;
+}
+
 </style>
 
 <div style="font-size: 1.2em; margin-top:-0.5em;">
 
- <span style="font-size:2.1rem; font-style:bold; margin-bottom:0"> <%= @note.title  %> </span>
+     <span style="font-size:2.1rem; font-style:bold; margin-bottom:0"> <%= @note.title  %> </span>
 
- <p style="margin-bottom:1em;margin-top:1rem;">
+     <p style="margin-bottom:1em;margin-top:1rem;">
 
-  <!-- <span class="small hidden-xs" style="margin-left:0;"> <%= @inserted_at %> </span> -->
-  <span class="small hidden-xs" style="float:left; margin-right:3em;margin-top:2px;"> <%= @inserted_at %> </span>
+          <span class="small hidden-xs" style="float:left; margin-right:3em;margin-top:2px;"> <%= @inserted_at %> </span>
+          <span class="standard" ><%= link "Edit Master", to: note_path(@conn, :edit, @note, index: @index, id_string: @id_string) %> </span>
+          <span class="standard" ><%= link "Edit Note", to: note_path(@conn, :edit, @note2, index: @index, id_string: @id_string) %>  | </span>
+          <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %> | </span>
+          <span class="standard hidden-xs" >Channel <%= @channela %></span>
 
-
-
-
-  <span class="standard" ><%= link "Edit Master", to: note_path(@conn, :edit, @note, index: @index, id_string: @id_string) %> </span>
-  <span class="standard" ><%= link "Edit Note", to: note_path(@conn, :edit, @note2, index: @index, id_string: @id_string) %>  | </span>
-  <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %> | </span>
-  <span class="standard hidden-xs" >Channel <%= @channela %></span>
+    </p>
 
 
-</p>
-
+</div>
 
 <div id="rendered_text1x" class="rendered_text1x">
    <%= raw(@rendered_text) %>
@@ -79,25 +87,24 @@ h4 {font-size: 1.0em; margin-bottom:-3.5em;}
    <%= raw(@rendered_text2) %>
 </div>
 
+<div style="clear:left;">
+    <p style="margin-top:1em;"> <i>
 
+      <span class="small hidden-xs"><b><%= LookupPhoenix.Note.public_indicator(@note) %></b>, Last updated: <%= @updated_at %></span>
 
+      <span class="small hidden-xs" style='margin-left:2em;'>ID: <%= @note.id %> </span>
+      <span class="small hidden-xs" style='margin-left:2em;'>Word count: <%= @word_count %> </span>
+      <span style='margin-left:2em;'>Tags: <%= @note.tag_string %></span></i>
+      <%= if @sharing_is_authorized do %>
+        <span style='margin-left:2em;'>
+          <%= link "Email Note", to: note_path(@conn, :mailto, @note.id, index: @next_index, id_string: @id_string) %>
+        </span>
+      <% end %>
+
+    </p>
 </div>
 
 
-<p style="margin-top:1em;"> <i>
-  <span class="small hidden-xs"><b><%= LookupPhoenix.Note.public_indicator(@note) %></b>, Last updated: <%= @updated_at %></span>
-
-  <span class="small hidden-xs" style='margin-left:2em;'>ID: <%= @note.id %> </span>
-  <span class="small hidden-xs" style='margin-left:2em;'>Word count: <%= @word_count %> </span>
-  <span style='margin-left:2em;'>Tags: <%= @note.tag_string %></span></i>
-  <%= if @sharing_is_authorized do %>
-    <span style='margin-left:2em;'>
-      <%= link "Email Note", to: note_path(@conn, :mailto, @note.id, index: @next_index, id_string: @id_string) %>
-    </span>
-  <% end %>
-
-  </p>
-<br>
 
 <script>
     document.getElementById("rendered_text1x").style.height = (window.innerHeight - 230) + 'px'

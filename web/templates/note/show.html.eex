@@ -67,7 +67,7 @@ h4 {font-size: 1.0em; margin-bottom:-3.5em;}
 
 
 <div id="rendered_text" class="rendered_text">
-   <%= raw(String.trim(RenderText.transform(@note.content, @options))) %>
+   <%= raw(@rendered_text) %>
 </div>
 
 
