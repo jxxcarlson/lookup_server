@@ -13,8 +13,8 @@ defmodule LookupPhoenix.Constant do
   end
 
   def home_site do
-    "http://www.lookupnote.io"
-    # "http://localhost:4001"
+    # "http://www.lookupnote.io"
+    "http://localhost:4001"
   end
 
   def not_found_note do

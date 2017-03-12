@@ -281,7 +281,7 @@ defmodule LookupPhoenix.Note do
       cond do
         is_integer(id) -> note = Repo.get!(Note, id)
         Regex.match?(~r/^[A-Za-z].*/, id) -> note = find_by_identifier(id)
-        true -> note = Repo.get!(Note, id)
+        true -> note = Repo.get!(Note, String.to_integer(id))
       end
       IO.puts "Note.get => title = #{note.title}"
       note

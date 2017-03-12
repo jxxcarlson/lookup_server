@@ -271,8 +271,12 @@ defmodule LookupPhoenix.NoteController do
 
   def show2(conn, %{"id" => id, "id2" => id2}) do
 
-      IO.puts "UUU id = #{id}"
-      IO.puts "UUU id2 = #{id2}"
+      IO.puts "SH0W2,  id = #{id}"
+      IO.puts "SH0W2 id2 = #{id2}"
+
+      qsMap = Utility.qs2map(conn.query_string)
+
+      Utility.report("query_string", conn.query_string)
 
       note = Note.get(id)
       note2 = Note.get(id2)
@@ -298,24 +302,55 @@ defmodule LookupPhoenix.NoteController do
 
       sharing_is_authorized = true #  conn.assigns.current_user.id == note.user_id
 
-      params1 = %{note: note, note2: note2, rendered_text: rendered_text, rendered_text2: rendered_text2,
+      params1 = %{note: note, note2: note2, parent: note, rendered_text: rendered_text, rendered_text2: rendered_text2,
                     inserted_at: inserted_at, updated_at: updated_at,
                     options: options, word_count: word_count,
                     sharing_is_authorized: sharing_is_authorized, current_id: note.id, channela: user.channel}
 
 
       conn_query_string = conn.query_string || ""
-      if conn_query_string == "" do
-        query_string = "index=0&id_string=#{note.id}"
-      else
-        query_string = conn_query_string
+      cond do
+        conn_query_string == "" ->
+          query_string = "index=0&id_string=#{note.id}"
+        !Regex.match?(~r/index=/,conn_query_string) ->
+          query_string =  conn_query_string <> "&index=0&id_string=#{note.id}"
+        true ->  query_string =  conn_query_string
+
       end
+
       params2 = Note.decode_query_string(query_string)
 
       params = Map.merge(params1, params2)
 
-      # {:ok, updated_at } = note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
-      # IO.puts "UPDATED AT: #{updated_at}"
+      # Get current toc history
+      toc_history_old = params["toc_history"] || ""
+      if toc_history_old == "" do
+        toc_history_list = []
+      else
+        toc_history_list = String.split(toc_history_old, ",")
+      end
+
+      Utility.report("Current [Tags, toc_history_list]", [note.tags, toc_history_list])
+      Utility.report( "[FLAG 1, FLAG 2]",[
+        Enum.member?(note.tags, ":toc"), !Enum.member?(toc_history_list, note.id)
+      ])
+
+      cond do
+        Enum.member?(note.tags, ":toc") && !Enum.member?(toc_history_list, note.id) ->
+          toc_history = toc_history_list ++ [note.id] |> Enum.join(",")
+        Enum.member?(note.tags, ":toc") && Enum.member?(toc_history_list, note.id) ->
+           toc_history = ""
+        true -> toc_history = toc_history_old
+      end
+
+
+     IO.puts "UPDATED TOC HISTORY = #{toc_history}"
+     IO.puts "query_string (1) = #{query_string}"
+
+      params = Map.merge(params, %{toc_history: toc_history})
+
+      IO.puts "QUERY STRING (2) = #{query_string}"
+      # render(conn, "show2.html/#{id}/#{id2}?#{query_string}", params)
       render(conn, "show2.html", params)
     end
 
