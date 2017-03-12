@@ -7,9 +7,21 @@ defmodule RenderText do
 
 ############# PUBLIC ##################
 
-    def transform(text, options \\ %{mode: "show", process: "none", collate: false}) do
-      collate(text, options)
-      |> processTOC(options)
+    # mode = plain | markup | latex | collate | toc
+
+    def transform(text, options \\ %{mode: "show", process: "markup"}) do
+      case options.process do
+        "plain" -> text
+        "markup" -> format_markup(text, options)
+        "latex" -> format_latex(text, options)
+        "collate" -> collate(text, options) |> format_latex(options)
+        "toc" -> processTOC(text, options)
+        _ -> format_markup(text, options)
+      end
+    end
+
+    defp format_markup(text, options) do
+      text
       |> String.trim
       |> formatCode
       |> padString
@@ -20,6 +32,16 @@ defmodule RenderText do
       |> insert_mathjax(options)
       |> String.trim
     end
+
+    defp format_latex(text, options) do
+      text
+      |> format_markup(options)
+      |> formatChem
+      |> formatChemBlock
+      |> insert_mathjax(options)
+      |> String.trim
+    end
+
 
     def preprocessURLs(text) do
       text
@@ -419,10 +441,10 @@ defmodule RenderText do
 
    defp collate(input_text, options) do
      cond do
-       options.collate == true && options.public == true ->
+       options.public == true ->
          prepare_for_collation(input_text, options)
                  |> Enum.reduce("", fn(id, acc) -> collate_one_public(id, acc) end)
-       options.collate == true && options.public == false ->
+       options.public == false ->
          prepare_for_collation(input_text, options)
           |> Enum.reduce("", fn(id, acc) -> collate_one(id, acc) end)
        true ->
@@ -434,6 +456,7 @@ defmodule RenderText do
 
     defp make_toc_item(line, master_note_id) do
       [id, label] = String.split(line, ",")
+      IO.puts "id = #{id}, label = #{label}"
       cond do
         id == "title" ->
           "<p class=\"title\">#{label}</p>"
@@ -450,24 +473,14 @@ defmodule RenderText do
        # remove empty items
        |> Enum.filter(fn(item) -> item != "" end)
        # Make TOC items
-       |> Enum.map(fn(line) -> make_toc_item(line, options.note_id) end)
-    end
-
-    defp do_processTOC(text, options) do
-      prepare_toc(text, options)
-      |> Enum.reduce("", fn(item, acc) -> acc <> item end)
+       Utility.report("lines", lines)
+       lines |> Enum.map(fn(line) -> make_toc_item(line, options.note_id) end)
     end
 
     defp processTOC(text, options) do
-      Utility.report("processTOC, options", options)
-      IO.puts "options.toc = #{options.toc}"
-      if options.toc == true do
-        IO.puts "PROCESSING AS TOC ..."
-        do_processTOC(text, options)
-      else
-        IO.puts "IN PROCESS_TOC, PASSING TEXT UNCHANGED ..."
-        text
-      end
+     IO.puts "HERE IS processTOC"
+     prepare_toc(text, options)
+     |> Enum.reduce("", fn(item, acc) -> acc <> item end)
     end
 
 

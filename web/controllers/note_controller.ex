@@ -251,6 +251,7 @@ defmodule LookupPhoenix.NoteController do
   def do_show2(conn, note) do
       text = note.content
       lines =  String.split(String.trim(text), ["\n", "\r", "\r\n"])
+      |> Enum.filter(fn(line) -> !Regex.match?(~r/^title/, line) end)
       first_line  = hd(lines)
       [id2, _] = String.split(first_line, ",")
       redirect(conn, to: "/show2/#{note.id}/#{id2}")
@@ -364,7 +365,7 @@ defmodule LookupPhoenix.NoteController do
         word_count = RenderText.word_count(note.content)
         tags = Note.tags2string(note)
 
-        rendered_text = RenderText.transform(note.content, %{collate: "no", toc: false, mode: "show", process: "latex"})
+        rendered_text = RenderText.transform(note.content, %{mode: "latex", toc: false, mode: "show", process: "latex"})
 
         params1 = %{note: note, changeset: changeset,
                     word_count: word_count, locked: locked,
