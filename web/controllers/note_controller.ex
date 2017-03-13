@@ -7,6 +7,9 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Tag
   alias LookupPhoenix.Search
   alias LookupPhoenix.Utility
+  alias LookupPhoenix.TOC
+  alias LookupPhoenix.Constant
+
 
   def getRandomNotes(current_user, tag \\ "none") do
       [_access, channel_name, user_id] = User.decode_channel(current_user)
@@ -31,8 +34,7 @@ defmodule LookupPhoenix.NoteController do
 
       user = conn.assigns.current_user
       qsMap = Utility.qs2map(conn.query_string)
-
-       Utility.report("1. INDEX: qsMap", qsMap)
+      Utility.report("1. INDEX: qsMap", qsMap)
 
       cond do
         params["random"] == nil -> random_display = true
@@ -254,7 +256,7 @@ defmodule LookupPhoenix.NoteController do
       |> Enum.filter(fn(line) -> !Regex.match?(~r/^title/, line) end)
       first_line  = hd(lines)
       [id2, _] = String.split(first_line, ",")
-      redirect(conn, to: "/show2/#{note.id}/#{id2}")
+      redirect(conn, to: "/show2/#{note.id}/#{id2}/#{note.id}>#{id2}")
   end
 
   def show(conn, %{"id" => id}) do
@@ -269,32 +271,40 @@ defmodule LookupPhoenix.NoteController do
 
   end
 
-  def show2(conn, %{"id" => id, "id2" => id2}) do
 
-      IO.puts "SH0W2,  id = #{id}"
-      IO.puts "SH0W2 id2 = #{id2}"
+  ######## SHOW2 #########
+
+
+
+  def show2(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history}) do
+
+     IO.puts "TOC HISTORY (0): #{toc_history}"
 
       qsMap = Utility.qs2map(conn.query_string)
+      note = Note.get(id); id = note.id
+      note2 = Note.get(id2); id2 = note2.id
 
-      Utility.report("query_string", conn.query_string)
+     toc_history = TOC.update_toc_history(toc_history, note, note2)
+     Utility.report "TOC HISTORY (1)", toc_history
+     history_string = TOC.make_history_string(toc_history)
+     history_links = TOC.make_history_links(toc_history)
 
-      note = Note.get(id)
-      note2 = Note.get(id2)
+     TOC.make_history(toc_history)
+
+
       user = Repo.get!(User, note.user_id)
+
+      IO.puts "NOTE: #{id}, NOTE 2: #{id2}"
 
       Note.update_viewed_at(note)
 
       # Note.add_options(note) -- adds the options
       #    process: "latex" | "none"
       #    collate: true | false
-      options = %{mode: "show", username: conn.assigns.current_user.username, public: note.public} |> Note.add_options(note)
-      options2 = %{mode: "show", username: conn.assigns.current_user.username, public: note.public} |> Note.add_options(note2)
-
+      options = %{mode: "show", username: conn.assigns.current_user.username, public: note.public, toc_history: history_string} |> Note.add_options(note)
+      options2 = %{mode: "show", username: conn.assigns.current_user.username, public: note.public, toc_history: history_string} |> Note.add_options(note2)
       rendered_text = String.trim(RenderText.transform(note.content, options))
       rendered_text2 = String.trim(RenderText.transform(note2.content, options2))
-
-
-      Utility.report("OPTIONS IN NOTE:SHOW", options)
 
       inserted_at= Note.inserted_at_short(note)
       updated_at= Note.updated_at_short(note)
@@ -304,55 +314,32 @@ defmodule LookupPhoenix.NoteController do
 
       params1 = %{note: note, note2: note2, parent: note, rendered_text: rendered_text, rendered_text2: rendered_text2,
                     inserted_at: inserted_at, updated_at: updated_at,
-                    options: options, word_count: word_count,
+                    options: options, word_count: word_count, history_links: history_links,
                     sharing_is_authorized: sharing_is_authorized, current_id: note.id, channela: user.channel}
-
 
       conn_query_string = conn.query_string || ""
       cond do
         conn_query_string == "" ->
-          query_string = "index=0&id_string=#{note.id}"
+          query_string = "index=0&id_string=#{id}"
         !Regex.match?(~r/index=/,conn_query_string) ->
-          query_string =  conn_query_string <> "&index=0&id_string=#{note.id}"
+          query_string =  conn_query_string <> "&index=0&id_string=#{id}"
         true ->  query_string =  conn_query_string
-
       end
 
       params2 = Note.decode_query_string(query_string)
-
       params = Map.merge(params1, params2)
 
-      # Get current toc history
-      toc_history_old = params["toc_history"] || ""
-      if toc_history_old == "" do
-        toc_history_list = []
-      else
-        toc_history_list = String.split(toc_history_old, ",")
-      end
-
-      Utility.report("Current [Tags, toc_history_list]", [note.tags, toc_history_list])
-      Utility.report( "[FLAG 1, FLAG 2]",[
-        Enum.member?(note.tags, ":toc"), !Enum.member?(toc_history_list, note.id)
-      ])
-
-      cond do
-        Enum.member?(note.tags, ":toc") && !Enum.member?(toc_history_list, note.id) ->
-          toc_history = toc_history_list ++ [note.id] |> Enum.join(",")
-        Enum.member?(note.tags, ":toc") && Enum.member?(toc_history_list, note.id) ->
-           toc_history = ""
-        true -> toc_history = toc_history_old
-      end
 
 
-     IO.puts "UPDATED TOC HISTORY = #{toc_history}"
-     IO.puts "query_string (1) = #{query_string}"
+       params = Map.merge(params, %{toc_history: Enum.join(toc_history, ","), history_string: history_string})
+       render(conn, "show2.html", params)
+    end # SHOW
 
-      params = Map.merge(params, %{toc_history: toc_history})
 
-      IO.puts "QUERY STRING (2) = #{query_string}"
-      # render(conn, "show2.html/#{id}/#{id2}?#{query_string}", params)
-      render(conn, "show2.html", params)
-    end
+
+
+
+  ###############
 
   def mailto(conn, %{"id" => id}) do
 
@@ -445,7 +432,7 @@ defmodule LookupPhoenix.NoteController do
 
 
     # rendered_text = RenderText.transform(new_content, %{collate: "no", mode: "show", process: "latex"})
-    rendered_text = RenderText.transform(new_content, Note.add_options(%{mode: "show", public: note.public}, note))
+    rendered_text = RenderText.transform(new_content, Note.add_options(%{mode: "show", public: note.public, toc_history: ""}, note))
 
     if save_option != "exit"  do
       params = params_for_save(conn, note, params, changeset, rendered_text)

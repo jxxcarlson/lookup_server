@@ -101,10 +101,16 @@ defmodule LookupPhoenix.Utility do
       ""
     else
       keys = Map.keys(map)
-          Enum.reduce(keys, [], fn(key, acc) -> acc ++ [key <> ": " <> map[key]] end)
-          |> Enum.join(", ")
+      Enum.reduce(keys, [], fn(key, acc) -> acc ++ [key <> ": " <> map[key]] end)
+      |> Enum.join(", ")
     end
   end
+
+
+   # return elemnts 0..(n-1) as list
+   def list_head(list, n) do
+     Enum.reduce(1..n, [], fn(k, acc) -> acc ++ hd(list); list = tl(list) end)
+   end
 
 
 end

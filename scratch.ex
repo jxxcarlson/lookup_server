@@ -1,5 +1,12 @@
-    new_params = %{"content" => new_content, "title" => new_title,
-      "edited_at" => Timex.now, "tag_string" => note_params["tag_string"],
-      "tags" => tags, "public" => note_params["public"],
-      "shared" => note_params["shared"], "tokens" => note_params["tokens"],
-      "idx" => note_params["idx"], "identifier" => note_params["identifier"]}
+  defp make_link(item) do
+    [id, id2] = item
+    title = Note.get(id).title
+    "<a href=\"/note2/#{id}/#{id2}/#{id}>#{id2}\">#{title}</a>"
+  end
+
+  # Example of toc_history argument:
+  # [[904, 443], [903, 757], [905, 447]]
+  def make_history_links(toc_history) do
+     Enum.map(toc_history, fn(item) -> make_link(item) end)
+     |> Enum.join(" >  ")
+  end

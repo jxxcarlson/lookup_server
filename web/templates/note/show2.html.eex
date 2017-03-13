@@ -64,9 +64,9 @@ p.title {
 
 <div style="font-size: 1.2em; margin-top:-0.5em;">
 
-     <span style="font-size:2.1rem; font-style:bold; margin-bottom:0"> <%= @note.title  %> </span>
+     <!-- <span style="font-size:2.1rem; font-style:bold; margin-bottom:0"> <%= @note.title  %> </span> -->
 
-     <span>TOC HISTORY: <%= @toc_history %></span>
+     <span><%= raw(@history_links) %></span>
 
      <p style="margin-bottom:1em;margin-top:1rem;">
 

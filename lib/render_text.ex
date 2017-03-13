@@ -3,19 +3,20 @@ defmodule RenderText do
   alias LookupPhoenix.Note
   alias LookupPhoenix.Utility
   alias LookupPhoenix.Constant
-  alias LookupPhoenix.Constant
+  alias LookupPhoenix.TOC
 
 ############# PUBLIC ##################
 
     # mode = plain | markup | latex | collate | toc
 
     def transform(text, options \\ %{mode: "show", process: "markup"}) do
+      Utility.report "IN TRANSFORM TEXT, OPTIONS ARE", options
       case options.process do
         "plain" -> text
         "markup" -> format_markup(text, options)
         "latex" -> format_latex(text, options)
         "collate" -> collate(text, options) |> format_latex(options)
-        "toc" -> processTOC(text, options)
+        "toc" -> TOC.process(text, options)
         _ -> format_markup(text, options)
       end
     end
@@ -454,34 +455,7 @@ defmodule RenderText do
 
   ######## processTOC #######
 
-    defp make_toc_item(line, master_note_id) do
-      [id, label] = String.split(line, ",")
-      IO.puts "id = #{id}, label = #{label}"
-      cond do
-        id == "title" ->
-          "<p class=\"title\">#{label}</p>"
-        true ->
-          "<p><a href=\"#{Constant.home_site}/show2/#{master_note_id}/#{id}\">#{label}</a></p>"
-      end
-    end
 
-    defp prepare_toc(text, options) do
-       # split input into lines
-       lines = String.split(String.trim(text), ["\n", "\r", "\r\n"])
-       # remove comments:
-       |> Enum.map(fn(item) -> Regex.replace(~r/(.*)\s*\#.*$/U, item, "\\1") end)
-       # remove empty items
-       |> Enum.filter(fn(item) -> item != "" end)
-       # Make TOC items
-       Utility.report("lines", lines)
-       lines |> Enum.map(fn(line) -> make_toc_item(line, options.note_id) end)
-    end
-
-    defp processTOC(text, options) do
-     IO.puts "HERE IS processTOC"
-     prepare_toc(text, options)
-     |> Enum.reduce("", fn(item, acc) -> acc <> item end)
-    end
 
 
 
