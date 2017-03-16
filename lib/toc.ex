@@ -110,7 +110,7 @@ defmodule LookupPhoenix.TOC do
     |> Enum.map(fn(line) -> make_toc_item(line, options) end)
   end
 
-
+  # DEAD CODE?
   defp make_toc_item(line, options) do
       toc_history = options.toc_history
       IO.puts "IN RENDER TEXT, toc_history: #{toc_history}"
@@ -129,10 +129,6 @@ defmodule LookupPhoenix.TOC do
           end
           "<p><a href=\"#{Constant.home_site}/show2/#{options.note_id}/#{id}/#{toc_history}\">#{label}</a></p>"
       end
-  end
-
-  def history2nav(history_string) do
-
   end
 
   def process(text, options) do

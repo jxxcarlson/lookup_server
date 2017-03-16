@@ -95,6 +95,7 @@ defmodule RenderText do
     defp apply_markdown(text) do
       text
       |> padString
+      |> formatTables
       |> formatCode
       |> formatVerbatim
       |> formatInlineCode
@@ -117,6 +118,34 @@ defmodule RenderText do
       #|> formatStrike
 
     end
+
+
+    def process_table_row(row) do
+      html_row = String.split(row, "|")
+      |> Enum.map(fn(item) -> String.trim(item) end)
+      |> Enum.filter(fn(item) -> item != "" end)
+      |> Enum.map(fn(item) -> "<td>" <> item <> "</td>"end )
+      "<tr>#{html_row}</tr>"
+    end
+
+    def process_table(table_contents) do
+      Utility.report "TABLE CONTENTS", table_contents
+      rows = String.split(table_contents, "\n")
+      |> Enum.filter(fn(row) -> row != "" end)
+      |> Enum.map(fn(row) -> process_table_row(row) end)
+      |> Enum.join("\n")
+      out = "\n<div  style=\"whitespace:normal; margin-left:2em;\">\n<table style=\"width:80%; align:center\">\n#{rows}\n</table>\n\</div>\n"
+      IO.puts "TABLE:\n#{out}"
+      out
+    end
+
+    def formatTables(text) do
+      sc = Regex.scan(~r/^^\|===\r\n(.*)\r\n\|===/msr, text)
+      Utility.report "SCAN", sc
+      sc |> Enum.reduce(text, fn(item, text) -> [a,b] = item; IO.puts "\n\na:\n#{a}\n\nb:\n#{b}\n\n"; String.replace(text, a, process_table(b)) end)
+      # sc |> Enum.reduce(text, fn(item, text) -> [a,b] = item; IO.puts "\n\na:\n#{a}\n\nb:\n#{b}\n\n"; "FOO" end)
+    end
+
 
     defp getURLs(text) do
       Regex.scan(~r/((http|https):\/\/\S*)\s/, " " <> text <> " ", [:all])
