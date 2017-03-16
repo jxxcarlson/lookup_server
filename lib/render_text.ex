@@ -134,16 +134,13 @@ defmodule RenderText do
       |> Enum.filter(fn(row) -> row != "" end)
       |> Enum.map(fn(row) -> process_table_row(row) end)
       |> Enum.join("\n")
-      out = "\n<div  style=\"whitespace:normal; margin-left:2em;\">\n<table style=\"width:80%; align:center\">\n#{rows}\n</table>\n\</div>\n"
-      IO.puts "TABLE:\n#{out}"
-      out
+      "<div  style=\"whitespace:normal; margin-left:2em;\"><table style=\"width:80%; align:center\">\n#{rows}\n</table>\</div>"
     end
 
     def formatTables(text) do
       sc = Regex.scan(~r/^^\|===\r\n(.*)\r\n\|===/msr, text)
       Utility.report "SCAN", sc
-      sc |> Enum.reduce(text, fn(item, text) -> [a,b] = item; IO.puts "\n\na:\n#{a}\n\nb:\n#{b}\n\n"; String.replace(text, a, process_table(b)) end)
-      # sc |> Enum.reduce(text, fn(item, text) -> [a,b] = item; IO.puts "\n\na:\n#{a}\n\nb:\n#{b}\n\n"; "FOO" end)
+      sc |> Enum.reduce(text, fn(item, text) -> [a,b] = item; String.replace(text, a, process_table(b)) end)
     end
 
 
