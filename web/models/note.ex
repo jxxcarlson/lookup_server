@@ -256,26 +256,6 @@ defmodule LookupPhoenix.Note do
 
     end
 
-    # If user is "joe"
-    # joe.foobar => joe.foobar
-    # hoho.foobar => joe.foobar
-    # foobar => joe.foobar
-    def normalize_identifier(user, identifier) do
-      if String.contains?(identifier, ".") do
-        identifier_parts = String.split(identifier, ".")
-        if hd(identifier_parts) == user.username do
-        identifier = tl(identifier_parts) |> Enum.join(".")
-        end
-      end
-      "#{user.username}.#{identifier}"
-    end
-
-    def find_by_identifier(identifier) do
-      query = Ecto.Query.from note in Note,
-              where: note.identifier == ^identifier
-      Repo.one(query)
-    end
-
     def get(id) do
       IO.puts "Note.get(#{id})"
       cond do
@@ -288,19 +268,6 @@ defmodule LookupPhoenix.Note do
       # note = note || find_by_identifier(Constant.not_found_note())
       # Repo.preload(note, :user).user
       # note
-    end
-
-    defp random_string(length) do
-       :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
-    end
-
-    def make_identifier(prefix, title, length) do
-      title2 = Regex.replace(~r/[^a-zA-Z0-9\-\._                                                            ]/, title, "")
-      part1 = prefix <> "." <> title2
-      |> String.downcase
-      |> String.replace(" ", "_")
-      part2 = random_string(4)
-      part1 <> "." <> part2
     end
 
      ## INIT (ONE-TIME) ##
@@ -342,6 +309,41 @@ defmodule LookupPhoenix.Note do
       Repo.update(changeset)
     end
 
+    #### IDENTIFIER ####
+
+    # If user is "joe"
+    # joe.foobar => joe.foobar
+    # hoho.foobar => joe.foobar
+    # foobar => joe.foobar
+    def normalize_identifier(user, identifier) do
+      if String.contains?(identifier, ".") do
+        identifier_parts = String.split(identifier, ".")
+        if hd(identifier_parts) == user.username do
+        identifier = tl(identifier_parts) |> Enum.join(".")
+        end
+      end
+      "#{user.username}.#{identifier}"
+    end
+
+    def find_by_identifier(identifier) do
+      query = Ecto.Query.from note in Note,
+              where: note.identifier == ^identifier
+      Repo.one(query)
+    end
+
+    defp random_string(length) do
+      :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
+    end
+
+    def make_identifier(prefix, title, length) do
+      title2 = Regex.replace(~r/[^a-zA-Z0-9\-\._                                                            ]/, title, "")
+      part1 = prefix <> "." <> title2
+      |> String.downcase
+      |> String.replace(" ", "_")
+      part2 = random_string(4)
+      part1 <> "." <> part2
+    end
+
     def set_identifier(note) do
       if note.identifier == nil do
           user = Repo.get!(User, note.user_id)
@@ -358,6 +360,8 @@ defmodule LookupPhoenix.Note do
       |> Enum.map(fn(note) -> Note.set_identifier(note) end)
     end
 
+    #########################
+
     def set_bad_tags do
        Note
        |> Repo.all
@@ -371,9 +375,6 @@ defmodule LookupPhoenix.Note do
        |> Enum.filter(fn(note) -> (note.tag_string == nil) or (note.tag_string == "-") end)
        |> Enum.reduce(0,fn(note, acc) -> acc + 1 end)
     end
-
-
-
 
 end
 
