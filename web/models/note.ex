@@ -311,6 +311,7 @@ defmodule LookupPhoenix.Note do
 
     #### IDENTIFIER ####
 
+
     # If user is "joe"
     # joe.foobar => joe.foobar
     # hoho.foobar => joe.foobar
@@ -335,19 +336,40 @@ defmodule LookupPhoenix.Note do
       :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
     end
 
-    def make_identifier(prefix, title, length) do
-      title2 = Regex.replace(~r/[^a-zA-Z0-9\-\._                                                            ]/, title, "")
-      part1 = prefix <> "." <> title2
+
+    # Return unique identifier
+    # Example: make_identifier("jxx", "foo.bar")
+    # returns 'foo.bar.1' if there are no identifiers
+    # of the form 'foo.bar.n'.  If 'foo.bar.10' is the
+    # identifier matching foo.bar.n with maximal n,
+    # the 'foo.bar.11' is returned.
+    def make_identifier(username, title) do
+      identifier = username <> "." <> title
       |> String.downcase
-      |> String.replace(" ", "_")
-      part2 = random_string(4)
-      part1 <> "." <> part2
+      |> Utility.sanitize_string
+      query = Ecto.Query.from note in Note,
+        select: note.identifier,
+        where: ilike(note.identifier, ^"%#{identifier}%")
+      identifiers = Repo.all(query)
+
+      numerical_suffixes = identifiers |> Enum.map(fn(identifier) -> String.split(identifier, ".") |> Utility.last end)
+      |> Enum.filter(fn(identifier) -> Regex.match?(~r/^[0-9]+/, identifier) end)
+      |> Enum.map(fn(item) -> String.to_integer(item) end)
+      |> Enum.sort
+
+      last_id_suffix = numerical_suffixes |> Utility.last
+
+      cond do
+        length(identifiers) == 0 -> identifier
+        numerical_suffixes == [] -> "#{identifier}.1"
+        true -> suffix = last_id_suffix + 1; "#{identifier}.#{suffix}"
+      end
     end
 
     def set_identifier(note) do
       if note.identifier == nil do
           user = Repo.get!(User, note.user_id)
-          identifier = make_identifier(user.username, note.title, 4)
+          identifier = make_identifier(user.username, note.title)
           params = %{"identifier" => identifier}
           changeset = Note.changeset(note, params)
           Repo.update(changeset)

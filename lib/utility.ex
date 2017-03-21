@@ -4,7 +4,15 @@ defmodule LookupPhoenix.Utility do
     IO.puts "========================"
     IO.puts message
     IO.inspect object
+    IO.puts "--"
+  end
+
+  def stream_report(object, message) do
     IO.puts "========================"
+    IO.puts message
+    IO.inspect object
+    IO.puts "--"
+    object
   end
 
   def firstWord(str) do
@@ -111,6 +119,18 @@ defmodule LookupPhoenix.Utility do
    def list_head(list, n) do
      Enum.reduce(1..n, [], fn(k, acc) -> acc ++ hd(list); list = tl(list) end)
    end
+
+   # last([1,3,5]) = 5
+   def last(list) do
+     n = length(list) - 1
+     Enum.at(list, n)
+   end
+
+    # Replace "bad" characters by underscore
+    def sanitize_string(str) do
+      Regex.replace(~r/[^A-Za-z0-9_\._]/, str, "_")
+      |> String.replace(" ", "_")
+    end
 
 
 end
