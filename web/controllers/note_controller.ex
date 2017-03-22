@@ -167,7 +167,7 @@ defmodule LookupPhoenix.NoteController do
   def setup(conn, note_params) do
       [access, channel_name, user_id] = User.decode_channel(conn.assigns.current_user)
       [tag_string, tags] = get_tags(note_params, channel_name)
-      new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
+      new_content = Regex.replace(~r/ß/, note_params["content"], "")
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
       identifier = Identifier.make(conn.assigns.current_user.username, new_title)
       IO.puts "In create note, identifier = #{identifier}"
@@ -414,7 +414,7 @@ defmodule LookupPhoenix.NoteController do
 
   defp doUpdate(note, note_params, save_option, conn) do
 
-    new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
+    new_content = Regex.replace(~r/ß/, note_params["content"], "")
     new_title = Regex.replace(~r/ß/, note_params["title"], "")
 
     tags = Tag.str2tags(note_params["tag_string"])

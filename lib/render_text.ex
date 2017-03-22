@@ -43,15 +43,6 @@ defmodule RenderText do
       |> String.trim
     end
 
-
-    def preprocessURLs(text) do
-      text
-      |> padString
-      # |> simplifyURLs
-      # |> preprocessImageURLs
-      |> String.trim
-    end
-
     def firstParagraph(text) do
       short_text = Regex.run(~r/.*\s\s/, text)
       case short_text do
