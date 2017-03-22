@@ -12,52 +12,21 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Identifier
 
 
-  def getRandomNotes(current_user, tag \\ "none") do
-      [_access, channel_name, user_id] = User.decode_channel(current_user)
-
-     Utility.report("channel_name in getRandomNotes", channel_name)
-
-     note_count = Search.count_for_user(user_id, tag)
-     expected_number_of_entries = 7
-     cond do
-       note_count > 14 ->
-          p = (100*expected_number_of_entries) / note_count
-          notes = Search.random_notes_for_user(p, current_user, 7, tag)
-       note_count <= 14 ->
-          notes = Search.notes_for_user(current_user, %{"tag" => tag, "sort_by" => "created_at", "direction" => "desc"}).notes
-     end
-
-     notes = Utility.add_index_to_maplist(notes)
-
-  end
-
-  def setup_index(conn, params) do
-
-      user = conn.assigns.current_user
-      qsMap = Utility.qs2map(conn.query_string)
-      Utility.report("1. INDEX: qsMap", qsMap)
-
+   defp get_random_display(params) do
       cond do
-        params["random"] == nil -> random_display = true
-        params["random"] == "no" -> random_display = false
-        params["random"] == "yes" -> random_display = true
-        true -> random_display = true
+        params["random"] == nil -> true
+        params["random"] == "no" -> false
+        params["random"] == "yes" -> true
+        true -> true
       end
+   end
 
-      Utility.report("1. options, random_display", random_display)
-
-      channel = Utility.qs2map(conn.query_string)["set_channel"]
+  def setup_channel(user, query_string_map) do
+      channel = query_string_map["set_channel"]
       if channel != nil and channel != user.channel do
         User.set_channel(user, channel)
       end
-
-      [access, channel_name, user_id] = User.decode_channel(user)
-
-      id_list = Note.recall_list(user.id)
-      mode = qsMap["mode"]
-      # channel =
-
-      [mode, id_list, qsMap, random_display, user]
+      channel
   end
 
   def get_note_record(mode, id_list, user, options) do
@@ -85,18 +54,23 @@ defmodule LookupPhoenix.NoteController do
      conn.cookies[cookie_name]
    end
 
+
   def index(conn, params) do
 
      current_user = conn.assigns.current_user
-  
-     [mode, id_list, qsMap, random_display, user]  = setup_index(conn, params)
 
-     note_record = get_note_record(mode, id_list, user, %{random_display: random_display})
+     # GET PARAMETERS
+     query_string_map = Utility.qs2map(conn.query_string)
+     Utility.qs2map(conn.query_string)
+     mode = query_string_map["mode"]
+     random_display = get_random_display(params)
+
+     setup_channel(current_user, query_string_map)
+     [access, channel_name, user_id] = User.decode_channel(current_user)
+     id_list = Note.recall_list(current_user.id)
+     note_record = get_note_record(mode, id_list, current_user, %{random_display: random_display})
 
      options = %{mode: "index", process: "none"}
-
-     Utility.report("2. INDEX: qsMap", qsMap)
-     Utility.report("2. options, random_display", random_display )
 
      if note_record.original_note_count > note_record.note_count do
        noteCountString = "#{note_record.note_count} Random notes from #{note_record.original_note_count}"
@@ -109,7 +83,7 @@ defmodule LookupPhoenix.NoteController do
      params2 = %{current_user: current_user, notes: notes, id_string: id_string, noteCountString: noteCountString, options: options}
 
 
-     if qsMap["set_channel"] == nil do
+     if query_string_map["set_channel"] == nil do
        conn
        |> put_resp_cookie("site", current_user.username)
        |> render("index.html", params2)
