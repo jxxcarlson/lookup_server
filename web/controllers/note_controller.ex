@@ -9,6 +9,7 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Utility
   alias LookupPhoenix.TOC
   alias LookupPhoenix.Constant
+  alias LookupPhoenix.Identifier
 
 
   def getRandomNotes(current_user, tag \\ "none") do
@@ -168,7 +169,7 @@ defmodule LookupPhoenix.NoteController do
       [tag_string, tags] = get_tags(note_params, channel_name)
       new_content = Regex.replace(~r/ß/, note_params["content"], "") |> RenderText.preprocessURLs
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
-      identifier = Note.make_identifier(conn.assigns.current_user.username, new_title)
+      identifier = Identifier.make(conn.assigns.current_user.username, new_title)
       IO.puts "In create note, identifier = #{identifier}"
       new_params = %{"content" => new_content, "title" => new_title,
          "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now,
@@ -423,7 +424,7 @@ defmodule LookupPhoenix.NoteController do
 
     changeset = Note.changeset(note, new_params)
     current_user = conn.assigns.current_user
-    changeset = Ecto.Changeset.update_change(changeset, :identifier, fn(ident) -> Note.normalize_identifier(current_user, ident) end)
+    changeset = Ecto.Changeset.update_change(changeset, :identifier, fn(ident) -> Identifier.normalize(current_user, ident) end)
 
 
     index = conn.params["index"]

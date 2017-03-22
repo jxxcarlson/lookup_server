@@ -196,13 +196,6 @@ defmodule LookupPhoenix.Note do
       Repo.all(query2)
     end
 
-    def erase_string(note, str) do
-       new_conent = String.replace(note.content, str, "")
-       params = %{"content" => new_conent}
-       changeset = Note.changeset(note, params)
-       Repo.update(changeset)
-    end
-
     def public_indicator(note) do
       if note.public do
         "Public"
@@ -237,11 +230,6 @@ defmodule LookupPhoenix.Note do
       Enum.reduce(note.tokens, false, fn(token_record, acc) -> match_token(given_token, token_record) or acc end)
     end
 
-    ## test
-    def erase_string_in_all_notes(str) do
-         Note |> Repo.all |> Enum.map(fn(note) -> Note.erase_string(note, str) end)
-     end
-
     def add_options(options, note) do
 
         options = Map.merge(options, %{note_id: note.id})
@@ -260,143 +248,17 @@ defmodule LookupPhoenix.Note do
       IO.puts "Note.get(#{id})"
       cond do
         is_integer(id) -> note = Repo.get!(Note, id)
-        Regex.match?(~r/^[A-Za-z].*/, id) -> note = find_by_identifier(id)
+        Regex.match?(~r/^[A-Za-z].*/, id) -> note = Identifier.find_note(id)
         true -> note = Repo.get!(Note, String.to_integer(id))
       end
       IO.puts "Note.get => title = #{note.title}"
       note
-      # note = note || find_by_identifier(Constant.not_found_note())
+      # note = note || Identifier.find_note(Constant.not_found_note())
       # Repo.preload(note, :user).user
       # note
     end
 
-     ## INIT (ONE-TIME) ##
 
-     def init_viewed_at(note) do
-         then = Timex.shift(Timex.now, [hours: -30])
-         params = %{"viewed_at" => then}
-         changeset = Note.changeset(note, params)
-         Repo.update(changeset)
-     end
-
-     def init_edited_at(note) do
-           then = Timex.shift(Timex.now, [hours: -170])
-           params = %{"edited_at" => then}
-           changeset = Note.changeset(note, params)
-           Repo.update(changeset)
-      end
-
-
-     def init_updated_at(note) do
-         then = Timex.shift(Timex.now, [hours: -171])
-         params = %{"updated_at" => then}
-         changeset = Note.changeset(note, params)
-         Repo.update(changeset)
-     end
-
-     def init_notes_viewed_at do
-       Note |> Repo.all |> Enum.map(fn(note) -> Note.init_viewed_at(note) end)
-     end
-
-      def init_notes_edited_at do
-         Note |> Repo.all |> Enum.map(fn(note) -> Note.init_edited_at(note) end)
-      end
-
-
-    def set_tag_string(note, value) do
-      params = %{"tag_string" => value}
-      changeset = Note.changeset(note, params)
-      Repo.update(changeset)
-    end
-
-    #### IDENTIFIER ####
-
-
-    # If user is "joe"
-    # joe.foobar => joe.foobar
-    # hoho.foobar => joe.foobar
-    # foobar => joe.foobar
-    def normalize_identifier(user, identifier) do
-      if String.contains?(identifier, ".") do
-        identifier_parts = String.split(identifier, ".")
-        if hd(identifier_parts) == user.username do
-        identifier = tl(identifier_parts) |> Enum.join(".")
-        end
-      end
-      "#{user.username}.#{identifier}"
-    end
-
-    def find_by_identifier(identifier) do
-      query = Ecto.Query.from note in Note,
-              where: note.identifier == ^identifier
-      Repo.one(query)
-    end
-
-    defp random_string(length) do
-      :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
-    end
-
-
-    # Return unique identifier
-    # Example: make_identifier("jxx", "foo.bar")
-    # returns 'foo.bar.1' if there are no identifiers
-    # of the form 'foo.bar.n'.  If 'foo.bar.10' is the
-    # identifier matching foo.bar.n with maximal n,
-    # the 'foo.bar.11' is returned.
-    def make_identifier(username, title) do
-      identifier = username <> "." <> title
-      |> String.downcase
-      |> Utility.sanitize_string
-      query = Ecto.Query.from note in Note,
-        select: note.identifier,
-        where: ilike(note.identifier, ^"%#{identifier}%")
-      identifiers = Repo.all(query)
-
-      numerical_suffixes = identifiers |> Enum.map(fn(identifier) -> String.split(identifier, ".") |> Utility.last end)
-      |> Enum.filter(fn(identifier) -> Regex.match?(~r/^[0-9]+/, identifier) end)
-      |> Enum.map(fn(item) -> String.to_integer(item) end)
-      |> Enum.sort
-
-      last_id_suffix = numerical_suffixes |> Utility.last
-
-      cond do
-        length(identifiers) == 0 -> identifier
-        numerical_suffixes == [] -> "#{identifier}.1"
-        true -> suffix = last_id_suffix + 1; "#{identifier}.#{suffix}"
-      end
-    end
-
-    def set_identifier(note) do
-      if note.identifier == nil do
-          user = Repo.get!(User, note.user_id)
-          identifier = make_identifier(user.username, note.title)
-          params = %{"identifier" => identifier}
-          changeset = Note.changeset(note, params)
-          Repo.update(changeset)
-       end
-     end
-
-    def set_identifiers do
-      Note
-      |> Repo.all
-      |> Enum.map(fn(note) -> Note.set_identifier(note) end)
-    end
-
-    #########################
-
-    def set_bad_tags do
-       Note
-       |> Repo.all
-       |> Enum.filter(fn(note) -> note.tag_string == nil end)
-       |> Enum.map(fn(note) -> Note.set_tag_string(note, "-") end)
-    end
-
-    def count_bad_tags do
-       Note
-       |> Repo.all
-       |> Enum.filter(fn(note) -> (note.tag_string == nil) or (note.tag_string == "-") end)
-       |> Enum.reduce(0,fn(note, acc) -> acc + 1 end)
-    end
 
 end
 
