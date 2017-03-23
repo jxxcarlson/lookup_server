@@ -12,6 +12,8 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Identifier
 
 
+  ### INDEX ###
+
    defp get_random_display(params) do
       cond do
         params["random"] == nil -> true
@@ -29,7 +31,7 @@ defmodule LookupPhoenix.NoteController do
       channel
   end
 
-  def get_note_record(mode, id_list, user, options) do
+  defp get_note_record(mode, id_list, user, options) do
     IO.puts "GET NOTE FOR RECORD"
     case [mode, length(id_list)] do
        ["all", _] -> IO.puts "BRANCH 1"; note_record = Search.notes_for_user(user, %{"mode" => "all",
@@ -55,6 +57,15 @@ defmodule LookupPhoenix.NoteController do
    end
 
 
+   defp get_note_count_string(note_record) do
+     if note_record.original_note_count > note_record.note_count do
+       noteCountString = "#{note_record.note_count} Random notes from #{note_record.original_note_count}"
+     else
+       noteCountString = "#{note_record.note_count} Notes"
+     end
+   end
+
+
   def index(conn, params) do
 
      current_user = conn.assigns.current_user
@@ -64,24 +75,18 @@ defmodule LookupPhoenix.NoteController do
      Utility.qs2map(conn.query_string)
      mode = query_string_map["mode"]
      random_display = get_random_display(params)
-
      setup_channel(current_user, query_string_map)
      [access, channel_name, user_id] = User.decode_channel(current_user)
      id_list = Note.recall_list(current_user.id)
+
      note_record = get_note_record(mode, id_list, current_user, %{random_display: random_display})
 
      options = %{mode: "index", process: "none"}
-
-     if note_record.original_note_count > note_record.note_count do
-       noteCountString = "#{note_record.note_count} Random notes from #{note_record.original_note_count}"
-     else
-       noteCountString = "#{note_record.note_count} Notes"
-     end
+     noteCountString = get_note_count_string(note_record)
 
      notes = Utility.add_index_to_maplist(note_record.notes)
      id_string = Note.extract_id_list(notes)
      params2 = %{current_user: current_user, notes: notes, id_string: id_string, noteCountString: noteCountString, options: options}
-
 
      if query_string_map["set_channel"] == nil do
        conn
@@ -95,11 +100,13 @@ defmodule LookupPhoenix.NoteController do
 
   end
 
-  def read_only_message(conn) do
+  defp read_only_message(conn) do
       conn
       |> put_flash(:info, "Sorry, these notes are read-only.")
       |> redirect(to: note_path(conn, :index))
   end
+
+  ########## NEW ########
 
   def new(conn, _params) do
     locked = conn.assigns.current_user.read_only
@@ -112,9 +119,9 @@ defmodule LookupPhoenix.NoteController do
   end
 
 
-  #### Code for create note ####
+  #### CREATE ####
 
-  def get_tags(note_params, channel_name) do
+  defp get_tags(note_params, channel_name) do
 
       # Normalize tag_string name and ensure that is non-nil and non-empty
       tag_string = note_params["tag_string"] || ""
@@ -138,7 +145,7 @@ defmodule LookupPhoenix.NoteController do
       [tag_string, tags]
   end
 
-  def setup(conn, note_params) do
+  defp setup_create(conn, note_params) do
       [access, channel_name, user_id] = User.decode_channel(conn.assigns.current_user)
       [tag_string, tags] = get_tags(note_params, channel_name)
       new_content = Regex.replace(~r/ß/, note_params["content"], "")
@@ -155,7 +162,7 @@ defmodule LookupPhoenix.NoteController do
     if (conn.assigns.current_user.read_only == true) do
          read_only_message(conn)
     else
-      changeset = setup(conn, note_params)
+      changeset = setup_create(conn, note_params)
       case Repo.insert(changeset) do
         {:ok, _note} ->
           [_note.id] ++ Note.recall_list(conn.assigns.current_user.id)
@@ -168,6 +175,9 @@ defmodule LookupPhoenix.NoteController do
       end
     end
   end
+
+
+  ################
 
   def set_channel(conn, params) do
     channel = params["set"]["channel"]
@@ -182,7 +192,7 @@ defmodule LookupPhoenix.NoteController do
   ##########################################################
 
 
-  def do_show(conn, note) do
+  defp do_show(conn, note) do
 
    IO.puts("DO SHOW")
 
@@ -226,7 +236,7 @@ defmodule LookupPhoenix.NoteController do
   end
 
 
-  def do_show2(conn, note) do
+  defp do_show2(conn, note) do
       text = note.content
       lines =  String.split(String.trim(text), ["\n", "\r", "\r\n"])
       |> Enum.filter(fn(line) -> !Regex.match?(~r/^title/, line) end)
@@ -447,6 +457,8 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def delete(conn, %{"id" => id}) do
+
+    IO.puts "HOLA HOLA!"
 
     user = conn.assigns.current_user
 

@@ -26,6 +26,7 @@ defmodule LookupPhoenix.ConnCase do
       import Ecto.Query
 
       import LookupPhoenix.Router.Helpers
+      import LookupPhoenix.TestHelpers
 
       # The default endpoint for testing
       @endpoint LookupPhoenix.Endpoint

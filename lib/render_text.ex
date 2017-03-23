@@ -10,7 +10,7 @@ defmodule RenderText do
     # mode = plain | markup | latex | collate | toc
 
     def transform(text, options \\ %{mode: "show", process: "markup"}) do
-      Utility.report "IN TRANSFORM TEXT, OPTIONS ARE", options
+      # Utility.report "IN TRANSFORM TEXT, OPTIONS ARE", options
       case options.process do
         "plain" -> text
         "markup" -> format_markup(text, options)
@@ -130,7 +130,7 @@ defmodule RenderText do
 
     def formatTables(text) do
       sc = Regex.scan(~r/^^\|===\r\n(.*)\r\n\|===/msr, text)
-      Utility.report "SCAN", sc
+      # Utility.report "SCAN", sc
       sc |> Enum.reduce(text, fn(item, text) -> [a,b] = item; String.replace(text, a, process_table(b)) end)
     end
 
@@ -262,7 +262,7 @@ defmodule RenderText do
 
     defp formatStrike(text) do
        # Regex.replace(~r/(^|\s)-([^-]*)-(\s)/U, text, " <span style='text-decoration: line-through'>\\2</span> \\3")
-       Regex.replace(~r/(^|\s)-([^-\s]*)-(\s)/U, text, "\\1<span style='text-decoration: line-through;color:darkred'>\\2</span>\\3")
+       Regex.replace(~r/~~([A-Za-z].*)~~/U, text, "<span style='text-decoration: line-through;color:darkred'>\\1</span>")
     end
 
     defp getItems(text) do
@@ -317,8 +317,8 @@ defmodule RenderText do
 
     defp formatCode(text) do
       out = Regex.replace(~r/\[code\][\r\n]--[\r\n](.*)[\r\n]--[\r\n]/msU, text, "<pre><code>\\n#\\1\\n</code></pre>")
-      IO.puts "OUTPUT OF FORMAT CODE: #{out}"
-      out
+      # IO.puts "OUTPUT OF FORMAT CODE: #{out}"
+      # out
     end
 
     defp formatAnswer(text) do

@@ -2,11 +2,30 @@ defmodule LookupPhoenix.NoteControllerTest do
   use LookupPhoenix.ConnCase
 
   alias LookupPhoenix.Note
+  alias LookupPhoenix.User
+  alias LookupPhoenix.Identifier
+
+
   @valid_attrs %{content: "some content", title: "some content"}
   @invalid_attrs %{}
 
+  setup do
+     user = Repo.insert!(%User{email: "yumpa@foo.io", password: "somepassword", username: "yumpa"})
+     note = Repo.insert! %Note{user_id: user.id, title: "foobar", content: "Test", identifier: "yada_yada"}
+     {:ok, conn: put_req_header(conn, "accept", "application/html")}
+  end
+
+
+  test "require authentication for these actions", %{conn: conn} do
+    Enum.each([
+       get(conn, note_path(conn, :new)),
+       get(conn, note_path(conn, :create. %{}))
+    ], fn conn -> assert html_response(conn, 302); assert conn.halted end)
+  end
+
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, note_path(conn, :index)
+    IO.puts "HTML RESPONSE: #{html_response(conn, 200)}"
     assert html_response(conn, 200) =~ "Listing notes"
   end
 
@@ -27,7 +46,9 @@ defmodule LookupPhoenix.NoteControllerTest do
   end
 
   test "shows chosen resource", %{conn: conn} do
-    note = Repo.insert! %Note{}
+   #  note = Repo.insert! %Note{}
+   note = Note.get("yada_yada")
+   assert note.title == "foobar"
     conn = get conn, note_path(conn, :show, note)
     assert html_response(conn, 200) =~ "Show note"
   end
@@ -45,7 +66,8 @@ defmodule LookupPhoenix.NoteControllerTest do
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-    note = Repo.insert! %Note{}
+    note = Note.get("yada_yada")
+    assert note.title == "foobar"
     conn = put conn, note_path(conn, :update, note), note: @valid_attrs
     assert redirected_to(conn) == note_path(conn, :show, note)
     assert Repo.get_by(Note, @valid_attrs)
@@ -58,7 +80,9 @@ defmodule LookupPhoenix.NoteControllerTest do
   end
 
   test "deletes chosen resource", %{conn: conn} do
-    note = Repo.insert! %Note{}
+    note = Note.get("yada_yada")
+    assert note.title == "foobar"
+    user = Repo.insert! %User{read_only: false, username: "yumpa", email: "yumpa@foo.io"}
     conn = delete conn, note_path(conn, :delete, note)
     assert redirected_to(conn) == note_path(conn, :index)
     refute Repo.get(Note, note.id)

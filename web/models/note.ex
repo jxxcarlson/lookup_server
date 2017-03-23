@@ -8,6 +8,7 @@ defmodule LookupPhoenix.Note do
   alias LookupPhoenix.Repo
   alias LookupPhoenix.Utility
   alias LookupPhoenix.Constant
+  alias LookupPhoenix.Identifier
 
   schema "notes" do
     use Timex.Ecto.Timestamps
