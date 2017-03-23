@@ -13,7 +13,8 @@ defmodule LookupPhoenix.Constant do
   end
 
   def home_site do
-    "http://www.lookupnote.io"
+    Application.get_env(:deploy_vars, :host_url)
+    # "http://www.lookupnote.io"
     # "http://localhost:4001"
   end
 

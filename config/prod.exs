@@ -25,6 +25,10 @@ config :lookup_phoenix, LookupPhoenix.Repo,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
   ssl: true
 
+config :lookup_phoenix,
+  host_url: "http://www.lookupnote.io"
+
+
 # Do not print debug messages in production
 config :logger, level: :info
 

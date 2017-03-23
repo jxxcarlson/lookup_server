@@ -43,4 +43,7 @@ config :lookup_phoenix, LookupPhoenix.Repo,
   hostname: "localhost",
   pool_size: 10
 
+config :lookup_phoenix,
+  host_url: "http://localhost:4001"
 
+# Access the above by: Application.get_env(:deploy_vars, :host_url)
