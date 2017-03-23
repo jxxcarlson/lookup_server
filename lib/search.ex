@@ -104,6 +104,15 @@ defmodule LookupPhoenix.Search do
       |> Repo.all
     end
 
+    # Return notes for user with given tag
+    def find_by_user_and_tag(user_id, tag) do
+      query = Ecto.Query.from note in Note,
+            where: note.user_id == ^user_id,
+            where: ^tag in note.tags,
+            order_by: [asc: note.inserted_at]
+       Repo.all(query)
+    end
+
 
    # Get list of random note ids for given user
     def random_notes_for_user(p, user, truncate_at, tag) do

@@ -9,7 +9,7 @@ defmodule LookupPhoenix.Constant do
   end
 
   def default_site_id do
-    23
+     23
   end
 
   def home_site do
