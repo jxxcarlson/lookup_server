@@ -15,7 +15,7 @@
 </style>
 
  <span class="hidden-xs" class="hidden-xs" style="float:left;margin-top:-9px;margin-left:4px;">
-      <%= form_for @conn, search_path(@conn, :index), [name: :search], fn f -> %>
+      <%= form_for @conn, search_path(@conn, :index), [as: :search], fn f -> %>
           <%= text_input f, :query, placeholder: "Search ...", autocorrect: "off", autocapitalize: "off", class: "searchbar", id: "search_notes" %>
       <%= end %>
  </span>

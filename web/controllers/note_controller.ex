@@ -68,7 +68,6 @@ defmodule LookupPhoenix.NoteController do
 
 
   def index(conn, params) do
-
      current_user = conn.assigns.current_user
 
      # GET PARAMETERS

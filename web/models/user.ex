@@ -74,6 +74,7 @@ defmodule LookupPhoenix.User do
   end
 
     def decode_channel(user) do
+        IO.puts "DECODE CHANNEL"
         user_id = user.id
         access = :public
 

@@ -22,11 +22,11 @@ defmodule LookupPhoenix.Search do
       length Repo.all(query2)
     end
 
+
     def notes_for_user(user, options) do
-       IO.puts "NOTES FOR USER, YAY!!"
        [access, channel_name, user_id] = User.decode_channel(user)
        options = ensure_random_is_set(user, user_id, options)
-       Utility.report("Search, notes_for_user", options)
+       Utility.report("Search, notes_for_user options", options)
        tag = options["tag"]
 
        query = initial_query(user, user_id) |> second_query(channel_name)
@@ -74,8 +74,6 @@ defmodule LookupPhoenix.Search do
 
     def search(query, user, options) do
 
-      Utility.report("XX: search", [query, user.username, options])
-
       case query  do
         nil -> IO.puts "NIL qery string"
         "" -> IO.puts "Empty query string"
@@ -85,7 +83,6 @@ defmodule LookupPhoenix.Search do
       # for testing: query = "code"
       query_terms = decode_query(query)
 
-      Utility.report("XX: query_terms", query_terms)
       case query_terms do
         [] -> []
         _ -> search_with_non_empty_arg(query_terms, user, options)
@@ -99,7 +96,6 @@ defmodule LookupPhoenix.Search do
         tag_list = tl(tag_list)
       end
 
-      Utility.report("QUERY IN TAG SEARCH", [user_id, tag_list, channel_name, access]  )
       query_for_tag_search(user_id, tag_list, channel_name, access)
       |> Repo.all
     end
@@ -289,8 +285,6 @@ defmodule LookupPhoenix.Search do
     end
 
     defp query_for_tag_search(user_id, tag_list, channel_name, access) do
-      Utility.report("INPUTE FOR QUERIES", [user_id, tag_list, channel_name, access])
-      IO.puts "HEAD, TAGLIST = #{hd(tag_list)}"
       query1 = Ecto.Query.from note in Note,
         where: note.user_id == ^user_id,
         where: ilike(note.tag_string, ^"%#{hd(tag_list)}%"),
@@ -308,7 +302,6 @@ defmodule LookupPhoenix.Search do
           :all -> query3 = query2
           :public -> query3 = from note in query2, where: note.public == ^true
       end
-      Utility.report("QUERY3", query3)
       query3
     end
 
@@ -408,10 +401,6 @@ defmodule LookupPhoenix.Search do
        end
 
 
-      #! if !Enum.member?(["all", "public"], channel_name) and options.user_signed_in do
-
-     Utility.report("SEARCH - TAGS, TERMS, OPTIONS, TYPE", [tags, terms, search_options, type])
-
     if !Enum.member?(["all", "public"], channel_name) do
 
          tags = [channel_name|tags]
@@ -426,7 +415,6 @@ defmodule LookupPhoenix.Search do
 
       end
 
-      Utility.report("IN SEARCH WITH NON EMPTY ARG QUERY =", query)
       result = Repo.all(query)
       |> filter_notes_with_tag_list(tags)
       |> filter_records_with_term_list(terms)
