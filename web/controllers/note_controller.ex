@@ -249,6 +249,7 @@ defmodule LookupPhoenix.NoteController do
   def show(conn, %{"id" => id}) do
 
     note = Note.get(id)
+    DynamicNotebook.auto_update(note)
 
     if Enum.member?(note.tags, ":toc") do
       do_show2(conn, note)

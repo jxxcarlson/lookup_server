@@ -110,22 +110,17 @@ defmodule LookupPhoenix.TOC do
     |> Enum.map(fn(line) -> make_toc_item(line, options) end)
   end
 
-  # DEAD CODE?
+  #
   defp make_toc_item(line, options) do
       toc_history = options.toc_history
-      IO.puts "IN RENDER TEXT, toc_history: #{toc_history}"
-      IO.puts "IN RENDER TEXT, line #{line}"
       line_parts = String.split(line, ",")
       id = hd(line_parts)
       label = tl(line_parts) |> Enum.join(", ")
-      IO.puts "id = #{id}, label = #{label}"
       cond do
         id == "title" ->
           "<p class=\"title\">#{label}</p>"
         true ->
           note = Note.get(id)
-          IO.puts "IN make_toc_item, note id = #{note.id}"
-          IO.puts "IN make_toc_item, toc_history = #{toc_history}"
           if Enum.member?(note.tags, ":toc") && !String.contains?(toc_history, to_string(note.id)) do
             toc_history = toc_history <> ";" <> to_string(note.id) <> ">" <>  first_id(note.content)
           end
