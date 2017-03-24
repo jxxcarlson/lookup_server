@@ -10,6 +10,7 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.TOC
   alias LookupPhoenix.Constant
   alias LookupPhoenix.Identifier
+  alias LookupPhoenix.DynamicNotebook
 
 
   ### INDEX ###
@@ -449,11 +450,18 @@ defmodule LookupPhoenix.NoteController do
     note = Repo.get!(Note, id)
     user = conn.assigns.current_user
 
-    if ((user.read_only == false) and (note.user_id ==  user.id)) do
-      doUpdate(note, note_params, save_option, conn)
-    else
-      read_only_message(conn)
+    dynamic_tags = note.tags
+    |> Enum.filter(fn(tag) -> Regex.match?(~r/dynamic/, tag) end)
+
+    cond do
+      ((user.read_only == true) and (note.user_id !=  user.id)) -> read_only_message(conn)
+      dynamic_tags != [] ->
+        DynamicNotebook.update(id)
+        conn |> redirect(to: note_path(conn, :show, note))
+      (note.user_id ==  user.id)  -> doUpdate(note, note_params, save_option, conn)
+      true -> read_only_message(conn)
     end
+
   end
 
   def delete(conn, %{"id" => id}) do
