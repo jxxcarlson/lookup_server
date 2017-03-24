@@ -115,7 +115,9 @@ defmodule LookupPhoenix.TOC do
       toc_history = options.toc_history
       IO.puts "IN RENDER TEXT, toc_history: #{toc_history}"
       IO.puts "IN RENDER TEXT, line #{line}"
-      [id, label] = String.split(line, ",")
+      line_parts = String.split(line, ",")
+      id = hd(line_parts)
+      label = tl(line_parts) |> Enum.join(", ")
       IO.puts "id = #{id}, label = #{label}"
       cond do
         id == "title" ->
