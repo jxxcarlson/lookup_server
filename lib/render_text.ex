@@ -174,8 +174,10 @@ defmodule RenderText do
     end
 
     # http://foo.io/ladidah/mo/stuff => <a href="http://foo.io/ladida/foo.io"" target=\"_blank\">foo.io/ladidah</a>
+    # recognize URL[LINK TEXT]
     defp makeUserLinks(text) do
-      Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=~\?#!@_%-']*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
+      # Regex.replace(~r/\s((http|https):\/\/[a-zA-Z0-9\.\-\/&=~\?#!@_%-']*)\[(.*)\]\s/, " "<>text<>" ",  " <a href=\"\\1\" target=\"_blank\">\\3</a> ")
+      Regex.replace(~r/\s(((http|https):\/\/[a-zA-Z0-9\.\-\/&=~\?#!@_%-']*)\[(.*)\])[^\]]/U, text,  " <a href=\"\\2\" target=\"_blank\">\\4</a> ")
     end
 
     defp makeAudioPlayer(text) do
