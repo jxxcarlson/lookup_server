@@ -1,4 +1,4 @@
-defmodule LookupPhoenix.DynamicNotebook do
+defmodule MU.LiveNotebook do
 
   alias LookupPhoenix.Note
   alias LookupPhoenix.Search

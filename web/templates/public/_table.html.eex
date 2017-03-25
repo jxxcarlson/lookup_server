@@ -22,7 +22,7 @@
 
       <td class="hidden-xs small" style="max-width:6em"> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td>
 
-      <td style="width:35%"  class="hidden-xs"><%= raw(RenderText.format_for_index(note.content)) %></td>
+      <td style="width:35%"  class="hidden-xs"><%= raw(MU.RenderText.format_for_index(note.content)) %></td>
 
 
     </tr>

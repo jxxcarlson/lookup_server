@@ -7,11 +7,12 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Tag
   alias LookupPhoenix.Search
   alias LookupPhoenix.Utility
-  alias LookupPhoenix.TOC
   alias LookupPhoenix.Constant
   alias LookupPhoenix.Identifier
-  alias LookupPhoenix.DynamicNotebook
 
+  alias MU.RenderText
+  alias MU.LiveNotebook
+  alias MU.TOC
 
   ### INDEX ###
 
@@ -180,13 +181,20 @@ defmodule LookupPhoenix.NoteController do
   ################
 
   def set_channel(conn, params) do
+    IO.puts "THIS IS: Note controller, set_channel"
     channel = params["set"]["channel"]
+    if channel == nil or channel == "" do
+      channel = "#{conn.assigns.current_user.username}.all"
+    end
     IO.puts "I WILL SET THE CHANNEL TO: #{channel}"
     Utility.report("SET CHANNEL PARAMS:", params)
     User.update_channel(conn.assigns.current_user, channel)
    # render(conn, "index.html")
-   ##redirect(conn, to: note_path(conn, :index))
-   redirect(conn, to: "/notes?random=no")
+   Search.notes_for_channel(channel, %{})
+   # redirect(conn, to: note_path(conn, :index))
+   # redirect(conn, to: "/notes?mode=all")
+   redirect(conn, to: "/recent?hours_before=25&mode=viewed")
+   # redirect(conn, to: "/notes?random=no")
   end
 
   ##########################################################
@@ -248,7 +256,7 @@ defmodule LookupPhoenix.NoteController do
   def show(conn, %{"id" => id}) do
 
     note = Note.get(id)
-    DynamicNotebook.auto_update(note)
+    LiveNotebook.auto_update(note)
 
     if Enum.member?(note.tags, ":toc") do
       do_show2(conn, note)
@@ -456,7 +464,7 @@ defmodule LookupPhoenix.NoteController do
     cond do
       ((user.read_only == true) and (note.user_id !=  user.id)) -> read_only_message(conn)
       dynamic_tags != [] ->
-        DynamicNotebook.update(id)
+        LiveNotebook.update(id)
         conn |> redirect(to: note_path(conn, :show, note))
       (note.user_id ==  user.id)  -> doUpdate(note, note_params, save_option, conn)
       true -> read_only_message(conn)

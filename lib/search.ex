@@ -46,6 +46,7 @@ defmodule LookupPhoenix.Search do
         query = set_query_for_channel_search(channel_user, channel_name)
 
         notes = Repo.all(query)
+        Utility.report("Query in notes_for_channel", query)
         original_note_count = length(notes)
         filtered_notes = notes |> filter_random(Constant.random_note_threshold())
         Note.memorize_notes(filtered_notes, channel_user.id)

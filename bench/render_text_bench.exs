@@ -140,15 +140,15 @@ PS to myself:
 
   # First bench mark
   bench "transform input 1: wc 31, 104, 1594" do
-    RenderText.transform(@text1)
+    MU.RenderText.transform(@text1)
   end
 
   bench "transform input 2: wc 31, 513, 3150" do
-    RenderText.transform(@text2)
+    MU.RenderText.transform(@text2)
   end
 
   bench "transform input 3: wc 62, 1026, 6300" do
-    RenderText.transform(@text3)
+    MU.RenderText.transform(@text3)
   end
 
 

@@ -1,6 +1,7 @@
 defmodule RenderTextTest do
   use LookupPhoenix.ModelCase
 
+  alias MU.RenderText
 
   test "smartLinks parses example 1" do
      argument = "https://stripe.com"

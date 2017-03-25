@@ -5,7 +5,7 @@
   display:inline;
   margin-top:0px;
   margin-bottom:3px;
-  width:190px;
+  width:140px;
   height:35px;
   font-size:1.8rem;
   color:#222;
@@ -22,6 +22,7 @@
 <div style="height:40px;margin-top:-20px;">
 
   <span class="hidden-xs">
+  <span  style="margin-left:0.25em; float: right; background-color: white;"><%= button("My channel", to: "/set_channel", method: "post", channel: "jxxcarlson.all", class: "btn") %></span>
    <%= form_for @conn, note_path(@conn, :set_channel), [as: :set], fn f -> %>
         <%= text_input f, :channel, placeholder: "Enter channel ...", autocorrect: "off", autocapitalize: "off",
             value: @conn.assigns.current_user.channel, class: "channel", id: "search_notes" %>

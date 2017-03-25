@@ -159,6 +159,9 @@ defmodule LookupPhoenix.SearchController do
 
     end
 
+   # Route: /recent?QUERY, where
+   # QUERY is hourse_before=N&mode=MODE, where
+   # MODE = upated | created | viewed
    def recent(conn, params) do
         User.increment_number_of_searches(conn.assigns.current_user)
         hours_before = String.to_integer params["hours_before"]

@@ -1,4 +1,4 @@
-defmodule LookupPhoenix.TOC do
+defmodule MU.TOC do
 
   alias LookupPhoenix.Utility
   alias LookupPhoenix.Note
