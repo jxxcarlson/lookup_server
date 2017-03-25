@@ -14,7 +14,6 @@ defmodule LookupPhoenix.Block do
   end
 
   defp transform_block(:quote, target, block_contents, text) do
-    IO.puts "$$$ QUOTE: #{block_contents}"
     replacement = "<div class='quote'>\n#{block_contents}\n</div>"
     String.replace(text, target,replacement  )
   end
