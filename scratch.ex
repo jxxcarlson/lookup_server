@@ -1,12 +1,12 @@
-  defp make_link(item) do
-    [id, id2] = item
-    title = Note.get(id).title
-    "<a href=\"/note2/#{id}/#{id2}/#{id}>#{id2}\">#{title}</a>"
-  end
 
-  # Example of toc_history argument:
-  # [[904, 443], [903, 757], [905, 447]]
-  def make_history_links(toc_history) do
-     Enum.map(toc_history, fn(item) -> make_link(item) end)
-     |> Enum.join(" >  ")
+  test "creates resource and redirects when data is valid", %{conn: conn} do
+    user = Repo.insert!(%User{email: "frodo@foo.io", password: "somepassword", username: "frodo", channel: "frodo.all"})
+    conn = build_conn()
+      |> assign(:current_user, user)
+      |> post("/notes/")
+
+
+    conn = post conn, note_path(conn, :create), note: @valid_attrs
+    assert redirected_to(conn) == note_path(conn, :index)
+    assert Repo.get_by(Note, @valid_attrs)
   end

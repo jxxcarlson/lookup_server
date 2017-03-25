@@ -4,6 +4,7 @@ defmodule RenderText do
   alias LookupPhoenix.Utility
   alias LookupPhoenix.Constant
   alias LookupPhoenix.TOC
+  alias LookupPhoenix.Block
 
 ############# PUBLIC ##################
 
@@ -24,6 +25,7 @@ defmodule RenderText do
     defp format_markup(text, options) do
       text
       |> String.trim
+      |> Block.transform
       |> formatCode
       |> padString
       |> linkify(options)
@@ -404,6 +406,11 @@ defmodule RenderText do
         # Regex.replace(~r/xref::([0-9]*)\[(.*)\]/U, text, "<a href=\"#{Constant.home_site}/notes/\\1?index=0&previous=\\1&next=\\1&id_string=\\1\">\\2</a>")
         Regex.replace(~r/xref::(.*)\[(.*)\]/U, text, "<a href=\"#{Constant.home_site}/notes/\\1?mode=aside</a>")
       end
+
+
+    defp format_quote(text) do
+
+    end
 
    ########## collate ###########
 

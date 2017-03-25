@@ -16,21 +16,6 @@ defmodule LookupPhoenix.NoteControllerTest do
      {:ok, conn: put_req_header(build_conn(), "accept", "application/html")}
   end
 
-  test "endpoint index text" do
-      user = Repo.insert!(%User{email: "frodo@foo.io", password: "somepassword", username: "frodo", channel: "frodo.all"})
-      assert user.channel == "frodo.all"
-      note = Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1"}
-      all_notes = Search.all_notes_for_user(:all, user)
-      assert length(all_notes) == 1
-      conn = conn()
-       |> assign(:current_user, user)
-       |> get("/notes?mode=all")
-
-      # body = conn |> response(200) |> Poison.decode!
-
-      assert html_response(conn, 200) =~ "Magical"
-  end
-
 
   test "require authentication for these actions", %{conn: conn} do
     Enum.each([

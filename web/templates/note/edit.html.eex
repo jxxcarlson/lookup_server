@@ -26,6 +26,16 @@
 
     </script>
 
+    <style>
+    .quote {
+
+     font-style: italic;
+     margin-left:2em;
+     margin-right:2em;
+    }
+
+   </style>
+
   <div style="margin-top:3em;">
 
   <span style="float:right;" ><%= link "Show", to: note_path(@conn, :show, @current_id, index: @index,

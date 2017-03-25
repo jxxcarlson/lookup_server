@@ -19,6 +19,13 @@ table, th, td {
     border: 1px solid black;
 }
 
+.quote {
+
+ font-style: italic;
+      margin-left:2em;
+      margin-right:2em;
+}
+
 td { padding-left:1em;}
 
 .index_word{ color: darkred; }

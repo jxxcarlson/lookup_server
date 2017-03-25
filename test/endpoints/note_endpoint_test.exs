@@ -7,7 +7,7 @@ defmodule LookupPhoenix.NoteControllerTest do
   alias LookupPhoenix.Search
 
 
-  # @valid_attrs %{content: "some content", title: "some content"}
+  @valid_attrs %{content: "some content", title: "some content"}
   # @invalid_attrs %{}
 
   setup do
@@ -17,7 +17,7 @@ defmodule LookupPhoenix.NoteControllerTest do
   end
 
 
-  test "endpoint index text" do
+  test "test index" do
       user = Repo.insert!(%User{email: "frodo@foo.io", password: "somepassword", username: "frodo", channel: "frodo.all"})
       assert user.channel == "frodo.all"
       Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1"}
@@ -31,5 +31,30 @@ defmodule LookupPhoenix.NoteControllerTest do
 
       assert html_response(conn, 200) =~ "Magical"
   end
+
+  test "renders form for new resources", %{conn: conn} do
+      user = Repo.insert!(%User{email: "frodo@foo.io", password: "somepassword", username: "frodo", channel: "frodo.all"})
+      assert user.channel == "frodo.all"
+      Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1"}
+
+      conn = build_conn()
+       |> assign(:current_user, user)
+       |> get("/notes/new")
+
+      assert html_response(conn, 200) =~ "New note"
+  end
+
+
+  test "creates resource", %{conn: conn} do
+    user = Repo.insert!(%User{email: "frodo@foo.io", password: "somepassword", username: "frodo", channel: "frodo.all"})
+    note = Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1"}
+    conn = build_conn()
+      |> assign(:current_user, user)
+      |> put("/notes/#{note.id}")
+
+    # assert Repo.get_by(Note, @valid_attrs)
+  end
+
+
 
 end
