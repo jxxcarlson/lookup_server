@@ -296,7 +296,7 @@ defmodule LookupPhoenix.Search do
           query2 = query
         end
 
-        if channel_name != "public" do
+        if !Enum.member?(["public", "all"], channel_name) do
           IO.puts "SELECTING NOTES IN CHANNEL"
           query3 = from note in query2, where: ilike(note.tag_string, ^"%#{channel_name}%")
         else

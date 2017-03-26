@@ -70,7 +70,9 @@ defmodule LookupPhoenix.NoteController do
 
 
   def index(conn, params) do
+     IO.puts "THIS IS NOTE CONTROLLER . INDEX"
      current_user = conn.assigns.current_user
+     qsMap = Utility.qs2map(conn.query_string)
 
      # GET PARAMETERS
      query_string_map = Utility.qs2map(conn.query_string)
@@ -81,7 +83,23 @@ defmodule LookupPhoenix.NoteController do
      [access, channel_name, user_id] = User.decode_channel(current_user)
      id_list = Note.recall_list(current_user.id)
 
-     note_record = get_note_record(mode, id_list, current_user, %{random_display: random_display})
+     cond do
+       qsMap["channel"] != nil ->
+         channel = qsMap["channel"]
+         IO.puts "IN NOTE, INDEX, CHANNEL = #{channel}"
+         channel_username = hd(String.split(channel, "."))
+
+         User.update_channel(current_user, channel)
+         if channel_username == current_user.username do
+           ch_options = %{access: :all}
+         else
+           ch_options = %{access: :public}
+         end
+         note_record = Search.notes_for_channel(channel, ch_options)
+       true ->
+         User.update_channel(current_user, "#{current_user.username}.all")
+         note_record = get_note_record(mode, id_list, current_user, %{random_display: random_display})
+     end
 
      options = %{mode: "index", process: "none"}
      noteCountString = get_note_count_string(note_record)
@@ -188,31 +206,8 @@ defmodule LookupPhoenix.NoteController do
     if channel == nil or channel == "" do
       channel = "#{conn.assigns.current_user.username}.all"
     end
-    IO.puts "CHANNEL  = #{channel}"
-    [channel_username, _] = String.split(channel, ".")
-    IO.puts "CHANNEL USER NAME = #{channel_username}"
-    IO.puts "I WILL SET THE CHANNEL TO: #{channel}"
-    Utility.report("SET CHANNEL PARAMS:", params)
-    User.update_channel(conn.assigns.current_user, channel)
-    if channel_username == current_user.username do
-      options = %{access: :all}
-    else
-      options = %{access: :public}
-    end
 
-   note_record = Search.notes_for_channel(channel, options)
-   noteCountString = get_note_count_string(note_record)
-   notes = Utility.add_index_to_maplist(note_record.notes)
-   current_user = conn.assigns.current_user
-   id_string = Enum.map(note_record.notes, fn(note) -> to_string(note.id) end) |> Enum.join(",")
-
-   output_params = %{noteCountString: noteCountString, notes: notes, current_user: current_user,
-     id_string: id_string}
-   render(conn, "index.html", output_params)
-   # redirect(conn, to: note_path(conn, :index))
-   # redirect(conn, to: "/notes?mode=all")
-   # redirect(conn, to: "/recent/#{channel_username}?max=25&mode=viewed")
-   # redirect(conn, to: "/notes?random=no", notes: notes)
+   redirect(conn, to: "/notes?channel=#{channel}")
   end
 
   ##########################################################

@@ -93,8 +93,16 @@ defmodule LookupPhoenix.UserController do
        original_tag_count = length(ctags)
        ctag_count = length(ctags)
      end
-     render conn, "tags.html", user: channel_user,
-        ctags: ctags, ctag_count: ctag_count, original_tag_count: original_tag_count
+
+     if current_user == channel_user do
+       render conn, "tags.html", user: channel_user,
+          ctags: ctags, ctag_count: ctag_count, original_tag_count: original_tag_count
+     else
+       render conn, "tags_public.html", user: channel_user,
+          ctags: ctags, ctag_count: ctag_count, original_tag_count: original_tag_count
+
+     end
+
   end
 
   def update_tags(conn, _params) do

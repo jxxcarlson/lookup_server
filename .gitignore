@@ -26,5 +26,5 @@ erl_crash.dump
 foo.txt
 /backups
 *.dump
-
+bench/
 dgo*

@@ -1,0 +1,25 @@
+<span style="float:right">
+  <%= if @conn.assigns.current_user != nil do %>
+    <%= link "Update tags", to: user_path(@conn, :update_tags), class: "btn btn-default" %>
+  <% end %>
+</span>
+
+<%= if @conn.assigns.current_user != nil do %>
+   <h4>Tags: <%= @ctag_count %>/<%= @original_tag_count %></h4>
+<% end %>
+
+
+
+
+<table class="table">
+  <tbody>
+<%= for row <- Enum.chunk(@ctags, 4, 4, []) do %>
+    <tr>
+      <%= for tag <- row do %>
+        <!-- <td><%= link LookupPhoenix.Tag.pretty(tag), to: search_path(@conn, :tag_search, tag["name"]) %> </td> -->
+        <td><%= link LookupPhoenix.Tag.pretty(tag), to: '/site/#{@user.username}?tag=#{tag["name"]}' %> </td>
+      <% end %>
+    </tr>
+<% end %>
+  </tbody>
+</table>
