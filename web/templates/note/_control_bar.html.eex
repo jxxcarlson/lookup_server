@@ -23,7 +23,7 @@
 <div style="height:40px;margin-top:-20px;">
 
   <span class="hidden-xs">
-  <span  style="margin-left:0.25em; float: right; background-color: white;"><%= button("My channel", to: "/set_channel", method: "post", channel: "jxxcarlson.all", class: "btn") %></span>
+  <span  style="margin-left:6px; float: right;"><%= button("My channel", to: "/set_channel", method: "post", channel: "jxxcarlson.all", class: "btn", style: "background-color: white;") %></span>
    <%= form_for @conn, note_path(@conn, :set_channel), [as: :set], fn f -> %>
         <%= text_input f, :channel, placeholder: "Enter channel ...", autocorrect: "off", autocapitalize: "off",
             value: @conn.assigns.current_user.channel, class: "channel", id: "search_notes" %>
@@ -35,10 +35,14 @@
    <!-- <%= link "Get", to: note_path(@conn, :index, mode: "all"), class: "btn btn-default btn-s", id: "all_notes", style: "" %> -->
    <!-- <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-s", id: "random_notes", style: "" %> -->
    <%= link "Lead", to: "/tag_search/lead_article?site=#{@conn.assigns.current_user.username}", class: "btn btn-default btn-s", id: "lead", style: "background-color:cornflowerblue; color:white" %>
-   <span style="margin-left:10px;">Recently</span>
-   <%= link "Viewed", to: "/recent/#{@conn.assigns.current_user.channel}?max=19&mode=viewed", class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:0px;" %>
+
+   <%= link "Recent", to: "/recent/#{@conn.assigns.current_user.channel}?max=19&mode=viewed", class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:6px;" %>
+  <%= link "Random", to: "/notes?random=one", class: "btn btn-default btn-s", id: "random", style: "margin-left:6px;" %>
+
+   <!--
    <%= link "Updated", to: "/recent/#{@conn.assigns.current_user.channel}?max=19&mode=updated", class: "btn btn-default btn-s", id: "less_recent_notes" %>
    <%= link "Created", to: "/recent/#{@conn.assigns.current_user.channel}?max=19&mode=created", class: "hidden-xs btn btn-default btn-s", id: "less_recent_notes" %>
+   -->
 
   </span>
 

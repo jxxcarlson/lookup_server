@@ -1,5 +1,6 @@
 defmodule LookupPhoenix.Note do
   use LookupPhoenix.Web, :model
+  use Timex
 
   use Ecto.Schema
   import Ecto.Query
@@ -258,6 +259,47 @@ defmodule LookupPhoenix.Note do
       # Repo.preload(note, :user).user
       # note
     end
+
+    #### SEARCH AND SORT ####
+
+    # https://blog.drewolson.org/composable-queries-ecto/
+
+    def sorted_by_view(query) do
+        from n in query,
+        order_by: [desc: n.viewed_at]
+    end
+
+    def select_by_channel(query, channel) do
+       [username, tag] = String.split(channel, ".")
+       user = User.find_by_username(username)
+       if tag == "all" do
+         from n in query,
+           where: n.user_id == ^user.id
+       else
+         from n in query,
+           where: n.user_id == ^user.id and ^tag in n.tags
+       end
+    end
+
+    def select_by_viewed_at_hours_ago(query, hours_ago) do
+        then = Timex.shift(Times.now, [hours: -hours_ago])
+        from n in query,
+        where: n.channel == n.viewed_at >= ^then
+    end
+
+    def select_public(query, public) do
+      if public == true do
+        from n in query,
+           where: n.public == ^true
+      else
+        query
+      end
+    end
+
+    def most_recent(items, n) do
+      Enum.slice(items, 0..(n-1))
+    end
+
 
 
 

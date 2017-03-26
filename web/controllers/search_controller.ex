@@ -190,18 +190,18 @@ defmodule LookupPhoenix.SearchController do
         IO.puts "RECENT: USERNAME = #{parameter}"
 
         if parameter =~ ~r/\./ do
-          [username, _] = String.split(parameter, "\.")
-          else
+          [username, tag] = String.split(parameter, "\.")
+        else
           username = parameter
+          tag = "all"
         end
 
-        IO.puts "2. RECENT: USERNAME = #{parameter}"
+        channel = username <> "." <> tag
 
         user = User.find_by_username(username)
-        IO.puts "========="
-        IO.puts "USER IS NOW #{user.username}"
-        IO.puts "========="
         current_user = conn.assigns.current_user
+        public = user == current_user
+
         query_string_map = Utility.qs2map(conn.query_string)
         User.increment_number_of_searches(current_user)
 
@@ -213,13 +213,27 @@ defmodule LookupPhoenix.SearchController do
         cond do
           "hours_before" in Map.keys(query_string_map) ->
              hours_before = String.to_integer query_string_map["hours_before"]
-             notes = Search.after_date(mode, :desc, hours_before, Timex.now, user)
+             notes = Note
+               |> Note.select_by_channel(channel)
+               |> Note.select_by_viewed_at_hours_ago(25)
+               |> Note.select_public(public)
+               |> Note.sorted_by_view
+               |> Repo.all
           "max" in Map.keys(query_string_map) ->
              max_notes = String.to_integer query_string_map["max"]
-             notes = Search.most_recent(:all, mode, max_notes, user)
+             notes = Note
+              |> Note.select_by_channel(channel)
+              |> Note.select_public(public)
+              |> Note.sorted_by_view
+              |> Repo.all
+              |> Note.most_recent(20)
           true ->
-             notes = Search.most_recent(:public, :viewed, 3, user)
-
+             notes = Note
+              |> Note.select_by_channel("#{current_user.username}.all")
+              |> Note.select_public(true)
+              |> Note.sorted_by_view
+              |> Repo.all
+              |> Note.most_recent(5)
         end
 
         note_count = length(notes)

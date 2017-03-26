@@ -154,6 +154,9 @@ defmodule LookupPhoenix.Search do
     # order = :asc | :desc
     def after_date(query_type, order, hours, date_time, user) do
        [access, channel_name, user_id] = User.decode_channel(user)
+
+       query = set_query_for_channel_search(user, channel_name, access)
+
        then = Timex.shift(date_time, [hours: -hours])
        query1 = after_date_query(query_type, order, user_id, then)
 
@@ -348,6 +351,7 @@ defmodule LookupPhoenix.Search do
     #### DATE-TIME ####
 
     defp after_date_query(query_type, order, user_id, then) do
+
       case {query_type, order} do
         {:viewed, :asc} ->
           query  = Ecto.Query.from note in Note,

@@ -62,9 +62,19 @@ defmodule LookupPhoenix.NoteController do
 
    defp get_note_count_string(note_record) do
      if note_record.original_note_count > note_record.note_count do
-       noteCountString = "#{note_record.note_count} Random notes from #{note_record.original_note_count}"
+       if note_record.original_note_count == 1 do
+         _notes = "note"
+       else
+         _notes = "notes"
+       end
+       noteCountString = "#{note_record.note_count} Random #{_notes} from #{note_record.original_note_count}"
      else
-       noteCountString = "#{note_record.note_count} Notes"
+       if note_record.note_count == 1 do
+         _notes = "Note"
+       else
+         _notes = "Notes"
+       end
+       noteCountString = "#{note_record.note_count} #{_notes}"
      end
    end
 
@@ -85,6 +95,7 @@ defmodule LookupPhoenix.NoteController do
 
      cond do
        qsMap["channel"] != nil ->
+         IO.puts "DO CHANNEL"
          channel = qsMap["channel"]
          IO.puts "IN NOTE, INDEX, CHANNEL = #{channel}"
          channel_username = hd(String.split(channel, "."))
@@ -96,7 +107,17 @@ defmodule LookupPhoenix.NoteController do
            ch_options = %{access: :public}
          end
          note_record = Search.notes_for_channel(channel, ch_options)
+       qsMap["random"] == "one"  ->
+         IO.puts "DO ONE RANDOM NOTE"
+         note_record = Search.notes_for_channel(current_user.channel, %{})
+         note = note_record.notes |> Utility.random_element
+         IO.puts "Random note: #{note.title}"
+         # note_record = Utility.add_index_to_maplist([note])
+         notes = [note]
+         n = length(notes)
+         note_record = %{notes: notes, note_count: n, original_note_count: n}
        true ->
+         IO.puts "DO DEFAULT CASE"
          User.update_channel(current_user, "#{current_user.username}.all")
          note_record = get_note_record(mode, id_list, current_user, %{random_display: random_display})
      end
