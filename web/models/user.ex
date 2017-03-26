@@ -40,6 +40,11 @@ defmodule LookupPhoenix.User do
       |> cast(params, ~w(public blurb tags public_tags read_only number_of_searches search_filter channel), [] )
   end
 
+  def channel_changeset(model, params \\ %{}) do
+      model
+      |> cast(params, [:channel] )
+  end
+
   def preferences_changeset(model, params \\ :empty) do
         model
         |> cast(params, ~w(preferences), [] )
@@ -256,14 +261,8 @@ defmodule LookupPhoenix.User do
   end
 
   def set_channel(user, channel) do
-    params = %{"channel" => channel}
-    IO.puts "I AM GOING TO DEFINITELY SET YOUR CHANNEL TO #{channel}"
-    Utility.report("params = ", params)
-
-    changeset = User.running_changeset(User, params)
-
-
-    Utility.report("CHANGESET FOR SET CHANNEL", changeset)
+    params = %{"channel" =>  channel}
+    changeset = User.channel_changeset(user, params)
     Repo.update(changeset)
   end
 

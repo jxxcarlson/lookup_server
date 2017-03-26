@@ -28,6 +28,7 @@ defmodule LookupPhoenix.NoteController do
   def setup_channel(user, query_string_map) do
       channel = query_string_map["set_channel"]
       if channel != nil and channel != user.channel do
+        IO.puts "THIS IS SETUP_CHANNEL FOR #{channel}"
         User.set_channel(user, channel)
       end
       channel

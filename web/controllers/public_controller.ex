@@ -98,13 +98,34 @@ defmodule LookupPhoenix.PublicController do
   # def index(conn, %{"site" => site}) do
   def index(conn, params) do
 
+    current_user = conn.assigns.current_user
+    site = params["site"]
+
+    IO.puts "THIS IS PUBLIC CONTROLLER . INDEX"
+
     qsMap = Utility.qs2map(conn.query_string)
 
     IO.puts "PUBLIC . INDEX"
     Utility.report("params", params)
     IO.puts "INDEX, conn.request_path = #{conn.request_path}"
 
-    [site, channel_name, channel] = get_channel(params["site"])
+    # [site, channel_name, channel] = get_channel(params["site"])
+
+    cond do
+       current_user == nil ->
+         channel = site <> ".public"
+       current_user.username == site ->
+         channel = site <> ".all"
+       true ->
+         channel = site <>  ".public"
+     end
+
+     IO.puts "CHANNEL = #{channel}"
+
+     if current_user != nil do
+       User.set_channel(current_user, channel)
+     end
+
 
     # if conn.assigns.current_user != nil do
     #   User.set_channel( conn.assigns.current_user, channel)

@@ -87,9 +87,26 @@ defmodule LookupPhoenix.SearchController do
 
     def tag_search(conn, %{"query" => query}) do
 
+      qsMap = Utility.qs2map(conn.query_string)
+      qsKeys = Map.keys(qsMap)
+      site = qsMap["site"]
+      current_user = conn.assigns.current_user
+      cond do
+        current_user == nil ->
+          access = :public
+        current_user.username == site ->
+          access = :all
+        true ->
+          access = :public
+      end
+
+
+
+      Utility.report("qsMap", qsMap)
+
       Utility.report("tag search query" , query)
 
-      [site, current_user, site_user, access] = tag_search_set_user(conn)
+      # [site, current_user, site_user, access] = tag_search_set_user(conn)
 
       if current_user != nil do
         User.increment_number_of_searches(current_user)
@@ -125,7 +142,13 @@ defmodule LookupPhoenix.SearchController do
         _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found with tag #{query}"
       end
 
-      render(conn, "index.html", site: site, notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
+      if access == :all do
+        render(conn, "index.html", site: site, notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
+      else
+        render(conn, "index.html", site: site, notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
+        # redirect(conn, to: "/site/#{site}", notes: notes)
+      end
+
 
      end
 
@@ -163,14 +186,27 @@ defmodule LookupPhoenix.SearchController do
    # QUERY is hourse_before=N&mode=MODE, where
    # MODE = upated | created | viewed
    def recent(conn, params) do
-        username = params["username"]
+        parameter = params["username"]
+        IO.puts "RECENT: USERNAME = #{parameter}"
+
+        if parameter =~ ~r/\./ do
+          [username, _] = String.split(parameter, "\.")
+          else
+          username = parameter
+        end
+
+        IO.puts "2. RECENT: USERNAME = #{parameter}"
+
         user = User.find_by_username(username)
+        IO.puts "========="
+        IO.puts "USER IS NOW #{user.username}"
+        IO.puts "========="
         current_user = conn.assigns.current_user
         query_string_map = Utility.qs2map(conn.query_string)
-        User.increment_number_of_searches(conn.assigns.current_user)
+        User.increment_number_of_searches(current_user)
 
         mode = String.to_atom(query_string_map["mode"])
-        user_id = conn.assigns.current_user.id
+        user_id = user.id
 
         update_message = "Recently #{mode}"
 

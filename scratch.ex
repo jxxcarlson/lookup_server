@@ -1,2 +1,12 @@
-   <!  <%= link "Viewed", to: search_path(@conn, :recent, hours_before: 25, mode: "viewed"), class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:0px;" %> -->
+    cond do
+       current_user == nil ->
+         channel = site <> ".public"
+       current_user.username == site ->
+         channel = site <> ".all"
+       true ->
+         channel = site <>  ".public"
+     end
 
+     if current_user != nil do
+       User.set_channel(current_user, channel)
+     end

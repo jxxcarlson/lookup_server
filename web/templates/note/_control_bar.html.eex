@@ -5,9 +5,10 @@
   display:inline;
   margin-top:0px;
   margin-bottom:3px;
-  width:140px;
+  padding-left:4px;
+  width:160px;
   height:35px;
-  font-size:1.8rem;
+  font-size:1.5rem;
   color:#222;
   font-weight:400;
   background-color:#fdeded;
@@ -33,11 +34,11 @@
   <span>
    <!-- <%= link "Get", to: note_path(@conn, :index, mode: "all"), class: "btn btn-default btn-s", id: "all_notes", style: "" %> -->
    <!-- <%= link "Random", to: search_path(@conn, :random), class: "btn btn-default btn-s", id: "random_notes", style: "" %> -->
-   <%= link "Lead", to: "tag_search/lead_article?site=#{@conn.assigns.current_user.username}", class: "btn btn-default btn-s", id: "lead", style: "background-color:cornflowerblue; color:white" %>
+   <%= link "Lead", to: "/tag_search/lead_article?site=#{@conn.assigns.current_user.username}", class: "btn btn-default btn-s", id: "lead", style: "background-color:cornflowerblue; color:white" %>
    <span style="margin-left:10px;">Recently</span>
-   <%= link "Viewed", to: "/recent/#{@conn.assigns.current_user.username}?hours_before=25&mode=viewed", class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:0px;" %>
-   <%= link "Updated", to: "/recent/#{@conn.assigns.current_user.username}?hours_before=120&mode=updated", class: "btn btn-default btn-s", id: "less_recent_notes" %>
-   <%= link "Created", to: "/recent/#{@conn.assigns.current_user.username}?hours_before=120&mode=created", class: "hidden-xs btn btn-default btn-s", id: "less_recent_notes" %>
+   <%= link "Viewed", to: "/recent/#{@conn.assigns.current_user.channel}?max=19&mode=viewed", class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:0px;" %>
+   <%= link "Updated", to: "/recent/#{@conn.assigns.current_user.channel}?max=19&mode=updated", class: "btn btn-default btn-s", id: "less_recent_notes" %>
+   <%= link "Created", to: "/recent/#{@conn.assigns.current_user.channel}?max=19&mode=created", class: "hidden-xs btn btn-default btn-s", id: "less_recent_notes" %>
 
   </span>
 
