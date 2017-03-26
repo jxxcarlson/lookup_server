@@ -1,12 +1,6 @@
 
 
 <style>
-
-        .answer_head{ color: blue;}
-
-        .hide_answer{ color: blue; display:none }
-        .show_answer{color: blue; display:inline}
-
         .navarrow { float:right; font-weight:bold;}
 
 </style>
@@ -35,19 +29,6 @@
 
 <script>
     document.getElementById("rendered_text").style.height = (window.innerHeight - 260) + 'px'
-
-    var answer_head = document.getElementById("QQ");
-    var answer_tail = document.getElementById("QQA");
-    answer_head.classname = "answer_head"
-    answer_head.addEventListener("click",function(e){
-        if (answer_tail.className == "hide_answer") {
-            answer_tail.className = "show_answer"
-        } else {
-            answer_tail.className = "hide_answer";
-        }
-
-    });
-
 </script>
 
 

@@ -3,12 +3,6 @@
 
 <style>
 
- .quote {
-
-     font-style: italic;
-          margin-left:2em;
-          margin-right:2em;
-    }
 
 span.standard {
 
@@ -17,18 +11,6 @@ span.standard {
 
 }
 
-
-h1 {font-size: 1.7em;margin-bottom:-1.7em;}
-h2 {font-size: 1.3em;margin-bottom:-2.4em;}
-h3 {font-size: 1.0em;margin-bottom:-3em;}
-h4 {font-size: 1.0em; margin-bottom:-3.5em;}
-
-.index_word{ color: darkred; }
-
-.answer_head{ color: blue;}
-
-.hide_answer{ color: blue; display:none }
-.show_answer{color: blue; display:inline}
 
 .navarrow { float:right; font-weight:bold;}
 
@@ -119,19 +101,6 @@ p.title {
 <script>
     document.getElementById("rendered_text1x").style.height = (window.innerHeight - 230) + 'px'
     document.getElementById("rendered_text2x").style.height = (window.innerHeight - 230) + 'px'
-
-    var answer_head = document.getElementById("QQ");
-    var answer_tail = document.getElementById("QQA");
-    answer_head.classname = "answer_head"
-        answer_head.addEventListener("click",function(e){
-          if (answer_tail.className == "hide_answer") {
-            answer_tail.className = "show_answer"
-          } else {
-             answer_tail.className = "hide_answer";
-          }
-
-        });
-
 </script>
 
 

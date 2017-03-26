@@ -34,6 +34,7 @@ defmodule LookupPhoenix.NoteController do
       channel
   end
 
+  # Get note from memory -- the id_list managed by Mnemonix
   defp get_note_record(mode, id_list, user, options) do
     IO.puts "GET NOTE FOR RECORD"
     case [mode, length(id_list)] do
@@ -60,7 +61,7 @@ defmodule LookupPhoenix.NoteController do
    end
 
 
-   defp get_note_count_string(note_record) do
+   defp get_note_count_string(note_record, infix) do
      if note_record.original_note_count > note_record.note_count do
        if note_record.original_note_count == 1 do
          _notes = "note"
@@ -74,7 +75,7 @@ defmodule LookupPhoenix.NoteController do
        else
          _notes = "Notes"
        end
-       noteCountString = "#{note_record.note_count} #{_notes}"
+       noteCountString = "#{note_record.note_count} #{infix} #{_notes}"
      end
    end
 
@@ -107,6 +108,7 @@ defmodule LookupPhoenix.NoteController do
            ch_options = %{access: :public}
          end
          note_record = Search.notes_for_channel(channel, ch_options)
+         infix = ""
        qsMap["random"] == "one"  ->
          IO.puts "DO ONE RANDOM NOTE"
          note_record = Search.notes_for_channel(current_user.channel, %{})
@@ -116,14 +118,23 @@ defmodule LookupPhoenix.NoteController do
          notes = [note]
          n = length(notes)
          note_record = %{notes: notes, note_count: n, original_note_count: n}
+         infix = "random"
+       qsMap["random"] == "many"  ->
+         IO.puts "DO SEVERAL RANDOM NOTES"
+         note_record = Search.notes_for_channel(current_user.channel, %{})
+         notes = note_record.notes |> Enum.shuffle |> Enum.slice(0..19)
+         n = length(notes)
+         note_record = %{notes: notes, note_count: n, original_note_count: n}
+         infix = "random"
        true ->
          IO.puts "DO DEFAULT CASE"
          User.update_channel(current_user, "#{current_user.username}.all")
          note_record = get_note_record(mode, id_list, current_user, %{random_display: random_display})
+         infix = ""
      end
 
      options = %{mode: "index", process: "none"}
-     noteCountString = get_note_count_string(note_record)
+     noteCountString = get_note_count_string(note_record, infix)
 
      notes = Utility.add_index_to_maplist(note_record.notes)
      id_string = Note.extract_id_list(notes)

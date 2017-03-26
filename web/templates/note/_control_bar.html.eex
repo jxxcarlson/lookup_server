@@ -37,7 +37,8 @@
    <%= link "Lead", to: "/tag_search/lead_article?site=#{@conn.assigns.current_user.username}", class: "btn btn-default btn-s", id: "lead", style: "background-color:cornflowerblue; color:white" %>
 
    <%= link "Recent", to: "/recent/#{@conn.assigns.current_user.channel}?max=19&mode=viewed", class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:6px;" %>
-  <%= link "Random", to: "/notes?random=one", class: "btn btn-default btn-s", id: "random", style: "margin-left:6px;" %>
+   <%= link "R", to: "/notes?random=many", class: "btn btn-default btn-s", id: "random", style: "margin-left:6px;" %>
+   <%= link "R1", to: "/notes?random=one", class: "btn btn-default btn-s", id: "random", style: "margin-left:6px;" %>
 
    <!--
    <%= link "Updated", to: "/recent/#{@conn.assigns.current_user.channel}?max=19&mode=updated", class: "btn btn-default btn-s", id: "less_recent_notes" %>

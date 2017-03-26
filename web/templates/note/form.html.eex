@@ -1,17 +1,5 @@
 <style>
 
-h1 {font-size: 1.7em;margin-bottom:-1.7em;}
-h2 {font-size: 1.3em;margin-bottom:-2.4em;}
-h3 {font-size: 1.0em;margin-bottom:-3em;}
-h4 {font-size: 1.0em; margin-bottom:-3.5em;}
-
-.index_word{ color: darkred; }
-
-.answer_head{ color: blue;}
-
-.hide_answer{ color: blue; display:none }
-.show_answer{color: blue; display:inline}
-
 .navarrow { float:right; font-weight:bold;}
 
 input[type=checkbox]
@@ -136,6 +124,12 @@ input[type=checkbox]
     document.getElementById("content3").style.height = (window.innerHeight - 300) + 'px'
     document.getElementById("rendered_text2").style.height = (window.innerHeight - 300) + 'px'
     document.getElementById("rendered_text3").style.height = (window.innerHeight - 300) + 'px'
+    console.log("window.innerHeight: " + window.innerHeight)
+</script>
+
+<script>
+    document.getElementById("content").style.height = (window.innerHeight - 300) + 'px'
+    document.getElementById("rendered_text2").style.height = (window.innerHeight - 300) + 'px'
     console.log("window.innerHeight: " + window.innerHeight)
 </script>
 

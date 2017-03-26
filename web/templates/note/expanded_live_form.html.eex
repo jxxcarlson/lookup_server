@@ -91,4 +91,3 @@
     document.getElementById("rendered_text").style.height = (window.innerHeight - 300) + 'px'
     console.log("window.innerHeight: " + window.innerHeight)
 </script>
-
