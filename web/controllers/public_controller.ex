@@ -107,6 +107,7 @@ defmodule LookupPhoenix.PublicController do
 
     IO.puts "PUBLIC . INDEX"
     Utility.report("params", params)
+    Utility.report("qsMap", qsMap)
     IO.puts "INDEX, conn.request_path = #{conn.request_path}"
 
     # [site, channel_name, channel] = get_channel(params["site"])
@@ -132,13 +133,19 @@ defmodule LookupPhoenix.PublicController do
     #  IO.puts "I HAVE SET YOUR CHANNEL TO #{channel}"
     # end
 
-    if qsMap["random"] == "one" do
-      note_record = Search.notes_for_channel(channel, %{})
-      notes = note_record.notes |> Utility.random_element
-      notes = Utility.add_index_to_maplist([notes])
-    else
-      note_record = Search.notes_for_channel(channel, %{})
-      notes = Utility.add_index_to_maplist(note_record.notes)
+    cond do
+      qsMap["random"] == "one" ->
+        note_record = Search.notes_for_channel(channel, %{})
+        Utility.report("1. NOTE OUTPUT", note_record.notes)
+        notes = note_record.notes |> Utility.random_element
+        notes = Utility.add_index_to_maplist([notes])
+      qsMap["tag"] != nil ->
+        notes = Search.tag_search([qsMap["tag"]], conn)
+        Utility.report("2. NOTE OUTPUT", notes)
+        notes = Utility.add_index_to_maplist(notes)
+      true ->
+        note_record = Search.notes_for_channel(channel, %{})
+        notes = Utility.add_index_to_maplist(note_record.notes)
     end
 
     id_string = Note.extract_id_list(notes)
@@ -154,10 +161,12 @@ defmodule LookupPhoenix.PublicController do
      current_user = conn.assigns.current_user
      IO.puts "site = #{site}"
      if current_user != nil and current_user.username == site do
+        IO.puts "SITE: redirect to /notes"
         conn
         |> put_resp_cookie("site", site)
         |> redirect(to: "/notes")
      else
+        IO.puts "SITE: redirect to /site/:site"
         conn
         |> put_resp_cookie("site", site)
         |> redirect(to: "/site/#{site}")
