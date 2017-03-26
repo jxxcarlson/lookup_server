@@ -43,7 +43,10 @@ defmodule LookupPhoenix.Search do
         IO.puts "HERE IS: search.ex, notes_for_channel"
         [channel_user, channel_user_name, channel_name] = set_channel(channel, options)
         IO.puts "notes_for_channel: #{channel_user.username}"
-        query = set_query_for_channel_search(channel_user, channel_name)
+        IO.puts "IN QUERY: #{channel_user.username}, #{channel_name}"
+
+
+        query = set_query_for_channel_search(channel_user, channel_name, options["access"])
 
         notes = Repo.all(query)
         Utility.report("Query in notes_for_channel", query)
@@ -276,23 +279,29 @@ defmodule LookupPhoenix.Search do
     end
 
 
-    defp set_query_for_channel_search(user, channel_name) do
+    defp set_query_for_channel_search(user, channel_name, access) do
         if User.get_preference(user, "sort_by") == "idx" do
             query = Ecto.Query.from note in Note,
-               where: note.user_id == ^user.id and note.public == true,
+               where: note.user_id == ^user.id,
                order_by: [asc: note.idx]
         else
             query = Ecto.Query.from note in Note,
-               where: note.user_id == ^user.id and note.public == true,
+               where: note.user_id == ^user.id,
                order_by: [desc: note.inserted_at]
+        end
+
+        if access == :public do
+          query2 = from note in query, where: note.public == true
+        else
+          query2 = query
         end
 
         if channel_name != "public" do
           IO.puts "SELECTING NOTES IN CHANNEL"
-          query2 = from note in query, where: ilike(note.tag_string, ^"%#{channel_name}%")
+          query3 = from note in query2, where: ilike(note.tag_string, ^"%#{channel_name}%")
         else
           IO.puts "IGNORING CHANNEL"
-          query2 = query
+          query3 = query2
         end
     end
 
