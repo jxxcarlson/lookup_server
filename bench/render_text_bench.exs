@@ -1,6 +1,6 @@
 defmodule RenderTextBench do
   use Benchfella
-  Code.require_file "/Users/carlson/dev/elixir/lookup_phoenix/lib/render_text.ex"
+  Code.require_file "/Users/carlson/dev/elixir/lookup_phoenix/lib/mu/mu.ex"
 
 
 @text1  """
