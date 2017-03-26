@@ -1,5 +1,9 @@
 defmodule MU.Collate do
 
+  alias LookupPhoenix.Note
+  alias LookupPhoenix.Repo
+
+
    def collate(input_text, options) do
      cond do
        options.public == true ->
