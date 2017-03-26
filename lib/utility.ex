@@ -60,7 +60,7 @@ defmodule LookupPhoenix.Utility do
 
   def qs2map(string) do
     string
-    |> String.split( ",")
+    |> String.split( ["&", ","])
     |> Enum.reduce(%{}, fn(item, acc) -> Map.merge(acc, str2map(item)) end)
   end
 

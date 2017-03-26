@@ -186,6 +186,9 @@ defmodule LookupPhoenix.NoteController do
     if channel == nil or channel == "" do
       channel = "#{conn.assigns.current_user.username}.all"
     end
+    IO.puts "CHANNEL  = #{channel}"
+    [channel_username, _] = String.split(channel, ".")
+    IO.puts "CHANNEL USER NAME = #{channel_username}"
     IO.puts "I WILL SET THE CHANNEL TO: #{channel}"
     Utility.report("SET CHANNEL PARAMS:", params)
     User.update_channel(conn.assigns.current_user, channel)
@@ -193,7 +196,7 @@ defmodule LookupPhoenix.NoteController do
    Search.notes_for_channel(channel, %{})
    # redirect(conn, to: note_path(conn, :index))
    # redirect(conn, to: "/notes?mode=all")
-   redirect(conn, to: "/recent?hours_before=25&mode=viewed")
+   redirect(conn, to: "/recent/#{channel_username}?max=25&mode=viewed")
    # redirect(conn, to: "/notes?random=no")
   end
 

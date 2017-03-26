@@ -40,7 +40,7 @@ defmodule LookupPhoenix.Search do
     end
 
     def notes_for_channel(channel, options) do
-
+        IO.puts "HERE IS: search.ex, notes_for_channel"
         [channel_user, channel_user_name, channel_name] = set_channel(channel, options)
         IO.puts "notes_for_channel: #{channel_user.username}"
         query = set_query_for_channel_search(channel_user, channel_name)
@@ -54,16 +54,38 @@ defmodule LookupPhoenix.Search do
    end
 
    # scope = :all|:public
-    def all_notes_for_user(scope, user) do
+    def all_notes_for_user(scope, order, order_by, user) do
        case scope do
          :all -> query = Ecto.Query.from note in Note,
-                      where: note.user_id == ^user.id,
-                      order_by: [desc: note.inserted_at]
+                      where: note.user_id == ^user.id
          :public -> query = Ecto.Query.from note in Note,
-                      where: note.user_id == ^user.id and note.public == true,
-                      order_by: [desc: note.inserted_at]
+                      where: note.user_id == ^user.id and note.public == true
        end
-       Repo.all(query)
+       cond do
+         order_by == :created_at and order == :desc ->
+           query2 = from note in query,
+                      order_by: [desc: note.inserted_at]
+         order_by == :created_at and order == :asc ->
+           query2 = from note in query,
+                      order_by: [asc: note.inserted_at]
+         order_by == :updated_at and order == :desc ->
+            query2 = from note in query,
+                       order_by: [desc: note.updated_at]
+         order_by == :updated_at and order == :asc ->
+            query2 = from note in query,
+                       order_by: [asc: note.updated_at]
+         order_by == :viewed_at and order == :desc ->
+           query2 = from note in query,
+                      order_by: [desc: note.viewed_at]
+         order_by == :viewed_at and order == :asc ->
+           query2 = from note in query,
+                      order_by: [asc: note.viewed_at]
+         true ->
+           query2 = from note in query,
+                      order_by: [desc: note.viewed_at]
+       end
+
+       Repo.all(query2)
     end
 
     def decode_query(query) do
@@ -147,6 +169,13 @@ defmodule LookupPhoenix.Search do
         else
            Repo.all(query3)
         end
+    end
+
+    # Return N <= max of the user's most recent notes,
+    # where the notes are ordered by :viewed, :updated, :created
+    def most_recent(scope, order_by, max, user) do
+      all_notes_for_user(scope, :desc, order_by, user)
+      |> Enum.slice(0..max)
     end
 
    def getDocumentsFromList(id_list, options \\ %{}) do

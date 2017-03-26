@@ -163,22 +163,27 @@ defmodule LookupPhoenix.SearchController do
    # QUERY is hourse_before=N&mode=MODE, where
    # MODE = upated | created | viewed
    def recent(conn, params) do
+        username = params["username"]
+        user = User.find_by_username(username)
+        current_user = conn.assigns.current_user
+        query_string_map = Utility.qs2map(conn.query_string)
         User.increment_number_of_searches(conn.assigns.current_user)
-        hours_before = String.to_integer params["hours_before"]
-        mode = params["mode"]
 
+        mode = String.to_atom(query_string_map["mode"])
         user_id = conn.assigns.current_user.id
 
-        case mode do
-          "updated" ->
-             notes = Search.after_date(:updated, :desc, hours_before, Timex.now, conn.assigns.current_user)
-             update_message = "Recently updated"
-          "created" ->
-              notes = Search.after_date(:created, :desc, hours_before, Timex.now, conn.assigns.current_user)
-              update_message = "Recently created"
-          "viewed" ->
-             notes = Search.after_date(:viewed, :desc, hours_before, Timex.now, conn.assigns.current_user)
-             update_message = "Recently viewed"
+        update_message = "Recently #{mode}"
+
+        cond do
+          "hours_before" in Map.keys(query_string_map) ->
+             hours_before = String.to_integer query_string_map["hours_before"]
+             notes = Search.after_date(mode, :desc, hours_before, Timex.now, user)
+          "max" in Map.keys(query_string_map) ->
+             max_notes = String.to_integer query_string_map["max"]
+             notes = Search.most_recent(:all, mode, max_notes, user)
+          true ->
+             notes = Search.most_recent(:public, :viewed, 3, user)
+
         end
 
         note_count = length(notes)
@@ -186,11 +191,11 @@ defmodule LookupPhoenix.SearchController do
 
         notes = Utility.add_index_to_maplist(notes)
         id_string = Note.extract_id_list(notes)
-
         case note_count do
            1 -> countReportString =   "1 #{update_message} note"
            _ -> countReportString = "#{length(notes)} #{update_message} notes"
         end
+        id_string = Note.extract_id_list(notes)
         render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: countReportString)
    end
 

@@ -21,7 +21,7 @@ defmodule LookupPhoenix.NoteControllerTest do
       user = Repo.insert!(%User{email: "frodo@foo.io", password: "somepassword", username: "frodo", channel: "frodo.all"})
       assert user.channel == "frodo.all"
       Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1"}
-      all_notes = Search.all_notes_for_user(:all, user)
+      all_notes = Search.all_notes_for_user(:all, :created_at, :desc, user)
       assert length(all_notes) == 1
       conn = build_conn()
        |> assign(:current_user, user)

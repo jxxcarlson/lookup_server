@@ -40,7 +40,7 @@ defmodule LookupPhoenix.Router do
     post "/set_channel", NoteController, :set_channel
 
     get "/random", SearchController, :random
-    get "/recent", SearchController, :recent
+    get "/recent/:username", SearchController, :recent
     get "/tags/:username", UserController, :tags
 
     post "/search", SearchController, :index

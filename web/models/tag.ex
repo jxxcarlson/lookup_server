@@ -75,7 +75,7 @@ defmodule LookupPhoenix.Tag do
     # scope = :all | :public
     def get_all_user_tags(scope, user) do
       IO.puts "GET TAGS HERE!"
-      notes = Search.all_notes_for_user(scope, user)
+      notes = Search.all_notes_for_user(scope, :created_at, :asc, user)
       IO.puts "Notes found: #{length(notes)}"
       notes |> Enum.reduce([], fn(note, list) -> merge_tags_from_note(note, list) end)
       # |> Enum.filter(fn(x) -> !ignorable_tag(x) end)
@@ -83,7 +83,7 @@ defmodule LookupPhoenix.Tag do
 
     def get_all_public_user_tags(user) do
       IO.puts "GET TAGS HERE!"
-      notes = Search.all_notes_for_user(:public, user)
+      notes = Search.all_notes_for_user(:public,  :created_at, :asc, user)
       IO.puts "Notes found: #{length(notes)}"
       notes |> Enum.reduce([], fn(note, list) -> merge_tags_from_note(note, list) end)
       # |> Enum.filter(fn(x) -> !ignorable_tag(x) end)
@@ -138,7 +138,7 @@ defmodule LookupPhoenix.Tag do
     end
 
     def update_frequencies_for_user(freqs, user) do
-      Search.all_notes_for_user(:all, user)
+      Search.all_notes_for_user(:all,  :created_at, :asc, user)
       |> Enum.reduce(freqs, fn(note, freqs) -> update_frequencies_for_note(note, freqs) end)
     end
 
