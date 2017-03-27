@@ -257,7 +257,8 @@ defmodule LookupPhoenix.NoteController do
     #    process: "latex" | "none"
     #    collate: true | false
     options = %{mode: "show", username: conn.assigns.current_user.username, public: note.public} |> Note.add_options(note)
-    rendered_text = String.trim(RenderText.transform(note.content, options))
+    content = "== " <> note.title <> "\n\n" <> note.content
+    rendered_text = String.trim(RenderText.transform(content, options))
 
     Utility.report("OPTIONS IN NOTE:SHOW", options)
 
@@ -344,7 +345,8 @@ defmodule LookupPhoenix.NoteController do
       options = %{mode: "show", username: conn.assigns.current_user.username, public: note.public, toc_history: history_string} |> Note.add_options(note)
       options2 = %{mode: "show", username: conn.assigns.current_user.username, public: note.public, toc_history: history_string} |> Note.add_options(note2)
       rendered_text = String.trim(RenderText.transform(note.content, options))
-      rendered_text2 = String.trim(RenderText.transform(note2.content, options2))
+      content2 = "== " <> note2.title <> "\n\n" <> note2.content
+      rendered_text2 = String.trim(RenderText.transform(content2, options2))
 
       inserted_at= Note.inserted_at_short(note)
       updated_at= Note.updated_at_short(note)
@@ -478,6 +480,9 @@ defmodule LookupPhoenix.NoteController do
       params = params_for_save(conn, note, params, changeset, rendered_text)
     end
 
+    live_tags = note.tags |> Enum.filter(fn(tag) -> Regex.match?(~r/live/, tag) end)
+    if live_tags != [] do LiveNotebook.update(note) end
+    # conn |> redirect(to: note_path(conn, :show, note))
 
     Utility.report("CHANGESET 2", changeset)
     case Repo.update(changeset) do
@@ -503,15 +508,11 @@ defmodule LookupPhoenix.NoteController do
     note = Repo.get!(Note, id)
     user = conn.assigns.current_user
 
-    dynamic_tags = note.tags
-    |> Enum.filter(fn(tag) -> Regex.match?(~r/dynamic/, tag) end)
+
 
     cond do
-      ((user.read_only == true) and (note.user_id !=  user.id)) -> read_only_message(conn)
-      dynamic_tags != [] ->
-        LiveNotebook.update(id)
-        conn |> redirect(to: note_path(conn, :show, note))
       (note.user_id ==  user.id)  -> doUpdate(note, note_params, save_option, conn)
+      ((user.read_only == true) and (note.user_id !=  user.id)) -> read_only_message(conn)
       true -> read_only_message(conn)
     end
 
