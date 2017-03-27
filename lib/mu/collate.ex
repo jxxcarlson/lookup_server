@@ -28,12 +28,14 @@ defmodule MU.Collate do
 
    defp prepare_for_collation(text, options) do
      # split input into lines
-     [user_info|data] = String.split(String.trim(text), ["\n", "\r", "\r\n"])
+     lines = String.split(String.trim(text), ["\n", "\r", "\r\n"])
      # remove empty items
      |> Enum.filter(fn(item) -> item != "" end)
      # remove comments:
      |> Enum.map(fn(item) -> Regex.replace(~r/(.*)\s*\#.*$/U, item, "\\1") end)
-     [_, username] = String.split(user_info, "=")
+     [info|data] = lines
+     if info =~ ~r/==/ do [info|data] = data end
+     [_, username] = String.split(info, "=")
 
      data |> Enum.map(fn(item) -> prepare_item(item, username) end)
      |> Enum.filter(fn(item) -> Regex.match?(~r/^#{username}\./, item) end)
