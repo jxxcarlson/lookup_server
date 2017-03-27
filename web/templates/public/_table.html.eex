@@ -4,8 +4,6 @@
     <tr>
       <th class="hidden-xs"></th>
       <th>Title</th>
-
-      <th class="hidden-xs">Date</th>
       <th class="hidden-xs"> Content</th>
 
       <th></th>
@@ -20,9 +18,7 @@
       <td style=""> <%= link note.title, to: public_path(@conn, :show, note, index: note.index,
          id_string: @id_string, site: @site), class: "" %> </td>
 
-      <td class="hidden-xs small" style="max-width:6em"> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td>
-
-      <td style="width:35%"  class="hidden-xs"><%= raw(MU.RenderText.format_for_index(note.content)) %></td>
+      <td style="width:70%"  class="hidden-xs"><%= raw(MU.RenderText.format_for_index(note.content)) %></td>
 
 
     </tr>
