@@ -20,17 +20,17 @@ defmodule MU.MathSci do
 
         text <>  """
 
-                  <script type="text/x-mathjax-config">
-                    MathJax.Hub.Config( {tex2jax: {inlineMath: [['$','$']]}, TeX: { extensions: ["mhchem.js"] } });
+          <script type="text/x-mathjax-config">
+            MathJax.Hub.Config( {tex2jax: {inlineMath: [['$','$']]}, TeX: { extensions: ["mhchem.js"] } });
 
-                  </script>
-                      <script type="text/javascript" async
-                              src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
-                   </script>
+          </script>
+              <script type="text/javascript" async
+                      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+           </script>
 
-                   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
-                   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
-                   <script>hljs.initHighlightingOnLoad();</script>
+           <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+           <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+           <script>hljs.initHighlightingOnLoad();</script>
 
 
 """
