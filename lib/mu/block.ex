@@ -13,6 +13,12 @@ defmodule MU.Block do
     String.replace(text, target,replacement  )
   end
 
+  defp transform_block(:display, target, block_contents, text) do
+    replacement = "<div class='display'>\n#{block_contents}\n</div>"
+    String.replace(text, target,replacement  )
+  end
+
+
     def formatCode(text) do
       out = Regex.replace(~r/\[code\][\r\n]--[\r\n](.*)[\r\n]--[\r\n]/msU, text, "<pre><code>\\n#\\1\\n</code></pre>")
       # IO.puts "OUTPUT OF FORMAT CODE: #{out}"

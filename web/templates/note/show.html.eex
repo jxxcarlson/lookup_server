@@ -45,6 +45,15 @@ h4 {font-size: 1.0em; margin-bottom:-3.5em;}
 }
 
 
+.display {
+
+    margin-left:2em;
+    margin-right:2em;
+}
+
+
+
+
 /* QA */
 
 .answer_head{ color: blue;}
