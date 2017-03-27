@@ -2,7 +2,8 @@ defmodule MU.Block do
 
   def transform(text) do
     text = String.replace(text, "\r\n", "\n")
-    Regex.scan(~r/(*ANYCRLF)^\[([a-z].*)\].--.(.*).--/msU, text)
+    # Regex.scan(~r/(*ANYCRLF)^\[([a-z].*)\].--.(.*).--/msU, text)
+    Regex.scan(~r/^\[([a-z].*)\].^--.(.*).^--/msU, text)
     |> Enum.reduce(text, fn(triple, text) ->
        [target, block_type, block_contents] = triple;
        transform_block(String.to_atom(block_type), target, block_contents, text) end)
