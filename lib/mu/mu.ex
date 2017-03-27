@@ -30,9 +30,13 @@ defmodule MU.RenderText do
       end
     end
 
+    defp pad_at_end(text) do
+      text <> "\n\n\n\n"
+    end
+
     defp format_markup(text, options) do
       text
-      # |> String.trim
+      |> String.trim
       |> Block.transform
       |> Block.formatCode
       |> padString
@@ -41,7 +45,8 @@ defmodule MU.RenderText do
       |> MathSci.formatChem
       |> MathSci.formatChemBlock
       |> MathSci.insert_mathjax(options)
-      #|> String.trim
+      |> String.trim
+      |> pad_at_end
     end
 
     defp format_latex(text, options) do
@@ -50,7 +55,8 @@ defmodule MU.RenderText do
       |> MathSci.formatChem
       |> MathSci.formatChemBlock
       |> MathSci.insert_mathjax(options)
-      # |> String.trim
+      |> String.trim
+      |> pad_at_end
     end
 
     def firstParagraph(text) do
