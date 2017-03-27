@@ -25,14 +25,6 @@ defmodule LookupPhoenix.NoteController do
       end
    end
 
-  def setup_channel(user, query_string_map) do
-      channel = query_string_map["set_channel"]
-      if channel != nil and channel != user.channel do
-        IO.puts "THIS IS SETUP_CHANNEL FOR #{channel}"
-        User.set_channel(user, channel)
-      end
-      channel
-  end
 
   # Get note from memory -- the id_list managed by Mnemonix
   defp get_note_record(mode, id_list, user, options) do
@@ -80,27 +72,28 @@ defmodule LookupPhoenix.NoteController do
    end
 
 
+  # Params: random = yes|no
+  #
   def index(conn, params) do
-     IO.puts "THIS IS NOTE CONTROLLER . INDEX"
+
      current_user = conn.assigns.current_user
      qsMap = Utility.qs2map(conn.query_string)
-
-     # GET PARAMETERS
-     query_string_map = Utility.qs2map(conn.query_string)
-     Utility.qs2map(conn.query_string)
-     mode = query_string_map["mode"]
+     mode = qsMap["mode"]
      random_display = get_random_display(params)
-     setup_channel(current_user, query_string_map)
-     [access, channel_name, user_id] = User.decode_channel(current_user)
+
+     cond do
+       channel = qsMap["set_channel"] != nil ->
+         channel = qsMap["set_channel"]
+         User.set_channel(current_user, channel)
+       true -> channel = current_user.channel
+     end
+
      id_list = Note.recall_list(current_user.id)
 
      cond do
        qsMap["channel"] != nil ->
-         IO.puts "DO CHANNEL"
          channel = qsMap["channel"]
-         IO.puts "IN NOTE, INDEX, CHANNEL = #{channel}"
          channel_username = hd(String.split(channel, "."))
-
          User.update_channel(current_user, channel)
          if channel_username == current_user.username do
            ch_options = %{access: :all}
@@ -110,24 +103,19 @@ defmodule LookupPhoenix.NoteController do
          note_record = Search.notes_for_channel(channel, ch_options)
          infix = ""
        qsMap["random"] == "one"  ->
-         IO.puts "DO ONE RANDOM NOTE"
          note_record = Search.notes_for_channel(current_user.channel, %{})
          note = note_record.notes |> Utility.random_element
-         IO.puts "Random note: #{note.title}"
-         # note_record = Utility.add_index_to_maplist([note])
          notes = [note]
          n = length(notes)
          note_record = %{notes: notes, note_count: n, original_note_count: n}
          infix = "random"
        qsMap["random"] == "many"  ->
-         IO.puts "DO SEVERAL RANDOM NOTES"
          note_record = Search.notes_for_channel(current_user.channel, %{})
          notes = note_record.notes |> Enum.shuffle |> Enum.slice(0..19)
          n = length(notes)
          note_record = %{notes: notes, note_count: n, original_note_count: n}
          infix = "random"
        true ->
-         IO.puts "DO DEFAULT CASE"
          User.update_channel(current_user, "#{current_user.username}.all")
          note_record = get_note_record(mode, id_list, current_user, %{random_display: random_display})
          infix = ""
@@ -140,7 +128,7 @@ defmodule LookupPhoenix.NoteController do
      id_string = Note.extract_id_list(notes)
      params2 = %{current_user: current_user, notes: notes, id_string: id_string, noteCountString: noteCountString, options: options}
 
-     if query_string_map["set_channel"] == nil do
+     if qsMap["set_channel"] == nil do
        conn
        |> put_resp_cookie("site", current_user.username)
        |> render("index.html", params2)
