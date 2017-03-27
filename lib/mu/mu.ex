@@ -62,9 +62,17 @@ defmodule MU.RenderText do
       end
     end
 
+    def head_excerpt(text, n_words) do
+      text
+      |> String.split(" ")
+      |> Enum.slice(0..(n_words-1))
+      |> Enum.join(" ")
+    end
+
     def format_for_index(text) do
       text
-      |> firstParagraph
+      # |> firstParagraph
+      |> head_excerpt(7)
       |> linkify(%{mode: "index", process: "node"})
       |> Inline.formatBold
       |> Inline.formatRed
