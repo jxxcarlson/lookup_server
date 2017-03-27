@@ -5,4 +5,5 @@ defmodule LookupPhoenix.NoteView do
      conn.cookies[cookie_name]
   end
 
+
 end

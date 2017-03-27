@@ -36,6 +36,11 @@
 
     <title>Lookup</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <!--
+
+    The below per: http://stackoverflow.com/questions/36629942/include-javascript-on-certain-pages-in-phoenix-framework-application
+    And also: https://hexdocs.pm/phoenix/1.0.0/Phoenix.View.html#render_existing/3
+    -->
 
     <script>
 

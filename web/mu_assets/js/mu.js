@@ -1,5 +1,5 @@
 
-<script>
+
 var answer_head = document.getElementById("QQ");
 var answer_tail = document.getElementById("QQA");
 answer_head.classname = "answer_head"
@@ -11,4 +11,3 @@ answer_head.addEventListener("click",function(e){
     }
 
 });
-</script>
