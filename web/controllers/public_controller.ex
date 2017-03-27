@@ -39,8 +39,6 @@ defmodule LookupPhoenix.PublicController do
 
      end
 
-
-
   def show(conn, %{"id" => id, "site" => site}) do
       note = Note.get(id)
       user = Repo.get!(User, note.user_id)
@@ -65,7 +63,7 @@ defmodule LookupPhoenix.PublicController do
           case note.public do
             true -> render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Public"})) |> put_resp_cookie("site", site)
             false ->
-               if Note.match_token_array(token, note) do
+               if is_map(token) and Note.match_token_array(token, note) do
                  render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Shared"})) |> put_resp_cookie("site", site)
                else
                  render(conn, "error.html", params)
@@ -75,78 +73,40 @@ defmodule LookupPhoenix.PublicController do
       # match_token_array
   end
 
-  def get_channel(site_string) do
-    # Define site and channel, with default channel = "public"
-    # site_string = params["site"]
-    if !String.contains?(site_string, ".") do
-      site_string = site_string <> ".public"
-    end
-    [site, channel_name] = String.split(site_string, ".")
-    channel = "#{site}.#{channel_name}"
 
-    user = User.find_by_username(site)
-
-    # Ensure that site, channel, user a well-defined
-    if user == nil do
-      user = Repo.get!(User, Constant.default_site_id())
-      site = user.username
-      channel = "#{site}.public"
-    end
-    [site, channel_name, channel]
-  end
-
-  # def index(conn, %{"site" => site}) do
   def index(conn, params) do
 
     current_user = conn.assigns.current_user
     site = params["site"]
-
-    IO.puts "THIS IS PUBLIC CONTROLLER . INDEX"
-
     qsMap = Utility.qs2map(conn.query_string)
-
-    IO.puts "PUBLIC . INDEX"
-    Utility.report("params", params)
-    Utility.report("qsMap", qsMap)
-    IO.puts "INDEX, conn.request_path = #{conn.request_path}"
-
-    # [site, channel_name, channel] = get_channel(params["site"])
 
     cond do
        current_user == nil ->
          channel = site <> ".public"
+         access = %{"access" => :public}
        current_user.username == site ->
          channel = site <> ".all"
+         User.set_channel(current_user, channel)
+         access = %{"access" => :all}
        true ->
          channel = site <>  ".public"
+         User.set_channel(current_user, channel)
+         access = %{"access" => :public}
      end
-
-     IO.puts "CHANNEL = #{channel}"
-
-     if current_user != nil do
-       User.set_channel(current_user, channel)
-     end
-
-
-    # if conn.assigns.current_user != nil do
-    #   User.set_channel( conn.assigns.current_user, channel)
-    #  IO.puts "I HAVE SET YOUR CHANNEL TO #{channel}"
-    # end
 
     cond do
       qsMap["random"] == "one" ->
-        note_record = Search.notes_for_channel(channel, %{})
-        Utility.report("1. NOTE OUTPUT", note_record.notes)
-        notes = note_record.notes |> Utility.random_element
-        notes = Utility.add_index_to_maplist([notes])
+        note_record = Search.notes_for_channel(channel, access)
+        note = note_record.notes
+        |> Utility.random_element
+        notes = [note]
       qsMap["tag"] != nil ->
         notes = Search.tag_search([qsMap["tag"]], conn)
-        Utility.report("2. NOTE OUTPUT", notes)
-        notes = Utility.add_index_to_maplist(notes)
       true ->
-        note_record = Search.notes_for_channel(channel, %{})
-        notes = Utility.add_index_to_maplist(note_record.notes)
+        note_record = Search.notes_for_channel(channel, access)
+        notes = note_record.notes
     end
+    notes = Utility.add_index_to_maplist(notes)
 
     id_string = Note.extract_id_list(notes)
     params = %{site: site, notes: notes, note_count: length(notes), id_string: id_string}

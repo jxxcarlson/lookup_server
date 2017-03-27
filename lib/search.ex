@@ -40,19 +40,26 @@ defmodule LookupPhoenix.Search do
     end
 
     def notes_for_channel(channel, options) do
-        IO.puts "HERE IS: search.ex, notes_for_channel"
-        [channel_user, channel_user_name, channel_name] = set_channel(channel, options)
-        IO.puts "notes_for_channel: #{channel_user.username}"
-        IO.puts "IN QUERY: #{channel_user.username}, #{channel_name}"
+        IO.puts "HERE IS: search.ex, notes_for_channel with CHANNEL = #{channel}"
+        Utility.report("OPTIONS (NFC)", options)
+        # [channel_user, channel_user_name, channel_name] =
+        set_channel(channel, options)
 
+        cond do
+          options["access"] == :public -> public = true
+          options["access"] == :all -> public = false
+          true -> public = true
+        end
 
-        query = set_query_for_channel_search(channel_user, channel_name, options["access"])
+        notes = Note
+           |> Note.select_by_channel(channel)
+           |> Note.select_public(public)
+           |> Repo.all
 
-        notes = Repo.all(query)
-        Utility.report("Query in notes_for_channel", query)
         original_note_count = length(notes)
         filtered_notes = notes |> filter_random(Constant.random_note_threshold())
-        Note.memorize_notes(filtered_notes, channel_user.id)
+        ## Note.memorize_notes(filtered_notes, channel_user.id)
+        # NOTE RECORD:
         %{notes: filtered_notes, note_count: length(filtered_notes), original_note_count: original_note_count}
    end
 

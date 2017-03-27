@@ -271,8 +271,9 @@ defmodule LookupPhoenix.Note do
 
     def select_by_channel(query, channel) do
        [username, tag] = String.split(channel, ".")
+       IO.puts "select_by_channel, username = #{username}, tag = #{tag}"
        user = User.find_by_username(username)
-       if tag == "all" do
+       if Enum.member?(["all", "public"], tag) do
          from n in query,
            where: n.user_id == ^user.id
        else
