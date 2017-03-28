@@ -124,7 +124,7 @@ defmodule MU.TOC do
           if Enum.member?(note.tags, ":toc") && !String.contains?(toc_history, to_string(note.id)) do
             toc_history = toc_history <> ";" <> to_string(note.id) <> ">" <>  first_id(note.content)
           end
-          "<p><a href=\"#{Constant.home_site}/show2/#{options.note_id}/#{id}/#{toc_history}\">#{label}</a></p>"
+          "<p><a href=\"#{Constant.home_site}/#{options.path_segment}/#{options.note_id}/#{id}/#{toc_history}\">#{label}</a></p>"
       end
   end
 

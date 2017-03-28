@@ -82,7 +82,7 @@ td { padding-left:1em;}
 
   <span class="standard" ><%= link "Edit", to: note_path(@conn, :edit, @note, index: @index, id_string: @id_string) %></span>
   <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %></span>
-  <span class="standard hidden-xs" >Channel <%= @channela %></span>
+  <span class="standard hidden-xs" >Channel <%= @channel %></span>
 
   <%= if @note_count > 1 do %>
 

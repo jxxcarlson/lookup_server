@@ -6,6 +6,8 @@ defmodule LookupPhoenix.PublicController do
     alias LookupPhoenix.Utility
     alias LookupPhoenix.Search
     alias LookupPhoenix.Constant
+    alias MU.RenderText
+    alias MU.TOC
 
 
    def share(conn, %{"id" => id}) do
@@ -39,7 +41,7 @@ defmodule LookupPhoenix.PublicController do
 
      end
 
-  def show(conn, %{"id" => id, "site" => site}) do
+  def do_show(conn, %{"id" => id, "site" => site}) do
       note = Note.get(id)
       user = Repo.get!(User, note.user_id)
       token = conn.query_string
@@ -72,6 +74,94 @@ defmodule LookupPhoenix.PublicController do
       end
       # match_token_array
   end
+
+
+  defp do_show2(conn, note) do
+      text = note.content
+      lines =  String.split(String.trim(text), ["\n", "\r", "\r\n"])
+      |> Enum.filter(fn(line) -> !Regex.match?(~r/^title/, line) end)
+      first_line  = hd(lines)
+      [id2, _] = String.split(first_line, ",")
+      redirect(conn, to: "/public/#{note.id}/#{id2}/#{note.id}>#{id2}")
+  end
+
+   def show2(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history}) do
+
+
+       IO.puts "PUBLIC . SHOW2, id = #{id}, id2 = #{id2}, toc_history = #{toc_history}"
+
+       IO.puts "TOC HISTORY (0): #{toc_history}"
+
+        qsMap = Utility.qs2map(conn.query_string)
+        note = Note.get(id); id = note.id
+        note2 = Note.get(id2); id2 = note2.id
+
+       toc_history = TOC.update_toc_history(toc_history, note, note2)
+       Utility.report "TOC HISTORY (1)", toc_history
+       history_string = TOC.make_history_string(toc_history)
+       history_links = TOC.make_history_links(toc_history)
+
+       TOC.make_history(toc_history)
+
+
+        user = Repo.get!(User, note.user_id)
+        site = user.username ##### XXXX
+
+        IO.puts "NOTE: #{id}, NOTE 2: #{id2}"
+
+        Note.update_viewed_at(note)
+
+        # Note.add_options(note) -- adds the options
+        #    process: "latex" | "none"
+        #    collate: true | false
+        options = %{mode: "show", username: user.username, public: note.public,
+           toc_history: history_string, path_segment: "public"} |> Note.add_options(note)
+        options2 = %{mode: "show", username: user.username, public: note.public, toc_history: history_string} |> Note.add_options(note2)
+        rendered_text = String.trim(RenderText.transform(note.content, options))
+        IO.puts "RENDERED TOC: #{rendered_text}"
+        content2 = "== " <> note2.title <> "\n\n" <> note2.content
+        rendered_text2 = String.trim(RenderText.transform(content2, options2))
+
+        inserted_at= Note.inserted_at_short(note)
+        updated_at= Note.updated_at_short(note)
+        word_count = RenderText.word_count(note.content)
+
+        sharing_is_authorized = true #  conn.assigns.current_user.id == note.user_id
+
+        params1 = %{note: note, note2: note2, parent: note, rendered_text: rendered_text, rendered_text2: rendered_text2,
+                      inserted_at: inserted_at, updated_at: updated_at, site: site,
+                      options: options, word_count: word_count, history_links: history_links,
+                      sharing_is_authorized: sharing_is_authorized, current_id: note.id, channela: user.channel}
+
+        conn_query_string = conn.query_string || ""
+        cond do
+          conn_query_string == "" ->
+            query_string = "index=0&id_string=#{id}"
+          !Regex.match?(~r/index=/,conn_query_string) ->
+            query_string =  conn_query_string <> "&index=0&id_string=#{id}"
+          true ->  query_string =  conn_query_string
+        end
+
+        params2 = Note.decode_query_string(query_string)
+        params = Map.merge(params1, params2)
+
+
+
+         params = Map.merge(params, %{toc_history: Enum.join(toc_history, ","), history_string: history_string})
+         render(conn, "show2.html", params)
+      end # SHOW
+
+   def show(conn, %{"id" => id, "site" => site}) do
+
+      note = Note.get(id)
+
+      if Enum.member?(note.tags, ":toc") do
+        do_show2(conn, note)
+      else
+        do_show(conn, %{"id" => id, "site" => site})
+      end
+
+    end
 
 
   def index(conn, params) do
