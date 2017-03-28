@@ -109,7 +109,7 @@ defmodule LookupPhoenix.Search do
       |> String.split(~r/\s/)
     end
 
-    def search(query, user, options) do
+    def search(channel, query, options) do
 
       case query  do
         nil -> IO.puts "NIL qery string"
@@ -122,7 +122,7 @@ defmodule LookupPhoenix.Search do
 
       case query_terms do
         [] -> []
-        _ -> search_with_non_empty_arg(query_terms, user, options)
+        _ -> search_with_non_empty_arg(channel, query_terms, options)
       end
     end
 
@@ -406,13 +406,23 @@ defmodule LookupPhoenix.Search do
       [tags, terms]
     end
 
-    defp basic_query(user_id, access, term, type) do
+    defp basic_query(channel, access, term, type) do
 
-        query1 = from note in Note, where: note.user_id == ^user_id
+        [channel_name, channel_tag] = String.split(channel, ".")
+        channel_id = User.find_by_username(channel_name).id
+
+        if Enum.member?(["all", "public"], channel_tag) do
+          query1 = from note in Note,
+            where: note.user_id == ^channel_id
+        else
+          query1 = from note in Note,
+            where: note.user_id == ^channel_id and ilike(note.tag_string, ^"%#{channel_tag}%")
+        end
+
 
         #############################################
 
-        if access == :public do
+        if access == :public or channel_tag == "public" do
 
           query2 = from note in query1, where: note.public == true
 
@@ -439,12 +449,10 @@ defmodule LookupPhoenix.Search do
 
     end
 
-   defp search_with_non_empty_arg(query_terms, user, options) do
+   defp search_with_non_empty_arg(channel, query_terms, options) do
 
-       Utility.report("search_with_non_empty_arg: INPUTS", [query_terms, user.username, options])
+       Utility.report("search_with_non_empty_arg: INPUTS", [channel, query_terms, options])
 
-       channel = user.channel
-       [channel_name, channel_tag] = String.split(channel, ".")
        cond do
          !Enum.member?(Map.keys(options), :access) ->
            access = %{access: :public}
@@ -468,11 +476,11 @@ defmodule LookupPhoenix.Search do
        Utility.report("0. tags", tags)
 
        case tags do
-         [] -> query = basic_query(user.id, access, hd(terms), type)
+         [] -> query = basic_query(channel, access, hd(terms), type)
               terms = tl(terms)
               IO.puts("BRANCH 1")
 
-         _ -> query = query = basic_query(user.id, access, hd(tags), type)
+         _ -> query = query = basic_query(channel, access, hd(tags), type)
              tags = tl(tags)
              IO.puts("BRANCH 2")
        end

@@ -20,14 +20,17 @@ defmodule LookupPhoenix.SearchController do
           query = "/public " <> query
           site = cookies(conn,"site")
           channel_user = User.find_by_username(site)
+          channel_tag = "public"
+          channel = channel_user <> "." <> channel_tag
           user = channel_user
         else
           user = current_user
+          channel = user.channel
           User.increment_number_of_searches(user)
         end
 
         user_signed_in = current_user != nil
-        notes = Search.search(query, user, %{user_signed_in: user_signed_in})
+        notes = Search.search(channel, query, %{user_signed_in: user_signed_in})
         if current_user != nil do
           Note.memorize_notes(notes, current_user.id)
         end
