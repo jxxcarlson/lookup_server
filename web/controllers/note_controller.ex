@@ -78,15 +78,22 @@ defmodule LookupPhoenix.NoteController do
 
      current_user = conn.assigns.current_user
      qsMap = Utility.qs2map(conn.query_string)
+     Utility.report("NOTE . INDEX . qsMap", qsMap)
      mode = qsMap["mode"]
      random_display = get_random_display(params)
 
      cond do
-       channel = qsMap["set_channel"] != nil ->
-         channel = qsMap["set_channel"]
+      channel = qsMap["channel"] != nil ->
+         IO.puts "NOTE . INDEX . channel, BRANCH 2"
+         channel = qsMap["channel"]
+         IO.puts "NOTE . INDEX . channel = #{channel}"
          User.set_channel(current_user, channel)
-       true -> channel = current_user.channel
+       true ->
+         channel = current_user.channel
+         IO.puts "NOTE . INDEX . channel, BRANCH 3"
+         IO.puts "B3, current_user.channel = #{channel}"
      end
+     channel_username = hd(String.split(channel, "."))
 
      id_list = Note.recall_list(current_user.id)
 
@@ -116,8 +123,12 @@ defmodule LookupPhoenix.NoteController do
          note_record = %{notes: notes, note_count: n, original_note_count: n}
          infix = "random"
        true ->
-         User.update_channel(current_user, "#{current_user.username}.all")
-         note_record = get_note_record(mode, id_list, current_user, %{random_display: random_display})
+         if channel_username == current_user.username do
+           ch_options = %{access: :all}
+         else
+           ch_options = %{access: :public}
+         end
+         note_record = Search.notes_for_channel(channel, ch_options)
          infix = ""
      end
 
@@ -221,12 +232,16 @@ defmodule LookupPhoenix.NoteController do
 
   def set_channel(conn, params) do
     current_user = conn.assigns.current_user
-    IO.puts "THIS IS: Note controller, set_channel"
+    Utility.report("PARAMS[SET]", params["set"])
     channel = params["set"]["channel"]
+    IO.puts "THIS IS: Note controller, set_channel, channel = #{channel}"
     if channel == nil or channel == "" do
       channel = "#{conn.assigns.current_user.username}.all"
     end
-
+    if current_user != nil do
+      IO.puts "USER . SET CHANNEL TO #{channel} for user #{current_user.username}"
+      User.update_channel(current_user, channel)
+    end
    redirect(conn, to: "/notes?channel=#{channel}")
   end
 

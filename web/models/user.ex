@@ -78,7 +78,11 @@ defmodule LookupPhoenix.User do
     # |> set_read_only(false)
   end
 
-    def decode_channel(user) do
+    def decode_channel_new(user) do
+
+      channel = user.channel
+
+
         IO.puts "DECODE CHANNEL"
         user_id = user.id
         access = :public
@@ -106,6 +110,33 @@ defmodule LookupPhoenix.User do
         [access, channel_name, user_id]
     end
 
+   def decode_channel(user) do
+        IO.puts "DECODE CHANNEL"
+        user_id = user.id
+        access = :public
+
+        [channel_user_name, channel_name] = String.split(user.channel, ".")
+
+        if channel_user_name == user.username do
+          access = :all
+          user_id = user.id
+        else
+          channel_user = User.find_by_username(channel_user_name)
+          if channel_user == nil do
+            user_id = user.id
+          else
+            user_id = channel_user.id
+          end
+        end
+
+        case channel_name do
+          "public" -> access = :public
+          "nonpublic" -> access = :nonpublic
+          _ -> :all
+        end
+
+        [access, channel_name, user_id]
+    end
 
   def change_password(user, password) do
     password_hash = Comeonin.Bcrypt.hashpwsalt(password)
@@ -172,6 +203,7 @@ defmodule LookupPhoenix.User do
         IO.puts "XXX: Changing channel to #{channel} for user #{user.username}"
         params = %{"channel" => channel}
         changeset = User.running_changeset(user, params)
+        Utility.report("CHANGESET", changeset)
         Repo.update(changeset)
   end
 

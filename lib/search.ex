@@ -114,7 +114,7 @@ defmodule LookupPhoenix.Search do
       case query  do
         nil -> IO.puts "NIL qery string"
         "" -> IO.puts "Empty query string"
-        _ -> Utility.report("query", query)
+        _ -> Utility.report("Search.search, query", query)
       end
 
       # for testing: query = "code"
@@ -441,7 +441,18 @@ defmodule LookupPhoenix.Search do
 
    defp search_with_non_empty_arg(query_terms, user, options) do
 
-       [access, channel_name, user_id]= User.decode_channel(user)
+       Utility.report("search_with_non_empty_arg: INPUTS", [query_terms, user.username, options])
+
+       channel = user.channel
+       [channel_name, channel_tag] = String.split(channel, ".")
+       cond do
+         !Enum.member?(Map.keys(options), :access) ->
+           access = %{access: :public}
+         true ->
+           access = options.access
+       end
+
+       Utility.report("access", access)
 
        [tags, terms] = split_query_terms(query_terms)
        tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
@@ -454,28 +465,26 @@ defmodule LookupPhoenix.Search do
          true -> type = :standard
        end
 
+       Utility.report("0. tags", tags)
 
-    if !Enum.member?(["all", "public"], channel_name) do
-
-         tags = [channel_name|tags]
-    end
-
-      case tags do
-        [] -> query = basic_query(user_id, access, hd(terms), type)
+       case tags do
+         [] -> query = basic_query(user.id, access, hd(terms), type)
               terms = tl(terms)
+              IO.puts("BRANCH 1")
 
-        _ -> query = query = basic_query(user_id, access, hd(tags), type)
+         _ -> query = query = basic_query(user.id, access, hd(tags), type)
              tags = tl(tags)
+             IO.puts("BRANCH 2")
+       end
 
-      end
+     Utility.report("1. query", query)
+     Utility.report("2. terms", terms)
+     Utility.report("3. tags", tags)
 
       result = Repo.all(query)
-      |> filter_notes_with_tag_list(tags)
-      |> filter_records_with_term_list(terms)
+        |> filter_notes_with_tag_list(tags)
+        |> filter_records_with_term_list(terms)
 
-      Note.memorize_list(result, user_id)
-      Enum.map(result, fn (record) -> record.id end)
-      result
     end
 
 

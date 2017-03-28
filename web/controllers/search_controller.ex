@@ -14,37 +14,36 @@ defmodule LookupPhoenix.SearchController do
 
     def index(conn, %{"search" => %{"query" => query}}) do
 
-      current_user = conn.assigns.current_user
+        current_user = conn.assigns.current_user
 
-      if current_user == nil do
-        query = "/public " <> query
-        site = cookies(conn,"site")
-        channel_user = User.find_by_username(site)
-        user = channel_user
-      else
-        user = current_user
-        User.increment_number_of_searches(user)
-      end
+        if current_user == nil do
+          query = "/public " <> query
+          site = cookies(conn,"site")
+          channel_user = User.find_by_username(site)
+          user = channel_user
+        else
+          user = current_user
+          User.increment_number_of_searches(user)
+        end
 
-      user_signed_in = current_user != nil
-      notes = Search.search(query, user, %{user_signed_in: user_signed_in})
-      if current_user != nil do
-        Note.memorize_notes(notes, current_user.id)
-      end
+        user_signed_in = current_user != nil
+        notes = Search.search(query, user, %{user_signed_in: user_signed_in})
+        if current_user != nil do
+          Note.memorize_notes(notes, current_user.id)
+        end
 
-      notes = Utility.add_index_to_maplist(notes)
-      id_string = Note.extract_id_list(notes)
+        notes = Utility.add_index_to_maplist(notes)
+        id_string = Note.extract_id_list(notes)
 
-      noteCount = length(notes)
-      case noteCount do
-        1 -> noteCountString = "1 Note found"
-        _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found"
-      end
+        noteCount = length(notes)
+        case noteCount do
+          1 -> noteCountString = "1 Note found"
+          _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found"
+        end
 
-      IO.puts "XXX: SearchController, index, notes: #{length(notes)}"
+        IO.puts "XXX: SearchController, index, notes: #{length(notes)}"
 
-      render(conn, "index.html", site: site, notes: notes, id_string: id_string, noteCountString: noteCountString)
-
+        render(conn, "index.html", site: site, notes: notes, id_string: id_string, noteCountString: noteCountString)
 
     end
 
