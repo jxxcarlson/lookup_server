@@ -17,7 +17,6 @@ defmodule MU.Table do
     end
 
     def format(text) do
-      IO.puts "TABLE FORMAT ..."
       sc = Regex.scan(~r/^\|===.(.*).\|===/msr, text)
       sc |> Enum.reduce(text, fn(item, text) -> [a,b] = item; String.replace(text, a, process_table(b)) end)
     end

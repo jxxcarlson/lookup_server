@@ -46,10 +46,13 @@ defmodule LookupPhoenix.Search do
         set_channel(channel, options)
 
         cond do
-          options["access"] == :public -> public = true
-          options["access"] == :all -> public = false
+         !Enum.member?(Map.keys(options), :access) -> public = true
+          options[:access]== :public -> public = true
+          options[:access] == :all -> public = false
           true -> public = true
         end
+
+        IO.puts "NFC, public = #{public}"
 
         notes = Note
            |> Note.select_by_channel(channel)

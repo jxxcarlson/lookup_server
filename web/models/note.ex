@@ -290,6 +290,11 @@ defmodule LookupPhoenix.Note do
 
     def select_public(query, public) do
       if public == true do
+        IO.puts "... selecting public notes ..."
+      else
+        IO.puts "... letting all notes pass ... "
+      end
+      if public == true do
         from n in query,
            where: n.public == ^true
       else
