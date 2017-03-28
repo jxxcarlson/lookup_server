@@ -202,7 +202,11 @@ defmodule LookupPhoenix.SearchController do
 
         user = User.find_by_username(username)
         current_user = conn.assigns.current_user
-        public = user == current_user
+        public = !(user.id == current_user.id)
+
+       IO.puts "In Search Controller, recent, user = #{user.username} = current user = #{current_user.username}"
+
+        IO.puts "In Search Controller, recent, public = #{public}"
 
         query_string_map = Utility.qs2map(conn.query_string)
         User.increment_number_of_searches(current_user)

@@ -25,10 +25,12 @@
 
 </script>
 
-   <%= link "Lead articles", to: "/site/#{@site}?tag=lead_article", class: "btn btn-default btn-s", style: "background-color:cornflowerblue; color:white", id: "lead" %>
-   <%= link "More articles", to: "/site/#{@site}", class: "btn btn-default btn-s", id: "more_articles" %>
-   <span class="hidden-xs"><%= link "Random site", to: "/random_site", class: "btn btn-default btn-s", id: "more_articles" %></span>
-   <%= link "Random article", to: "/site/#{@site}?random=one", class: "btn btn-default btn-s", id: "more_articles" %>
+   <span style="margin-right:8px;font-weight:bold"> Articles</span>
+   <%= link "Lead", to: "/site/#{@site}?tag=lead_article", class: "btn btn-default btn-s", style: "background-color:cornflowerblue; color:white", id: "lead" %>
+   <%= link "More", to: "/site/#{@site}", class: "btn btn-default btn-s", id: "more_articles" %>
+   <%= link "Random", to: "/site/#{@site}?random=one", class: "btn btn-default btn-s", id: "more_articles" %>
+
+   <span class="hidden-xs" style="margin-left:10px;"><%= link "Random site", to: "/random_site", class: "btn btn-default btn-s", id: "more_articles" %></span>
 
    <span class="hidden-xs" style="float:right;margin-top:-12px;">
 
