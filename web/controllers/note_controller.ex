@@ -10,46 +10,17 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Constant
   alias LookupPhoenix.Identifier
 
-  alias LookupPhoenix.NoteAction
+  alias LookupPhoenix.NoteIndexAction
 
   alias MU.RenderText
   alias MU.LiveNotebook
   alias MU.TOC
 
-  ### INDEX ###
 
-   defp get_random_display(params) do
-      cond do
-        params["random"] == nil -> true
-        params["random"] == "no" -> false
-        params["random"] == "yes" -> true
-        true -> true
-      end
-   end
 
    def cookies(conn, cookie_name) do
      conn.cookies[cookie_name]
    end
-
-
-   defp get_note_count_string(note_record, infix) do
-     if note_record.original_note_count > note_record.note_count do
-       if note_record.original_note_count == 1 do
-         _notes = "note"
-       else
-         _notes = "notes"
-       end
-       noteCountString = "#{note_record.note_count} Random #{_notes} from #{note_record.original_note_count}"
-     else
-       if note_record.note_count == 1 do
-         _notes = "Note"
-       else
-         _notes = "Notes"
-       end
-       noteCountString = "#{note_record.note_count} #{infix} #{_notes}"
-     end
-   end
-
 
   # Params: random = yes|no
   # /notes?channel=demo.art - perform search and set channel
@@ -68,36 +39,19 @@ defmodule LookupPhoenix.NoteController do
      current_user = conn.assigns.current_user
      qsMap = Utility.qs2map(conn.query_string)
      mode = qsMap["mode"]
-     random_display = get_random_display(params)
 
-     cond do
-      channel = qsMap["channel"] != nil ->
-         IO.puts "NOTE . INDEX . channel, BRANCH 2"
-         channel = qsMap["channel"]
-         IO.puts "NOTE . INDEX . channel = #{channel}"
-         User.set_channel(current_user, channel)
-       true ->
-         channel = current_user.channel
-         IO.puts "NOTE . INDEX . channel, BRANCH 3"
-         IO.puts "B3, current_user.channel = #{channel}"
-     end
-     channel_username = hd(String.split(channel, "."))
+     result = NoteIndexAction.call(current_user, qsMap)
+     note_record = result.note_record
+     note_count_string = result.note_count_string
 
-     note_record = NoteAction.list(current_user, qsMap)
      id_list = Note.recall_list(current_user.id)
 
-     cond do
-       qsMap["random"] == "one" -> infix = "random"
-       qsMap["random"] == "many"  -> infix = "random"
-       true -> infix = ""
-     end
-
      options = %{mode: "index", process: "none"}
-     noteCountString = get_note_count_string(note_record, infix)
 
      notes = Utility.add_index_to_maplist(note_record.notes)
      id_string = Note.extract_id_list(notes)
-     params2 = %{current_user: current_user, notes: notes, id_string: id_string, noteCountString: noteCountString, options: options}
+     params2 = %{current_user: current_user, notes: notes, id_string: id_string,
+         noteCountString: note_count_string, options: options}
 
      if qsMap["set_channel"] == nil do
        conn
@@ -137,9 +91,6 @@ defmodule LookupPhoenix.NoteController do
       # Normalize tag_string name and ensure that is non-nil and non-empty
       tag_string = note_params["tag_string"] || ""
       if is_nil(channel_name) do channel_name = "all" end
-      IO.puts "tag_string: [#{tag_string}]"
-      IO.puts "tag_string - nil?: #{is_nil(tag_string)}"
-      IO.puts "channel_name: #{channel_name}"
 
       cond  do
         !Enum.member?(["all", "public"], channel_name) and tag_string != "" ->
@@ -152,7 +103,6 @@ defmodule LookupPhoenix.NoteController do
 
       tags = Tag.str2tags(tag_string)
 
-      Utility.report("XXX: tag info", [tag_string, tags])
       [tag_string, tags]
   end
 
@@ -499,8 +449,6 @@ defmodule LookupPhoenix.NoteController do
        |> redirect(to: note_path(conn, :index, random: "no"))
     end
   end
-
-
 
 
 end
