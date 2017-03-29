@@ -191,7 +191,11 @@ defmodule LookupPhoenix.PublicController do
         |> Utility.random_element
         notes = [note]
       qsMap["tag"] != nil ->
-        notes = Search.tag_search([qsMap["tag"]], conn)
+        user = User.find_by_username(site)
+         channel = user.channel
+         [channel_name, _] = String.split(channel, ".")
+          access = :public
+         notes = Search.tag_search([qsMap["tag"]], channel, access)
       true ->
         note_record = Search.notes_for_channel(channel, access)
         notes = note_record.notes

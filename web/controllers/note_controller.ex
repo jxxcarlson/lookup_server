@@ -110,7 +110,15 @@ defmodule LookupPhoenix.NoteController do
          note_record = %{notes: notes, note_count: n, original_note_count: n}
          infix = "random"
        qsMap["tag"] != nil  ->
-         notes = Search.tag_search([qsMap["tag"]], conn)
+         channel = current_user.channel
+         IO.puts "XX Channel = #{channel}"
+         [channel_name, _] = String.split(channel, ".")
+         if channel_name = current_user.username do
+           access = :all
+         else
+           access = :public
+         end
+         notes = Search.tag_search([qsMap["tag"]], channel, access)
          n = length(notes)
          note_record = %{notes: notes, note_count: n, original_note_count: n}
        true ->
@@ -123,6 +131,8 @@ defmodule LookupPhoenix.NoteController do
          note_record = Search.notes_for_channel(channel, ch_options)
          infix = ""
      end
+
+     infix = ""
 
      options = %{mode: "index", process: "none"}
      noteCountString = get_note_count_string(note_record, infix)
@@ -464,14 +474,10 @@ defmodule LookupPhoenix.NoteController do
     current_user = conn.assigns.current_user
     changeset = Ecto.Changeset.update_change(changeset, :identifier, fn(ident) -> Identifier.normalize(current_user, ident) end)
 
-
     index = conn.params["index"]
     id_string = conn.params["id_string"]
     params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
     params = Map.merge(params, %{random: "no"})
-
-
-    # rendered_text = RenderText.transform(new_content, %{collate: "no", mode: "show", process: "latex"})
     rendered_text = RenderText.transform(new_content, Note.add_options(%{mode: "show", public: note.public, toc_history: ""}, note))
 
     if save_option != "exit"  do
@@ -480,14 +486,11 @@ defmodule LookupPhoenix.NoteController do
 
     live_tags = note.tags |> Enum.filter(fn(tag) -> Regex.match?(~r/live/, tag) end)
     if live_tags != [] do LiveNotebook.update(note) end
-    # conn |> redirect(to: note_path(conn, :show, note))
 
-    Utility.report("CHANGESET 2", changeset)
     case Repo.update(changeset) do
       {:ok, note} ->
         if save_option == "exit" do
           conn
-          # |> put_flash(:info, "Note updated successfully.")
           |> redirect(to: note_path(conn, :show, note, params))
         else
           conn
@@ -506,8 +509,6 @@ defmodule LookupPhoenix.NoteController do
     note = Repo.get!(Note, id)
     user = conn.assigns.current_user
 
-
-
     cond do
       (note.user_id ==  user.id)  -> doUpdate(note, note_params, save_option, conn)
       ((user.read_only == true) and (note.user_id !=  user.id)) -> read_only_message(conn)
@@ -517,8 +518,6 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def delete(conn, %{"id" => id}) do
-
-    IO.puts "HOLA HOLA!"
 
     user = conn.assigns.current_user
 
@@ -532,12 +531,10 @@ defmodule LookupPhoenix.NoteController do
        # it to always work (and if it does not, it will raise).
        Repo.delete!(note)
 
-
        n = String.to_integer(id)
        Note.recall_list(conn.assigns.current_user.id)
        |> List.delete(n)
        |> Note.memorize_list(conn.assigns.current_user.id)
-
 
        conn
        |> put_flash(:info, "Note deleted successfully.")

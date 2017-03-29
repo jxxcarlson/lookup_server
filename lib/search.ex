@@ -34,13 +34,19 @@ defmodule LookupPhoenix.Search do
           true -> public = true
         end
 
+        IO.puts "In notes_for_channel, channel = #{channel}"
+
         notes = Note
            |> Note.select_by_channel(channel)
            |> Note.select_public(public)
            |> Repo.all
 
+        IO.puts "Search, notes_for_channel, notes found: #{length(notes)}"
+
         original_note_count = length(notes)
         filtered_notes = notes |> filter_random(Constant.random_note_threshold())
+       IO.puts "Search, notes_for_channel, filtered notes found: #{length(filtered_notes)}"
+
         %{notes: filtered_notes, note_count: length(filtered_notes), original_note_count: original_note_count}
    end
 
@@ -55,17 +61,8 @@ defmodule LookupPhoenix.Search do
       query_terms = decode_query(query)
       case query_terms do
         [] -> []
-        _ -> search_with_non_empty_arg(channel, query_terms, options)
+        _ -> do_search(channel, query_terms, options)
       end
-    end
-
-    # Return notes for user with given tag
-    def find_by_user_and_tag(user_id, tag) do
-      query = Ecto.Query.from note in Note,
-            where: note.user_id == ^user_id,
-            where: ^tag in note.tags,
-            order_by: [asc: note.inserted_at]
-       Repo.all(query)
     end
 
     # Return N <= max of the user's most recent notes,
@@ -78,36 +75,8 @@ defmodule LookupPhoenix.Search do
       |> Enum.slice(0..max)
     end
 
-   def getDocumentsFromList(id_list, options \\ %{}) do
-      notes = id_list |> Enum.map(fn(id) -> Repo.get!(Note, id) end)
-      if options.random_display == true do
-        notes = notes |> filter_random(Constant.random_note_threshold())
-      end
-      %{notes: notes, note_count: length(notes), original_note_count: length(id_list)}
-    end
-
-############### PRIVATE FUNCTIONS ##########################
-
     defp cookies(conn, cookie_name) do
        conn.cookies[cookie_name]
-    end
-
-   ############### notes_for_user ##########################
-
-
-    defp filter_notes(notes, options) do
-       cond do
-         options.random == true ->
-            filtered_notes = notes |> filter_random(Constant.random_note_threshold())
-         options.random == false ->
-            filtered_notes = notes
-          true ->
-            filtered_notes = notes
-       end
-    end
-
-    defp filter_records_for_user(list, user_id) do
-      Enum.filter(list, fn(x) -> x.user_id == user_id end)
     end
 
     ############ NOTES FOR CHANNEL ######
@@ -128,55 +97,24 @@ defmodule LookupPhoenix.Search do
       [channel_user, channel_user_name, channel_name]
     end
 
+   # access = :public, :all
+   def tag_search(tag_list, channel, access) do
 
-    defp set_query_for_channel_search(user, channel_name, access) do
-        if User.get_preference(user, "sort_by") == "idx" do
-            query = Ecto.Query.from note in Note,
-               where: note.user_id == ^user.id,
-               order_by: [asc: note.idx]
-        else
-            query = Ecto.Query.from note in Note,
-               where: note.user_id == ^user.id,
-               order_by: [desc: note.inserted_at]
-        end
-
-        if access == :public do
-          query2 = from note in query, where: note.public == true
-        else
-          query2 = query
-        end
-
-        if !Enum.member?(["public", "all"], channel_name) do
-          IO.puts "SELECTING NOTES IN CHANNEL"
-          query3 = from note in query2, where: ilike(note.tag_string, ^"%#{channel_name}%")
-        else
-          IO.puts "IGNORING CHANNEL"
-          query3 = query2
-        end
-    end
-
-    ############ TAG SEARCH ##########
-
-   def tag_search(tag_list, conn) do
-      user = conn.assigns.current_user
-      channel = user.channel
       [channel_name, _] = String.split(channel, ".")
 
       if Enum.member?(tag_list, "/public") do
         tag_list = tl(tag_list)
       end
 
-      # query_for_tag_search(user_id, tag_list, channel_name, access)
       Note
       |> Note.select_by_channel(channel)
       |> Note.select_by_tag(tag_list)
-      |> Note.select_public(channel_name == user.username)
+      |> Note.select_public(access == :public)
       |> Note.sort_by_viewed_at
       |> Repo.all
     end
 
     ##################################
-
 
     # Input: a list of query terms
     # Output: a pair of lists whose first element consists of tags,
@@ -189,52 +127,23 @@ defmodule LookupPhoenix.Search do
       [tags, terms]
     end
 
-    defp basic_query(channel, access, term, type) do
+    defp first_query(channel, access, term, type) do
 
         [channel_name, channel_tag] = String.split(channel, ".")
         channel_id = User.find_by_username(channel_name).id
+        if channel_tag == "public" do access = :public end
 
-        if Enum.member?(["all", "public"], channel_tag) do
-          query1 = from note in Note,
-            where: note.user_id == ^channel_id
-        else
-          query1 = from note in Note,
-            where: note.user_id == ^channel_id and ilike(note.tag_string, ^"%#{channel_tag}%")
-        end
-
-
-        #############################################
-
-        if access == :public or channel_tag == "public" do
-
-          query2 = from note in query1, where: note.public == true
-
-        else
-
-          query2 = query1
-
-        end
-
-
-        case type do
-
-          :tag -> query3 = from note in query2, where: ilike(note.tag_string, ^"%#{term}%")
-          :text -> query3 = from note in query2, where: ilike(note.title, ^"%#{term}%") or ilike(note.tag_string, ^"%#{term}%") or ilike(note.content, ^"%#{term}%")
-          _ ->   query3 = from note in query2, where: ilike(note.title, ^"%#{term}%") or ilike(note.tag_string, ^"%#{term}%")
-
-        end
-
-        #############################################
-
-        query4 = from note in  query3, order_by: [desc: note.inserted_at]
-
-        query4
+        query = Note
+        |> Note.select_by_channel(channel)
+        |> Note.select_public(access == :public)
+        |> Note.select_by_tag(term, type == :tag)
+        |> Note.select_by_term(term, type == :term)
+        |> Note.full_text_search(term, type == :text)
+        |> Note.sort_by_viewed_at
 
     end
 
-   defp search_with_non_empty_arg(channel, query_terms, options) do
-
-       Utility.report("search_with_non_empty_arg: INPUTS", [channel, query_terms, options])
+   defp do_search(channel, query_terms, options) do
 
        cond do
          !Enum.member?(Map.keys(options), :access) ->
@@ -242,8 +151,6 @@ defmodule LookupPhoenix.Search do
          true ->
            access = options.access
        end
-
-       Utility.report("access", access)
 
        [tags, terms] = split_query_terms(query_terms)
        tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
@@ -253,24 +160,16 @@ defmodule LookupPhoenix.Search do
        cond do
          Enum.member?(search_options, "-t") -> type = :text
          tags != [ ] -> type = :tag
-         true -> type = :standard
+         true -> type = :term
        end
-
-       Utility.report("0. tags", tags)
 
        case tags do
-         [] -> query = basic_query(channel, access, hd(terms), type)
+         [] -> query = first_query(channel, access, hd(terms), type)
               terms = tl(terms)
-              IO.puts("BRANCH 1")
 
-         _ -> query = query = basic_query(channel, access, hd(tags), type)
+         _ -> query = query = first_query(channel, access, hd(tags), type)
              tags = tl(tags)
-             IO.puts("BRANCH 2")
        end
-
-     Utility.report("1. query", query)
-     Utility.report("2. terms", terms)
-     Utility.report("3. tags", tags)
 
       result = Repo.all(query)
         |> filter_notes_with_tag_list(tags)
@@ -278,9 +177,7 @@ defmodule LookupPhoenix.Search do
 
     end
 
-
-
-    ##################
+    ################## FILTERS #################
 
     defp filter_records_with_term(list, term) do
 
@@ -334,7 +231,6 @@ defmodule LookupPhoenix.Search do
         notes
       end
     end
-
 
 end
 

@@ -52,65 +52,74 @@ defmodule LookupPhoenix.SearchController do
 
     ################# tag_search ###############
 
-    defp tag_search_set_query_list(query, access) do
-        query = String.trim(query)
-      if access == :public do
-        query = "/public " <> query
-      end
-      String.split(query)
-    end
 
     # Used in tag links in tag index page
     def tag_search(conn, %{"query" => query}) do
 
-      qsMap = Utility.qs2map(conn.query_string)
-      qsKeys = Map.keys(qsMap)
-      site = qsMap["site"]
-      current_user = conn.assigns.current_user
+          qsMap = Utility.qs2map(conn.query_string)
+          qsKeys = Map.keys(qsMap)
+          site = qsMap["site"]
+          current_user = conn.assigns.current_user
 
-      # set access
-      cond do
-        current_user == nil ->
-          access = :public
-        current_user.username == site ->
-          access = :all
-        true ->
-          access = :public
-      end
+          # set access
+          cond do
+            current_user == nil ->
+              access = :public
+              channel = "#{site}.public"
+            current_user.username == site ->
+              access = :all
+              channel = "#{site}.all"
+            true ->
+              access = :public
+              channel = "#{site}.public"
+          end
 
-      if current_user != nil do
-        User.increment_number_of_searches(current_user)
-      end
+          if current_user != nil do
+            User.increment_number_of_searches(current_user)
+          end
 
-      # Add /public if access = :public
-      query_list = tag_search_set_query_list(query, access)
-      notes = Search.tag_search(query_list, conn)
-
-      # if current_user == nil || site_user != current_user do
-      # notes = Enum.filter(notes, fn(x) -> x.public == true end)
-      # end
-
-      noteCount = length(notes)
-      if current_user != nil do
-        Note.memorize_notes(notes, current_user.id)
-      end
+          # Add /public if access = :public
+         #  query_list = tag_search_set_query_list(query, access)
+          query = String.trim(query)
+          if access == :public do
+              query = "/public " <> query
+          end
+          query_list = String.split(query)
 
 
-      notes_with_index = Utility.add_index_to_maplist(notes)
-      id_string = Note.extract_id_list(notes)
+          channel = current_user.channel
+          [channel_name, _] = String.split(channel, ".")
+          if channel_name = current_user.username do
+            access = :all
+          else
+            access = :public
+          end
+          notes = Search.tag_search(query_list, channel, access)
+          # if current_user == nil || site_user != current_user do
+          # notes = Enum.filter(notes, fn(x) -> x.public == true end)
+          # end
 
-      case noteCount do
-        1 -> noteCountString = "1 Note found with tag #{query}"
-        _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found with tag #{query}"
-      end
+          noteCount = length(notes)
+          if current_user != nil do
+            Note.memorize_notes(notes, current_user.id)
+          end
 
-      if access == :all do
-        render(conn, "index.html", site: site, notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
-      else
-        render(conn, "index.html", site: site, notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
-        # redirect(conn, to: "/site/#{site}", notes: notes)
-      end
-     end
+
+          notes_with_index = Utility.add_index_to_maplist(notes)
+          id_string = Note.extract_id_list(notes)
+
+          case noteCount do
+            1 -> noteCountString = "1 Note found with tag #{query}"
+            _ -> noteCountString = Integer.to_string(noteCount) <> " Notes found with tag #{query}"
+          end
+
+          if access == :all do
+            render(conn, "index.html", site: site, notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
+          else
+            render(conn, "index.html", site: site, notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
+            # redirect(conn, to: "/site/#{site}", notes: notes)
+          end
+    end
 
 
 

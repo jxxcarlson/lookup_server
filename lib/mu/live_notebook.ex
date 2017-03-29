@@ -1,6 +1,7 @@
 defmodule MU.LiveNotebook do
 
   alias LookupPhoenix.Note
+  alias LookupPhoenix.User
   alias LookupPhoenix.Search
   alias LookupPhoenix.Repo
   alias LookupPhoenix.Utility
@@ -19,12 +20,15 @@ defmodule MU.LiveNotebook do
 
   def update(master_note) do
     tag = live_tag(master_note)
+    master_note_user = User.find(master_note.user_id)
 
     entries = String.split(master_note.content, ["\n", "\r", "\n\r"])
     first_entry = hd(entries)
 
-    updated_entries = Search.find_by_user_and_tag(master_note.user_id, tag)
-    |> Enum.map(fn(entry) -> "#{entry.id}, #{entry.title}" end)
+    updated_entries = Note
+      |> Note.select_by_user_and_tag(master_note_user, tag)
+      |> Repo.all
+      |> Enum.map(fn(entry) -> "#{entry.id}, #{entry.title}" end)
     updated_entries  = [first_entry | updated_entries]
     |> Enum.join("\n")
 
@@ -35,7 +39,11 @@ defmodule MU.LiveNotebook do
 
  # Return notes for user with given tag
     def find_most_recent_with_tag(user_id, tag) do
-      Search.find_by_user_and_tag(user_id, tag)  |> Utility.last
+      user = User.find(user_id)
+      Note
+       |> Note.select_by_user_and_tag(user, tag)
+       |> Repo.all
+       |> Utility.last
     end
 
   def needs_update?(master_note) do
