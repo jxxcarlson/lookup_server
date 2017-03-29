@@ -20,7 +20,7 @@ defmodule MU.LiveNotebook do
 
   def update(master_note) do
     tag = live_tag(master_note)
-    master_note_user = User.find(master_note.user_id)
+    master_note_user = Repo.get!(User, master_note.user_id)
 
     entries = String.split(master_note.content, ["\n", "\r", "\n\r"])
     first_entry = hd(entries)
@@ -39,7 +39,7 @@ defmodule MU.LiveNotebook do
 
  # Return notes for user with given tag
     def find_most_recent_with_tag(user_id, tag) do
-      user = User.find(user_id)
+      user = Repo.get!(User, user_id)
       Note
        |> Note.select_by_user_and_tag(user, tag)
        |> Repo.all
