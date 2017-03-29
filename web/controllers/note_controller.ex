@@ -10,44 +10,17 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Constant
   alias LookupPhoenix.Identifier
 
+  alias LookupPhoenix.NoteIndexAction
+
   alias MU.RenderText
   alias MU.LiveNotebook
   alias MU.TOC
 
-  ### INDEX ###
 
-   defp get_random_display(params) do
-      cond do
-        params["random"] == nil -> true
-        params["random"] == "no" -> false
-        params["random"] == "yes" -> true
-        true -> true
-      end
-   end
 
    def cookies(conn, cookie_name) do
      conn.cookies[cookie_name]
    end
-
-
-   defp get_note_count_string(note_record, infix) do
-     if note_record.original_note_count > note_record.note_count do
-       if note_record.original_note_count == 1 do
-         _notes = "note"
-       else
-         _notes = "notes"
-       end
-       noteCountString = "#{note_record.note_count} Random #{_notes} from #{note_record.original_note_count}"
-     else
-       if note_record.note_count == 1 do
-         _notes = "Note"
-       else
-         _notes = "Notes"
-       end
-       noteCountString = "#{note_record.note_count} #{infix} #{_notes}"
-     end
-   end
-
 
   # Params: random = yes|no
   # /notes?channel=demo.art - perform search and set channel
@@ -65,71 +38,20 @@ defmodule LookupPhoenix.NoteController do
 
      current_user = conn.assigns.current_user
      qsMap = Utility.qs2map(conn.query_string)
-     Utility.report("NOTE . INDEX . qsMap", qsMap)
      mode = qsMap["mode"]
-     random_display = get_random_display(params)
 
-     cond do
-      channel = qsMap["channel"] != nil ->
-         IO.puts "NOTE . INDEX . channel, BRANCH 2"
-         channel = qsMap["channel"]
-         IO.puts "NOTE . INDEX . channel = #{channel}"
-         User.set_channel(current_user, channel)
-       true ->
-         channel = current_user.channel
-         IO.puts "NOTE . INDEX . channel, BRANCH 3"
-         IO.puts "B3, current_user.channel = #{channel}"
-     end
-     channel_username = hd(String.split(channel, "."))
+     result = NoteIndexAction.call(current_user, qsMap)
+     note_record = result.note_record
+     note_count_string = result.note_count_string
 
      id_list = Note.recall_list(current_user.id)
 
-     cond do
-       qsMap["channel"] != nil ->
-         channel = qsMap["channel"]
-         channel_username = hd(String.split(channel, "."))
-         User.update_channel(current_user, channel)
-         if channel_username == current_user.username do
-           ch_options = %{access: :all}
-         else
-           ch_options = %{access: :public}
-         end
-         note_record = Search.notes_for_channel(channel, ch_options)
-         infix = ""
-       qsMap["random"] == "one"  ->
-         note_record = Search.notes_for_channel(current_user.channel, %{})
-         note = note_record.notes |> Utility.random_element
-         notes = [note]
-         n = length(notes)
-         note_record = %{notes: notes, note_count: n, original_note_count: n}
-         infix = "random"
-       qsMap["random"] == "many"  ->
-         note_record = Search.notes_for_channel(current_user.channel, %{})
-         notes = note_record.notes |> Enum.shuffle |> Enum.slice(0..19)
-         n = length(notes)
-         note_record = %{notes: notes, note_count: n, original_note_count: n}
-         infix = "random"
-       qsMap["tag"] != nil  ->
-         notes = Search.tag_search([qsMap["tag"]], conn)
-         n = length(notes)
-         note_record = %{notes: notes, note_count: n, original_note_count: n}
-       true ->
-         IO.puts "NOTE CONTROLLER . INDEX . DEFAULT BRANCH"
-         if channel_username == current_user.username do
-           ch_options = %{access: :all}
-         else
-           ch_options = %{access: :public}
-         end
-         note_record = Search.notes_for_channel(channel, ch_options)
-         infix = ""
-     end
-
      options = %{mode: "index", process: "none"}
-     noteCountString = get_note_count_string(note_record, infix)
 
      notes = Utility.add_index_to_maplist(note_record.notes)
      id_string = Note.extract_id_list(notes)
-     params2 = %{current_user: current_user, notes: notes, id_string: id_string, noteCountString: noteCountString, options: options}
+     params2 = %{current_user: current_user, notes: notes, id_string: id_string,
+         noteCountString: note_count_string, options: options}
 
      if qsMap["set_channel"] == nil do
        conn
@@ -169,9 +91,6 @@ defmodule LookupPhoenix.NoteController do
       # Normalize tag_string name and ensure that is non-nil and non-empty
       tag_string = note_params["tag_string"] || ""
       if is_nil(channel_name) do channel_name = "all" end
-      IO.puts "tag_string: [#{tag_string}]"
-      IO.puts "tag_string - nil?: #{is_nil(tag_string)}"
-      IO.puts "channel_name: #{channel_name}"
 
       cond  do
         !Enum.member?(["all", "public"], channel_name) and tag_string != "" ->
@@ -184,7 +103,6 @@ defmodule LookupPhoenix.NoteController do
 
       tags = Tag.str2tags(tag_string)
 
-      Utility.report("XXX: tag info", [tag_string, tags])
       [tag_string, tags]
   end
 
@@ -464,14 +382,10 @@ defmodule LookupPhoenix.NoteController do
     current_user = conn.assigns.current_user
     changeset = Ecto.Changeset.update_change(changeset, :identifier, fn(ident) -> Identifier.normalize(current_user, ident) end)
 
-
     index = conn.params["index"]
     id_string = conn.params["id_string"]
     params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
     params = Map.merge(params, %{random: "no"})
-
-
-    # rendered_text = RenderText.transform(new_content, %{collate: "no", mode: "show", process: "latex"})
     rendered_text = RenderText.transform(new_content, Note.add_options(%{mode: "show", public: note.public, toc_history: ""}, note))
 
     if save_option != "exit"  do
@@ -480,14 +394,11 @@ defmodule LookupPhoenix.NoteController do
 
     live_tags = note.tags |> Enum.filter(fn(tag) -> Regex.match?(~r/live/, tag) end)
     if live_tags != [] do LiveNotebook.update(note) end
-    # conn |> redirect(to: note_path(conn, :show, note))
 
-    Utility.report("CHANGESET 2", changeset)
     case Repo.update(changeset) do
       {:ok, note} ->
         if save_option == "exit" do
           conn
-          # |> put_flash(:info, "Note updated successfully.")
           |> redirect(to: note_path(conn, :show, note, params))
         else
           conn
@@ -506,8 +417,6 @@ defmodule LookupPhoenix.NoteController do
     note = Repo.get!(Note, id)
     user = conn.assigns.current_user
 
-
-
     cond do
       (note.user_id ==  user.id)  -> doUpdate(note, note_params, save_option, conn)
       ((user.read_only == true) and (note.user_id !=  user.id)) -> read_only_message(conn)
@@ -517,8 +426,6 @@ defmodule LookupPhoenix.NoteController do
   end
 
   def delete(conn, %{"id" => id}) do
-
-    IO.puts "HOLA HOLA!"
 
     user = conn.assigns.current_user
 
@@ -532,20 +439,16 @@ defmodule LookupPhoenix.NoteController do
        # it to always work (and if it does not, it will raise).
        Repo.delete!(note)
 
-
        n = String.to_integer(id)
        Note.recall_list(conn.assigns.current_user.id)
        |> List.delete(n)
        |> Note.memorize_list(conn.assigns.current_user.id)
-
 
        conn
        |> put_flash(:info, "Note deleted successfully.")
        |> redirect(to: note_path(conn, :index, random: "no"))
     end
   end
-
-
 
 
 end
