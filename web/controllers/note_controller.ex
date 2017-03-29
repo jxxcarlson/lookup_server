@@ -11,6 +11,8 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Identifier
 
   alias LookupPhoenix.NoteIndexAction
+  alias LookupPhoenix.NoteShowAction
+  alias LookupPhoenix.NoteCreateAction
 
   alias MU.RenderText
   alias MU.LiveNotebook
@@ -83,48 +85,12 @@ defmodule LookupPhoenix.NoteController do
     end
   end
 
-
-  #### CREATE ####
-
-  defp get_tags(note_params, channel_name) do
-
-      # Normalize tag_string name and ensure that is non-nil and non-empty
-      tag_string = note_params["tag_string"] || ""
-      if is_nil(channel_name) do channel_name = "all" end
-
-      cond  do
-        !Enum.member?(["all", "public"], channel_name) and tag_string != "" ->
-          tag_string = [tag_string, channel_name] |> Enum.join(", ")
-        !Enum.member?(["all", "public"], channel_name) and tag_string == ""  ->
-          tag_string = channel_name
-        tag_string == "" -> tag_string = "-"
-        tag_string != "" -> tag_string
-      end
-
-      tags = Tag.str2tags(tag_string)
-
-      [tag_string, tags]
-  end
-
-  defp setup_create(conn, note_params) do
-      [access, channel_name, user_id] = User.decode_channel(conn.assigns.current_user)
-      [tag_string, tags] = get_tags(note_params, channel_name)
-      new_content = Regex.replace(~r/ß/, note_params["content"], "")
-      new_title = Regex.replace(~r/ß/, note_params["title"], "")
-      identifier = Identifier.make(conn.assigns.current_user.username, new_title)
-      IO.puts "In create note, identifier = #{identifier}"
-      new_params = %{"content" => new_content, "title" => new_title,
-         "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now,
-         "tag_string" => tag_string, "tags" => tags, "public" => false, "identifier" => identifier}
-      changeset = Note.changeset(%Note{}, new_params)
-  end
-
   def create(conn, %{"note" => note_params}) do
     if (conn.assigns.current_user.read_only == true) do
          read_only_message(conn)
     else
-      changeset = setup_create(conn, note_params)
-      case Repo.insert(changeset) do
+      result = NoteCreateAction.call(conn, note_params)
+      case Repo.insert(result.changeset) do
         {:ok, _note} ->
           [_note.id] ++ Note.recall_list(conn.assigns.current_user.id)
           |> Note.memorize_list(conn.assigns.current_user.id)
@@ -199,7 +165,7 @@ defmodule LookupPhoenix.NoteController do
 
     # {:ok, updated_at } = note.updated_at |> Timex.local |> Timex.format("{M}-{D}-{YYYY}")
     # IO.puts "UPDATED AT: #{updated_at}"
-    render(conn, "show.html", params)
+
   end
 
 
@@ -220,7 +186,8 @@ defmodule LookupPhoenix.NoteController do
     if Enum.member?(note.tags, ":toc") do
       do_show2(conn, note)
     else
-      do_show(conn, note)
+      result = NoteShowAction.call(conn, note)
+      render(conn, "show.html", result.params)
     end
 
   end
