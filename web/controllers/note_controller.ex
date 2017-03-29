@@ -10,6 +10,8 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Constant
   alias LookupPhoenix.Identifier
 
+  alias LookupPhoenix.NoteAction
+
   alias MU.RenderText
   alias MU.LiveNotebook
   alias MU.TOC
@@ -65,7 +67,6 @@ defmodule LookupPhoenix.NoteController do
 
      current_user = conn.assigns.current_user
      qsMap = Utility.qs2map(conn.query_string)
-     Utility.report("NOTE . INDEX . qsMap", qsMap)
      mode = qsMap["mode"]
      random_display = get_random_display(params)
 
@@ -82,57 +83,14 @@ defmodule LookupPhoenix.NoteController do
      end
      channel_username = hd(String.split(channel, "."))
 
+     note_record = NoteAction.list(current_user, qsMap)
      id_list = Note.recall_list(current_user.id)
 
      cond do
-       qsMap["channel"] != nil ->
-         channel = qsMap["channel"]
-         channel_username = hd(String.split(channel, "."))
-         User.update_channel(current_user, channel)
-         if channel_username == current_user.username do
-           ch_options = %{access: :all}
-         else
-           ch_options = %{access: :public}
-         end
-         note_record = Search.notes_for_channel(channel, ch_options)
-         infix = ""
-       qsMap["random"] == "one"  ->
-         note_record = Search.notes_for_channel(current_user.channel, %{})
-         note = note_record.notes |> Utility.random_element
-         notes = [note]
-         n = length(notes)
-         note_record = %{notes: notes, note_count: n, original_note_count: n}
-         infix = "random"
-       qsMap["random"] == "many"  ->
-         note_record = Search.notes_for_channel(current_user.channel, %{})
-         notes = note_record.notes |> Enum.shuffle |> Enum.slice(0..19)
-         n = length(notes)
-         note_record = %{notes: notes, note_count: n, original_note_count: n}
-         infix = "random"
-       qsMap["tag"] != nil  ->
-         channel = current_user.channel
-         IO.puts "XX Channel = #{channel}"
-         [channel_name, _] = String.split(channel, ".")
-         if channel_name = current_user.username do
-           access = :all
-         else
-           access = :public
-         end
-         notes = Search.tag_search([qsMap["tag"]], channel, access)
-         n = length(notes)
-         note_record = %{notes: notes, note_count: n, original_note_count: n}
-       true ->
-         IO.puts "NOTE CONTROLLER . INDEX . DEFAULT BRANCH"
-         if channel_username == current_user.username do
-           ch_options = %{access: :all}
-         else
-           ch_options = %{access: :public}
-         end
-         note_record = Search.notes_for_channel(channel, ch_options)
-         infix = ""
+       qsMap["random"] == "one" -> infix = "random"
+       qsMap["random"] == "many"  -> infix = "random"
+       true -> infix = ""
      end
-
-     infix = ""
 
      options = %{mode: "index", process: "none"}
      noteCountString = get_note_count_string(note_record, infix)
