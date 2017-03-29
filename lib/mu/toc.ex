@@ -110,7 +110,6 @@ defmodule MU.TOC do
     |> Enum.map(fn(line) -> make_toc_item(line, options) end)
   end
 
-  #
   defp make_toc_item(line, options) do
       toc_history = options.toc_history
       line_parts = String.split(line, ",")

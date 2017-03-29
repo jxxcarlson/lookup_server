@@ -35,6 +35,8 @@ defmodule LookupPhoenix.NoteShow2Action do
       options = %{mode: "show", username: conn.assigns.current_user.username,
          public: note.public, toc_history: history_string,
          path_segment: "show2"} |> Note.add_options(note)
+      IO.puts "Note show2 action, options['path_segment'] = #{options['path_segment']}'"
+      IO.puts "Note show2 action, options.path_segment = #{options.path_segment}'"
       options2 = %{mode: "show", username: conn.assigns.current_user.username,
          public: note.public, toc_history: history_string,} |> Note.add_options(note2)
       rendered_text = String.trim(RenderText.transform(note.content, options))
