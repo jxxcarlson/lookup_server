@@ -13,3 +13,4 @@ grep '^ *defp' $1 | sed 's/^.*defp//' | sed 's/do$//' | sort
 echo "----------------------------------"
 grep '^ *defp' $1 | wc -l
 echo
+wc $1

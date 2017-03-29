@@ -52,25 +52,6 @@ defmodule LookupPhoenix.SearchController do
 
     ################# tag_search ###############
 
-    defp tag_search_set_user(conn) do
-
-      current_user = conn.assigns.current_user
-      qsMap = Utility.qs2map(conn.query_string)
-      site = qsMap["site"]
-      IO.puts "site = #{site}"
-      Utility.report("qsMap", qsMap)
-
-      site_user = User.find_by_username(site)
-
-      if site_user == current_user do
-        access = :all
-      else
-        access = :public
-      end
-
-      [site, current_user, site_user, access]
-    end
-
     defp tag_search_set_query_list(query, access) do
         query = String.trim(query)
       if access == :public do
@@ -79,20 +60,15 @@ defmodule LookupPhoenix.SearchController do
       String.split(query)
     end
 
-    defp tag_search_update_channel(conn, site, query_list) do
-        if conn.assigns.current_user != nil do
-        tag = hd(query_list)
-        channel = "#{site}.#{tag}"
-        User.update_channel(conn.assigns.current_user, channel)
-      end
-    end
-
+    # Used in tag links in tag index page
     def tag_search(conn, %{"query" => query}) do
 
       qsMap = Utility.qs2map(conn.query_string)
       qsKeys = Map.keys(qsMap)
       site = qsMap["site"]
       current_user = conn.assigns.current_user
+
+      # set access
       cond do
         current_user == nil ->
           access = :public
@@ -102,33 +78,17 @@ defmodule LookupPhoenix.SearchController do
           access = :public
       end
 
-
-
-      Utility.report("qsMap", qsMap)
-
-      Utility.report("tag search query" , query)
-
-      # [site, current_user, site_user, access] = tag_search_set_user(conn)
-
       if current_user != nil do
         User.increment_number_of_searches(current_user)
       end
 
+      # Add /public if access = :public
       query_list = tag_search_set_query_list(query, access)
-
-      # DISABLE THIS FOR NOW
-      # tag_search_update_channel(conn, site, query_list)
-
-      # Utility.report("CURRENT USER", current_user.username)
-      Utility.report("QUERY LIST", query_list)
-
       notes = Search.tag_search(query_list, conn)
 
       # if current_user == nil || site_user != current_user do
       # notes = Enum.filter(notes, fn(x) -> x.public == true end)
       # end
-
-      IO.puts "NOTES FOUND IN TAG_SEARCH: #{length(notes)}"
 
       noteCount = length(notes)
       if current_user != nil do
@@ -150,39 +110,10 @@ defmodule LookupPhoenix.SearchController do
         render(conn, "index.html", site: site, notes: notes_with_index, id_string: id_string, noteCountString: noteCountString)
         # redirect(conn, to: "/site/#{site}", notes: notes)
       end
-
-
      end
 
 
-    def raw_random(conn, expected_number_of_entries) do
 
-         IO.puts "RAW RANDOM"
-         user = conn.assigns.current_user
-         [channel_user_name, channel_name] = user.channel |> String.split(".")
-         note_count = Search.count_for_user(user.id)
-
-         cond do
-           note_count > 14 ->
-              p = (100*expected_number_of_entries) / note_count
-              notes = Search.random_notes_for_user(p, user, 7, "none")
-           note_count <= 14 ->
-              notes = Search.notes_for_user(user, %{"tag" => channel_name, "sort_by" => "created_at", "direction" => "desc"}).notes
-         end
-
-         Utility.report("Number of randome notes:", Enum.count(notes))
-         Note.memorize_notes(notes, user.id)
-
-         notes = Utility.add_index_to_maplist(notes)
-         id_string = Note.extract_id_list(notes)
-
-         case note_count do
-           1 -> countReportString =   "1 Random note"
-           _ -> countReportString = "#{length(notes)} Random notes"
-         end
-         render(conn, "index.html", notes: notes, id_string: id_string, noteCountString: countReportString)
-
-    end
 
    # Route: /recent?QUERY, where
    # QUERY is hourse_before=N&mode=MODE, where
@@ -223,21 +154,21 @@ defmodule LookupPhoenix.SearchController do
                |> Note.select_by_channel(channel)
                |> Note.select_by_viewed_at_hours_ago(25)
                |> Note.select_public(public)
-               |> Note.sorted_by_view
+               |> Note.sort_by_viewed_at
                |> Repo.all
           "max" in Map.keys(query_string_map) ->
              max_notes = String.to_integer query_string_map["max"]
              notes = Note
               |> Note.select_by_channel(channel)
               |> Note.select_public(public)
-              |> Note.sorted_by_view
+              |> Note.sort_by_viewed_at
               |> Repo.all
               |> Note.most_recent(20)
           true ->
              notes = Note
               |> Note.select_by_channel("#{current_user.username}.all")
               |> Note.select_public(true)
-              |> Note.sorted_by_view
+              |> Note.sort_by_viewed_at
               |> Repo.all
               |> Note.most_recent(5)
         end

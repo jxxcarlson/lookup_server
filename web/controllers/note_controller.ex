@@ -25,29 +25,6 @@ defmodule LookupPhoenix.NoteController do
       end
    end
 
-
-  # Get note from memory -- the id_list managed by Mnemonix
-  defp get_note_record(mode, id_list, user, options) do
-    IO.puts "GET NOTE FOR RECORD"
-    case [mode, length(id_list)] do
-       ["all", _] -> IO.puts "BRANCH 1"; note_record = Search.notes_for_user(user, %{"mode" => "all",
-          "sort_by" => "inserted_at", "direction" => "desc"});
-       ["public", _] ->  IO.puts "BRANCH 2"; note_record = Search.notes_for_user(user, %{"mode" => "public",
-          "sort_by" => "inserted_at", "direction" => "desc"});
-       [_, number_of_notes_remembered] ->
-          if number_of_notes_remembered > 0 do
-            IO.puts "BRANCH 3"; note_record = Search.getDocumentsFromList(id_list, options);
-          else
-            IO.puts "SEARCH NOTE FOR USER with options, random_display = "#  <> options["random_display"] <> " -- BRANCH 4"
-            note_record = Search.notes_for_user(user, %{"mode" => "all",
-                      "sort_by" => "inserted_at", "direction" => "desc",
-                      random: options["random_display"]});
-          end
-       _ ->  IO.puts "BRANCH 5"; note_record = Search.getDocumentsFromList(id_list, options);
-
-     end
-  end
-
    def cookies(conn, cookie_name) do
      conn.cookies[cookie_name]
    end
@@ -73,7 +50,17 @@ defmodule LookupPhoenix.NoteController do
 
 
   # Params: random = yes|no
+  # /notes?channel=demo.art - perform search and set channel
+  # /notes?random=one|many
+  # /notes
+  # Searches for notes are always conducted in a channel
+  # To implement
   #
+  # notes?recent=25
+  # notes?tag=science
+  # notes?search=foo%20bar%20baz
+  # notes?search=
+  # MORE?
   def index(conn, params) do
 
      current_user = conn.assigns.current_user
@@ -122,7 +109,12 @@ defmodule LookupPhoenix.NoteController do
          n = length(notes)
          note_record = %{notes: notes, note_count: n, original_note_count: n}
          infix = "random"
+       qsMap["tag"] != nil  ->
+         notes = Search.tag_search([qsMap["tag"]], conn)
+         n = length(notes)
+         note_record = %{notes: notes, note_count: n, original_note_count: n}
        true ->
+         IO.puts "NOTE CONTROLLER . INDEX . DEFAULT BRANCH"
          if channel_username == current_user.username do
            ch_options = %{access: :all}
          else

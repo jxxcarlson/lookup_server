@@ -184,16 +184,13 @@ defmodule LookupPhoenix.User do
   # Enum.map(uu, fn(user) -> Repo.update(User.running_changeset(user, params)) end)
 
   def update_tags(user) do
-      # tags = Tag.get_all_user_tags(user) |> Enum.sort
+
       tags = Tag.tags_by_frequency(:all, user)
-      IO.puts "Updating #{length(tags)} tags"
       params = %{"tags" => tags}
       changeset = User.running_changeset(user, params)
       Repo.update(changeset)
 
-      # tags = Tag.get_all_public_user_tags(user) |> Enum.sort
       tags = Tag.tags_by_frequency(:public, user)
-      IO.puts "Updating #{length(tags)} public tags"
       params = %{"public_tags" => tags}
       changeset = User.running_changeset(user, params)
       Repo.update(changeset)

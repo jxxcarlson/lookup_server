@@ -260,18 +260,22 @@ defmodule LookupPhoenix.Note do
       # note
     end
 
-    #### SEARCH AND SORT ####
+    #### SEARCH AND SORT -- COMPOSABLE QUERIES ####
 
     # https://blog.drewolson.org/composable-queries-ecto/
 
-    def sorted_by_view(query) do
+    def for_user(query, user_id) do
+      from n in query,
+        where: n.user_id == ^user_id
+    end
+
+    def sort_by_viewed_at(query) do
         from n in query,
         order_by: [desc: n.viewed_at]
     end
 
     def select_by_channel(query, channel) do
        [username, tag] = String.split(channel, ".")
-       IO.puts "select_by_channel, username = #{username}, tag = #{tag}"
        user = User.find_by_username(username)
        if Enum.member?(["all", "public"], tag) do
          from n in query,
@@ -290,16 +294,16 @@ defmodule LookupPhoenix.Note do
 
     def select_public(query, public) do
       if public == true do
-        IO.puts "... selecting public notes ..."
-      else
-        IO.puts "... letting all notes pass ... "
-      end
-      if public == true do
         from n in query,
            where: n.public == ^true
       else
         query
       end
+    end
+
+    def select_by_tag(query, tag_list) do
+      from n in query,
+        where: ilike(n.tag_string, ^"%#{hd(tag_list)}%")
     end
 
     def most_recent(items, n) do
