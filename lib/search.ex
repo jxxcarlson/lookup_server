@@ -39,7 +39,9 @@ defmodule LookupPhoenix.Search do
         notes = Note
            |> Note.select_by_channel(channel)
            |> Note.select_public(public)
+           |> Note.sort_by_viewed_at
            |> Repo.all
+           |> Note.most_recent(20)
 
         IO.puts "Search, notes_for_channel, notes found: #{length(notes)}"
 
