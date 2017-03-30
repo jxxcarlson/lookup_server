@@ -19,6 +19,7 @@ defmodule MU.LiveNotebook do
   end
 
   def update(master_note) do
+    IO.puts "LIVE UPDATE: #{master_note.title}"
     tag = live_tag(master_note)
     master_note_user = Repo.get!(User, master_note.user_id)
 
@@ -31,6 +32,8 @@ defmodule MU.LiveNotebook do
       |> Enum.map(fn(entry) -> "#{entry.id}, #{entry.title}" end)
     updated_entries  = [first_entry | updated_entries]
     |> Enum.join("\n")
+
+    Utility.report("... updated_entries", updated_entries)
 
     params = %{"content" => updated_entries}
     changeset = Note.changeset(master_note, params)
@@ -61,7 +64,7 @@ defmodule MU.LiveNotebook do
 
   def auto_update(notebook) do
     IO.puts "======== auto_update ========"
-    IO.puts "Notebook #{notebook.title}, ide = #{notebook.id}"
+    IO.puts "Notebook #{notebook.title}, id = #{notebook.id}"
     IO.puts "======== auto_update ========"
     if needs_update?(notebook) do
       update(notebook)
