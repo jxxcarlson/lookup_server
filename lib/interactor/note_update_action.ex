@@ -24,7 +24,8 @@ defmodule LookupPhoenix.NoteUpdateAction do
      id_string = conn.params["id_string"]
      params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
      params = Map.merge(params, %{random: "no"})
-     rendered_text = RenderText.transform(new_content, Note.add_options(%{mode: "show", public: note.public, toc_history: ""}, note))
+     rendered_text = RenderText.transform(new_content, Note.add_options(%{mode: "show",
+        public: note.public, toc_history: "", path_segment: "show2"}, note))
 
      if save_option != "exit"  do
        params = params_for_save(conn, note, params, changeset, rendered_text)
