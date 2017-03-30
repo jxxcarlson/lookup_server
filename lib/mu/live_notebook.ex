@@ -18,6 +18,23 @@ defmodule MU.LiveNotebook do
     tag
   end
 
+  def process(entry) do
+    [text, tags] = entry
+    headings = tags |> Enum.filter(fn(tag) -> Regex.match?(~r/^heading/, tag) end)
+    cond do
+      headings == [] -> [text]
+      true ->
+        heading = hd(headings)
+        [_, title] = String.split(heading, ":")
+        IO.puts "headning above #{text} = #{title}"
+        ["title, #{title}", text]
+    end
+  end
+
+  def put_headings(entries) do
+    Enum.reduce(entries, [], fn(entry, acc) -> acc ++ process(entry) end)
+  end
+
   def update(master_note) do
     IO.puts "LIVE UPDATE: #{master_note.title}"
     tag = live_tag(master_note)
@@ -30,7 +47,9 @@ defmodule MU.LiveNotebook do
       |> Note.select_by_user_and_tag(master_note_user, tag)
       |> Note.sort_by_created_at
       |> Repo.all
-      |> Enum.map(fn(entry) -> "#{entry.id}, #{entry.title}" end)
+      |> Enum.map(fn(entry) -> ["#{entry.id}, #{entry.title}", entry.tags] end)
+      |> put_headings
+    Utility.report("updated entries",updated_entries)
     updated_entries  = [first_entry | updated_entries]
     |> Enum.join("\n")
 

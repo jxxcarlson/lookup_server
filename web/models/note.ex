@@ -274,9 +274,14 @@ defmodule LookupPhoenix.Note do
         order_by: [desc: n.viewed_at]
     end
 
-   def sort_by_created_at(query) do
+   def sort_by_created_at(query, direction \\ :asc) do
+      if direction == :asc do
         from n in query,
-        order_by: [asc: n.inserted_at]
+           order_by: [asc: n.inserted_at]
+      else
+        from n in query,
+           order_by: [desc: n.inserted_at]
+      end
    end
 
 
