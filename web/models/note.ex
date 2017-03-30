@@ -274,6 +274,12 @@ defmodule LookupPhoenix.Note do
         order_by: [desc: n.viewed_at]
     end
 
+   def sort_by_created_at(query) do
+        from n in query,
+        order_by: [asc: n.inserted_at]
+   end
+
+
     def select_by_channel(query, channel) do
        [username, tag] = String.split(channel, ".")
        user = User.find_by_username(username)

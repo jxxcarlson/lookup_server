@@ -28,6 +28,7 @@ defmodule MU.LiveNotebook do
 
     updated_entries = Note
       |> Note.select_by_user_and_tag(master_note_user, tag)
+      |> Note.sort_by_created_at
       |> Repo.all
       |> Enum.map(fn(entry) -> "#{entry.id}, #{entry.title}" end)
     updated_entries  = [first_entry | updated_entries]
