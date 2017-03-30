@@ -61,6 +61,7 @@ defmodule LookupPhoenix.Search do
 
     def search(channel, query, options) do
       query_terms = decode_query(query)
+      Utility.report("query_terms", query_terms)
       case query_terms do
         [] -> []
         _ -> do_search(channel, query_terms, options)
@@ -156,8 +157,15 @@ defmodule LookupPhoenix.Search do
 
        [tags, terms] = split_query_terms(query_terms)
        tags = Enum.map(tags, fn(tag) -> String.replace(tag, "/", "") end)
+       if Enum.member?(tags, "public") do
+         tags = List.delete(tags, "public")
+         access = %{access: :public}
+       end
        search_options = Enum.filter(terms, fn(term) -> String.starts_with?(term, "-") end) || []
        terms = Enum.filter(terms, fn(term) -> !String.starts_with?(term, "-") end)
+
+       Utility.report("  -- tags", tags)
+       Utility.report("  -- terms", terms)
 
        cond do
          Enum.member?(search_options, "-t") -> type = :text

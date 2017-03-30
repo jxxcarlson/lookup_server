@@ -19,9 +19,10 @@ defmodule LookupPhoenix.SearchController do
         if current_user == nil do
           query = "/public " <> query
           site = cookies(conn,"site")
+          IO.puts "Search controller, index, site = #{site}"
           channel_user = User.find_by_username(site)
           channel_tag = "public"
-          channel = channel_user <> "." <> channel_tag
+          channel = channel_user.username <> "." <> channel_tag
           user = channel_user
         else
           user = current_user
