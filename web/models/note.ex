@@ -320,6 +320,9 @@ defmodule LookupPhoenix.Note do
     end
 
     def select_by_tag(query, tag_list, condition \\ true) do
+      if !is_list(tag_list) do
+        tag_list = [tag_list]  # THIS IS BAD CODE -- TRACK THINS DOWN AND FIX
+      end
       Utility.report("select_by_tag, tag_list", tag_list)
       if condition do
         from n in query,
