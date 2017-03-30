@@ -332,6 +332,7 @@ defmodule LookupPhoenix.Note do
        end
     end
 
+
    def select_by_term(query, term, condition \\ true) do
       IO.puts "select_by_term, term = #{term}"
       if condition do
