@@ -3,6 +3,7 @@ defmodule LookupPhoenix.Search do
     use Ecto.Schema
     import Ecto.Query
     alias LookupPhoenix.Note
+    alias LookupPhoenix.NoteSearch
     alias LookupPhoenix.User
     alias LookupPhoenix.Repo
     alias LookupPhoenix.Utility
@@ -37,11 +38,11 @@ defmodule LookupPhoenix.Search do
         IO.puts "In notes_for_channel, channel = #{channel}"
 
         notes = Note
-           |> Note.select_by_channel(channel)
-           |> Note.select_public(public)
-           |> Note.sort_by_viewed_at
+           |> NoteSearch.select_by_channel(channel)
+           |> NoteSearch.select_public(public)
+           |> NoteSearch.sort_by_viewed_at
            |> Repo.all
-           |> Note.most_recent(20)
+           |> NoteSearch.most_recent(20)
 
         IO.puts "Search, notes_for_channel, notes found: #{length(notes)}"
 
@@ -72,8 +73,8 @@ defmodule LookupPhoenix.Search do
     # where the notes are ordered by :viewed, :updated, :created
     def most_recent(scope, order_by, max, user) do
       Note
-      |> Note.for_user(user.id)
-      |> Note.select_public(scope == :public)
+      |> NoteSearch.for_user(user.id)
+      |> NoteSearch.select_public(scope == :public)
       |> Repo.all
       |> Enum.slice(0..max)
     end
@@ -110,10 +111,10 @@ defmodule LookupPhoenix.Search do
       end
 
       Note
-      |> Note.select_by_channel(channel)
-      |> Note.select_by_tag(tag_list)
-      |> Note.select_public(access == :public)
-      |> Note.sort_by_viewed_at
+      |> NoteSearch.select_by_channel(channel)
+      |> NoteSearch.select_by_tag(tag_list)
+      |> NoteSearch.select_public(access == :public)
+      |> NoteSearch.sort_by_viewed_at
       |> Repo.all
     end
 
@@ -137,12 +138,12 @@ defmodule LookupPhoenix.Search do
         if channel_tag == "public" do access = :public end
 
         query = Note
-        |> Note.select_by_channel(channel)
-        |> Note.select_public(access == :public)
-        |> Note.select_by_tag(term, type == :tag)
-        |> Note.select_by_term(term, type == :term)
-        |> Note.full_text_search(term, type == :text)
-        |> Note.sort_by_viewed_at
+        |> NoteSearch.select_by_channel(channel)
+        |> NoteSearch.select_public(access == :public)
+        |> NoteSearch.select_by_tag(term, type == :tag)
+        |> NoteSearch.select_by_term(term, type == :term)
+        |> NoteSearch.full_text_search(term, type == :text)
+        |> NoteSearch.sort_by_viewed_at
 
     end
 

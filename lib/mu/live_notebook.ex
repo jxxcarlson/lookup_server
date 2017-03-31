@@ -44,8 +44,8 @@ defmodule MU.LiveNotebook do
     first_entry = hd(entries)
 
     updated_entries = Note
-      |> Note.select_by_user_and_tag(master_note_user, tag)
-      |> Note.sort_by_created_at
+      |> NoteSearch.select_by_user_and_tag(master_note_user, tag)
+      |> NoteSearch.sort_by_created_at
       |> Repo.all
       |> Enum.map(fn(entry) -> ["#{entry.id}, #{entry.title}", entry.tags] end)
       |> put_headings
@@ -64,7 +64,7 @@ defmodule MU.LiveNotebook do
     def find_most_recent_with_tag(user_id, tag) do
       user = Repo.get!(User, user_id)
       Note
-       |> Note.select_by_user_and_tag(user, tag)
+       |> NoteSearch.select_by_user_and_tag(user, tag)
        |> Repo.all
        |> Utility.last
     end

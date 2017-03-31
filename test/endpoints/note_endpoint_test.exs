@@ -22,7 +22,7 @@ defmodule LookupPhoenix.NoteControllerTest do
       assert user.channel == "frodo.all"
       Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1"}
       all_notes = Note
-        |> Note.for_user(user.id)
+        |> NoteSearch.for_user(user.id)
         |> Repo.all
       assert length(all_notes) == 1
       conn = build_conn()

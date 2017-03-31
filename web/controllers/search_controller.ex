@@ -3,6 +3,7 @@
 defmodule LookupPhoenix.SearchController do
     use LookupPhoenix.Web, :controller
     alias LookupPhoenix.Note
+    alias LookupPhoenix.NoteSearch
     alias LookupPhoenix.Search
     alias LookupPhoenix.User
     alias LookupPhoenix.Utility
@@ -154,26 +155,26 @@ defmodule LookupPhoenix.SearchController do
           "hours_before" in Map.keys(query_string_map) ->
              # hours_before = String.to_integer query_string_map["hours_before"]
              notes = Note
-               |> Note.select_by_channel(channel)
-               |> Note.select_by_viewed_at_hours_ago(25)
-               |> Note.select_public(public)
-               |> Note.sort_by_viewed_at
+               |> NoteSearch.select_by_channel(channel)
+               |> NoteSearch.select_by_viewed_at_hours_ago(25)
+               |> NoteSearch.select_public(public)
+               |> NoteSearch.sort_by_viewed_at
                |> Repo.all
           "max" in Map.keys(query_string_map) ->
              # max_notes = String.to_integer query_string_map["max"]
              notes = Note
-              |> Note.select_by_channel(channel)
-              |> Note.select_public(public)
-              |> Note.sort_by_viewed_at
+              |> NoteSearch.select_by_channel(channel)
+              |> NoteSearch.select_public(public)
+              |> NoteSearch.sort_by_viewed_at
               |> Repo.all
-              |> Note.most_recent(20)
+              |> NoteSearch.most_recent(20)
           true ->
              notes = Note
-              |> Note.select_by_channel("#{current_user.username}.all")
-              |> Note.select_public(true)
-              |> Note.sort_by_viewed_at
+              |> NoteSearch.select_by_channel("#{current_user.username}.all")
+              |> NoteSearch.select_public(true)
+              |> NoteSearch.sort_by_viewed_at
               |> Repo.all
-              |> Note.most_recent(5)
+              |> NoteSearch.most_recent(5)
         end
 
         note_count = length(notes)

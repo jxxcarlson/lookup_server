@@ -34,8 +34,8 @@ defmodule LookupPhoenix.Tag do
     # scope = :all | :public
     def get_all_user_tags(scope, user) do
       Note
-      |> Note.for_user(user.id)
-      |> Note.select_public(scope == :public)
+      |> NoteSearch.for_user(user.id)
+      |> NoteSearch.select_public(scope == :public)
       |> Repo.all
       |> Enum.reduce([], fn(note, list) -> merge_tags_from_note(note, list) end)
     end
@@ -66,8 +66,8 @@ defmodule LookupPhoenix.Tag do
 
     defp update_frequencies_for_user(freqs, scope, user) do
     Note
-      |> Note.for_user(user.id)
-      |> Note.select_public(scope == :public)
+      |> NoteSearch.for_user(user.id)
+      |> NoteSearch.select_public(scope == :public)
       |> Repo.all
       |> Enum.reduce(freqs, fn(note, freqs) -> update_frequencies_for_note(note, freqs) end)
     end
