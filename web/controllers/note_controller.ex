@@ -5,6 +5,7 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.Note
   alias LookupPhoenix.User
   alias LookupPhoenix.Utility
+  alias LookupPhoenix.NoteNavigation
 
   alias LookupPhoenix.NoteIndexAction
   alias LookupPhoenix.NoteShowAction
@@ -151,7 +152,7 @@ defmodule LookupPhoenix.NoteController do
         params1 = %{note: note, changeset: changeset,
                     word_count: word_count, locked: locked,
                     conn: conn, tags: tags, note: note, rendered_text: rendered_text}
-        params2 = Note.decode_query_string(conn.query_string)
+        params2 = NoteNavigation.decode_query_string(conn.query_string)
         params = Map.merge(params1, params2)
 
         render(conn, "edit.html", params)

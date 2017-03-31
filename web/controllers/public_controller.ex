@@ -6,6 +6,7 @@ defmodule LookupPhoenix.PublicController do
     alias LookupPhoenix.Utility
     alias LookupPhoenix.Search
     alias LookupPhoenix.Constant
+    alias LookupPhoenix.NoteNavigation
     alias MU.RenderText
     alias MU.TOC
 
@@ -59,7 +60,7 @@ defmodule LookupPhoenix.PublicController do
 
           options = %{mode: "show"} |> Note.add_options(note)
           params1 = %{note: note, options: options, site: site, channela: user.channel}
-          params2 = Note.decode_query_string(query_string)
+          params2 = NoteNavigation.decode_query_string(query_string)
           params = Map.merge(params1, params2)
 
           case note.public do
@@ -142,7 +143,7 @@ defmodule LookupPhoenix.PublicController do
           true ->  query_string =  conn_query_string
         end
 
-        params2 = Note.decode_query_string(query_string)
+        params2 = NoteNavigation.decode_query_string(query_string)
         params = Map.merge(params1, params2)
 
 

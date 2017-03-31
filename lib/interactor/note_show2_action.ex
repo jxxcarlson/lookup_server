@@ -6,6 +6,8 @@ defmodule LookupPhoenix.NoteShow2Action do
   alias MU.TOC
   alias MU.RenderText
   alias LookupPhoenix.Utility
+  alias LookupPhoenix.NoteNavigation
+
 
   # def show2(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history}) do
 
@@ -63,7 +65,7 @@ defmodule LookupPhoenix.NoteShow2Action do
         true ->  query_string =  conn_query_string
       end
 
-      params2 = Note.decode_query_string(query_string)
+      params2 = NoteNavigation.decode_query_string(query_string)
       params = Map.merge(params1, params2)
 
       Map.merge(params, %{toc_history: Enum.join(toc_history, ","), history_string: history_string})

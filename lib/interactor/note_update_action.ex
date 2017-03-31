@@ -3,6 +3,8 @@ defmodule LookupPhoenix.NoteUpdateAction do
   alias LookupPhoenix.Note
   alias LookupPhoenix.Identifier
   alias LookupPhoenix.Tag
+  alias LookupPhoenix.NoteNavigation
+
   alias MU.RenderText
   alias MU.LiveNotebook
 
@@ -22,7 +24,7 @@ defmodule LookupPhoenix.NoteUpdateAction do
 
      index = conn.params["index"]
      id_string = conn.params["id_string"]
-     params = Note.decode_query_string("index=#{index}&id_string=#{id_string}")
+     params = NoteNavigation.decode_query_string("index=#{index}&id_string=#{id_string}")
      params = Map.merge(params, %{random: "no"})
      rendered_text = RenderText.transform(new_content, Note.add_options(%{mode: "show",
         public: note.public, toc_history: "", path_segment: "show2"}, note))

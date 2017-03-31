@@ -4,6 +4,8 @@ defmodule LookupPhoenix.NoteShowAction do
   alias LookupPhoenix.Note
   alias LookupPhoenix.Repo
   alias LookupPhoenix.Utility
+  alias LookupPhoenix.NoteNavigation
+
   alias MU.RenderText
 
   def call(conn, note) do
@@ -39,7 +41,7 @@ defmodule LookupPhoenix.NoteShowAction do
         else
           query_string = conn_query_string
         end
-        params2 = Note.decode_query_string(query_string)
+        params2 = NoteNavigation.decode_query_string(query_string)
 
         params = Map.merge(params1, params2)
         result = %{params: params}
