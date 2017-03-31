@@ -23,7 +23,7 @@ defmodule LookupPhoenix.SearchController do
           channel_user = User.find_by_username(site)
           channel_tag = "public"
           channel = channel_user.username <> "." <> channel_tag
-          user = channel_user
+          # user = channel_user
         else
           user = current_user
           channel = user.channel
@@ -58,21 +58,18 @@ defmodule LookupPhoenix.SearchController do
     def tag_search(conn, %{"query" => query}) do
 
           qsMap = Utility.qs2map(conn.query_string)
-          qsKeys = Map.keys(qsMap)
+          # qsKeys = Map.keys(qsMap)
           site = qsMap["site"]
           current_user = conn.assigns.current_user
 
           # set access
-          cond do
+          {access, channel} = cond do
             current_user == nil ->
-              access = :public
-              channel = "#{site}.public"
+              { :public,  "#{site}.public" }
             current_user.username == site ->
-              access = :all
-              channel = "#{site}.all"
+              { :all, "#{site}.all" }
             true ->
-              access = :public
-              channel = "#{site}.public"
+              { :public, "#{site}.public" }
           end
 
           if current_user != nil do
@@ -104,7 +101,6 @@ defmodule LookupPhoenix.SearchController do
           if current_user != nil do
             Note.memorize_notes(notes, current_user.id)
           end
-
 
           notes_with_index = Utility.add_index_to_maplist(notes)
           id_string = Note.extract_id_list(notes)
@@ -153,13 +149,13 @@ defmodule LookupPhoenix.SearchController do
         User.increment_number_of_searches(current_user)
 
         mode = String.to_atom(query_string_map["mode"])
-        user_id = user.id
+        # user_id = user.id
 
         update_message = "Recently #{mode}"
 
         cond do
           "hours_before" in Map.keys(query_string_map) ->
-             hours_before = String.to_integer query_string_map["hours_before"]
+             # hours_before = String.to_integer query_string_map["hours_before"]
              notes = Note
                |> Note.select_by_channel(channel)
                |> Note.select_by_viewed_at_hours_ago(25)
@@ -167,7 +163,7 @@ defmodule LookupPhoenix.SearchController do
                |> Note.sort_by_viewed_at
                |> Repo.all
           "max" in Map.keys(query_string_map) ->
-             max_notes = String.to_integer query_string_map["max"]
+             # max_notes = String.to_integer query_string_map["max"]
              notes = Note
               |> Note.select_by_channel(channel)
               |> Note.select_public(public)
@@ -187,7 +183,7 @@ defmodule LookupPhoenix.SearchController do
         Note.memorize_notes(notes, conn.assigns.current_user.id)
 
         notes = Utility.add_index_to_maplist(notes)
-        id_string = Note.extract_id_list(notes)
+        # id_string = Note.extract_id_list(notes)
         case note_count do
            1 -> countReportString =   "1 #{update_message} note"
            _ -> countReportString = "#{length(notes)} #{update_message} notes"

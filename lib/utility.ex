@@ -126,7 +126,15 @@ defmodule LookupPhoenix.Utility do
      Enum.at(list, n)
    end
 
-    # Replace "bad" characters by underscore
+
+    @doc """
+    Given a string, return that string with 'bad' characters
+    replaced by underscores.
+
+    ## Example
+      iex > sanitize_string("Abc !# def")
+      "Abc____defABCD"
+"""
     def sanitize_string(str) do
       Regex.replace(~r/[^A-Za-z0-9_\._]/, str, "_")
       |> String.replace(" ", "_")

@@ -4,11 +4,7 @@ defmodule LookupPhoenix.NoteController do
 
   alias LookupPhoenix.Note
   alias LookupPhoenix.User
-  alias LookupPhoenix.Tag
-  alias LookupPhoenix.Search
   alias LookupPhoenix.Utility
-  alias LookupPhoenix.Constant
-  alias LookupPhoenix.Identifier
 
   alias LookupPhoenix.NoteIndexAction
   alias LookupPhoenix.NoteShowAction
@@ -19,7 +15,6 @@ defmodule LookupPhoenix.NoteController do
 
   alias MU.RenderText
   alias MU.LiveNotebook
-  alias MU.TOC
 
 
 
@@ -39,17 +34,17 @@ defmodule LookupPhoenix.NoteController do
   # notes?search=foo%20bar%20baz
   # notes?search=
   # MORE?
-  def index(conn, params) do
+  def index(conn, _params) do
 
      current_user = conn.assigns.current_user
      qsMap = Utility.qs2map(conn.query_string)
-     mode = qsMap["mode"]
+     # mode = qsMap["mode"]
 
      result = NoteIndexAction.call(current_user, qsMap)
      note_record = result.note_record
      note_count_string = result.note_count_string
 
-     id_list = Note.recall_list(current_user.id)
+     #   id_list = Note.recall_list(current_user.id)
 
      options = %{mode: "index", process: "none"}
 
@@ -93,12 +88,12 @@ defmodule LookupPhoenix.NoteController do
     else
       result = NoteCreateAction.call(conn, note_params)
       case Repo.insert(result.changeset) do
-        {:ok, _note} ->
-          [_note.id] ++ Note.recall_list(conn.assigns.current_user.id)
+        {:ok, note} ->
+          [note.id] ++ Note.recall_list(conn.assigns.current_user.id)
           |> Note.memorize_list(conn.assigns.current_user.id)
           conn
-          |> put_flash(:info, "Note created successfully: #{_note.id}")
-          |> redirect(to: note_path(conn, :index, active_notes: [_note.id], random: "no"))
+          |> put_flash(:info, "Note created successfully: #{note.id}")
+          |> redirect(to: note_path(conn, :index, active_notes: [note.id], random: "no"))
         {:error, changeset} ->
           render(conn, "new.html", changeset: changeset)
       end
