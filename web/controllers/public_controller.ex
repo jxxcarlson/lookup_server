@@ -7,6 +7,7 @@ defmodule LookupPhoenix.PublicController do
     alias LookupPhoenix.Search
     alias LookupPhoenix.Constant
     alias LookupPhoenix.NoteNavigation
+    alias LookupPhoenix.TokenManager
     alias MU.RenderText
     alias MU.TOC
 
@@ -36,7 +37,7 @@ defmodule LookupPhoenix.PublicController do
          case [note.public, note.shared] do
             [true, _] ->  render(conn, "share.html", params) # redirect(conn, to: public_path(conn, :show, params))
             [_, true] ->
-               if Note.match_token_array(token, note) do render(conn, "share.html", params) end
+               if TokenManager.match_token_array(token, note) do render(conn, "share.html", params) end
             _ ->  render(conn, "error.html", params) #                                                                                     `````````````````|> put_resp_cookie("site", site)
           end
 
@@ -66,7 +67,7 @@ defmodule LookupPhoenix.PublicController do
           case note.public do
             true -> render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Public"})) |> put_resp_cookie("site", site)
             false ->
-               if is_map(token) and Note.match_token_array(token, note) do
+               if is_map(token) and TokenManager.match_token_array(token, note) do
                  render(conn, "show.html", Map.merge(params, %{title: "LookupNotes: Shared"})) |> put_resp_cookie("site", site)
                else
                  render(conn, "error.html", params)

@@ -16,7 +16,6 @@ defmodule LookupPhoenix.Note do
 
     field :title, :string
     field :content, :string
-    # field :user_id, :integer
     field :viewed_at, :utc_datetime
     field :edited_at, :utc_datetime
     field :tag_string, :string
@@ -27,7 +26,7 @@ defmodule LookupPhoenix.Note do
     field :idx, :integer
     field :identifier, :string
 
-     belongs_to :user, LookupPhoenix.User
+    belongs_to :user, LookupPhoenix.User
 
     timestamps()
   end
@@ -43,28 +42,11 @@ defmodule LookupPhoenix.Note do
     |> validate_required([:title, :content])
   end
 
-   ################
-
      def extract_id_list(list) do
        list |> Enum.map(fn(note) -> note.id end) |> Enum.join(",")
      end
 
-     def previous(note, notes) do
-       index = note.index
-       previous_index = max(0, index - 1)
-       previous_note = Enum.at(notes, previous_index)
-       previous_note.id
-     end
-
-     def next(note, notes) do
-        index = note.index
-        next_index = min(length(notes)-1, index + 1)
-        next_note = Enum.at(notes, next_index)
-        next_note.id
-     end
-
      def fromPair(pair) do
-          # %Note{ :title => pair[0], :content => pair[1]}
           %Note{ :title => "Foo", :content => "Bar"}
      end
 
@@ -132,19 +114,6 @@ defmodule LookupPhoenix.Note do
      |> Enum.join(", ")
    end
 
-    def notes_for_user(user_id, option \\ "none") do
-      query = Ecto.Query.from note in Note,
-        select: note.id,
-        where: note.user_id == ^user_id
-      if option == "public" do
-        query2 = from  note in query,
-          where: note.public == true
-      else
-        query2 = query
-      end
-      Repo.all(query2)
-    end
-
     def public_indicator(note) do
       if note.public do
         "Public"
@@ -158,25 +127,6 @@ defmodule LookupPhoenix.Note do
       params = %{"public" => public}
       changeset = Note.changeset(note, params)
       Repo.update(changeset)
-    end
-
-
-    # Utility.generate_time_limited_token(10,240)
-
-    def generate_time_limited_token(note, n_chars, hours_to_expiration) do
-      token_record = Utility.generate_time_limited_token(n_chars,hours_to_expiration)
-      tokens = (note.tokens || []) ++ [token_record]
-      changeset = Note.changeset(note, %{tokens: tokens})
-      Repo.update(changeset)
-      token_record
-    end
-
-    def match_token(given_token, token_record) do
-      token_record["token"] == given_token
-    end
-
-    def match_token_array(given_token, note) do
-      Enum.reduce(note.tokens, false, fn(token_record, acc) -> match_token(given_token, token_record) or acc end)
     end
 
     def add_options(options, note) do
@@ -207,8 +157,4 @@ defmodule LookupPhoenix.Note do
       # note
     end
 
-
-
-
 end
-

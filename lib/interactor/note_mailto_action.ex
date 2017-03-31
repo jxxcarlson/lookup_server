@@ -3,6 +3,7 @@ defmodule LookupPhoenix.NoteMailtoAction do
   alias LookupPhoenix.Note
   alias LookupPhoenix.Repo
   alias LookupPhoenix.NoteNavigation
+  alias LookupPhoenix.TokenManager
 
   def call(conn, %{"id" => id}) do
 
@@ -19,7 +20,7 @@ defmodule LookupPhoenix.NoteMailtoAction do
     end
 
     if note.public == false do
-      token_record = Note.generate_time_limited_token(note, 10, 240)
+      token_record = TokenManager.generate_time_limited_token(note, 10, 240)
       message_part_3= "#{note_id}?#{token_record.token}"
     else
       message_part_3= "#{note_id}"
