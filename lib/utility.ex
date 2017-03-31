@@ -133,7 +133,10 @@ defmodule LookupPhoenix.Utility do
 
     ## Example
       iex > sanitize_string("Abc !# def")
-      "Abc____defABCD"
+        "Abc____defABCD"
+
+     iex > sanitize_string("Abc !# def")
+        "Abc____def"
 """
     def sanitize_string(str) do
       Regex.replace(~r/[^A-Za-z0-9_\._]/, str, "_")

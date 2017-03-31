@@ -148,10 +148,7 @@ defmodule LookupPhoenix.SearchController do
         query_string_map = Utility.qs2map(conn.query_string)
         User.increment_number_of_searches(current_user)
 
-        mode = String.to_atom(query_string_map["mode"])
-        # user_id = user.id
-
-        update_message = "Recently #{mode}"
+        update_message = "Recent"
 
         cond do
           "hours_before" in Map.keys(query_string_map) ->

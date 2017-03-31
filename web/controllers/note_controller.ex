@@ -36,32 +36,17 @@ defmodule LookupPhoenix.NoteController do
   # MORE?
   def index(conn, _params) do
 
-     current_user = conn.assigns.current_user
-     qsMap = Utility.qs2map(conn.query_string)
-     # mode = qsMap["mode"]
+     result = NoteIndexAction.call(conn)
 
-     result = NoteIndexAction.call(current_user, qsMap)
-     note_record = result.note_record
-     note_count_string = result.note_count_string
-
-     #   id_list = Note.recall_list(current_user.id)
-
-     options = %{mode: "index", process: "none"}
-
-     notes = Utility.add_index_to_maplist(note_record.notes)
-     id_string = Note.extract_id_list(notes)
-     params2 = %{current_user: current_user, notes: notes, id_string: id_string,
-         noteCountString: note_count_string, options: options}
-
-     if qsMap["set_channel"] == nil do
+   if result.branch == "site"  do
        conn
-       |> put_resp_cookie("site", current_user.username)
-       |> render("index.html", params2)
-     else
+       |> put_resp_cookie("site", conn.assigns.current_user.username)
+       |> render("index.html", result)
+   else
        conn
-       |> put_resp_cookie("site", current_user.username)
+       |> put_resp_cookie("site", conn.assigns.current_user.username)
        |> redirect(to: "/notes?mode=all")
-     end
+   end
 
   end
 
@@ -113,7 +98,7 @@ defmodule LookupPhoenix.NoteController do
       IO.puts "USER . SET CHANNEL TO #{channel} for user #{current_user.username}"
       User.update_channel(current_user, channel)
     end
-   redirect(conn, to: "/notes?channel=#{channel}")
+    redirect(conn, to: "/notes?channel=#{channel}")
   end
 
 

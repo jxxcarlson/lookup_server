@@ -5,23 +5,26 @@ defmodule LookupPhoenix.NoteActionTest do
   alias LookupPhoenix.Utility
   alias LookupPhoenix.User
   alias LookupPhoenix.Note
-  alias LookupPhoenix.NoteAction
+  alias LookupPhoenix.NoteIndexAction
   alias LookupPhoenix.Utility
 
   test "list, default branch" do
     user = Repo.insert!(%User{email: "frodo@foo.io", password: "somepassword", username: "frodo", channel: "frodo.all"})
     Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1"}
-    qsMap = %{}
-    result = NoteAction.list(user, qsMap)
+    conn = build_conn()
+           |> assign(:current_user, user)
+           |> get("/notes")
+    result = NoteIndexAction.call(conn)
     assert length(result.notes) == 1
   end
 
   test "list, channel branch, channel with no records" do
     user = Repo.insert!(%User{email: "frodo@foo.io", password: "somepassword", username: "frodo", channel: "frodo.all"})
-    note  = Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1"}
-    Utility.report("IDS:", [user.id, note.user_id])
-    qsMap = %{"channel" => "alpha.beta"}
-    result = NoteAction.list(user, qsMap)
+    note  = Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1", tags: ["foo"]}
+    conn = build_conn()
+           |> assign(:current_user, user)
+           |> get("/notes?channel=alpha.beta")
+    result = NoteIndexAction.call(conn)
     assert length(result.notes) == 0
   end
 
@@ -30,7 +33,10 @@ defmodule LookupPhoenix.NoteActionTest do
     Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1",
       tags: ["poetry"]}
     qsMap = %{"channel" => "frodo.science"}
-    result = NoteAction.list(user, qsMap)
+    conn = build_conn()
+           |> assign(:current_user, user)
+           |> get ("notes/?channel=frodo.science")
+    result = NoteIndexAction.call(conn)
     assert length(result.notes) == 0
   end
 
@@ -38,9 +44,10 @@ defmodule LookupPhoenix.NoteActionTest do
     user = Repo.insert!(%User{email: "frodo@foo.io", password: "somepassword", username: "frodo", channel: "frodo.science"})
     note  = Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1",
       tags: ["science", "poetry"]}
-    Utility.report("IDS:", [user.id, note.user_id])
-    qsMap = %{"channel" => "frodo.science"}
-    result = NoteAction.list(user, qsMap)
+    conn = build_conn()
+           |> assign(:current_user, user)
+           |> get ("notes/?channel=frodo.science")
+    result = NoteIndexAction.call(conn)
     assert length(result.notes) == 1
   end
 
