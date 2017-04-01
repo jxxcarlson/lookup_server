@@ -1,6 +1,7 @@
 defmodule MU.LiveNotebook do
 
   alias LookupPhoenix.Note
+  alias LookupPhoenix.NoteSearch
   alias LookupPhoenix.User
   alias LookupPhoenix.Search
   alias LookupPhoenix.Repo

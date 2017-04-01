@@ -1,6 +1,7 @@
 defmodule LookupPhoenix.Search do
     use LookupPhoenix.Web, :model
     use Ecto.Schema
+
     import Ecto.Query
     alias LookupPhoenix.Note
     alias LookupPhoenix.NoteSearch
