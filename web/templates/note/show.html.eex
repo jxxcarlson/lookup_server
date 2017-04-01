@@ -22,6 +22,7 @@ span.standard {
   overflow: scroll;
   height: 150px;
   white-space:pre-line;
+  padding-bottom:4em;
 }
 
 </style>

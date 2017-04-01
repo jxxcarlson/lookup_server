@@ -24,6 +24,7 @@ span.standard {
   height: 150px;
   width: 20%;
   white-space:pre-line;
+  padding-bottom:4em;
 }
 
 .rendered_text2x {
@@ -36,6 +37,8 @@ span.standard {
   height: 150px;
   width: 80%;
   white-space:pre-line;
+  padding-bottom:4em;
+
 }
 
 p {
