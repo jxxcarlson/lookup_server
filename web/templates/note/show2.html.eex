@@ -18,26 +18,33 @@ span.standard {
   float:left;
   background-color: #ddddff;
   padding-left: 1em;
+  padding-right: 1em;
+  padding-top:1em;
+  padding-bottom:4em;
   margin-top:3em;
-  clear: right; padding-top:1em;
+  clear: right;
   overflow: scroll;
   height: 150px;
   width: 20%;
   white-space:pre-line;
-  padding-bottom:4em;
+
+
 }
 
 .rendered_text2x {
   float:left;
   background-color: #f4f4f4;
-  padding-left: 1em;
   margin-top:3em;
-  clear: right; padding-top:1em;
+  clear: right;
+  padding-top:1em;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-bottom:4em;
   overflow: scroll;
   height: 150px;
   width: 80%;
   white-space:pre-line;
-  padding-bottom:4em;
+
 
 }
 
