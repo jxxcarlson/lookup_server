@@ -10,8 +10,7 @@ defmodule MU.Inline do
     end
 
     def formatStrike(text) do
-       # Regex.replace(~r/(^|\s)-([^-]*)-(\s)/U, text, " <span style='text-decoration: line-through'>\\2</span> \\3")
-       Regex.replace(~r/~~([A-Za-z].*)~~/U, text, "<span style='text-decoration: line-through;color:darkred'>\\1</span>")
+       Regex.replace(~r/~~(.*)~~/U, text, "<span style='text-decoration: line-through;color:darkred'>\\1</span>")
     end
 
    def formatInlineCode(text) do

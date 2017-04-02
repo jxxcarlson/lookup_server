@@ -7,9 +7,7 @@ defmodule LookupPhoenix.NoteIndexAction do
 
   def call(conn) do
     current_user = conn.assigns.current_user
-    IO.puts "conn, query_string = #{conn.query_string}"
     qsMap = Utility.qs2map(conn.query_string)
-    Utility.report("conn, qsMap", qsMap)
     list(current_user, qsMap)
   end
 
@@ -44,7 +42,6 @@ defmodule LookupPhoenix.NoteIndexAction do
   end
 
   defp handle_channel_request(current_user, qsMap) do
-     IO.puts "CHANNEL BRANCH"
      channel = qsMap["channel"]
      channel_username = hd(String.split(channel, "."))
      User.update_channel(current_user, channel)
@@ -53,7 +50,6 @@ defmodule LookupPhoenix.NoteIndexAction do
   end
 
   defp handle_random_one_request(current_user, qsMap) do
-      IO.puts "RANDOM ONE BRANCH"
      [channel, access] = channel_access(current_user)
       note_record = Search.notes_for_channel(current_user.channel,access)
       note = note_record.notes |> Utility.random_element
@@ -63,7 +59,6 @@ defmodule LookupPhoenix.NoteIndexAction do
   end
 
   defp handle_random_many_request(current_user, qsMap) do
-     IO.puts "RANDOM MANY BRANCH"
     [channel, access] = channel_access(current_user)
      note_record = Search.notes_for_channel(channel, access)
      notes = note_record.notes |> Enum.shuffle |> Enum.slice(0..19)
@@ -72,7 +67,6 @@ defmodule LookupPhoenix.NoteIndexAction do
   end
 
   defp handle_tag_request(current_user, qsMap) do
-    IO.puts "TAG BRANCH"
     [channel, access] = channel_access(current_user)
     notes = Search.tag_search([qsMap["tag"]], channel, access)
     n = length(notes)
@@ -80,14 +74,12 @@ defmodule LookupPhoenix.NoteIndexAction do
   end
 
   defp handle_default_request(current_user, qsMap) do
-    IO.puts "DEFAULT BRANCH"
     [channel, access] = channel_access(current_user)
     Search.notes_for_channel(channel, access)
   end
 
   defp channel_access(current_user) do
     channel = current_user.channel
-    IO.puts "channel_access, channel = #{channel}"
     [channel_name, _] = String.split(channel, ".")
     if channel_name == current_user.username do
       [channel, %{access: :all}]

@@ -1,10 +1,12 @@
-defmodule LookupPhoenix.NoteControllerTest do
+defmodule LookupPhoenix.NoteEndpointTest do
   use LookupPhoenix.ConnCase
 
   alias LookupPhoenix.Note
   alias LookupPhoenix.User
   # alias LookupPhoenix.Identifier
   alias LookupPhoenix.Search
+  alias LookupPhoenix.NoteSearch
+
 
 
   @valid_attrs %{content: "some content", title: "some content"}
@@ -47,15 +49,15 @@ defmodule LookupPhoenix.NoteControllerTest do
   end
 
 
-  test "creates resource", %{conn: conn} do
-    user = Repo.insert!(%User{email: "frodo@foo.io", password: "somepassword", username: "frodo", channel: "frodo.all"})
-    note = Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1"}
-    conn = build_conn()
-      |> assign(:current_user, user)
-      |> put("/notes/#{note.id}")
-
-    # assert Repo.get_by(Note, @valid_attrs)
-  end
+#  test "creates resource", %{conn: conn} do
+#    user = Repo.insert!(%User{email: "frodo@foo.io", password: "somepassword", username: "frodo", channel: "frodo.all"})
+#    note = Repo.insert! %Note{user_id: user.id, title: "Magical", content: "Test", identifier: "frodo.1"}
+#    conn = build_conn()
+#      |> assign(:current_user, user)
+#      |> put("/notes/#{note.id}")
+#
+#    # assert Repo.get_by(Note, @valid_attrs)
+#  end
 
 
 

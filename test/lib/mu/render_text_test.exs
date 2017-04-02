@@ -66,7 +66,7 @@ defmodule RenderTextTest do
       link_text = "Newton's Laws"
       result =  RenderText.transform(argument)
       expected = "<a href=\"#{url}\" target=\"_blank\">#{link_text}</a>"
-      assert result ==  expected
+      assert assert String.trim(result) == String.trim(expected)
 
    end
 
@@ -110,7 +110,7 @@ defmodule RenderTextTest do
          input = "ho ho `foo := bar` ha ha"
          output = RenderText.transform(input)
          expected_output = "ho ho <tt style='color:darkred; font-weight:400'>foo := bar</tt> ha ha"
-         assert output == expected_output
+         assert String.trim(output) == String.trim(expected_output)
    end
 
    test "apply strikethrough" do
@@ -132,12 +132,11 @@ defmodule RenderTextTest do
         input = "ho ho `foo := bar` ha ha"
         output = RenderText.transform(input)
         expected_output = "ho ho <tt style='color:darkred; font-weight:400'>foo := bar</tt> ha ha"
-        assert output == expected_output
+        assert String.trim(output) == String.trim(expected_output)
    end
 
    test "formatCode" do
 input = """
-
 ----
 a == b
 ----
@@ -145,7 +144,6 @@ foo, bar
 ----
 c == d
 ----
-
 """
    output = RenderText.transform(input)
    expected_output = """
@@ -155,7 +153,7 @@ foo, bar
 """
 
 
-    assert  output == String.trim(expected_output)
+    assert  String.trim(output) == String.trim(expected_output)
    end
 
 test "transform" do

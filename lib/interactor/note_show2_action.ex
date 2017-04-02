@@ -18,7 +18,6 @@ defmodule LookupPhoenix.NoteShow2Action do
       note2 = Note.get(id2); id2 = note2.id
 
      toc_history = TOC.update_toc_history(toc_history, note, note2)
-     Utility.report "TOC HISTORY (1)", toc_history
      history_string = TOC.make_history_string(toc_history)
      history_links = TOC.make_history_links(toc_history)
 
@@ -26,8 +25,6 @@ defmodule LookupPhoenix.NoteShow2Action do
 
 
       user = Repo.get!(User, note.user_id)
-
-      IO.puts "NOTE: #{id}, NOTE 2: #{id2}"
 
       Note.update_viewed_at(note)
 
@@ -37,8 +34,6 @@ defmodule LookupPhoenix.NoteShow2Action do
       options = %{mode: "show", username: conn.assigns.current_user.username,
          public: note.public, toc_history: history_string,
          path_segment: "show2"} |> Note.add_options(note)
-      IO.puts "Note show2 action, options['path_segment'] = #{options['path_segment']}'"
-      IO.puts "Note show2 action, options.path_segment = #{options.path_segment}'"
       options2 = %{mode: "show", username: conn.assigns.current_user.username,
          public: note.public, toc_history: history_string,} |> Note.add_options(note2)
       rendered_text = String.trim(RenderText.transform(note.content, options))

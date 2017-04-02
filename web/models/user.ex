@@ -82,8 +82,6 @@ defmodule LookupPhoenix.User do
 
       channel = user.channel
 
-
-        IO.puts "DECODE CHANNEL"
         user_id = user.id
         access = :public
 
@@ -111,7 +109,6 @@ defmodule LookupPhoenix.User do
     end
 
    def decode_channel(user) do
-        IO.puts "DECODE CHANNEL"
         user_id = user.id
         access = :public
 
@@ -197,10 +194,8 @@ defmodule LookupPhoenix.User do
   end
 
   def update_channel(user,channel) do
-        IO.puts "XXX: Changing channel to #{channel} for user #{user.username}"
         params = %{"channel" => channel}
         changeset = User.running_changeset(user, params)
-        Utility.report("CHANGESET", changeset)
         Repo.update(changeset)
   end
 
@@ -223,17 +218,13 @@ defmodule LookupPhoenix.User do
   end
 
   def initialize_metadata(user) do
-     IO.puts "1. initialize_metadata"
      params = %{ "public" => false,  "blurb" => "-", "tags" => [], "public_tags" => [], "read_only" => false, "admin" => false,
         "number_of_searches"  => 0, "search_filter" => "-", "channel" => "#{user.username}.all"}
      changeset = User.running_changeset(user, params)
      params2 = %{"preferences" => %{}}
      changeset2 = User.preferences_changeset(user, params2)
-     Utility.report("XXXXXXXX: changeset", changeset)
-     Utility.report("YYYYYYYY: changeset", changeset2)
      Repo.update(changeset)
      Repo.update(changeset2)
-     IO.puts "2. initialize_metadata"
   end
 
   def update_read_only(user, value) do

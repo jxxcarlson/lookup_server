@@ -15,24 +15,18 @@ defmodule LookupPhoenix.PublicController do
    def share(conn, %{"id" => id}) do
          note = Note.get(id)
          token = conn.query_string
-         Utility.report("NOTE", note)
-         Utility.report("id", id)
-         Utility.report("token", token)
          user = Repo.get(User, note.user_id)
          site = user.username
 
          options = %{mode: "show"} |> Note.add_options(note)
 
-        Utility.report("OPTIONS IN PUBLIC:SHARE", options)
 
          # plug LookupPhoenix.Plug.Site, site: site
 
-         Utility.report("PUBLIC_C . SHARE . SITE:", site)
 
          # options = %{mode: "show", process: "none"}
          params = %{note: note, site: site, options: options}
 
-         Utility.report("[note.public, note.shared]", [note.public, note.shared])
 
          case [note.public, note.shared] do
             [true, _] ->  render(conn, "share.html", params) # redirect(conn, to: public_path(conn, :show, params))
@@ -47,7 +41,6 @@ defmodule LookupPhoenix.PublicController do
       note = Note.get(id)
       user = Repo.get!(User, note.user_id)
       token = conn.query_string
-      Utility.report("token", token)
 
       if note == nil do
           render(conn, "error.html", %{})
@@ -89,17 +82,11 @@ defmodule LookupPhoenix.PublicController do
 
    def show2(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history}) do
 
-
-       IO.puts "PUBLIC . SHOW2, id = #{id}, id2 = #{id2}, toc_history = #{toc_history}"
-
-       IO.puts "TOC HISTORY (0): #{toc_history}"
-
         qsMap = Utility.qs2map(conn.query_string)
         note = Note.get(id); id = note.id
         note2 = Note.get(id2); id2 = note2.id
 
        toc_history = TOC.update_toc_history(toc_history, note, note2)
-       Utility.report "TOC HISTORY (1)", toc_history
        history_string = TOC.make_history_string(toc_history)
        history_links = TOC.make_history_links(toc_history)
 
@@ -108,8 +95,6 @@ defmodule LookupPhoenix.PublicController do
 
         user = Repo.get!(User, note.user_id)
         site = user.username ##### XXXX
-
-        IO.puts "NOTE: #{id}, NOTE 2: #{id2}"
 
         Note.update_viewed_at(note)
 
@@ -120,7 +105,6 @@ defmodule LookupPhoenix.PublicController do
            toc_history: history_string, path_segment: "public"} |> Note.add_options(note)
         options2 = %{mode: "show", username: user.username, public: note.public, toc_history: history_string} |> Note.add_options(note2)
         rendered_text = String.trim(RenderText.transform(note.content, options))
-        IO.puts "RENDERED TOC: #{rendered_text}"
         content2 = "== " <> note2.title <> "\n\n" <> note2.content
         rendered_text2 = String.trim(RenderText.transform(content2, options2))
 
@@ -215,14 +199,11 @@ defmodule LookupPhoenix.PublicController do
   def site(conn, params) do
      site = params["data"]["site"]
      current_user = conn.assigns.current_user
-     IO.puts "site = #{site}"
      if current_user != nil and current_user.username == site do
-        IO.puts "SITE: redirect to /notes"
         conn
         |> put_resp_cookie("site", site)
         |> redirect(to: "/notes")
      else
-        IO.puts "SITE: redirect to /site/:site"
         conn
         |> put_resp_cookie("site", site)
         |> redirect(to: "/site/#{site}")

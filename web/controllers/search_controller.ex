@@ -20,7 +20,6 @@ defmodule LookupPhoenix.SearchController do
         if current_user == nil do
           query = "/public " <> query
           site = cookies(conn,"site")
-          IO.puts "Search controller, index, site = #{site}"
           channel_user = User.find_by_username(site)
           channel_tag = "public"
           channel = channel_user.username <> "." <> channel_tag
@@ -127,7 +126,6 @@ defmodule LookupPhoenix.SearchController do
    # MODE = upated | created | viewed
    def recent(conn, params) do
         parameter = params["username"]
-        IO.puts "RECENT: USERNAME = #{parameter}"
 
         if parameter =~ ~r/\./ do
           [username, tag] = String.split(parameter, "\.")
@@ -141,10 +139,6 @@ defmodule LookupPhoenix.SearchController do
         user = User.find_by_username(username)
         current_user = conn.assigns.current_user
         public = !(user.id == current_user.id)
-
-       IO.puts "In Search Controller, recent, user = #{user.username} = current user = #{current_user.username}"
-
-        IO.puts "In Search Controller, recent, public = #{public}"
 
         query_string_map = Utility.qs2map(conn.query_string)
         User.increment_number_of_searches(current_user)

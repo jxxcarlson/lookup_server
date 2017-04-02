@@ -36,8 +36,6 @@ defmodule LookupPhoenix.Search do
           true -> public = true
         end
 
-        IO.puts "In notes_for_channel, channel = #{channel}"
-
         notes = Note
            |> NoteSearch.select_by_channel(channel)
            |> NoteSearch.select_public(public)
@@ -45,12 +43,8 @@ defmodule LookupPhoenix.Search do
            |> Repo.all
            |> NoteSearch.most_recent(20)
 
-        IO.puts "Search, notes_for_channel, notes found: #{length(notes)}"
-
         original_note_count = length(notes)
         filtered_notes = notes |> filter_random(Constant.random_note_threshold())
-       IO.puts "Search, notes_for_channel, filtered notes found: #{length(filtered_notes)}"
-
         %{notes: filtered_notes, note_count: length(filtered_notes), original_note_count: original_note_count}
    end
 
@@ -63,7 +57,6 @@ defmodule LookupPhoenix.Search do
 
     def search(channel, query, options) do
       query_terms = decode_query(query)
-      Utility.report("query_terms", query_terms)
       case query_terms do
         [] -> []
         _ -> do_search(channel, query_terms, options)
@@ -166,9 +159,6 @@ defmodule LookupPhoenix.Search do
        search_options = Enum.filter(terms, fn(term) -> String.starts_with?(term, "-") end) || []
        terms = Enum.filter(terms, fn(term) -> !String.starts_with?(term, "-") end)
 
-       Utility.report("  -- tags", tags)
-       Utility.report("  -- terms", terms)
-
        cond do
          Enum.member?(search_options, "-t") -> type = :text
          tags != [ ] -> type = :tag
@@ -193,8 +183,6 @@ defmodule LookupPhoenix.Search do
 
     defp filter_records_with_term(list, term) do
 
-      Utility.report("XXX: filter_records_with_term", [length(list),term])
-      Enum.map(list, fn(x) -> IO.puts("#{x.id}, #{x.title}, ts: #{x.tag_string}")end )
       Enum.filter(list, fn(x) -> String.contains?(String.downcase(x.title), term) or String.contains?(x.tag_string, term) or String.contains?(String.downcase(x.content), term) end)
 
     end

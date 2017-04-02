@@ -32,13 +32,11 @@ defmodule LookupPhoenix.NoteSearch do
     def select_by_channel(query, channel) do
        [username, tag] = String.split(channel, ".")
        user = User.find_by_username(username)
-       Utility.report("Note, select_by_channel", [username, tag] )
        if user == nil do
          user_id = -1
        else
          user_id = user.id
        end
-       IO.puts " ... select_by_channel, user_id = #{user_id}"
        if Enum.member?(["all", "public"], tag) do
           from n in query,
             where: n.user_id == ^user_id
@@ -49,7 +47,6 @@ defmodule LookupPhoenix.NoteSearch do
     end
 
    def select_by_user_and_tag(query, user, tag) do
-       Utility.report("INPUT, select_by_user_and_tag", [query, user, tag])
        if Enum.member?(["all", "public"], tag) do
          from n in query,
            where: n.user_id == ^user.id
@@ -78,7 +75,6 @@ defmodule LookupPhoenix.NoteSearch do
       if !is_list(tag_list) do
         tag_list = [tag_list]  # THIS IS BAD CODE -- TRACK THINS DOWN AND FIX
       end
-      Utility.report("select_by_tag, tag_list", tag_list)
       if condition do
         from n in query,
           where: ilike(n.tag_string, ^"%#{hd(tag_list)}%")
@@ -89,7 +85,6 @@ defmodule LookupPhoenix.NoteSearch do
 
 
    def select_by_term(query, term, condition \\ true) do
-      IO.puts "select_by_term, term = #{term}"
       if condition do
         from n in query,
           where: ilike(n.title, ^"%#{term}%") or ilike(n.tag_string, ^"%#{term}%")
@@ -99,7 +94,6 @@ defmodule LookupPhoenix.NoteSearch do
     end
 
    def full_text_search(query, term, condition \\ false) do
-      IO.puts "full_text_search, term = #{term}"
       if condition do
         from n in query,
           where: ilike(n.content, ^"%#{term}%")

@@ -10,7 +10,6 @@ defmodule LookupPhoenix.NoteCreateAction do
   alias LookupPhoenix.Utility
 
   def call(conn, note_params) do
-     Utility.report("NoteCreateAction, params", note_params)
      changeset = setup(conn, note_params)
      case Repo.insert(changeset) do
         {:ok, note} ->

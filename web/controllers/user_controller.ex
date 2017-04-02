@@ -56,7 +56,6 @@ defmodule LookupPhoenix.UserController do
     end
 
   def tags(conn, %{"username" => username}) do
-      IO.puts "HEY, TAGS!!, username = #{username}"
 
       current_user = conn.assigns.current_user
 
@@ -75,7 +74,6 @@ defmodule LookupPhoenix.UserController do
         true -> real_access = :all
       end
 
-     Utility.report("In User.tags, user is", user)
      [access, channel_name, user_id] = User.decode_channel(user)
 
      access = real_access || access
@@ -114,7 +112,6 @@ defmodule LookupPhoenix.UserController do
 
   # Assumption: the current user exists
   def update_channel(conn, params) do
-      IO.puts "UPDATE CHANNEL"
       user = conn.assigns.current_user
       channel_record = (params["set"])["channel"]
 
@@ -152,9 +149,7 @@ defmodule LookupPhoenix.UserController do
     IO.puts "Hello: createUser"
     case Repo.insert(changeset) do
           {:ok, user} ->
-            IO.puts "User.createUser, :ok"
             User.initialize_metadata(user)
-            IO.puts "AFTER: initialize_metadata"
             User.set_admin(user, false)
             conn
             |> LookupPhoenix.Auth.login(user)
@@ -167,7 +162,6 @@ defmodule LookupPhoenix.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    IO.puts "UserController.create"
     username = user_params["username"]
     channel = "#{username}.all"
     user_params = Map.merge(user_params, %{"channel" => channel})
@@ -181,7 +175,6 @@ defmodule LookupPhoenix.UserController do
            {:error, "Sorry, that is not a valid registration code."}
       true -> {:ok, :proceed}
     end
-    Utility.report("preflight_check", preflight_check)
 
     case  preflight_check do
       {:error, message} ->
@@ -202,21 +195,15 @@ defmodule LookupPhoenix.UserController do
   end
 
   def update_preferences(conn, %{"user" => user_params}) do
-    # changeset = User.running_changeset(%User{}, user_params)
-    IO.puts "USER (u_p) = #{conn.assigns.current_user.username}"
     changeset = User.running_changeset(conn.assigns.current_user, user_params)
-    Utility.report("PREFERENCES CHANGESET", changeset)
 
     case Repo.update(changeset) do
       {:ok, user} ->
-        IO.puts "User, update_preferences, :ok"
-
         conn
         |> LookupPhoenix.Auth.login(user)
         |> put_flash(:info, "Your preferences have been updated")
         |> redirect(to: "/sites")
       {:error, changeset} ->
-        IO.puts "ERROR in createUser"
         render(conn, "preferences .html", changeset: changeset)
     end
   end

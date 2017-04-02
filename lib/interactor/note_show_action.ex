@@ -21,8 +21,6 @@ defmodule LookupPhoenix.NoteShowAction do
         content = "== " <> note.title <> "\n\n" <> note.content
         rendered_text = String.trim(RenderText.transform(content, options))
 
-        Utility.report("OPTIONS IN NOTE:SHOW", options)
-
         inserted_at= Note.inserted_at_short(note)
         updated_at= Note.updated_at_short(note)
         word_count = RenderText.word_count(note.content)

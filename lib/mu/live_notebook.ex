@@ -8,14 +8,12 @@ defmodule MU.LiveNotebook do
   alias LookupPhoenix.Utility
 
   def live_tag(note) do
-    Utility.report("IN MU.LiveNotebook, TAGS", note.tags)
     live_tags = note.tags
     |> Enum.filter(fn(tag) -> Regex.match?(~r/live/, tag) end)
     cond do
       live_tags == [] -> tag = nil
       true -> tag = live_tags |> hd |> String.replace("live:", "")
     end
-    Utility.report("IN MU.LiveNotebook, live_tag", tag)
     tag
   end
 
@@ -50,11 +48,8 @@ defmodule MU.LiveNotebook do
       |> Repo.all
       |> Enum.map(fn(entry) -> ["#{entry.id}, #{entry.title}", entry.tags] end)
       |> put_headings
-    Utility.report("updated entries",updated_entries)
     updated_entries  = [first_entry | updated_entries]
     |> Enum.join("\n")
-
-    Utility.report("... updated_entries", updated_entries)
 
     params = %{"content" => updated_entries}
     changeset = Note.changeset(master_note, params)
