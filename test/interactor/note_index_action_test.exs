@@ -1,4 +1,4 @@
-defmodule LookupPhoenix.NoteActionTest do
+defmodule LookupPhoenix.NoteIndexActionTest do
 
   use LookupPhoenix.ConnCase
 

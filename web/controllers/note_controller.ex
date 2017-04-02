@@ -73,10 +73,8 @@ defmodule LookupPhoenix.NoteController do
          read_only_message(conn)
     else
       result = NoteCreateAction.call(conn, note_params)
-      case Repo.insert(result.changeset) do
-        {:ok, note} ->
-          [note.id] ++ Note.recall_list(conn.assigns.current_user.id)
-          |> Note.memorize_list(conn.assigns.current_user.id)
+      case result do
+        {:ok, conn, note} ->
           conn
           |> put_flash(:info, "Note created successfully: #{note.id}")
           |> redirect(to: note_path(conn, :index, active_notes: [note.id], random: "no"))
