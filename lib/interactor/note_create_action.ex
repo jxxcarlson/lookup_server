@@ -11,7 +11,7 @@ defmodule LookupPhoenix.NoteCreateAction do
      result = %{changeset: changeset}
   end
 
-  defp master_note_text(channel, tags) do
+  defp get_master_note_text(channel, tags) do
     master_notes = Enum.map(tags, fn(tag) -> "live:" <> tag end)
     |> Enum.map(fn(tag) -> Search.tag_search([tag], channel, :all) end)
     |> List.flatten
@@ -22,14 +22,13 @@ defmodule LookupPhoenix.NoteCreateAction do
     else
       IO.puts "NO MASTER NOTE"
       ""
-      nil
     end
   end
 
   defp setup(conn, note_params) do
       [access, channel_name, user_id] = User.decode_channel(conn.assigns.current_user)
       [tag_string, tags] = get_tags(note_params, channel_name)
-      master_note_text =  master_note_text(conn.assigns.current_user.channel, tags)
+      master_note_text =  get_master_note_text(conn.assigns.current_user.channel, tags)
       new_content = master_note_text <> Regex.replace(~r/ß/, note_params["content"], "")
       new_title = Regex.replace(~r/ß/, note_params["title"], "")
       identifier = Identifier.make(conn.assigns.current_user.username, new_title)
