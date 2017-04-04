@@ -12,12 +12,6 @@
                  case 83:  // S
                     document.getElementById('save').click();
                     break;
-                 case 84:  // T
-                    document.getElementById('title').focus();
-                    break;
-                 case 67:  // C
-                    document.getElementById('content').focus();
-                    break;
                }
             }
         }

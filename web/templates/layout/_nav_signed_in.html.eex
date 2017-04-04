@@ -41,8 +41,11 @@
 
           <li><%= link "Home", to: page_path(@conn, :index), id: 'home' %></li>
           <!-- <li><%= link "Notes", to: link_name(@conn)  %></li>  -->
-          <li><%= link "All notes", to: "/notes?set_channel=#{@current_user.username}.all" %></li>
-          <li><%= link "New note", to: note_path(@conn, :new) %></li>
+          <li><%= link "Recent notes", to: "/notes?set_channel=#{@current_user.username}.all",  id: "recent_notes" %></li>
+
+
+          <li><%= link "Random note", to: "/notes?random=one" , id: 'random_one' %></li>
+          <li><%= link "New note", to: note_path(@conn, :new) , id: 'new_note' %></li>
 
           <li role="separator" class="divider"></li>
           <li><%= link :Sites, to: "/sites" %></li>

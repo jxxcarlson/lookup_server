@@ -53,14 +53,14 @@
                  case 72: // H
                     document.getElementById('home').click();
                     break;
-                 case 74:  // J
-                    document.getElementById('notes').click();
+                 case 82:  // R (Recent notes)
+                    document.getElementById('recent_notes').click();
                     break;
-                 case 75:  // K
+                 case 84:  // T
                     document.getElementById('tags').click();
                     break;
-                 case 77:  // M
-                    document.getElementById('tips').click();
+                 case 49:  // 1
+                    document.getElementById('random_one').click();
                     break;
                  case 85:  // U
                     document.getElementById('users').click();

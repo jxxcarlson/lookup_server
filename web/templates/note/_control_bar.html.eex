@@ -38,7 +38,7 @@
 
    <%= link "Recent", to: "/recent/#{@conn.assigns.current_user.channel}?max=19&mode=viewed", class: "btn btn-default btn-s", id: "recent_notes", style: "margin-left:6px;" %>
    <%= link "R", to: "/notes?random=many", class: "btn btn-default btn-s", id: "random", style: "margin-left:6px;" %>
-   <%= link "R1", to: "/notes?random=one", class: "btn btn-default btn-s", id: "random", style: "margin-left:6px;" %>
+   <%= link "R1", to: "/notes?random=one", class: "btn btn-default btn-s", id: "random_one_xx", style: "margin-left:6px;" %>
 
    <!--
    <%= link "Updated", to: "/recent/#{@conn.assigns.current_user.channel}?max=19&mode=updated", class: "btn btn-default btn-s", id: "less_recent_notes" %>

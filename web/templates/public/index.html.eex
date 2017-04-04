@@ -7,12 +7,6 @@
             // this would test for whichever key is 78 and the ctrl key at the same time
             if (e.altKey) {
                switch(e.keyCode ) {
-                 case 78: // N
-                    document.getElementById('new_note').click();
-                    break;
-                 case 83:  // S
-                    document.getElementById('search_notes').focus();
-                    break;
                  case 82:  // R
                     console.log('RANDOM')
                     document.getElementById('random_notes').click();
