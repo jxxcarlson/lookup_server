@@ -1,0 +1,6 @@
+use Mix.Task
+@shortdoc
+@moduledoc
+Add run/1 with your code
+https://www.youtube.com/watch?v=-mgwW3RVI50
+https://elixirschool.com/lessons/basics/mix-tasks/
