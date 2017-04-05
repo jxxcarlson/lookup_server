@@ -90,16 +90,6 @@ defmodule LookupPhoenix.Utility do
     Enum.map(list, fn(element) -> hd(tl(element)) end)
   end
 
-  def rand_string(n) do
-    :crypto.strong_rand_bytes(n) |> Base.url_encode64 |> binary_part(0, n)
-  end
-
-  def generate_time_limited_token(n_chars, hours_to_expiration) do
-    token = rand_string(n_chars)
-    expiration = Timex.shift(Timex.now, [hours: hours_to_expiration])
-    %{token: token, expiration: expiration}
-  end
-
   def random_element(list) do
     list |> Enum.shuffle |> hd
   end

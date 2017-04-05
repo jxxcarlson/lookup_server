@@ -2,8 +2,18 @@ defmodule TokenManager do
 
     # Utility.generate_time_limited_token(10,240)
 
+    defp rand_string(n) do
+      :crypto.strong_rand_bytes(n) |> Base.url_encode64 |> binary_part(0, n)
+    end
+
+    defp gen_token(n_chars, hours_to_expiration) do
+      token = rand_string(n_chars)
+      expiration = Timex.shift(Timex.now, [hours: hours_to_expiration])
+      %{token: token, expiration: expiration}
+    end
+
     def generate_time_limited_token(note, n_chars, hours_to_expiration) do
-      token_record = Utility.generate_time_limited_token(n_chars,hours_to_expiration)
+      token_record = gen_token(n_chars,hours_to_expiration)
       tokens = (note.tokens || []) ++ [token_record]
       changeset = Note.changeset(note, %{tokens: tokens})
       Repo.update(changeset)

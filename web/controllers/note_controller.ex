@@ -17,8 +17,6 @@ defmodule LookupPhoenix.NoteController do
   alias MU.RenderText
   alias MU.LiveNotebook
 
-
-
    def cookies(conn, cookie_name) do
      conn.cookies[cookie_name]
    end
