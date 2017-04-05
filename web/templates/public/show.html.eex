@@ -5,6 +5,12 @@
 
 </style>
 
+<style>
+
+  <%= MU.CSS.inject() %>
+
+</style>
+
 <p style="font-size:1.8em; font-style:bold; margin-top:1.5em; margin-bottom:1.5em"> <%= @note.title  %> </p>
 
 

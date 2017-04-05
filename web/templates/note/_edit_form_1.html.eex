@@ -98,3 +98,4 @@ input[type=checkbox]
     document.getElementById("rendered_text2").style.height = (window.innerHeight - 300) + 'px'
     console.log("window.innerHeight: " + window.innerHeight)
 </script>
+

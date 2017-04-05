@@ -38,6 +38,7 @@ input[type=checkbox]
 </style>
 
 
+
 <%= form_for @changeset, @action, fn f -> %>
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
@@ -122,4 +123,5 @@ input[type=checkbox]
     document.getElementById("rendered_text2a").style.height = (window.innerHeight - 300) + 'px'
     console.log("window.innerHeight: " + window.innerHeight)
 </script>
+
 

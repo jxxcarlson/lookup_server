@@ -38,6 +38,8 @@ input[type=checkbox]
 </style>
 
 
+
+
 <%= form_for @changeset, @action, fn f -> %>
 
   <%= if @changeset.action do %>
@@ -122,4 +124,32 @@ input[type=checkbox]
     document.getElementById("content3").style.height = (window.innerHeight - 300) + 'px'
     document.getElementById("rendered_text3a").style.height = (window.innerHeight - 300) + 'px'
     console.log("window.innerHeight: " + window.innerHeight)
+</script>
+
+
+<script>
+
+  var x = document.getElementById("rendered_text3a").querySelectorAll(".answer_head");
+  var answer_head = [];
+  var answer_tail = [];
+
+
+    function registerEvent(head, tail) {
+      head.addEventListener("click", function(e) {
+        if (tail.className == "hide_answer") {
+          tail.className = "show_answer";
+        } else {
+          tail.className = "hide_answer";
+        }
+      });
+    }
+
+  for(i = 0; i < x.length; i++) {
+    answer_head.push(document.getElementById(x[i].id));
+    answer_tail.push(document.getElementById(x[i].id + ".A"));
+    }
+
+  for (i = 0; i < x.length; i++) {
+    registerEvent(answer_head[i], answer_tail[i]);
+  }
 </script>

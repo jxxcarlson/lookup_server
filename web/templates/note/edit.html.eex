@@ -18,17 +18,14 @@
         // register the handler
         document.addEventListener('keyup', doc_keyUp, false);
 
-    </script>
+</script>
 
-    <style>
-    .quote {
+<style>
+  <%= MU.CSS.inject() %>
+</style>
 
-     font-style: italic;
-     margin-left:2em;
-     margin-right:2em;
-    }
 
-   </style>
+
 
   <div style="margin-top:3em;">
 
@@ -76,7 +73,7 @@
 
 <!-- LARGE -->
 
- <div id="edit_and_diplay_text" style="margin-top:-2em;left:20%;" class="hidden-xs visible-lg-block">
+ <div id="edit_and_display_text" style="margin-top:-2em;left:20%;" class="hidden-xs visible-lg-block">
 
   <%= render "_edit_form_3.html", changeset: @changeset,
        action: note_path(@conn, :update, @note),locked: @locked,
@@ -85,6 +82,5 @@
   %>
 
 </div>
-
 
 
