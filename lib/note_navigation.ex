@@ -3,7 +3,7 @@ defmodule LookupPhoenix.NoteNavigation do
   alias LookupPhoenix.Utility
 
   @moduledoc """
-  NoteNavigation.get(query_string) takes a query string as input
+  NoteNavigation.get(query_string, id) takes a query string as input
   and produces as output a struct which contains the data needed
   to navigate from one note to another in a set of notes defined by
   the query string.
@@ -30,14 +30,18 @@ defmodule LookupPhoenix.NoteNavigation do
     }
   end
 
-  def get(q_string) do
+  def get(q_string, id) do
 
       IO.puts "QUERY STRING: #{q_string}"
+      if q_string == "" do
+        IO.puts "Contructing stand-in for q_string"
+        q_string = "index=0&id_string=#{id}"
+      end
       # Example: q_string=index=4&id_list=35%2C511%2C142%2C525%2C522%2C531%2C233
-      query_data = q_string|> Utility.parse_query_string
+      query_data = q_string |> Utility.parse_query_string
 
       # Get inputs
-      IO.puts "QUERY DATA[INDEX] = " <> query_data["index"]
+
       index = query_data["index"]; {index, _} = Integer.parse index
       id_string = query_data["id_string"] |> String.replace("%2C", ",")
       id_list = String.split(id_string, ",")

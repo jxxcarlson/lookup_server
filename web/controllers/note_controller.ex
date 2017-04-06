@@ -154,16 +154,22 @@ defmodule LookupPhoenix.NoteController do
         params1 = %{note: note, changeset: changeset,
                     word_count: word_count, locked: locked,
                     conn: conn, tags: tags, note: note, rendered_text: rendered_text}
-        params2 = NoteNavigation.get(conn.query_string)
-        params = Map.merge(params1, params2)
 
+        navigation_data = NoteNavigation.get(conn.query_string, id)
+        params = Map.merge(params1, %{nav: navigation_data})
         render(conn, "edit.html", params)
 
   end
 
-  defp do_update(note, note_params, save_option, conn) do
+  defp do_update(conn, note, note_params, save_option) do
 
-    result = NoteUpdateAction.call(note, note_params, conn)
+    navigation_data = NoteNavigation.get(conn.query_string, note.id)
+    note_params = Map.merge(note_params, %{nav: navigation_data})
+    username = conn.assigns.current_user.username
+
+    Utility.report("DO UPDATE, NOTE_PARAMS", note_params)
+
+    result = NoteUpdateAction.call(username, note, note_params)
 
     case result.update_result do
       {:ok, note} ->
@@ -171,26 +177,26 @@ defmodule LookupPhoenix.NoteController do
           conn
           |> redirect(to: note_path(conn, :show, note))
         else
+          params = Map.merge(%{note: note, nav: result.nav}, result.params)
           conn
-          |> render "edit.html", Map.merge(%{note: note}, result.params)
-          # |> render "_rendered_text.html", %{rendered_text: result.params.rendered_text}
+          |> render "edit.html", params
         end
       {:error, _changeset} ->
           conn
           |> put_flash(:info, "ERROR - is the identifier you proposed unique?")
           |> render "edit.html", result.params
-
     end
   end
 
   def update(conn, %{"id" => id, "note" => note_params, "save_option" => save_option}) do
 
-    note = Repo.get!(Note, id)
-    user = conn.assigns.current_user
+   user = conn.assigns.current_user
+   locked = user.read_only
+   note = Repo.get!(Note, id)
 
     cond do
-      (note.user_id ==  user.id)  -> do_update(note, note_params, save_option, conn)
-      ((user.read_only == true) and (note.user_id !=  user.id)) -> read_only_message(conn)
+      (note.user_id ==  user.id) && (!locked) ->
+        do_update(conn, note, note_params, save_option)
       true -> read_only_message(conn)
     end
 

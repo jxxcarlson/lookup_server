@@ -29,20 +29,20 @@
 
   <div style="margin-top:3em;">
 
-  <span style="float:right;" ><%= link "Show", to: note_path(@conn, :show, @current_id, index: @index,
-                     id_string: @id_string, note: @note), class: "" %>
+  <span style="float:right;" ><%= link "Show", to: note_path(@conn, :show, @nav.current_id, index: @nav.index,
+                     id_string: @nav.id_string, note: @note), class: "" %>
   </span>
 
   <span style="float:right;" >
   <%= link "Delete", to: note_path(@conn, :delete, @note), method: :delete, data: [confirm: "Are you sure?"], style: "width: 15%;margin-right:2em;" %>
   </span>
 
-  <%= if @note_count > 1 do %>
-  <span class: "btn btn-primary" style="float:right;margin-right:28px;" ><%= link "Last", to: note_path(@conn, :edit, @last_id, index: @last_index, id_string: @id_string) %></span>
-  <span class: "btn btn-primary" style="float:right;margin-right:8px;" ><%= link "Next", to: note_path(@conn, :edit, @next_id, index: @next_index, id_string: @id_string) %></span>
-  <span style="background-color:#35d; color: white; padding-left:5px; padding-right:8px; float:right;margin-right:8px;" ><%= @index + 1 %>:<%= @note_count %></span>
-  <span style="float:right;margin-right:9px;" ><%= link "Prev", to: note_path(@conn, :edit, @previous_id, index: @previous_index, id_string: @id_string) %></span>
-  <span style="float:right;margin-right:9px;" ><%= link "First", to: note_path(@conn, :edit, @first_id, index: @first_index, id_string: @id_string) %></span>
+  <%= if @nav.note_count > 1 do %>
+  <span class: "btn btn-primary" style="float:right;margin-right:28px;" ><%= link "Last", to: note_path(@conn, :edit, @nav.last_id, index: @nav.last_index, id_string: @nav.id_string) %></span>
+  <span class: "btn btn-primary" style="float:right;margin-right:8px;" ><%= link "Next", to: note_path(@conn, :edit, @nav.next_id, index: @nav.next_index, id_string: @nav.id_string) %></span>
+  <span style="background-color:#35d; color: white; padding-left:5px; padding-right:8px; float:right;margin-right:8px;" ><%= @nav.index + 1 %>:<%= @nav.note_count %></span>
+  <span style="float:right;margin-right:9px;" ><%= link "Prev", to: note_path(@conn, :edit, @nav.previous_id, index: @nav.previous_index, id_string: @nav.id_string) %></span>
+  <span style="float:right;margin-right:9px;" ><%= link "First", to: note_path(@conn, :edit, @nav.first_id, index: @nav.first_index, id_string: @nav.id_string) %></span>
 
                    <% end %>
   </div>
@@ -53,8 +53,8 @@
 
   <%= render "_edit_form_1.html", changeset: @changeset,
        action: note_path(@conn, :update, @note),locked: @locked,
-       word_count: @word_count, conn: @conn, index: @index,
-       id_string: @id_string, note: @note
+       word_count: @word_count, conn: @conn, index: @nav.index,
+       id_string: @nav.id_string, note: @note
   %>
 
 </div>
@@ -65,8 +65,8 @@
 
   <%= render "_edit_form_2.html", changeset: @changeset,
        action: note_path(@conn, :update, @note),locked: @locked,
-       word_count: @word_count, conn: @conn, index: @index,
-       id_string: @id_string, note: @note, rendered_text: @rendered_text
+       word_count: @word_count, conn: @conn, index: @nav.index,
+       id_string: @nav.id_string, note: @note, rendered_text: @rendered_text
   %>
 
 </div>
@@ -77,8 +77,8 @@
 
   <%= render "_edit_form_3.html", changeset: @changeset,
        action: note_path(@conn, :update, @note),locked: @locked,
-       word_count: @word_count, conn: @conn, index: @index,
-       id_string: @id_string, note: @note, rendered_text: @rendered_text
+       word_count: @word_count, conn: @conn, index: @nav.index,
+       id_string: @nav.id_string, note: @note, rendered_text: @rendered_text
   %>
 
 </div>

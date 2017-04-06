@@ -5,6 +5,7 @@ defmodule LookupPhoenix.NoteUpdateAction do
   alias LookupPhoenix.Identifier
   alias LookupPhoenix.Tag
   alias LookupPhoenix.NoteNavigation
+  alias LookupPhoenix.Utility
 
   alias MU.RenderText
   alias MU.LiveNotebook
@@ -15,15 +16,16 @@ defmodule LookupPhoenix.NoteUpdateAction do
 
   INPUTS:
 
+    - username
     - note
     - note_params
-      - content
       - title
+      - content
       - tag_string
-      - WHAT ELSE?
-    - conn
-      - id_string
-      - index
+      - identifier
+      - public
+      - idx
+      - nav
 
   COMPUTED:
 
@@ -35,25 +37,30 @@ defmodule LookupPhoenix.NoteUpdateAction do
 
   OUTPUTS:
 
-    - changeset
-    - rendered_text
-    - random
-    - locked
-    - word_count
-    - merged: navigation_parameters
+    - params
+      - changeset
+      - rendered_text
+      - random
+      - locked
+      - word_count
+    - udpdate_result
+      {:ok, note} | {:error, message}
+    - nav
+      :channel, :current_id, :first_id, :first_index, :id_list, :id_string, :index,
+      :last_id, :last_index, :next_id, :next_index, :note_count, :previous_id,
+      :previous_index
+
 
 
 """
 
-  def call(note, note_params, conn) do
+  def call(username, note, note_params) do
 
-     current_user = conn.assigns.current_user
+     locked = false
 
-     # Inputs -- fix spurious character if any left by keyboard shortcut (option s)
+     # content and title: fix spurious character if any left by keyboard shortcut (option s)
      content = Regex.replace(~r/ß/, note_params["content"], "")
      title = Regex.replace(~r/ß/, note_params["title"], "")
-
-     # Computed values
      tags = Tag.str2tags(note_params["tag_string"])
 
      new_params = Map.merge(note_params, %{
@@ -67,34 +74,30 @@ defmodule LookupPhoenix.NoteUpdateAction do
      rendered_text = RenderText.transform(content, options)
 
      # Update database
-     changeset = Note.changeset(note, new_params)
-     changeset = Ecto.Changeset.update_change(changeset, :identifier, fn(ident) -> Identifier.normalize(current_user, ident) end)
-     update_result = Repo.update(changeset)
-
-     # Compute navigation parameters needed by client
-     index = conn.params["index"]
-     id_string = conn.params["id_string"]
-     navigation_parameters = NoteNavigation.get("index=#{index}&id_string=#{id_string}")
+     changeset = Note.changeset(note, Map.delete(new_params, :nav))
+     changeset = Ecto.Changeset.update_change(changeset, :identifier, fn(ident) -> Identifier.normalize(username, ident) end)
+     if !locked do
+       update_result = Repo.update(changeset)
+     else
+       update_result = {:error, "Could note update note"}
+     end
 
      # If the note is a master note (index note), then update it
-     live_tags = note.tags |> Enum.filter(fn(tag) -> Regex.match?(~r/live/, tag) end)
+     tags = note.tags || []
+     live_tags = tags |> Enum.filter(fn(tag) -> Regex.match?(~r/live/, tag) end)
      if live_tags != [] do LiveNotebook.update(note) end
 
      params = %{
        changeset: changeset,
        rendered_text: rendered_text,
        random: "no",
-       locked: conn.assigns.current_user.read_only,
+       locked: locked,
        word_count: RenderText.word_count(note.content),
      }
 
-     params = Map.merge(params, navigation_parameters)
+     navigation_parameters = params["nav"]
+     %{params: params, update_result: update_result, nav: new_params[:nav]}
 
-     %{params: params, update_result: update_result}
   end
-
-
-
-
 
 end

@@ -11,14 +11,14 @@ defmodule LookupPhoenix.Identifier do
     # joe.foobar => joe.foobar
     # hoho.foobar => joe.foobar
     # foobar => joe.foobar
-    def normalize(user, identifier) do
+    def normalize(username, identifier) do
       if String.contains?(identifier, ".") do
         identifier_parts = String.split(identifier, ".")
-        if hd(identifier_parts) == user.username do
+        if hd(identifier_parts) == username do
         identifier = tl(identifier_parts) |> Enum.join(".")
         end
       end
-      "#{user.username}.#{identifier}"
+      "#{username}.#{identifier}"
     end
 
     def find_note(identifier) do

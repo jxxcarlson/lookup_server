@@ -60,7 +60,7 @@ defmodule LookupPhoenix.NoteShow2Action do
         true ->  query_string =  conn_query_string
       end
 
-      params2 = NoteNavigation.get(query_string)
+      params2 = NoteNavigation.get(query_string, id)
       params = Map.merge(params1, params2)
 
       Map.merge(params, %{toc_history: Enum.join(toc_history, ","), history_string: history_string})

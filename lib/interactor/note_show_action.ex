@@ -62,9 +62,9 @@ defmodule LookupPhoenix.NoteShowAction do
         channela: user.channel
      }
 
-     navigation_params = NoteNavigation.get(query_string)
+     navigation_params = NoteNavigation.get(query_string, note_id)
 
-     Map.merge(out_params, navigation_params)
+     Map.merge(out_params, %{nav: navigation_params})
 
   end
 

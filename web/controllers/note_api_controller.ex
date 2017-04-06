@@ -1,6 +1,17 @@
 defmodule LookupPhoenix.NoteApiController do
 
+   use LookupPhoenix.Web, :controller
+   use Timex
+
+   alias LookupPhoenix.Note
+   alias LookupPhoenix.NoteNavigation
+   alias LookupPhoenix.User
+   alias LookupPhoenix.Utility
+
    alias LookupPhoenix.NoteShowAction
+   alias LookupPhoenix.NoteUpdateAction
+
+   LookupPhoenix.JSONMapBuilder
 
    @moduledoc """
    API controller for LookupNote
@@ -8,19 +19,19 @@ defmodule LookupPhoenix.NoteApiController do
    /note/:id -- return id, title, content, tag_string
 """
 
-    use LookupPhoenix.Web, :controller
-    use Timex
-
-    alias LookupPhoenix.Note
-    alias LookupPhoenix.User
-    alias LookupPhoenix.Utility
-
-    defp authenticated(conn) do
-      kvps = conn.req_headers
-      result =  Enum.filter(kvps, fn(pair) -> {k, v} = pair; k == "secret" end)
-      [{_,secret}] = result
-      secret == "abcdef9h5vkfR1Tj0U_1f!"
+    defp key2value(list, key) do
+      pair =  Enum.filter(list, fn(pair) -> {k, v} = pair; k == key end)
+      [{_,value}] = pair
+      value
     end
+
+    defp conn2value(conn, key) do
+      key2value(conn.req_headers, key)
+    end
+
+   defp authenticated(conn) do
+      conn2value(conn, "secret") == "abcdef9h5vkfR1Tj0U_1f!"
+   end
 
     def show(conn, %{"id" => id}) do
       if authenticated(conn) do
@@ -31,6 +42,28 @@ defmodule LookupPhoenix.NoteApiController do
          render conn, "note.json", result: result
        else
          render conn, "error.json", message: "darn it!"
+      end
+    end
+
+    def update(conn, %{"id" => id}) do
+      if authenticated(conn) do
+          note = Note.get(id)
+          {:ok, params} = JSON.decode conn2value(conn, "params")
+          Utility.report("params", params)
+          navigation_data = NoteNavigation.get(conn.query_string, note.id)
+          Utility.report("navigation_data", navigation_data)
+          params = Map.merge(params, %{nav: navigation_data})
+          username = conn2value(conn, "username")
+          IO.puts "USERNAME = #{username}"
+
+         IO.puts "AAAAAA"
+         result = NoteUpdateAction.call(username, note, params)
+         IO.puts "BBBBB"
+         {:ok, note} = result.update_result
+         params = Map.merge(%{note: note, nav: result.nav}, result.params)
+         render conn, "note.json", result: params
+       else
+        render conn, "error.json", message: "darn it!"
       end
     end
 

@@ -24,28 +24,14 @@ defmodule LookupPhoenix.NoteApiView do
       content: note.content,
       tag_string: note.tag_string,
       rendered_text: result.rendered_text,
-      inserted_at: result.inserted_at,
-      updated_at: result.updated_at,
-      options: result.options,
+      inserted_at: note.inserted_at,
+      updated_at: note.updated_at,
+#     options: result.options,
       word_count: result.word_count,
-      sharing_is_authorized: result.sharing_is_authorized,
+#     sharing_is_authorized: result.sharing_is_authorized,
       current_id: note.id,
-      channela: result.channela,
-
-        first_index: 0,
-        index: result.index,
-        last_index: result.last_index,
-        previous_index: result.previous_index,
-        next_index: result.next_index,
-        first_id: result.first_id,
-        last_id: result.last_id,
-        previous_id: result.previous_id,
-        current_id: result.current_id,
-        next_id: result.next_id,
-        id_string: result.id_string,
-        id_list: result.id_list,
-        note_count: result.note_count,
-        channel: result.channel
+#     channela: resulr.channela,
+      nav: result.nav
     }
   end
 
