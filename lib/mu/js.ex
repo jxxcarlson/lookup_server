@@ -1,11 +1,11 @@
 defmodule MU.JS do
 
-  def inject do
-    """
+   def inject(id \\ "rendered_text") do
+     """
 
-  var x = document.getElementById("rendered_text").querySelectorAll(".answer_head");
-  var answer_head = [];
-  var answer_tail = [];
+   var x = document.getElementById(\"#{id}\").querySelectorAll(".answer_head");
+   var answer_head = [];
+   var answer_tail = [];
 
 
     function registerEvent(head, tail) {

@@ -30,9 +30,9 @@ defmodule MU.CSS do
 
     /* QA */
 
-    .answer_head{ color: blue;}
+    .answer_head{ color: darkred; margin-left:2em;}
     .hide_answer{ color: blue; display:none }
-    .show_answer{color: blue; display:inline}
+    .show_answer{color: blue; display:inline; margin-left:0.6em;}
 
     /* Sections */
 

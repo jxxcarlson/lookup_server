@@ -8,41 +8,64 @@ defmodule LookupPhoenix.NoteShowAction do
 
   alias MU.RenderText
 
-  def call(conn, note) do
+  @moduledoc """
+  INPUTS: conn, note id
 
-       user = Repo.get!(User, note.user_id)
+  COMPUTATIONS:
 
-        Note.update_viewed_at(note)
+  OUTPUTS:
+        note: note,
+        rendered_text: rendered_text,
+        inserted_at: inserted_at,
+        updated_at: updated_at,
+        options: options,
+        word_count: word_count,
+        sharing_is_authorized: sharing_is_authorized,
+        current_id: note.id,
+        navigation_params
 
-        # Note.add_options(note) -- adds the options
-        #    process: "latex" | "none"
-        #    collate: true | false
-        options = %{mode: "show", username: conn.assigns.current_user.username, public: note.public} |> Note.add_options(note)
-        content = "== " <> note.title <> "\n\n" <> note.content
-        rendered_text = String.trim(RenderText.transform(content, options))
+"""
 
-        inserted_at= Note.inserted_at_short(note)
-        updated_at= Note.updated_at_short(note)
-        word_count = RenderText.word_count(note.content)
+  def call(user_name, query_string, note_id) do
 
-        sharing_is_authorized = true #  conn.assigns.current_user.id == note.user_id
+     # username: current user
+     note = Note.get(note_id)
+     user = Repo.get!(User, note.user_id)
+     if query_string == nil || query_string == "" do
+       query_string = "index=0&id_string=#{note_id}"
+     end
+     Note.update_viewed_at(note)
 
-        params1 = %{note: note, rendered_text: rendered_text,
-                      inserted_at: inserted_at, updated_at: updated_at,
-                      options: options, word_count: word_count,
-                      sharing_is_authorized: sharing_is_authorized, current_id: note.id, channela: user.channel}
+     # Note.add_options(note) -- adds the options
+     #    process: "latex" | "none"
+     #    collate: true | false
+     options = %{mode: "show", username: user_name, public: note.public} |> Note.add_options(note)
+     content = "== " <> note.title <> "\n\n" <> note.content
+     rendered_text = String.trim(RenderText.transform(content, options))
 
+     inserted_at= Note.inserted_at_short(note)
+     updated_at= Note.updated_at_short(note)
+     word_count = RenderText.word_count(note.content)
 
-        conn_query_string = conn.query_string || ""
-        if conn_query_string == "" do
-          query_string = "index=0&id_string=#{note.id}"
-        else
-          query_string = conn_query_string
-        end
-        params2 = NoteNavigation.decode_query_string(query_string)
+     sharing_is_authorized = true #  conn.assigns.current_user.id == note.user_id
 
-        params = Map.merge(params1, params2)
-        result = %{params: params}
+     out_params = %{
+        note: note,
+        title: note.title,
+        rendered_text: rendered_text,
+        inserted_at: inserted_at,
+        updated_at: updated_at,
+        options: options,
+        word_count: word_count,
+        sharing_is_authorized: sharing_is_authorized,
+        current_id: note.id,
+        channela: user.channel
+     }
+
+     navigation_params = NoteNavigation.get(query_string)
+
+     Map.merge(out_params, navigation_params)
+
   end
 
 

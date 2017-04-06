@@ -107,14 +107,23 @@ defmodule LookupPhoenix.NoteController do
 
   def show(conn, %{"id" => id}) do
 
+    username = conn.assigns.current_user.username
+    query_string = conn.query_string
+
+    query_string = conn.query_string
+
+    if query_string == "" do
+       query_string = "index=0&id_string=#{id}"
+    end
+
     note = Note.get(id)
     LiveNotebook.auto_update(note)
 
     if Enum.member?(note.tags, ":toc") do
       do_show2(conn, note)
     else
-      result = NoteShowAction.call(conn, note)
-      render(conn, "show.html", result.params)
+      result = NoteShowAction.call(username, query_string, id)
+      render(conn, "show.html", result)
     end
 
   end
@@ -145,25 +154,26 @@ defmodule LookupPhoenix.NoteController do
         params1 = %{note: note, changeset: changeset,
                     word_count: word_count, locked: locked,
                     conn: conn, tags: tags, note: note, rendered_text: rendered_text}
-        params2 = NoteNavigation.decode_query_string(conn.query_string)
+        params2 = NoteNavigation.get(conn.query_string)
         params = Map.merge(params1, params2)
 
         render(conn, "edit.html", params)
 
   end
 
-  defp doUpdate(note, note_params, save_option, conn) do
+  defp do_update(note, note_params, save_option, conn) do
 
-    result = NoteUpdateAction.call(note, note_params, save_option, conn)
+    result = NoteUpdateAction.call(note, note_params, conn)
 
-    case Repo.update(result.changeset) do
+    case result.update_result do
       {:ok, note} ->
         if save_option == "exit" do
           conn
-          |> redirect(to: note_path(conn, :show, note, result.params))
+          |> redirect(to: note_path(conn, :show, note))
         else
           conn
-          |> render "edit.html", result.params
+          |> render "edit.html", Map.merge(%{note: note}, result.params)
+          # |> render "_rendered_text.html", %{rendered_text: result.params.rendered_text}
         end
       {:error, _changeset} ->
           conn
@@ -179,7 +189,7 @@ defmodule LookupPhoenix.NoteController do
     user = conn.assigns.current_user
 
     cond do
-      (note.user_id ==  user.id)  -> doUpdate(note, note_params, save_option, conn)
+      (note.user_id ==  user.id)  -> do_update(note, note_params, save_option, conn)
       ((user.read_only == true) and (note.user_id !=  user.id)) -> read_only_message(conn)
       true -> read_only_message(conn)
     end

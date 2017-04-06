@@ -134,6 +134,7 @@ defmodule LookupPhoenix.Note do
         options = Map.merge(options, %{note_id: note.id})
 
         cond do
+          note.tags == nil -> Map.merge(options, %{process: "markup"})
           Enum.member?(note.tags, ":latex") -> Map.merge(options, %{process: "latex"})
           Enum.member?(note.tags, ":collate") -> Map.merge(options, %{process: "collate", user_id: note.user_id})
           Enum.member?(note.tags, ":toc") -> Map.merge(options, %{process: "toc", user_id: note.user_id})

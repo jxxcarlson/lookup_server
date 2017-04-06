@@ -28,6 +28,12 @@ defmodule LookupPhoenix.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/api",LookupPhoenix do
+    pipe_through :api
+
+    resources "/notes", NoteApiController
+  end
+
   scope "/", LookupPhoenix do
     pipe_through :browser # Use the default browser stack
 

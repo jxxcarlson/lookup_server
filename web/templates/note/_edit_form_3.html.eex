@@ -37,7 +37,11 @@ input[type=checkbox]
 }
 </style>
 
+<script>
 
+  <%= raw(MU.JS.inject("rendered_text3a")) %>
+
+</script>
 
 
 <%= form_for @changeset, @action, fn f -> %>
@@ -57,14 +61,14 @@ input[type=checkbox]
   <!-- INPUT -->
 
 
-  <div id="edit_and_diplay_text" style="margin-top:-2em;left:20%;">
+  <div id="edit_and_display_text" style="margin-top:-2em;left:20%;">
      <div class="form-group" style="margin-left:-30%; width:80%; float:left; margin-top:3em;" %>
        <%= textarea f, :content, class: "form-control", style: "height:200px; overflow: scroll", id: 'content3' %>
        <%= error_tag f, :content %>
      </div>
 
      <div id="rendered_text3a" class="rendered_text3">
-       <%= raw(@rendered_text) %>
+       <%= render "_rendered_text.html", rendered_text: @rendered_text %>
      </div>
   </div>
 
@@ -127,29 +131,6 @@ input[type=checkbox]
 </script>
 
 
-<script>
-
-  var x = document.getElementById("rendered_text3a").querySelectorAll(".answer_head");
-  var answer_head = [];
-  var answer_tail = [];
 
 
-    function registerEvent(head, tail) {
-      head.addEventListener("click", function(e) {
-        if (tail.className == "hide_answer") {
-          tail.className = "show_answer";
-        } else {
-          tail.className = "hide_answer";
-        }
-      });
-    }
 
-  for(i = 0; i < x.length; i++) {
-    answer_head.push(document.getElementById(x[i].id));
-    answer_tail.push(document.getElementById(x[i].id + ".A"));
-    }
-
-  for (i = 0; i < x.length; i++) {
-    registerEvent(answer_head[i], answer_tail[i]);
-  }
-</script>

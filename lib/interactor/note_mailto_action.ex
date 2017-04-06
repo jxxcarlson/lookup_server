@@ -7,7 +7,7 @@ defmodule LookupPhoenix.NoteMailtoAction do
 
   def call(conn, %{"id" => id}) do
 
-    params2 = NoteNavigation.decode_query_string(conn.query_string)
+    params2 = NoteNavigation.get(conn.query_string)
     note = Repo.get!(Note, id)
     message_part_1 = "This note is courtesy of http://www.lookupnote.io\n\n"
     message_part_2= "It is available at http://www.lookupnote.io/share/"

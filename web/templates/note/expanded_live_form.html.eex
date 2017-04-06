@@ -33,7 +33,7 @@
     <%= error_tag f, :title %>
 </div>
 
-<div id="edit_and_diplay_text" style="margin-top:-2em;left:20%;">
+<div id="edit_and_display_text" style="margin-top:-2em;left:20%;">
    <div class="form-group" style="margin-left:-20%; width:70%; float:left; margin-top:3em;" %>
      <%= textarea f, :content, class: "form-control", style: "height:200px; overflow: scroll", id: 'content' %>
      <%= error_tag f, :content %>

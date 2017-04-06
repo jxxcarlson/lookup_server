@@ -11,6 +11,14 @@ defmodule MU.Scholar do
       "<p><span id=\"QQ.#{identifier}\" class=\"answer_head\">Answer:</span> <span id=\"QQ.#{identifier}.A\" class=\"hide_answer\">#{answer}</span></p>"
     end
 
+    @doc """
+    Format for a click block is
+    [click, title=TITLE]
+    --
+    Text to be revealed by clicking
+    --
+"""
+
     def formatAnswer(text) do
        identifier = random_string(4)
        Regex.scan(~r/answer:\[(.*)\]/U, text)
