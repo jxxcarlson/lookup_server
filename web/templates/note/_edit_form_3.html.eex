@@ -43,6 +43,7 @@ input[type=checkbox]
 
 </script>
 
+<meta name="csrf" content="<%= Plug.CSRFProtection.get_csrf_token() %>">
 
 <%= form_for @changeset, @action, fn f -> %>
 
@@ -53,13 +54,15 @@ input[type=checkbox]
   <% end %>
 
   <div class="form-group">
+      <span id="yada" style="float:right;  margin-right:36px; padding-left:8p; padding-right:8px; color: cornflowerblue;">Update</span>
+
     <%= label f, :title, class: "control-label" %>
     <%= text_input f, :title, class: "form-control", id: 'title'  %>
     <%= error_tag f, :title %>
+
   </div>
 
   <!-- INPUT -->
-
 
   <div id="edit_and_display_text" style="margin-top:-2em;left:20%;">
      <div class="form-group" style="margin-left:-30%; width:80%; float:left; margin-top:3em;" %>
@@ -107,6 +110,7 @@ input[type=checkbox]
    <input type="hidden" name="index" value= <%=@index %> >
    <input type="hidden" name="id_string" value=<%= @id_string %> >
    <input type="hidden" name="username" id = "username" value=<%= @conn.assigns.current_user.username %> >
+   <input type="hidden" name="note_id" id = "note_id" value=<%= @note.id %> >
 
   <div class="form-group" style="display:inline">
     <%= if @locked do %>
@@ -134,26 +138,29 @@ input[type=checkbox]
 
 
 <script>
-$("form").on("submit", function(event) {
-    event.preventDefault();
+
+
+$("#yada").click(function() {
 
     console.log("HI THERE!")
 
-    $that = this;
-
+    var note_id = document.getElementById("note_id").value
     var title = document.getElementById("title").value
-    var content = document.getElementById("content3").innerHTML
-    var username = document.getElementById("username").innerHTML
+    var content = document.getElementById("content3").value
+    var username = document.getElementById("username").value
     var tag_string = document.getElementById("tag_string").value
     var identifier = document.getElementById("identifier").value
+    var csrf = document.querySelector("meta[name=csrf]").content;
 
-    console.log("content = " + content)
-    console.log("title = " + JSON.stringify(title))
+    console.log("note_id = " + note_id)
+    console.log("title = " + title)
     console.log("tag_string = " + tag_string)
     console.log("identifier = " + identifier)
+    console.log("content = " + content)
+    console.log("csrf = " + csrf)
 
     $.ajax({
-        url: "/api/notes/978",
+        url: "/api/notes/" + note_id,
         type: "put",
         data: {
           put: {
@@ -166,11 +173,14 @@ $("form").on("submit", function(event) {
           }
         },
         headers: {
-            "X-CSRF-TOKEN": "csrf"
+            "X-CSRF-TOKEN": csrf
         },
         dataType: "json",
         success: function (data) {
+
+          console.log("OKKKK!");
           console.log(data);
+          document.getElementById("rendered_text3a").innerHTML = data.rendered_text;
         }
     });
 

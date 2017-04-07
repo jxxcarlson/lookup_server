@@ -9,8 +9,12 @@
                  case 66: // B
                     document.getElementById('back').click();
                     break;
-                 case 83:  // S
-                    document.getElementById('save').click();
+                }
+            }
+            if (e.ctrlKey) {
+               switch(e.keyCode ) {
+                 case 85: // U (Update)
+                    document.getElementById('yada').click();
                     break;
                }
             }

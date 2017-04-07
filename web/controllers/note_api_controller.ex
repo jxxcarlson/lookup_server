@@ -51,7 +51,7 @@ defmodule LookupPhoenix.NoteApiController do
       Utility.report("PUT, received data", data)
 
       if authenticated(data["secret"]) do
-
+         IO.puts "AUTHORIZED!"
          title = data["title"]
          username = data["username"]
          note = Note.get(id)
@@ -59,12 +59,10 @@ defmodule LookupPhoenix.NoteApiController do
          params = Map.merge(data, %{nav: navigation_data})
 
          result = NoteUpdateAction.call(username, note, params)
-         IO.puts "BBBBB"
          {status, note} = result.update_result
          IO.puts "update status = #{status}"
          params = Map.merge(%{note: note, nav: result.nav}, result.params)
          render conn, "note.json", result: params
-        render conn, "error.json", message: "END!"
        else
         render conn, "error.json", message: "darn it!"
       end

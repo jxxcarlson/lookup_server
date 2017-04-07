@@ -1,3 +1,5 @@
+
+<script>
 $("form").on("submit", function(event) {
     event.preventDefault();
 
@@ -5,19 +7,14 @@ $("form").on("submit", function(event) {
 
     $that = this;
 
-    var oForm = document.getElementById("note_input_form")
-
-    console.log ("FORM::: " + JSON.stringify(oForm))
-
     var title = document.getElementById("title").value
-    var content = document.getElementById("content").innerHTML
-    /* var content = oForm.elements["content"].innerHTML */
+    var content = document.getElementById("content3").innerHTML
     var username = document.getElementById("username").innerHTML
     var tag_string = document.getElementById("tag_string").value
     var identifier = document.getElementById("identifier").value
 
     console.log("content = " + content)
-    console.log("title = " + JSON.stringify(title))
+    console.log("title = " + title)
     console.log("tag_string = " + tag_string)
     console.log("identifier = " + identifier)
 
@@ -44,3 +41,5 @@ $("form").on("submit", function(event) {
     });
 
   });
+
+</script>
