@@ -139,6 +139,9 @@ input[type=checkbox]
 
 <script>
 
+function newTypeset(){
+   MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+}
 
 $("#yada").click(function() {
 
@@ -181,6 +184,9 @@ $("#yada").click(function() {
           console.log("OKKKK!");
           console.log(data);
           document.getElementById("rendered_text3a").innerHTML = data.rendered_text;
+
+          newTypeset();
+
         }
     });
 
