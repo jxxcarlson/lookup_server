@@ -16,8 +16,6 @@ defmodule LookupPhoenix.NoteApiView do
   end
 
   def render("note.json", %{result: result}) do
-    Utility.report("RESULT", result)
-    Utility.report("RESULT . NOTE", result.note)
     note = result.note
     %{id: note.id,
       title: note.title,

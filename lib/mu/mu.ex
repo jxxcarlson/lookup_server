@@ -123,10 +123,7 @@ defmodule MU.RenderText do
       |> Scholar.formatAnswer
       |> Inline.highlight
       |> Link.formatXREF
-      |> Section.formatHeading1
-      |> Section.formatHeading2
-      |> Section.formatHeading3
-
+      |> Section.formatSectionHeadings
     end
 
 

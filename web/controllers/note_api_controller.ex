@@ -47,9 +47,6 @@ defmodule LookupPhoenix.NoteApiController do
 
     def update(conn, %{"id" => id, "put" => data}) do
 
-      IO.puts "PUT, received id = #{id}"
-      Utility.report("PUT, received data", data)
-
       if authenticated(data["secret"]) do
          IO.puts "AUTHORIZED!"
          title = data["title"]

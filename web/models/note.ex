@@ -35,7 +35,6 @@ defmodule LookupPhoenix.Note do
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
-    Utility.report("IN NOTE . CHANGESET, PARAMS = ", params)
     struct
     |> cast(params, [:title, :content, :tags, :user_id, :viewed_at,
        :edited_at, :tag_string, :public, :shared, :tokens, :idx, :identifier])

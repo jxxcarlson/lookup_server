@@ -1,19 +1,19 @@
 defmodule MU.Section do
 
-    def formatHeading1(text) do
-      Regex.replace(~r/^== (.*)$/mU, text, "<h1>\\1</h1>\n")
+   alias LookupPhoenix.Utility
+
+    def formatSectionHeading(triple, text) do
+      [target, prefix, item] = triple
+       identifier = "_" <> Utility.str2identifier(item)
+       level = String.length(prefix)
+       heading = "h#{level}"
+       String.replace(text, target, "<#{heading} name=\"#{identifier}\">#{item}</#{heading}>\n")
     end
 
-    def formatHeading2(text) do
-       Regex.replace(~r/^=== (.*)$/mU, text, "<h2>\\1</h2>\n")
+    def formatSectionHeadings(text) do
+      Regex.scan(~r/^(=*) (.*)$/mU, text)
+      |> Enum.reduce(text, fn(triple, text) -> formatSectionHeading(triple, text) end)
     end
 
-   def formatHeading3(text) do
-       Regex.replace(~r/^==== (.*)$/mU, text, "<h3>\\1</h3>\n")
-   end
-
-   def formatHeading4(text) do
-          Regex.replace(~r/^==== (.*)$/mU, text, "<h4>\\1</h4>\n")
-   end
 
 end

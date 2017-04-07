@@ -133,5 +133,11 @@ defmodule LookupPhoenix.Utility do
       |> String.replace(" ", "_")
     end
 
+    def str2identifier(str) do
+       Regex.replace(~r/[^A-Za-z0-9_\.]/, str, "_")
+       |> String.replace("__", "_")
+       |> String.downcase
+    end
+
 
 end
