@@ -143,6 +143,8 @@ defmodule LookupPhoenix.NoteController do
 
   def edit(conn, %{"id" => id}) do
 
+        current_user_name = conn.assigns.current_user.username
+
         note = Repo.get!(Note, id)
         changeset = Note.changeset(note)
         locked = conn.assigns.current_user.read_only
@@ -153,7 +155,8 @@ defmodule LookupPhoenix.NoteController do
 
         params1 = %{note: note, changeset: changeset,
                     word_count: word_count, locked: locked,
-                    conn: conn, tags: tags, note: note, rendered_text: rendered_text}
+                    conn: conn, tags: tags, note: note,
+                    rendered_text: rendered_text, current_user_name: current_user_name}
 
         navigation_data = NoteNavigation.get(conn.query_string, id)
         params = Map.merge(params1, %{nav: navigation_data})

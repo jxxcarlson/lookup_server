@@ -78,7 +78,8 @@
   <%= render "_edit_form_3.html", changeset: @changeset,
        action: note_path(@conn, :update, @note),locked: @locked,
        word_count: @word_count, conn: @conn, index: @nav.index,
-       id_string: @nav.id_string, note: @note, rendered_text: @rendered_text
+       id_string: @nav.id_string, note: @note, rendered_text: @rendered_text,
+       current_user_name: @conn.assigns.current_user.username
   %>
 
 </div>

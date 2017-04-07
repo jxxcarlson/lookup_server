@@ -56,6 +56,8 @@ defmodule LookupPhoenix.NoteUpdateAction do
 
   def call(username, note, note_params) do
 
+     Utility.report("In NoteUpdateAction, note_params are:", note_params)
+
      locked = false
 
      # content and title: fix spurious character if any left by keyboard shortcut (option s)

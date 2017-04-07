@@ -29,8 +29,8 @@ defmodule LookupPhoenix.NoteApiController do
       key2value(conn.req_headers, key)
     end
 
-   defp authenticated(conn) do
-      conn2value(conn, "secret") == "abcdef9h5vkfR1Tj0U_1f!"
+   defp authenticated(secret) do
+      secret == "abcdef9h5vkfR1Tj0U_1f!"
    end
 
     def show(conn, %{"id" => id}) do
@@ -45,23 +45,26 @@ defmodule LookupPhoenix.NoteApiController do
       end
     end
 
-    def update(conn, %{"id" => id}) do
-      if authenticated(conn) do
-          note = Note.get(id)
-          {:ok, params} = JSON.decode conn2value(conn, "params")
-          Utility.report("params", params)
-          navigation_data = NoteNavigation.get(conn.query_string, note.id)
-          Utility.report("navigation_data", navigation_data)
-          params = Map.merge(params, %{nav: navigation_data})
-          username = conn2value(conn, "username")
-          IO.puts "USERNAME = #{username}"
+    def update(conn, %{"id" => id, "put" => data}) do
 
-         IO.puts "AAAAAA"
+      IO.puts "PUT, received id = #{id}"
+      Utility.report("PUT, received data", data)
+
+      if authenticated(data["secret"]) do
+
+         title = data["title"]
+         username = data["username"]
+         note = Note.get(id)
+         navigation_data = NoteNavigation.get(conn.query_string, id)
+         params = Map.merge(data, %{nav: navigation_data})
+
          result = NoteUpdateAction.call(username, note, params)
          IO.puts "BBBBB"
-         {:ok, note} = result.update_result
+         {status, note} = result.update_result
+         IO.puts "update status = #{status}"
          params = Map.merge(%{note: note, nav: result.nav}, result.params)
          render conn, "note.json", result: params
+        render conn, "error.json", message: "END!"
        else
         render conn, "error.json", message: "darn it!"
       end

@@ -79,7 +79,7 @@ input[type=checkbox]
 
       <div class="form-check form-inline" style="display:inline; margin-left:0;">
         <%= label f, :tags, class: "control-label-inline" %>
-        <%= text_input f, :tag_string, class: "form-control", style: "width: 40%;", id: 'tags', placeholder: 'separate tags by commas'  %>
+        <%= text_input f, :tag_string, class: "form-control", style: "width: 40%;", id: "tag_string", placeholder: 'separate tags by commas'  %>
         <%= error_tag f, :tag_string %>
       </div>
 
@@ -106,6 +106,7 @@ input[type=checkbox]
 
    <input type="hidden" name="index" value= <%=@index %> >
    <input type="hidden" name="id_string" value=<%= @id_string %> >
+   <input type="hidden" name="username" id = "username" value=<%= @conn.assigns.current_user.username %> >
 
   <div class="form-group" style="display:inline">
     <%= if @locked do %>
@@ -132,5 +133,48 @@ input[type=checkbox]
 
 
 
+<script>
+$("form").on("submit", function(event) {
+    event.preventDefault();
 
+    console.log("HI THERE!")
+
+    $that = this;
+
+    var title = document.getElementById("title").value
+    var content = document.getElementById("content3").innerHTML
+    var username = document.getElementById("username").innerHTML
+    var tag_string = document.getElementById("tag_string").value
+    var identifier = document.getElementById("identifier").value
+
+    console.log("content = " + content)
+    console.log("title = " + JSON.stringify(title))
+    console.log("tag_string = " + tag_string)
+    console.log("identifier = " + identifier)
+
+    $.ajax({
+        url: "/api/notes/978",
+        type: "put",
+        data: {
+          put: {
+            title: title,
+            username: username,
+            content: content,
+            tag_string: tag_string,
+            identifier: identifier,
+            secret: "abcdef9h5vkfR1Tj0U_1f!"
+          }
+        },
+        headers: {
+            "X-CSRF-TOKEN": "csrf"
+        },
+        dataType: "json",
+        success: function (data) {
+          console.log(data);
+        }
+    });
+
+  });
+
+</script>
 
