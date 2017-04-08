@@ -7,6 +7,8 @@ defmodule MU.LiveNotebook do
   alias LookupPhoenix.Repo
   alias LookupPhoenix.Utility
 
+  # return nil if there are no tags of the form live:IDENTIFIER,
+  # otherwise return IDENTIFIER of first such tag (there should be only one).
   def live_tag(note) do
     live_tags = note.tags
     |> Enum.filter(fn(tag) -> Regex.match?(~r/live/, tag) end)
@@ -35,9 +37,8 @@ defmodule MU.LiveNotebook do
   end
 
   def update(master_note) do
-    IO.puts "LIVE UPDATE: #{master_note.title}"
-    tag = live_tag(master_note)
     master_note_user = Repo.get!(User, master_note.user_id)
+    tag = "parent:#{master_note.identifier}"
 
     entries = String.split(master_note.content, ["\n", "\r", "\n\r"])
     first_entry = hd(entries)
@@ -66,10 +67,10 @@ defmodule MU.LiveNotebook do
     end
 
   def needs_update?(master_note) do
-    tag = live_tag(master_note)
-    if tag == nil do
-      false
-    else
+    if Enum.member?(master_note.tags, ":live_notebook") != nil do
+      IO.puts "#{master_note.title} is a LIVE NOTEBOOK"
+      # owner = User.find master_note.user_id
+      tag = "parent:#{master_note.identifier}"
       most_recent_note = find_most_recent_with_tag(master_note.user_id, tag)
       cond do
         most_recent_note == nil -> false
