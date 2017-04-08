@@ -44,6 +44,7 @@ defmodule LookupPhoenix.NoteShowAction do
      # content = "== " <> note.title <> "\n\n" <> note.content
      content = note.content
      rendered_text = String.trim(RenderText.transform(content, options))
+     rendered_text = "<h1>#{note.title}</h1>\n\n" <> rendered_text
 
      inserted_at= Note.inserted_at_short(note)
      updated_at= Note.updated_at_short(note)
