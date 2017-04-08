@@ -42,6 +42,10 @@ defmodule LookupPhoenix.NoteShow2Action do
       rendered_text2 = String.trim(RenderText.transform(content2, options2))
       rendered_text2 = "<h1>#{note2.title}</h1>\n\n" <> rendered_text2
 
+
+      rendered_text2 = "<h4><a href=\"/notes/#{note.id}\">#{note.title}</a></h4>\n\n" <> rendered_text2
+
+
       inserted_at= Note.inserted_at_short(note)
       updated_at= Note.updated_at_short(note)
       word_count = RenderText.word_count(note2.content)

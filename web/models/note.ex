@@ -25,6 +25,7 @@ defmodule LookupPhoenix.Note do
     field :tokens, {:array, :map}
     field :idx, :integer
     field :identifier, :string
+    field :parent_id, :integer
 
     belongs_to :user, LookupPhoenix.User
 
@@ -144,15 +145,48 @@ defmodule LookupPhoenix.Note do
 
     end
 
-    def get(id) do
+    def get_by_id(id) do
+       result = Repo.get(Note, id)
+       case result do
+         {:ok, note} -> note
+         _ -> nil
+       end
+    end
+
+    def xget(id) do
       cond do
-        is_integer(id) -> Repo.get!(Note, id)
+        is_nil(id) -> nil
+        is_integer(id) -> get_by_id(id)
         Regex.match?(~r/^[A-Za-z].*/, id) -> Identifier.find_note(id)
         true -> Repo.get!(Note, String.to_integer(id))
       end
       # note = note || Identifier.find_note(Constant.not_found_note())
       # Repo.preload(note, :user).user
       # note
+    end
+
+    def get(id) do
+      cond do
+        is_nil(id) -> nil
+        is_integer(id) -> Repo.get!(Note,id)
+        Regex.match?(~r/^[A-Za-z].*/, id) -> Identifier.find_note(id)
+        true -> Repo.get!(Note, String.to_integer(id))
+      end
+      # note = note || Identifier.find_note(Constant.not_found_note())
+      # Repo.preload(note, :user).user
+      # note
+    end
+
+    def get_parent(note) do
+      get(note.parent_id)
+    end
+
+   def get_parent2(note) do
+      tags = Enum.filter(note.tags, fn(tag) -> Regex.match?(~r/\Aparent:/, tag) end)
+      cond do
+        tags == [] -> nil
+        true -> String.replace(hd(tags), "parent:", "") |> Note.get
+      end
     end
 
 
