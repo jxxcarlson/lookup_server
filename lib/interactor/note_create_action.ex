@@ -21,15 +21,14 @@ defmodule LookupPhoenix.NoteCreateAction do
       end
   end
 
-  defp get_master_note_text(channel, tags) do
-    master_notes = Enum.map(tags, fn(tag) -> "live:" <> tag end)
+  defp get_parent_id(channel, tags) do
+    master_notes = Enum.map(tags, fn(tag) -> "parent:" <> tag end)
     |> Enum.map(fn(tag) -> Search.tag_search([tag], channel, :all) end)
     |> List.flatten
-    if length(master_notes) == 1 do
-      master_note = hd(master_notes)
-      "xref::#{master_note.id}[#{master_note.title}]\n\n"
-    else
-      ""
+    cond do
+      length(master_notes) == 1 && Note.get(hd(master_notes) != nil) ->
+        Note.get(hd(master_notes)).id
+        true -> nil
     end
   end
 
@@ -37,7 +36,7 @@ defmodule LookupPhoenix.NoteCreateAction do
   defp setup(conn, note_params) do
       [access, channel_name, user_id] = User.decode_channel(conn.assigns.current_user)
       [tag_string, tags] = get_tags(note_params, channel_name)
-      master_note_text =  get_master_note_text(conn.assigns.current_user.channel, tags)
+      parent_id =  get_parent_id(conn.assigns.current_user.channel, tags)
 
       content = note_params["content"] || " "
       title = note_params["title"] || "Untitled"
@@ -54,12 +53,13 @@ defmodule LookupPhoenix.NoteCreateAction do
         true -> content
       end
 
-      new_content = master_note_text <> Regex.replace(~r/ß/, content, "")
-      new_title = Regex.replace(~r/ß/, title, "")
+      new_content = content
+      new_title = title
       identifier = Identifier.make(conn.assigns.current_user.username, new_title)
       new_params = %{"content" => new_content, "title" => new_title,
          "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now,
-         "tag_string" => tag_string, "tags" => tags, "public" => false, "identifier" => identifier}
+         "tag_string" => tag_string, "tags" => tags, "public" => false, "identifier" => identifier,
+         "parent_id" => parent_id}
       Note.changeset(%Note{}, new_params)
   end
 
