@@ -44,7 +44,7 @@ defmodule LookupPhoenix.NoteShow2Action do
 
       inserted_at= Note.inserted_at_short(note)
       updated_at= Note.updated_at_short(note)
-      word_count = RenderText.word_count(note.content)
+      word_count = RenderText.word_count(note2.content)
 
       sharing_is_authorized = true #  conn.assigns.current_user.id == note.user_id
 

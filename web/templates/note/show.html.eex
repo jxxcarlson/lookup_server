@@ -17,11 +17,9 @@ span.standard {
 .rendered_text {
   background-color: #f4f4f4;
   padding-left: 1em;
-  margin-top:3em;
-  clear: right; padding-top:1em;
   overflow: scroll;
   height: 150px;
-
+  clear: left;
   padding-bottom:4em;
 }
 
@@ -29,38 +27,32 @@ span.standard {
 
 <style>
 
-<%= MU.CSS.inject() %>
+   <%= MU.CSS.inject() %>
 
 </style>
 
 <div style="font-size: 1.2em; margin-top:-0.5em;">
 
- <span style="font-size:2.1rem; font-style:bold; margin-bottom:0"> <%= @note.title  %> </span>
-
- <p style="margin-bottom:1em;margin-top:1rem;">
-
-  <span class="small hidden-xs" style="float:left; margin-right:3em;margin-top:2px;"> <%= @note.inserted_at %> </span>
+ <div style="margin-top:0;">
 
 
+      <span class="standard" ><%= link "Edit", to: note_path(@conn, :edit, @note, index: @nav.index, id_string: @nav.id_string) %></span>
+      <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %></span>
+      <span class="standard hidden-xs" >Channel <%= @channela %></span>
 
+      <%= if @nav.note_count > 1 do %>
 
-  <span class="standard" ><%= link "Edit", to: note_path(@conn, :edit, @note, index: @nav.index, id_string: @nav.id_string) %></span>
-  <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %></span>
-  <span class="standard hidden-xs" >Channel <%= @channela %></span>
+        <span style="float:left;margin-right:9px; font-weight:bold;" ><%= link "first", to: note_path(@conn, :show, @nav.first_id, index: 0, id_string: @nav.id_string) %></span>
+        <span style="float:left;margin-right:9px; font-weight:bold;" ><%= link "prev", to: note_path(@conn, :show, @nav.previous_id, index: @nav.previous_index, id_string: @nav.id_string) %></span>
+        <span style="background-color:#35d; color: white; padding-left:5px; padding-right:8px; float:left;margin-right:8px;" ><%= @nav.index + 1 %>:<%= @nav.note_count %></span>
+        <span class: "btn btn-primary" style="float:left;margin-right:8px; font-weight:bold;" ><%= link "next", to: note_path(@conn, :show, @nav.next_id, index: @nav.next_index, id_string: @nav.id_string) %></span>
+        <span class: "btn btn-primary" style="float:left;margin-right:28px; font-weight:bold;" ><%= link "last", to: note_path(@conn, :show, @nav.last_id, index: @nav.last_index, id_string: @nav.id_string) %></span>
 
-  <%= if @nav.note_count > 1 do %>
+      <% end %>
 
-    <span style="float:left;margin-right:9px; font-weight:bold;" ><%= link "first", to: note_path(@conn, :show, @nav.first_id, index: 0, id_string: @nav.id_string) %></span>
-    <span style="float:left;margin-right:9px; font-weight:bold;" ><%= link "prev", to: note_path(@conn, :show, @nav.previous_id, index: @nav.previous_index, id_string: @nav.id_string) %></span>
-    <span style="background-color:#35d; color: white; padding-left:5px; padding-right:8px; float:left;margin-right:8px;" ><%= @nav.index + 1 %>:<%= @nav.note_count %></span>
-    <span class: "btn btn-primary" style="float:left;margin-right:8px; font-weight:bold;" ><%= link "next", to: note_path(@conn, :show, @nav.next_id, index: @nav.next_index, id_string: @nav.id_string) %></span>
-    <span class: "btn btn-primary" style="float:left;margin-right:28px; font-weight:bold;" ><%= link "last", to: note_path(@conn, :show, @nav.last_id, index: @nav.last_index, id_string: @nav.id_string) %></span>
-    <span class: "btn btn-primary" style="float:left;margin-right:28px; font-weight:bold;" ><%= link "last", to: note_path(@conn, :show, @nav.last_id, index: @nav.last_index, id_string: @nav.id_string) %></span>
+</div>
 
-
-  <% end %>
-
-</p>
+<div style="heigh:2em;"> &nbsp; </div>
 
 
 <div id="rendered_text" class="rendered_text">
@@ -88,7 +80,7 @@ span.standard {
 <br>
 
 <script>
-    document.getElementById("rendered_text").style.height = (window.innerHeight - 230) + 'px'
+    document.getElementById("rendered_text").style.height = (window.innerHeight - 200) + 'px'
 </script>
 
 
