@@ -22,7 +22,7 @@ defmodule MU.Section do
           text
         true ->
           index_text = Enum.reduce(triples, "", fn(triple, acc) -> acc <> index_item(triple) end)
-          "<div class=\"note_index\">\n" <> index_text <> "</div>\n" <> text
+          "<div class=\"note_index\">\n<strong>Contents</strong>\n" <> index_text <> "</div>\n" <> text
       end
     end
 

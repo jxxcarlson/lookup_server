@@ -32,12 +32,11 @@ input[type=checkbox]
   padding-top:1em;
   overflow: scroll;
   height: 150px;
-  white-space:pre-line;
 }
 
 </style>
 
-
+<style> <%= MU.CSS.inject() %> </style>
 
 <%= form_for @changeset, @action, fn f -> %>
   <%= if @changeset.action do %>

@@ -39,7 +39,6 @@ defmodule MU.RenderText do
       text
       |> String.trim
       |> Section.format
-      |> Paragraph.format
       |> Block.transform
       |> Block.formatCode
       |> padString
@@ -48,8 +47,9 @@ defmodule MU.RenderText do
       |> MathSci.formatChem
       |> MathSci.formatChemBlock
       |> MathSci.insert_mathjax(options)
+      |> Paragraph.format
       |> String.trim
-      |> pad_at_end
+
     end
 
     defp format_latex(text, options) do

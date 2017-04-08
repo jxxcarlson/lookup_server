@@ -41,7 +41,8 @@ defmodule LookupPhoenix.NoteShowAction do
      #    collate: true | false
      options = %{mode: "show", username: user_name, public: note.public} |> Note.add_options(note)
      Utility.report("SHOW, OPTIONS", options)
-     content = "== " <> note.title <> "\n\n" <> note.content
+     # content = "== " <> note.title <> "\n\n" <> note.content
+     content = note.content
      rendered_text = String.trim(RenderText.transform(content, options))
 
      inserted_at= Note.inserted_at_short(note)

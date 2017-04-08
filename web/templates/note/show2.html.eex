@@ -26,7 +26,6 @@ span.standard {
   overflow: scroll;
   height: 150px;
   width: 20%;
-  white-space:pre-line;
 
 
 }
@@ -43,7 +42,6 @@ span.standard {
   overflow: scroll;
   height: 150px;
   width: 80%;
-  white-space:pre-line;
 
 
 }

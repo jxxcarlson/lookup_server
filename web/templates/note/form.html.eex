@@ -52,9 +52,10 @@ input[type=checkbox]
        <%= error_tag f, :content %>
      </div>
 
-     <div id="rendered_text2" style="margin-left: 52%; background-color: #f4f4f4; width: 50%; padding-left: 1em;padding-right: 1em; margin-top:3em; clear: right; padding-top:1em; overflow: scroll; height: 150px; white-space:pre-line;"><%= raw(String.trim(MU.RenderText.transform(@note.content, %{collate: "no", mode: "show", process: "latex"}))) %> </div>
+     <div id="rendered_text2" style="margin-left: 52%; background-color: #f4f4f4; width: 50%; padding-left: 1em;padding-right: 1em; margin-top:3em; clear: right; padding-top:1em; overflow: scroll; height: 150px; "><%= raw(String.trim(MU.RenderText.transform(@note.content, %{collate: "no", mode: "show", process: "latex"}))) %> </div>
   </div>
 
+<style> <%= MU.CSS.inject() %> </style>
 
   <!-- INPUT 3. -->
 
@@ -65,7 +66,7 @@ input[type=checkbox]
        <%= error_tag f, :content %>
      </div>
 
-     <div id="rendered_text3" style="float: left; background-color: #f4f4f4; margin-right:-30%; width: 80%; padding-left: 1em;padding-right: 1em; margin-top:3em; clear: right; padding-top:1em; overflow: scroll; height: 150px; white-space:pre-line;"><%= raw(String.trim(MU.RenderText.transform(@note.content, %{collate: "no", mode: "show", process: "latex"}))) %> </div>
+     <div id="rendered_text3" style="float: left; background-color: #f4f4f4; margin-right:-30%; width: 80%; padding-left: 1em;padding-right: 1em; margin-top:3em; clear: right; padding-top:1em; overflow: scroll; height: 150px; "><%= raw(String.trim(MU.RenderText.transform(@note.content, %{collate: "no", mode: "show", process: "latex"}))) %> </div>
   </div>
 
 

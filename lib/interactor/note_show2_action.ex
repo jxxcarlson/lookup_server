@@ -37,7 +37,8 @@ defmodule LookupPhoenix.NoteShow2Action do
       options2 = %{mode: "show", username: conn.assigns.current_user.username,
          public: note.public, toc_history: history_string,} |> Note.add_options(note2)
       rendered_text = String.trim(RenderText.transform(note.content, options))
-      content2 = "== " <> note2.title <> "\n\n" <> note2.content
+      # content2 = "== " <> note2.title <> "\n\n" <> note2.content
+      content2 = note2.content
       rendered_text2 = String.trim(RenderText.transform(content2, options2))
 
       inserted_at= Note.inserted_at_short(note)

@@ -23,7 +23,6 @@ span.standard {
   overflow: scroll;
   height: 150px;
   width: 20%;
-  white-space:pre-line;
 }
 
 .rendered_text2x {
@@ -35,7 +34,6 @@ span.standard {
   overflow: scroll;
   height: 150px;
   width: 80%;
-  white-space:pre-line;
 }
 
 p {
