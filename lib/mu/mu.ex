@@ -46,8 +46,8 @@ defmodule MU.RenderText do
       |> apply_markdown
       |> MathSci.formatChem
       |> MathSci.formatChemBlock
-      |> MathSci.insert_mathjax(options)
       |> Paragraph.format
+      |> MathSci.insert_mathjax(options)
       |> String.trim
 
     end
