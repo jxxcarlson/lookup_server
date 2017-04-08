@@ -4,13 +4,24 @@ defmodule MU.CSS do
 
   def inject do
     """
-
-    h1 {font-size: 1.7em;margin-bottom:-1.7em;}
-    h2 {font-size: 1.3em;margin-bottom:-2.4em;}
-    h3 {font-size: 1.0em;margin-bottom:-3em;}
-    h4 {font-size: 1.0em; margin-bottom:-3.5em;}
-
     .index_word{ color: darkred; }
+
+    .note_index {
+
+    }
+
+    .note_index_item {
+       margin-top:0;
+       margin-bottom:0;
+       padding-top:0;
+       padding-bottom:0;
+       color: darkred;
+     }
+
+     .note_index_item a {
+       color: darkred;
+     }
+
 
     /* Quote */
 
@@ -19,6 +30,7 @@ defmodule MU.CSS do
         font-style: italic;
         margin-left:2em;
         margin-right:2em;
+        margin-bottom:1em;
     }
 
 
@@ -26,6 +38,7 @@ defmodule MU.CSS do
 
         margin-left:2em;
         margin-right:2em;
+        margin-bottom:1em;
     }
 
     /* QA */
@@ -36,10 +49,10 @@ defmodule MU.CSS do
 
     /* Sections */
 
-    h1 {font-size: 1.7em;margin-bottom:-1.7em;}
-    h2 {font-size: 1.3em;margin-bottom:-2.4em;}
-    h3 {font-size: 1.0em;margin-bottom:-3em;}
-    h4 {font-size: 1.0em; margin-bottom:-3.5em;}
+    h1 {font-size: 1.7em;}
+    h2 {font-size: 1.3em;}
+    h3 {font-size: 1.0em;}
+    h4 {font-size: 1.0em;}
 
     /*  Table */
 

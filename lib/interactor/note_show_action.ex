@@ -40,6 +40,7 @@ defmodule LookupPhoenix.NoteShowAction do
      #    process: "latex" | "none"
      #    collate: true | false
      options = %{mode: "show", username: user_name, public: note.public} |> Note.add_options(note)
+     Utility.report("SHOW, OPTIONS", options)
      content = "== " <> note.title <> "\n\n" <> note.content
      rendered_text = String.trim(RenderText.transform(content, options))
 

@@ -21,7 +21,7 @@ span.standard {
   clear: right; padding-top:1em;
   overflow: scroll;
   height: 150px;
-  white-space:pre-line;
+
   padding-bottom:4em;
 }
 

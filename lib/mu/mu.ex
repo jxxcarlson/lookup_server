@@ -3,6 +3,7 @@ defmodule MU.RenderText do
   alias LookupPhoenix.Note
   alias LookupPhoenix.Utility
 
+  alias MU.Paragraph
   alias MU.Inline
   alias MU.Section
   alias MU.Block
@@ -37,6 +38,8 @@ defmodule MU.RenderText do
     defp format_markup(text, options) do
       text
       |> String.trim
+      |> Section.format
+      |> Paragraph.format
       |> Block.transform
       |> Block.formatCode
       |> padString
@@ -106,7 +109,6 @@ defmodule MU.RenderText do
 
     defp apply_markdown(text) do
       text
-      |> padString
       |> Table.format
       |> Block.formatCode
       |> Block.formatVerbatim
@@ -123,7 +125,6 @@ defmodule MU.RenderText do
       |> Scholar.formatAnswer
       |> Inline.highlight
       |> Link.formatXREF
-      |> Section.formatSectionHeadings
     end
 
 

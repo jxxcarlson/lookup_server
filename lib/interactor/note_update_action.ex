@@ -58,9 +58,8 @@ defmodule LookupPhoenix.NoteUpdateAction do
 
      locked = false
 
-     # content and title: fix spurious character if any left by keyboard shortcut (option s)
-     content = Regex.replace(~r/ß/, note_params["content"], "")
-     title = Regex.replace(~r/ß/, note_params["title"], "")
+     content = note_params["content"]
+     title = note_params["title"]
      tags = Tag.str2tags(note_params["tag_string"])
 
      new_params = Map.merge(note_params, %{
