@@ -96,4 +96,10 @@ span.standard {
 
   <%= raw(MU.JS.inject()) %>
 
+   function newTypeset(){
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+   }
+
+   newTypese();
+
 </script>
