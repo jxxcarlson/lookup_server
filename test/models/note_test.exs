@@ -2,6 +2,7 @@ defmodule LookupPhoenix.NoteTest do
   use LookupPhoenix.ModelCase
 
   alias LookupPhoenix.Note
+  alias LookupPhoenix.Utility
 
   @valid_attrs %{content: "some content", title: "some content"}
   @invalid_attrs %{}
@@ -21,7 +22,13 @@ defmodule LookupPhoenix.NoteTest do
     {:ok, note} = Repo.insert(note)
     note2 = Note.get(note.id)
     assert note2 != nil
-    assert Note.get(1) == nil
+    assert note2.title == "Astrology"
+    note2 = Note.get("jxxcarlson.bar")
+    assert note2.title == "Astrology"
+    note2 = Note.get("jxxcarlson.yada")
+    assert note2 == nil
+    note2 = Note.get(1)
+    assert note2 == nil
   end
 
   test "get parent, success" do
@@ -42,8 +49,17 @@ defmodule LookupPhoenix.NoteTest do
   end
 
   test "get parent, failure" do
-    note = %Note{title: "Magick", tags: ["foo", "baz"]}
+    note = %Note{title: "Magick"}
     assert Note.get_parent(note) == nil
   end
+
+  test "get parent from tags" do
+    parent_note = %Note{title: "Astrology", identifier: "jxxcarlson.bar"}
+    {:ok, parent_note} = Repo.insert(parent_note)
+    note = %Note{title: "Magick", tags: ["foo", "bar", "parent:jxxcarlson.bar"]}
+    parent_note2 = Note.get_parent_from_tags(note)
+    assert parent_note2.title == "Astrology"
+  end
+
 
 end

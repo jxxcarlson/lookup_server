@@ -38,7 +38,7 @@ defmodule LookupPhoenix.Note do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:title, :content, :tags, :user_id, :viewed_at,
-       :edited_at, :tag_string, :public, :shared, :tokens, :idx, :identifier])
+       :edited_at, :tag_string, :public, :shared, :tokens, :idx, :identifier, :parent_id])
     |> unique_constraint(:identifier)
     |> validate_required([:title, :content])
   end
@@ -145,32 +145,11 @@ defmodule LookupPhoenix.Note do
 
     end
 
-    def get_by_id(id) do
-       result = Repo.get(Note, id)
-       case result do
-         {:ok, note} -> note
-         _ -> nil
-       end
-    end
-
-    def xget(id) do
-      cond do
-        is_nil(id) -> nil
-        is_integer(id) -> get_by_id(id)
-        Regex.match?(~r/^[A-Za-z].*/, id) -> Identifier.find_note(id)
-        true -> Repo.get!(Note, String.to_integer(id))
-      end
-      # note = note || Identifier.find_note(Constant.not_found_note())
-      # Repo.preload(note, :user).user
-      # note
-    end
-
     def get(id) do
       cond do
-        is_nil(id) -> nil
-        is_integer(id) -> Repo.get!(Note,id)
+        is_integer(id) -> Repo.get(Note, id)
         Regex.match?(~r/^[A-Za-z].*/, id) -> Identifier.find_note(id)
-        true -> Repo.get!(Note, String.to_integer(id))
+        true -> Repo.get(Note, String.to_integer(id))
       end
       # note = note || Identifier.find_note(Constant.not_found_note())
       # Repo.preload(note, :user).user
@@ -178,10 +157,13 @@ defmodule LookupPhoenix.Note do
     end
 
     def get_parent(note) do
-      get(note.parent_id)
+      cond do
+        note.parent_id == nil -> nil
+        true -> get(note.parent_id)
+      end
     end
 
-   def get_parent2(note) do
+   def get_parent_from_tags(note) do
       tags = Enum.filter(note.tags, fn(tag) -> Regex.match?(~r/\Aparent:/, tag) end)
       cond do
         tags == [] -> nil

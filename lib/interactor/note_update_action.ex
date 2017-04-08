@@ -62,11 +62,21 @@ defmodule LookupPhoenix.NoteUpdateAction do
      title = note_params["title"]
      tags = Tag.str2tags(note_params["tag_string"])
 
+     parent_note = Note.get_parent_from_tags(note)
+     if parent_note != nil do
+       parent_id = parent_note.id
+       IO.puts "(XX) Setting parent of #{note.title} to #{parent_note.title}"
+     else
+       parent_id = nil
+       IO.puts "(XX) Could not find parent"
+     end
+
      new_params = Map.merge(note_params, %{
         "content" => content,
         "title" => title,
         "tags" => tags,
-        "edited_at" => Timex.now
+        "edited_at" => Timex.now,
+        "parent_id" => parent_id
       })
 
      options =  Note.add_options(%{mode: "show", public: note.public, toc_history: "", path_segment: "show2"}, note)
@@ -75,6 +85,7 @@ defmodule LookupPhoenix.NoteUpdateAction do
      # Update database
      changeset = Note.changeset(note, Map.delete(new_params, :nav))
      changeset = Ecto.Changeset.update_change(changeset, :identifier, fn(ident) -> Identifier.normalize(username, ident) end)
+
      if !locked do
        update_result = Repo.update(changeset)
      else
