@@ -15,7 +15,7 @@ defmodule MU.CSS do
     .note_index_item {
        font-size:0.90em;
        margin-top:0;
-       margin-bottom:-0.75em;
+       margin-bottom:-0.65em;
        padding-top:0;
        padding-bottom:0;
        color: darkred;
