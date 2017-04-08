@@ -39,10 +39,9 @@ defmodule LookupPhoenix.NoteShow2Action do
       rendered_text = String.trim(RenderText.transform(note.content, options))
       # content2 = "== " <> note2.title <> "\n\n" <> note2.content
       content2 = note2.content
+
       rendered_text2 = String.trim(RenderText.transform(content2, options2))
-      rendered_text2 = "<h1>#{note2.title}</h1>\n\n" <> rendered_text2
-
-
+      rendered_text2 = "<h1 id=\"active_note:#{note2.id}\">#{note2.title}</h1>\n\n" <> rendered_text2
       rendered_text2 = "<h4><a href=\"/notes/#{note.id}\">#{note.title}</a></h4>\n\n" <> rendered_text2
 
 

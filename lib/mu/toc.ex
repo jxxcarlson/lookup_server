@@ -117,13 +117,13 @@ defmodule MU.TOC do
       label = tl(line_parts) |> Enum.join(", ")
       cond do
         id == "title" ->
-          "<p class=\"title\">#{label}</p>"
+          "<p class=\"title\">#{label}</p>\n"
         true ->
           note = Note.get(id)
           if Enum.member?(note.tags, ":toc") && !String.contains?(toc_history, to_string(note.id)) do
             toc_history = toc_history <> ";" <> to_string(note.id) <> ">" <>  first_id(note.content)
           end
-          "<p><a href=\"#{Constant.home_site}/#{options.path_segment}/#{options.note_id}/#{id}/#{toc_history}\">#{label}</a></p>"
+          "<p id=\"note:#{note.id}\"><a href=\"#{Constant.home_site}/#{options.path_segment}/#{options.note_id}/#{id}/#{toc_history}\">#{label}</a></p>\n"
       end
   end
 

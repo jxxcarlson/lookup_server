@@ -125,3 +125,11 @@ p.title {
 
 </script>
 
+
+<script>
+  var active_note_id = "note:" + $('[id^="active_note"]')[0].id.split(":")[1]
+  var heading = document.getElementById(active_note_id)
+  heading.style.backgroundColor = "#ffeded"
+  heading.style.padding = "2px"
+  heading.style.fontWeight = "bold"
+</script>
