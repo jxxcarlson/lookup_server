@@ -21,8 +21,8 @@ span.standard {
   padding-right: 1em;
   padding-top:1em;
   padding-bottom:4em;
-  margin-top:3em;
-  clear: right;
+  margin-top:1em;
+  clear: both;
   overflow: scroll;
   height: 150px;
   width: 20%;
@@ -33,7 +33,7 @@ span.standard {
 .rendered_text2x {
   float:left;
   background-color: #f4f4f4;
-  margin-top:3em;
+  margin-top:1em;
   clear: right;
   padding-top:1em;
   padding-left: 1em;
@@ -66,21 +66,19 @@ p.title {
 
 </style>
 
-<div style="font-size: 1.2em; margin-top:-0.5em;">
-
-     <!-- <span style="font-size:2.1rem; font-style:bold; margin-bottom:0"> <%= @note.title  %> </span> -->
+<div style="font-size: 1.2em;clear:both;">
 
      <span><%= raw(@history_links) %></span>
 
-     <p style="margin-bottom:1em;margin-top:1rem;">
+     <span style="">
 
-          <span class="small hidden-xs" style="float:left; margin-right:3em;margin-top:2px;"> <%= @inserted_at %> </span>
+          <!-- <span class="small hidden-xs" style="float:left; margin-right:3em;margin-top:2px;"> <%= @inserted_at %> </span> -->
           <span class="standard" ><%= link "Edit Master", to: note_path(@conn, :edit, @note, index: @index, id_string: @id_string) %> </span>
           <span class="standard" ><%= link "Edit Note", to: note_path(@conn, :edit, @note2, index: @index, id_string: @id_string) %>  | </span>
           <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %> | </span>
-          <span class="standard hidden-xs" >Channel <%= @channela %></span>
+          <!-- <span class="standard hidden-xs" >Channel <%= @channela %></span> -->
 
-    </p>
+    </span>
 
 
 </div>
@@ -93,7 +91,7 @@ p.title {
    <%= raw(@rendered_text2) %>
 </div>
 
-<div style="clear:left;">
+<div style="clear:both;margin-top:1em;">
     <p style="margin-top:1em;"> <i>
 
       <span class="small hidden-xs"><b><%= LookupPhoenix.Note.public_indicator(@note) %></b>, Last updated: <%= @updated_at %></span>
@@ -113,8 +111,8 @@ p.title {
 
 
 <script>
-    document.getElementById("rendered_text1x").style.height = (window.innerHeight - 230) + 'px'
-    document.getElementById("rendered_text2x").style.height = (window.innerHeight - 230) + 'px'
+    document.getElementById("rendered_text1x").style.height = (window.innerHeight - 160) + 'px'
+    document.getElementById("rendered_text2x").style.height = (window.innerHeight - 160) + 'px'
 </script>
 
 

@@ -16,6 +16,7 @@ span.standard {
 
 .rendered_text {
   background-color: #f4f4f4;
+  font-size:0.9em;
   padding-left: 1em;
   overflow: scroll;
   height: 150px;
@@ -38,7 +39,7 @@ span.standard {
 
       <span class="standard" ><%= link "Edit", to: note_path(@conn, :edit, @note, index: @nav.index, id_string: @nav.id_string) %></span>
       <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %></span>
-      <span class="standard hidden-xs" >Channel <%= @channela %></span>
+      <!-- <span class="standard hidden-xs" >Channel <%= @channela %></span> -->
 
       <%= if @nav.note_count > 1 do %>
 
@@ -52,7 +53,7 @@ span.standard {
 
 </div>
 
-<div style="heigh:2em;"> &nbsp; </div>
+<div style="height:2em;"> &nbsp; </div>
 
 
 <div id="rendered_text" class="rendered_text">
@@ -80,7 +81,7 @@ span.standard {
 <br>
 
 <script>
-    document.getElementById("rendered_text").style.height = (window.innerHeight - 200) + 'px'
+    document.getElementById("rendered_text").style.height = (window.innerHeight - 170) + 'px'
 </script>
 
 

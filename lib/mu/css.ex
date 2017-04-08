@@ -4,6 +4,8 @@ defmodule MU.CSS do
 
   def inject do
     """
+
+
     .index_word{ color: darkred; }
 
     .note_index {
@@ -12,12 +14,18 @@ defmodule MU.CSS do
 
     }
 
-    .note_index_item {
+    p { margin-bottom:1em;
+        font-size: 1em;}
+
+    p.toc {
+      margin:0;
+      font-size:0.90em;
+    }
+
+    p.note_index_item {
        font-size:0.90em;
-       margin-top:0;
-       margin-bottom:-0.5em;
-       padding-top:0;
-       padding-bottom:0;
+       margin:0;
+       padding:0;
        color: darkred;
      }
 
@@ -52,15 +60,22 @@ defmodule MU.CSS do
 
     /* Sections */
 
-    h1 {font-size: 1.7em;}
-    h2 {font-size: 1.3em;}
-    h3 {font-size: 1.0em;}
+    h1 {font-size: 1.8em;}
+    h2 {font-size: 1.5em;}
+    h3 {font-size: 1.3em;}
     h4 {font-size: 1.0em;}
+    h5 {font-size: 1.0em;}
+
+    h1 a { color: darkred; }
+    h2 a { color: darkred; }
+    h3 a { color: darkred; }
+    h4 a { color: darkred; }
+    h5 a { color: darkred; }
 
     /*  Table */
 
     table, th, td {
-        border: 1px solid red;
+        border: 1px solid gray;
     }
 
     td { padding-left:1em;}

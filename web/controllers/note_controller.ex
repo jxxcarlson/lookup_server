@@ -100,9 +100,15 @@ defmodule LookupPhoenix.NoteController do
       text = note.content
       lines =  String.split(String.trim(text), ["\n", "\r", "\r\n"])
       |> Enum.filter(fn(line) -> !Regex.match?(~r/^title/, line) end)
-      first_line  = hd(lines)
-      [id2, _] = String.split(first_line, ",")
-      redirect(conn, to: "/show2/#{note.id}/#{id2}/#{note.id}>#{id2}")
+      cond do
+        lines != [] ->
+           first_line  = hd(lines)
+           [id2, _] = String.split(first_line, ",")
+           redirect(conn, to: "/show2/#{note.id}/#{id2}/#{note.id}>#{id2}")
+        true ->
+           redirect(conn, to: "/show/#{note.id}")
+      end
+
   end
 
   def show(conn, %{"id" => id}) do

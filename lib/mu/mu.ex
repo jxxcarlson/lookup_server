@@ -37,19 +37,12 @@ defmodule MU.RenderText do
 
     defp format_markup(text, options) do
       text
-      |> String.trim
       |> Section.format
       |> Block.transform
       |> Block.formatCode
-      |> padString
       |> linkify(options)
       |> apply_markdown
-      |> MathSci.formatChem
-      |> MathSci.formatChemBlock
       |> Paragraph.format
-      |> MathSci.insert_mathjax(options)
-      |> String.trim
-
     end
 
     defp format_latex(text, options) do
@@ -58,8 +51,6 @@ defmodule MU.RenderText do
       |> MathSci.formatChem
       |> MathSci.formatChemBlock
       |> MathSci.insert_mathjax(options)
-      |> String.trim
-      |> pad_at_end
     end
 
     def firstParagraph(text) do
@@ -80,7 +71,6 @@ defmodule MU.RenderText do
 
     def format_for_index(text) do
       text
-      # |> firstParagraph
       |> head_excerpt(7)
       |> linkify(%{mode: "index", process: "node"})
       |> Inline.formatBold
@@ -95,7 +85,6 @@ defmodule MU.RenderText do
 
     defp linkify(text, options) do
       text
-      # |> simplifyURLs
       |> Link.makeYouTubePlayer(options)
       |> Link.makeAudioPlayer
       |> Link.makeImageLinks(options)
@@ -104,7 +93,6 @@ defmodule MU.RenderText do
       |> Link.makeSmartLinks
       |> Link.makePDFLinks(options)
       |> Link.siteLink
-      |> String.trim
     end
 
     defp apply_markdown(text) do
@@ -113,14 +101,12 @@ defmodule MU.RenderText do
       |> Block.formatCode
       |> Block.formatVerbatim
       |> Inline.formatInlineCode
-      |> padString
       |> Inline.formatBold
       |> Inline.formatItalic
       |> Scholar.indexWord
       |> Inline.formatMDash
       |> Inline.formatNDash
       |> Inline.formatRed
-      |> padString
       |> List.formatItems
       |> Scholar.formatAnswer
       |> Inline.highlight

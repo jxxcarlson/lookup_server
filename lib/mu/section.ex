@@ -13,7 +13,7 @@ defmodule MU.Section do
     defp index_item(triple) do
       [_, _, item] = triple
       identifier = "#_" <> Utility.str2identifier(item)
-      "<p class=\"note_index_item\"><a href='#{identifier}'>#{item}</a><p>\n"
+      "<p class=\"note_index_item\"><a href='#{identifier}'>#{item}</a></p>\n"
     end
 
     defp make_index(text, triples) do

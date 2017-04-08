@@ -6,13 +6,13 @@ defmodule MU.List do
     end
 
     defp getItems(text) do
-      Regex.scan(~r/^- (\S*.*)[\n\r]/msU, "\n" <> text)
+      Regex.scan(~r/^- (\S.*)/m, text)
       |> Enum.map(fn(x) -> hd(tl(x)) end)
       |> Enum.map(fn(item) -> String.trim(item) end)
     end
 
     defp formatItem  (item) do
-      "<span style='margin-left:2em; text-indent:-0.7em;display:inline-block;margin-bottom:0.3em;'>-  #{item}</span>"
+      "<span style='margin-left:2em; text-indent:-0.7em;display:inline-block;margin-bottom:0.3em;'>-  #{item}</span>\n\n"
     end
 
 

@@ -35,6 +35,8 @@ defmodule MU.TOC do
       |> Enum.map(fn(item) -> String.split(item, ">") end)
       |> normalize
 
+      Utility.report('NOTE 2 . TAGS', note2.tags)
+
       cond do
         Enum.member?(note2.tags, ":toc") && !is_in_toc_history(toc_history, note, note2) ->
           IO.puts "BRANCH A"
@@ -120,10 +122,11 @@ defmodule MU.TOC do
           "<p class=\"title\">#{label}</p>\n"
         true ->
           note = Note.get(id)
+           Utility.report('NOTE . TAGS', note.tags)
           if Enum.member?(note.tags, ":toc") && !String.contains?(toc_history, to_string(note.id)) do
             toc_history = toc_history <> ";" <> to_string(note.id) <> ">" <>  first_id(note.content)
           end
-          "<p id=\"note:#{note.id}\"><a href=\"#{Constant.home_site}/#{options.path_segment}/#{options.note_id}/#{id}/#{toc_history}\">#{label}</a></p>\n"
+          "<p id=\"note:#{note.id}\" class=\"toc\"><a href=\"#{Constant.home_site}/#{options.path_segment}/#{options.note_id}/#{id}/#{toc_history}\">#{label}</a></p>\n"
       end
   end
 

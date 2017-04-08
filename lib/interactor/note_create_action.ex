@@ -22,9 +22,12 @@ defmodule LookupPhoenix.NoteCreateAction do
   end
 
   defp get_parent_id(channel, tags) do
+    IO.puts "GET PARENT ID"
+    Utility.report("[channel, tags]", [channel, tags])
     master_notes = Enum.map(tags, fn(tag) -> "parent:" <> tag end)
     |> Enum.map(fn(tag) -> Search.tag_search([tag], channel, :all) end)
     |> List.flatten
+    Utility.report("master_notes", master_notes)
     cond do
       length(master_notes) == 1 && Note.get(hd(master_notes) != nil) ->
         Note.get(hd(master_notes)).id
