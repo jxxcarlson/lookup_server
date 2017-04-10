@@ -18,8 +18,7 @@ defmodule LookupPhoenix.NotePrintAction do
      note = Note.get(note_id)
      options = %{ mode: "show" } |> Note.add_options(note)
      Utility.report("SHOW, OPTIONS", options)
-     content = "== " <> note.title <> "\n\n" <> note.content
-     rendered_text = String.trim(RenderText.transform(content, options))
+     rendered_text = String.trim(RenderText.transform(note.content, options))
      rendered_text = "<h1>#{note.title}</h1>\n\n" <> rendered_text
      %{rendered_text: rendered_text, note_id: note_id}
 

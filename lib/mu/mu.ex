@@ -23,9 +23,9 @@ defmodule MU.RenderText do
       # Utility.report "IN TRANSFORM TEXT, OPTIONS ARE", options
       case options.process do
         "plain" -> text
-        "markup" -> format_markup(text, options)
-        "latex" -> format_latex(text, options)
-        "collate" -> Collate.collate(text, options) |> format_latex(options)
+        "markup" -> format_markup(text, options) |> filterComments
+        "latex" -> format_latex(text, options)  |> filterComments
+        "collate" -> Collate.collate(text, options) |> format_latex(options)  |> filterComments
         "toc" -> TOC.process(text, options)
         _ -> format_markup(text, options)
       end
@@ -113,6 +113,9 @@ defmodule MU.RenderText do
       |> Link.formatXREF
     end
 
+    defp filterComments(text) do
+      String.split(text, ["\r", "\n", "\rn"]) |> Enum.filter(fn(line) -> !Regex.match?(~r/^\/\//, line) end) |> Enum.join("\n")
+    end
 
     defp scrubTags(text) do
       Regex.replace(~r/\s:.*\s/, " " <> text <> " ",    " ")

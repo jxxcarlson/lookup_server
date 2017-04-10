@@ -144,7 +144,6 @@ defmodule LookupPhoenix.NoteController do
   def print(conn, %{"id" => id}) do
     result = NotePrintAction.call(id)
     params = Map.merge(result, %{layout: false})
-    # render conn, "print.html", result
     render conn, "print.html", params
   end
 
