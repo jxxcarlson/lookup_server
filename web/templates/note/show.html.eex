@@ -37,8 +37,9 @@ span.standard {
  <div style="margin-top:0;">
 
 
-      <span class="standard" ><%= link "Edit", to: note_path(@conn, :edit, @note, index: @nav.index, id_string: @nav.id_string) %></span>
-      <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %></span>
+      <span class="standard" ><%= link "Edit", to: note_path(@conn, :edit, @note, index: @nav.index, id_string: @nav.id_string) %> </span>
+      <span class="standard" ><%= link "Print", to: note_path(@conn, :print, @note) %>  | </span>
+      <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %> | </span>
       <!-- <span class="standard hidden-xs" >Channel <%= @channela %></span> -->
 
       <%= if @nav.note_count > 1 do %>

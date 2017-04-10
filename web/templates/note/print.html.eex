@@ -1,0 +1,19 @@
+
+<style>
+
+.rendered_text {
+  font-size:0.9em;
+  margin: 1in;
+  padding-bottom:4em;
+}
+
+<style>
+
+   <%= MU.CSS.inject() %>
+
+</style>
+
+
+<div id="rendered_text" class="rendered_text">
+   <%= raw(@rendered_text) %>
+</div>

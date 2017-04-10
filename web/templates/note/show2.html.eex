@@ -75,6 +75,7 @@ p.title {
           <!-- <span class="small hidden-xs" style="float:left; margin-right:3em;margin-top:2px;"> <%= @inserted_at %> </span> -->
           <span class="standard" ><%= link "Edit Master", to: note_path(@conn, :edit, @note, index: @index, id_string: @id_string) %> </span>
           <span class="standard" ><%= link "Edit Note", to: note_path(@conn, :edit, @note2, index: @index, id_string: @id_string) %>  | </span>
+          <span class="standard" ><%= link "Print", to: note_path(@conn, :print, @note2) %>  | </span>
           <span class="standard" ><%= link "Back", to: note_path(@conn, :index) %> | </span>
           <!-- <span class="standard hidden-xs" >Channel <%= @channela %></span> -->
 

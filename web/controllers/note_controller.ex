@@ -10,6 +10,7 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.NoteIndexAction
   alias LookupPhoenix.NoteShowAction
   alias LookupPhoenix.NoteShow2Action
+  alias LookupPhoenix.NotePrintAction
   alias LookupPhoenix.NoteCreateAction
   alias LookupPhoenix.NoteUpdateAction
   alias LookupPhoenix.NoteMailtoAction
@@ -138,6 +139,13 @@ defmodule LookupPhoenix.NoteController do
   def show2(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history}) do
     params = NoteShow2Action.call(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history})
     render(conn, "show2.html", params)
+  end
+
+  def print(conn, %{"id" => id}) do
+    result = NotePrintAction.call(id)
+    params = Map.merge(result, %{layout: false})
+    # render conn, "print.html", result
+    render conn, "print.html", params
   end
 
 
