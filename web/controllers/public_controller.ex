@@ -54,7 +54,7 @@ defmodule LookupPhoenix.PublicController do
 
           options = %{mode: "show"} |> Note.add_options(note)
           params1 = %{note: note, options: options, site: site, channela: user.channel}
-          params2 = NoteNavigation.get_string(query_string)
+          params2 = NoteNavigation.get(query_string, nil)
           params = Map.merge(params1, params2)
 
           case note.public do

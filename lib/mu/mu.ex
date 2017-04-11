@@ -89,8 +89,8 @@ defmodule MU.RenderText do
       |> Link.makeAudioPlayer
       |> Link.makeImageLinks(options)
       |> Link.makeFormattedImageLinks(options)
-      |> Link.makeUserLinks
-      |> Link.makeSmartLinks
+      |> Link.formatHyperlink2
+      |> Link.formatHyperlink
       |> Link.makePDFLinks(options)
       |> Link.siteLink
     end
