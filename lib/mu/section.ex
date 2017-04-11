@@ -29,7 +29,6 @@ defmodule MU.Section do
     # A triple has the form [target, prefix, item]
     def format(text) do
       triples = Regex.scan(~r/^(=+) (.*)$/mU, text)
-      Utility.report("triples", triples)
       triples |> Enum.reduce(text, fn(triple, text) -> formatSectionHeading(triple, text) end)
       |> make_index(triples)
     end
