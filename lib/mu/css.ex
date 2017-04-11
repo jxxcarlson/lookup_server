@@ -33,6 +33,18 @@ defmodule MU.CSS do
        color: darkred;
      }
 
+    .env {
+      margin-top:1em;
+      margin-left:2em;
+      margin-bottom: 1em;
+    }
+
+    .env_body {
+
+      margin-top: 0.15em;
+      font-style: italic;
+
+    }
 
     /* Quote */
 
