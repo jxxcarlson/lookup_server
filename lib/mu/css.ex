@@ -35,7 +35,6 @@ defmodule MU.CSS do
 
     .env {
       margin-top:1em;
-      margin-left:2em;
       margin-bottom: 1em;
     }
 
