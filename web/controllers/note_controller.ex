@@ -104,16 +104,22 @@ defmodule LookupPhoenix.NoteController do
       cond do
         lines != [] ->
            first_line  = hd(lines)
-           [id2, _] = String.split(first_line, ",")
-           redirect(conn, to: "/show2/#{note.id}/#{id2}/#{note.id}>#{id2}")
+           parts = String.split(first_line, ",")
+           if length(parts) == 1 do
+             redirect(conn, to: "/show2/#{note.id}/#{note.id}/#{note.id}>#{note.id}")
+           else
+             [id2, _] = parts
+             redirect(conn, to: "/show2/#{note.id}/#{id2}/#{note.id}>#{id2}")
+           end
         true ->
-           redirect(conn, to: "/show/#{note.id}")
+           redirect(conn, to: "/show2/#{note.id}/#{note.id}/#{note.id}>#{note.id}")
       end
 
   end
 
   def show(conn, %{"id" => id}) do
 
+    IO.puts "THIS IS NOTECONTROLLER . SHOW, ID = #{id}"
     username = conn.assigns.current_user.username
     query_string = conn.query_string
 

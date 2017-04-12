@@ -33,6 +33,10 @@ defmodule MU.CSS do
        color: darkred;
      }
 
+    .blurb {
+       margin-bottom: 3em;
+     }
+
     .env {
       margin-top:1em;
       margin-bottom: 1em;

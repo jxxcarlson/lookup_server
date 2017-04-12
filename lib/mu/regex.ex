@@ -4,6 +4,16 @@ defmodule MU.Regex do
   MU.Regex is a library of regexes used for the MU markup language.
 """
 
+  def block_regex do
+    # Regex.scan(~r/(*ANYCRLF)^\[([a-z].*)\].--.(.*).--/msU, text)
+    ~r/^\[([a-z].*)\].^--.(.*).^--/msU
+  end
+
+  def blurb_regex do
+    # ~r/^\[(blurb)\].^--.(.*).^--/msU
+    ~r/^\[(blurb)\].*--(.*)--.*/msU
+  end
+
   def unordered_list_item_regex do
     ~r/^[\*|-] (\S.*)$/m
   end

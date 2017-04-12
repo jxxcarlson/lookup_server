@@ -67,7 +67,8 @@ defmodule MU.LiveNotebook do
     end
 
   def needs_update?(master_note) do
-    if Enum.member?(master_note.tags, ":live_notebook") != nil do
+    Utility.report("IN NEEDS_UPDATE?, TAGS = ", master_note.tags)
+    if Enum.member?(master_note.tags, ":live_notebook") == true do
       IO.puts "#{master_note.title} is a LIVE NOTEBOOK"
       # owner = User.find master_note.user_id
       tag = "parent:#{master_note.identifier}"

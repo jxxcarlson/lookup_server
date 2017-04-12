@@ -42,6 +42,7 @@ defmodule LookupPhoenix.Router do
     resources "/sessions", SessionController, only: [:new, :create, :delete ]
 
     get "show2/:id/:id2/:toc_history", NoteController, :show2
+    #  get "show/:id", NoteController, :show
     get "print/:id", NoteController, :print
 
     post "/set_channel", NoteController, :set_channel

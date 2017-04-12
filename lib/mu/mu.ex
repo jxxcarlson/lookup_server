@@ -21,7 +21,8 @@ defmodule MU.RenderText do
 
     def transform(text, options \\ %{mode: "show", process: "markup"}) do
       # Utility.report "IN TRANSFORM TEXT, OPTIONS ARE", options
-      case options.process do
+      begin_time = Timex.now
+      result = case options.process do
         "plain" -> text
         "markup" -> format_markup(text, options) |> filterComments
         "latex" -> format_latex(text, options)  |> filterComments
@@ -29,6 +30,14 @@ defmodule MU.RenderText do
         "toc" -> TOC.process(text, options)
         _ -> format_markup(text, options)
       end
+      end_time = Timex.now
+      elapsed_time = Timex.diff(end_time, begin_time, :microseconds)
+      text_length = String.length(text)
+      microsecond_rate = 1000.0*elapsed_time/text_length
+      millisecond_rate = microsecond_rate/1000
+      IO.puts "MU.transform, elapsed time = #{Float.round(elapsed_time/1000.0, 1)} ms, (#{elapsed_time} µs) for #{String.length(text)} characters"
+      IO.puts "MU.transform, rate = #{Float.round(millisecond_rate, 3)} ms, (#{Float.round(microsecond_rate, 0)} µs) per 1000 characters"
+      result
     end
 
     defp pad_at_end(text) do
@@ -71,11 +80,13 @@ defmodule MU.RenderText do
 
     def format_for_index(text) do
       text
-      |> head_excerpt(7)
+      |> Block.formatBlurb
       |> linkify(%{mode: "index", process: "node"})
       |> Inline.formatBold
       |> Inline.formatRed
       |> Inline.formatItalic
+      |> Inline.formatInlineCode
+      |> Inline.highlight
     end
 
     defp padString(text) do

@@ -4,6 +4,37 @@ defmodule MU.TOC do
   alias LookupPhoenix.Note
   alias LookupPhoenix.Constant
 
+  @module_doc """
+  MU.TOC Manages "index notes" that represent a table of contents
+  for a set of notes, i.e., a notebook.  WE NEED TO GET THIS CIRCLE
+  OF IDEAS STRAIGHTENED OUT -- BEFORE I TOTALL FORGET HOW THIS WORKS
+  AND WHAT IT IS FOR: NESTED NOTEBOOKS.
+
+  HISTORY RECORDS AND HISTORY STRINGS.
+
+  Example.  A toc_history record looks is a list of 2-lists, e.g.
+
+     [[1010, 993], [1019, 976]]
+
+  The elements of the 2-lists are note IDs. The history string derived from
+  the above history record is
+
+      1019/976/1010>993;1019>976
+
+   It has the following meaning:
+
+      1019                is the ID of the current index note (LHS)
+      976                 is the ID of the currently displayed note (RHS)
+      1010>993;1019>976   is the history.
+
+   A history consists of segments separated by semicolons.  The rightmost
+   segment defines the index note and current note.  Segments to the left
+   of the rightmost segment define by "browser history" and allow one
+   to "go back".  In this model, there is a root notebook, defined by its
+   index note.  Its "children" may be regular notes or index notes. And
+   so on.
+  """
+
   defp is_in_toc_history1(toc_history, note, note2) do
     Enum.member?(toc_history, [note.id, note2.id])
   end
@@ -59,7 +90,11 @@ defmodule MU.TOC do
     Enum.reduce(0..n, [], fn(k, acc) -> acc ++ [Enum.slice(list, 0..k)] end)
   end
 
+  @doc """
+  uuu
+"""
   def make_history_string(toc_history) do
+     Utility.report("toc_history", toc_history)
      Enum.reduce(toc_history, [], fn(elem, acc) -> acc ++ [ths1(elem)] end)
      |> Enum.join(";")
   end
@@ -84,6 +119,10 @@ defmodule MU.TOC do
     |> Enum.join(" >  ")
   end
 
+  @doc """
+  Remove comments from the text, then split it into lines,
+  filtering out any empty lines.
+  """
   defp lines_from_note_content(text) do
     text
     |> String.trim
@@ -112,21 +151,42 @@ defmodule MU.TOC do
     |> Enum.map(fn(line) -> make_toc_item(line, options) end)
   end
 
+  @doc """
+  A standard line looks like this:
+
+  ID, HEADING
+
+  The ID may be either a numerical id or a text identifier.
+  The part after the comma is a HEADING for the table of contents.
+  It is defined by the user, and is typically the title of the
+  note with the given ID, or a shortened version of the title.
+  """
   defp make_toc_item(line, options) do
+      ### THE BELOW IS A TEMPORARY FIX.  WHY IS IT THAT
+      ### options[:path_segment] is sometimes nil?
+      ### This solution will break in the public view.
+      if options[:path_segment] != nil do
+        path_segment = options.path_segment
+      else
+        path_segment = "show2"
+      end
       toc_history = options.toc_history
       line_parts = String.split(line, ",")
       id = hd(line_parts)
-      label = tl(line_parts) |> Enum.join(", ")
+      note = Note.get(id)
+      IO.puts "IN MAKE TOC ITEM, ID = #{id}"
+      heading = tl(line_parts) |> Enum.join(", ")
       cond do
+        note == nil ->
+          ""
         id == "title" ->
-          "<p class=\"title\">#{label}</p>\n"
+          "<p class=\"title\">#{heading}</p>\n"
         true ->
-          note = Note.get(id)
            Utility.report('NOTE . TAGS', note.tags)
           if Enum.member?(note.tags, ":toc") && !String.contains?(toc_history, to_string(note.id)) do
             toc_history = toc_history <> ";" <> to_string(note.id) <> ">" <>  first_id(note.content)
           end
-          "<p id=\"note:#{note.id}\" class=\"toc\"><a href=\"#{Constant.home_site}/#{options.path_segment}/#{options.note_id}/#{id}/#{toc_history}\">#{label}</a></p>\n"
+          "<p id=\"note:#{note.id}\" class=\"toc\"><a href=\"#{Constant.home_site}/#{path_segment}/#{options.note_id}/#{id}/#{toc_history}\">#{heading}</a></p>\n"
       end
   end
 
