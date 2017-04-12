@@ -5,7 +5,7 @@
       <th class="hidden-xs"></th>
       <th>Title</th>
       <th class="hidden-xs">P</th>
-      <th class="hidden-xs">Date</th>
+      <!-- <th class="hidden-xs">Date</th> -->
       <th class="hidden-xs">Content</th>
 
       <th></th>
@@ -19,13 +19,13 @@
 
       <td class="hidden-xs" style="max-width:2em"> <%= if note.idx > -1 do note.idx end %> </td>
 
-      <td style="width-35%"> <%= link note.title, to: note_path(@conn, :show, note, index: note.index,
+      <td style="width:30%"> <%= link note.title, to: note_path(@conn, :show, note, index: note.index,
          id_string: @id_string), class: "" %> </td>
 
       <td class="hidden-xs" style="max-width:2em"> <%= LookupPhoenix.Utility.xForTrue(note.public) %> </td>
-      <td class="hidden-xs small" style="max-width:6em"> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td>
+      <!-- <td class="hidden-xs small" style="max-width:6em"> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td> -->
 
-      <td style="max-width:300px"  class="hidden-xs"><%= raw(MU.RenderText.format_for_index(note.content)) %></td>
+      <td style="width:50%"  class="hidden-xs"><%= raw(MU.RenderText.format_for_index(note.content)) %></td>
 
       <td class="text-right hidden-xs" style="max-width:4em">
           <%= link "Edit", to: note_path(@conn, :edit, note, index: note.index, id_string: @id_string), class: "btn btn-default btn-xs" %>
