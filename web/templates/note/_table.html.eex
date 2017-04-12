@@ -1,4 +1,4 @@
-<div style="overflow: scroll; height:400px;" id="table_div">
+<div style="overflow: scroll; height:400px; clear:both" id="table_div" >
 <table class="table">
   <thead>
     <tr>
