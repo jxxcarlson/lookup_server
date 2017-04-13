@@ -49,6 +49,28 @@ defmodule MU.CSS do
 
     }
 
+    table.equation  {
+
+      width:100%;
+      border:0;
+      border: none;
+
+    }
+
+    tr.equation  {
+
+       border:0;
+       border: none;
+
+    }
+
+    td.equation  {
+
+        border:0;
+        border: none;
+}
+
+
     /* Quote */
 
     .quote {

@@ -46,9 +46,10 @@ defmodule MU.Block do
 """
   def transform(text) do
     # text = String.trim(text)
-    text = String.replace(text, "\r\n", "\n") # normalizze
-    Regex.scan(block_regex, text)
-    |> Enum.reduce(text, fn(triple, text) ->
+    text = String.replace(text, "\r\n", "\n") # normalize
+    data = %{text: text, equation_counter: 0}
+    data2 = Regex.scan(block_regex, text)
+    |> Enum.reduce(data, fn(triple, data) ->
     
        [target, block_meta, block_contents] = triple;
        [type | args]= split_at(block_meta, ",")
@@ -62,13 +63,14 @@ defmodule MU.Block do
        end
 
        params = %{type: type, species: species, label: label, target: target,
-         text: text, args: args, contents: block_contents
+         args: args, contents: block_contents
          }
        # Utility.report("BLOCK PARAMS",  params)
-       transform_block(String.to_atom(type), params) end)
+       transform_block(String.to_atom(type), data, params) end)
+     data2.text
   end
 
-  defp transform_block(:quote, params) do
+  defp transform_block(:quote, data, params) do
     cond do
       params.args == [] ->
         replacement = "<div class='quote'>\n#{params.contents}\n</div>"
@@ -76,10 +78,11 @@ defmodule MU.Block do
         attribution = hd params.args
         replacement = "<div class='quote'>\n#{params.contents}\n\n-- #{attribution}</div>"
     end
-    String.replace(params.text, params.target,replacement)
+    text = String.replace(data.text, params.target,replacement)
+    %{text: text, equation_counter: data.equation_counter}
   end
 
-  defp transform_block(:display, params) do
+  defp transform_block(:display, data, params) do
     cond do
       params.args == [] ->
         replacement = "<div class='display'>\n#{params.contents}</div>"
@@ -87,15 +90,17 @@ defmodule MU.Block do
         title = hd params.args
         replacement = "<div class='display'><strong>#{title}</strong>\n#{params.contents}</div>"
     end
-    String.replace(params.text, params.target,replacement)
+    text = String.replace(data.text, params.target, replacement)
+    %{text: text, equation_counter: data.equation_counter}
   end
 
-  defp transform_block(:blurb, params) do
+  defp transform_block(:blurb, data, params) do
     replacement =  params.contents
     title = String.capitalize(params.type)
     replacement = params.contents
     replacement = "<div class='blurb'><span style=\"font-style:italic\">#{params.contents}</span></div>"
-    String.replace(params.text, params.target,replacement)
+    text = String.replace(data.text, params.target,replacement)
+    %{text: text, equation_counter: data.equation_counter}
   end
 
   defp random_string(length) do
@@ -103,7 +108,7 @@ defmodule MU.Block do
   end
 
 
-  defp transform_block(:click, params) do
+  defp transform_block(:click, data, params) do
     identifier = random_string(4)
     cond do
       params.args == [] ->
@@ -112,19 +117,20 @@ defmodule MU.Block do
          title = hd params.args
          replacement = "<span><span id=\"QQ.#{identifier}\" class=\"answer_head\">#{title}</span> <span id=\"QQ.#{identifier}.A\" class=\"hide_answer\">#{params.contents}</span></span>"
     end
-    String.replace(params.text, params.target,replacement)
+    text = String.replace(data.text, params.target,replacement)
+    %{text: text, equation_counter: data.equation_counter}
   end
 
-  defp transform_block(:env, params) do
+  defp transform_block(:env, data, params) do
     cond do
       params.species != nil ->
-        transform_env_block(String.to_atom(params.species), params)
+        transform_env_block(String.to_atom(params.species), data, params)
       true ->
-        transform_open_env_block(params)
+        transform_open_env_block(data, params)
     end
   end
 
-  defp transform_env_block(:equationalign, params) do
+  defp transform_env_block(:equationalign, data, params) do
     replacement = "<div class='env'>\n\\[\n\\begin\{split\}\n#{params.contents}\n\\end\{split\}\n\\]\n</div>"
     """
      <div class="env">
@@ -133,7 +139,8 @@ defmodule MU.Block do
            </div>
      </div>
     """
-    String.replace(params.text, params.target, replacement)
+    text = String.replace(data.text, params.target, replacement)
+    %{text: text, equation_counter: data.equation_counter}
   end
 
   @doc """
@@ -167,13 +174,16 @@ defmodule MU.Block do
   \]
 
   """
-  defp transform_env_block(:equation, params) do
+  defp transform_env_block(:equation, data, params) do
     Utility.report("EQUATION BLOCK", %{label: params.label})
     if params.label == nil do
+      count = data.equation_counter
       replacement = "<div class='env'>\n\\[\n\\begin\{equation\}\n#{params.contents}\n\\end\{equation\}\n\\]\n</div>"
     else
+      count = data.equation_counter + 1
+      IO.puts "EQUATION COUNT = #{count}"
       # replacement = "<div class='env'>\n\\[\n\\begin\{equation\}\n\\label\{#{params.label}\}\n#{params.contents}\n\\end\{equation\}\n\\]\n</div>"
-      replacement = "<div class='env'>\n\\[\n\\begin\{equation\}\n#{params.contents}\n\\end\{equation\}\n\\]\n</div>"
+      replacement = "<table  class=\"equation\" ><tr><td class=\"equation\" style=\"width:90%;\">\n\\[#{params.contents}\n\\]\n</td><td class=\"equation\"  style=\"width:10%;\">(#{count})</td></tr></table>"
     end
     """
      <div class="env">
@@ -182,7 +192,8 @@ defmodule MU.Block do
            </div>
      </div>
     """
-    String.replace(params.text, params.target, replacement)
+    text = String.replace(data.text, params.target, replacement)
+    %{text: text, equation_counter: count}
   end
 
   @doc """
@@ -205,7 +216,7 @@ defmodule MU.Block do
 
   Notice that blank lines are stripped out
   """
-  defp transform_env_block(:texmacro, params) do
+  defp transform_env_block(:texmacro, data, params) do
 
     contents = String.split(params.contents, ["\n", "\r", "\r\n"])
       |> Enum.filter(fn(line) -> line != "" end)
@@ -219,10 +230,12 @@ defmodule MU.Block do
            </div>
      </div>
     """
-    String.replace(params.text, params.target, replacement)
+     text = String.replace(data.text, params.target,replacement)
+    %{text: text, equation_counter: data.equation_counter}
+
   end
 
-  defp transform_env_block(_, params) do
+  defp transform_env_block(_, data, params) do
     replacement = """
     <div class="env"><strong>#{String.capitalize(params.species)}</strong>
       <div class="env_body">
@@ -230,22 +243,24 @@ defmodule MU.Block do
       </div>
     </div>
     """
-    String.replace(params.text, params.target, replacement)
+    text = String.replace(data.text, params.target, replacement)
   end
 
-  defp transform_open_env_block(params) do
+  defp transform_open_env_block(data, params) do
     replacement = "<div class='env'>\n#{params.contents}</div>"
-    String.replace(params.text, params.target, replacement)
+    text = String.replace(data.text, params.target, replacement)
+    %{text: text, equation_counter: data.equation_counter}
   end
 
 
  # Default if the block type is not recognized
-  defp transform_block(_, params) do
+  defp transform_block(_, data, params) do
     replacement =  params.contents
     title = String.capitalize(params.type)
     replacement = "<div class='open_block'><strong>#{title}</strong>\n<p>#{params.contents}</p></div>"
 
-    String.replace(params.text, params.target,replacement)
+    text = String.replace(data.text, params.target,replacement)
+    %{text: text, equation_counter: data.equation_counter}
   end
 
   @doc """
