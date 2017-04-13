@@ -30,13 +30,7 @@ defmodule MU.RenderText do
         "toc" -> TOC.process(text, options)
         _ -> format_markup(text, options)
       end
-      end_time = Timex.now
-      elapsed_time = Timex.diff(end_time, begin_time, :microseconds)
-      text_length = String.length(text)
-      microsecond_rate = 1000.0*elapsed_time/text_length
-      millisecond_rate = microsecond_rate/1000
-      IO.puts "MU.transform, elapsed time = #{Float.round(elapsed_time/1000.0, 1)} ms, (#{elapsed_time} µs) for #{String.length(text)} characters"
-      IO.puts "MU.transform, rate = #{Float.round(millisecond_rate, 3)} ms, (#{Float.round(microsecond_rate, 0)} µs) per 1000 characters"
+      Utility.benchmark(begin_time, text, "0. MU.transform")
       result
     end
 
@@ -95,7 +89,8 @@ defmodule MU.RenderText do
 
 
     defp linkify(text, options) do
-      text
+      begin_time = Timex.now
+      result = text
       |> Link.makeYouTubePlayer(options)
       |> Link.makeAudioPlayer
       |> Link.makeImageLinks(options)
@@ -104,6 +99,8 @@ defmodule MU.RenderText do
       |> Link.formatHyperlink
       |> Link.makePDFLinks(options)
       |> Link.siteLink
+      Utility.benchmark(begin_time, text, "2. MU.linkify")
+      result
     end
 
     defp apply_markdown(text) do
@@ -111,16 +108,10 @@ defmodule MU.RenderText do
       |> Table.format
       |> Block.formatCode
       |> Block.formatVerbatim
-      |> Inline.formatInlineCode
-      |> Inline.formatBold
-      |> Inline.formatItalic
+      |> Inline.transform
       |> Scholar.indexWord
-      |> Inline.formatMDash
-      |> Inline.formatNDash
-      |> Inline.formatRed
       |> List.formatItems
       |> Scholar.formatAnswer
-      |> Inline.highlight
       |> Link.formatXREF
     end
 

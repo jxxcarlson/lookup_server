@@ -15,6 +15,17 @@ defmodule LookupPhoenix.Utility do
     object
   end
 
+  def benchmark(begin_time, text, message) do
+       end_time = Timex.now
+       elapsed_time = Timex.diff(end_time, begin_time, :microseconds)
+       text_length = String.length(text)
+       microsecond_rate = 1000.0*elapsed_time/text_length
+       millisecond_rate = microsecond_rate/1000
+       IO.puts "#{message}, elapsed time = #{Float.round(elapsed_time/1000.0, 1)} ms, (#{elapsed_time} µs) for #{String.length(text)} characters"
+       IO.puts "#{message}, rate = #{Float.round(millisecond_rate, 3)} ms, (#{Float.round(microsecond_rate, 0)} µs) per 1000 characters"
+
+  end
+
   def firstWord(str) do
     String.split(str) |> List.first
   end

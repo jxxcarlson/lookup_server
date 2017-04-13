@@ -1,5 +1,21 @@
 defmodule MU.Inline do
 
+   alias LookupPhoenix.Utility
+
+   def transform(text) do
+     begin_time = Timex.now
+     result = text
+      |> formatInlineCode
+      |> formatBold
+      |> formatItalic
+      |> formatMDash
+      |> formatNDash
+      |> formatRed
+      |> highlight
+      Utility.benchmark(begin_time, text, "1. MU.Inline")
+      result
+   end
+
    def formatNDash(text) do
       # \s(--)\s
       Regex.replace(~r/\s(--) /, text, " &ndash; ")

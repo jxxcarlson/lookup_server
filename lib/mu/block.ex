@@ -67,13 +67,7 @@ defmodule MU.Block do
          args: args, contents: block_contents
          }
        transform_block(String.to_atom(type), data, params) end)
-     end_time = Timex.now
-     elapsed_time = Timex.diff(end_time, begin_time, :microseconds)
-     text_length = String.length(text)
-     microsecond_rate = 1000.0*elapsed_time/text_length
-     millisecond_rate = microsecond_rate/1000
-     IO.puts "MU.Block.transform, elapsed time = #{Float.round(elapsed_time/1000.0, 1)} ms, (#{elapsed_time} µs) for #{String.length(text)} characters"
-     IO.puts "MU.Block.transform, rate = #{Float.round(millisecond_rate, 3)} ms, (#{Float.round(microsecond_rate, 0)} µs) per 1000 characters"
+      Utility.benchmark(begin_time, text, "3. MU.Block")
      data2.text
   end
 
