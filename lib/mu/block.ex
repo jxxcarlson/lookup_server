@@ -46,6 +46,7 @@ defmodule MU.Block do
 """
   def transform(text) do
     # text = String.trim(text)
+    begin_time = Timex.now
     text = String.replace(text, "\r\n", "\n") # normalize
     data = %{text: text, equation_counter: 0}
     data2 = Regex.scan(block_regex, text)
@@ -65,8 +66,14 @@ defmodule MU.Block do
        params = %{type: type, species: species, label: label, target: target,
          args: args, contents: block_contents
          }
-       # Utility.report("BLOCK PARAMS",  params)
        transform_block(String.to_atom(type), data, params) end)
+     end_time = Timex.now
+     elapsed_time = Timex.diff(end_time, begin_time, :microseconds)
+     text_length = String.length(text)
+     microsecond_rate = 1000.0*elapsed_time/text_length
+     millisecond_rate = microsecond_rate/1000
+     IO.puts "MU.Block.transform, elapsed time = #{Float.round(elapsed_time/1000.0, 1)} ms, (#{elapsed_time} µs) for #{String.length(text)} characters"
+     IO.puts "MU.Block.transform, rate = #{Float.round(millisecond_rate, 3)} ms, (#{Float.round(microsecond_rate, 0)} µs) per 1000 characters"
      data2.text
   end
 
@@ -175,14 +182,12 @@ defmodule MU.Block do
 
   """
   defp transform_env_block(:equation, data, params) do
-    Utility.report("EQUATION BLOCK", %{label: params.label})
+    begin_time = Timex.now
     if params.label == nil do
       count = data.equation_counter
       replacement = "<div class='env'>\n\\[\n\\begin\{equation\}\n#{params.contents}\n\\end\{equation\}\n\\]\n</div>"
     else
       count = data.equation_counter + 1
-      IO.puts "EQUATION COUNT = #{count}"
-      # replacement = "<div class='env'>\n\\[\n\\begin\{equation\}\n\\label\{#{params.label}\}\n#{params.contents}\n\\end\{equation\}\n\\]\n</div>"
       replacement = "<table  class=\"equation\" ><tr><td class=\"equation\" style=\"width:90%;\">\n\\[#{params.contents}\n\\]\n</td><td class=\"equation\"  style=\"width:10%;\">(#{count})</td></tr></table>"
     end
     """
