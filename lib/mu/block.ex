@@ -80,7 +80,7 @@ defmodule MU.Block do
         replacement = "<div class='quote'>\n#{params.contents}\n\n-- #{attribution}</div>"
     end
     text = String.replace(data.text, params.target,replacement)
-    %{text: text, equation_counter: data.equation_counter}
+    %{ data | :text => text }
   end
 
   defp transform_block(:display, data, params) do
@@ -92,7 +92,7 @@ defmodule MU.Block do
         replacement = "<div class='display'><strong>#{title}</strong>\n#{params.contents}</div>"
     end
     text = String.replace(data.text, params.target, replacement)
-    %{text: text, equation_counter: data.equation_counter}
+    %{ data | :text => text }
   end
 
   defp transform_block(:blurb, data, params) do
@@ -101,7 +101,7 @@ defmodule MU.Block do
     replacement = params.contents
     replacement = "<div class='blurb'><span style=\"font-style:italic\">#{params.contents}</span></div>"
     text = String.replace(data.text, params.target,replacement)
-    %{text: text, equation_counter: data.equation_counter}
+    %{ data | :text => text }
   end
 
   defp random_string(length) do
@@ -119,7 +119,7 @@ defmodule MU.Block do
          replacement = "<span><span id=\"QQ.#{identifier}\" class=\"answer_head\">#{title}</span> <span id=\"QQ.#{identifier}.A\" class=\"hide_answer\">#{params.contents}</span></span>"
     end
     text = String.replace(data.text, params.target,replacement)
-    %{text: text, equation_counter: data.equation_counter}
+    %{ data | :text => text }
   end
 
   defp transform_block(:env, data, params) do
@@ -141,7 +141,7 @@ defmodule MU.Block do
      </div>
     """
     text = String.replace(data.text, params.target, replacement)
-    %{text: text, equation_counter: data.equation_counter}
+    %{ data | :text => text }
   end
 
   @doc """
@@ -192,7 +192,7 @@ defmodule MU.Block do
      </div>
     """
     text = String.replace(data.text, params.target, replacement)
-    %{text: text, equation_counter: count}
+    %{ data | :text => text, :equation_counter => count }
   end
 
   @doc """
@@ -230,8 +230,7 @@ defmodule MU.Block do
      </div>
     """
      text = String.replace(data.text, params.target,replacement)
-    %{text: text, equation_counter: data.equation_counter}
-
+    %{ data | :text => text }
   end
 
   defp transform_env_block(_, data, params) do
@@ -248,7 +247,7 @@ defmodule MU.Block do
   defp transform_open_env_block(data, params) do
     replacement = "<div class='env'>\n#{params.contents}</div>"
     text = String.replace(data.text, params.target, replacement)
-    %{text: text, equation_counter: data.equation_counter}
+    %{ data | :text => text }
   end
 
 
@@ -259,7 +258,7 @@ defmodule MU.Block do
     replacement = "<div class='open_block'><strong>#{title}</strong>\n<p>#{params.contents}</p></div>"
 
     text = String.replace(data.text, params.target,replacement)
-    %{text: text, equation_counter: data.equation_counter}
+    %{ data | :text => text }
   end
 
   @doc """
