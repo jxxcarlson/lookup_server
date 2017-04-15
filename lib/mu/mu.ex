@@ -99,7 +99,7 @@ defmodule MU.RenderText do
       |> Link.formatHyperlink
       |> Link.makePDFLinks(options)
       |> Link.siteLink
-      Utility.benchmark(begin_time, text, "2. MU.linkify")
+      # Utility.benchmark(begin_time, text, "2. MU.linkify")
       result
     end
 

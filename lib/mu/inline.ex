@@ -3,7 +3,7 @@ defmodule MU.Inline do
    alias LookupPhoenix.Utility
 
    def transform(text) do
-     begin_time = Timex.now
+     # begin_time = Timex.now
      result = text
       |> formatInlineCode
       |> formatBold
@@ -12,7 +12,7 @@ defmodule MU.Inline do
       |> formatNDash
       |> formatRed
       |> highlight
-      Utility.benchmark(begin_time, text, "1. MU.Inline")
+      # Utility.benchmark(begin_time, text, "1. MU.Inline")
       result
    end
 

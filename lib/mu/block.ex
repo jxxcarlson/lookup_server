@@ -45,8 +45,7 @@ defmodule MU.Block do
 
 """
   def transform(text) do
-    # text = String.trim(text)
-    begin_time = Timex.now
+    # begin_time = Timex.now
     text = String.replace(text, "\r\n", "\n") # normalize
     data = %{text: text, equation_counter: 0}
     data2 = Regex.scan(block_regex, text)
@@ -67,7 +66,7 @@ defmodule MU.Block do
          args: args, contents: block_contents
          }
        transform_block(String.to_atom(type), data, params) end)
-      Utility.benchmark(begin_time, text, "3. MU.Block")
+      # Utility.benchmark(begin_time, text, "3. MU.Block")
      data2.text
   end
 
@@ -176,7 +175,6 @@ defmodule MU.Block do
 
   """
   defp transform_env_block(:equation, data, params) do
-    begin_time = Timex.now
     if params.label == nil do
       count = data.equation_counter
       replacement = "<div class='env'>\n\\[\n\\begin\{equation\}\n#{params.contents}\n\\end\{equation\}\n\\]\n</div>"
