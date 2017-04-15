@@ -37,7 +37,7 @@ defmodule MU.Link do
     def makeFormattedImageLinks(text, options) do
        case options[:mode] do
          "index" ->
-           Regex.replace(image_regex_formatted(), " "<>text<>" ", " <img src=\"\\1\" width=\"120px\" height=\"120px\" > ")
+           Regex.replace(image_regex_formatted(), " "<>text<>" ", " <img src=\"\\1\" height=\"120px\" > ")
          "show" ->
            Regex.replace(image_regex_formatted(), " "<>text<>" ", " <img src=\"\\1\" style=\"\\5\" > ")
          #_ ->

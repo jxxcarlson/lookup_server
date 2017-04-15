@@ -20,6 +20,7 @@ defmodule MU.LiveNotebook do
   end
 
   def process(entry) do
+    # IO.puts "process :: " <> IO.inspect(entry)
     [text, tags] = entry
     headings = tags |> Enum.filter(fn(tag) -> Regex.match?(~r/^heading/, tag) end)
     cond do
@@ -27,7 +28,7 @@ defmodule MU.LiveNotebook do
       true ->
         heading = hd(headings)
         [_, title] = String.split(heading, ":")
-        IO.puts "headning above #{text} = #{title}"
+        IO.puts "heading above #{text} = #{title}"
         ["title, #{title}", text]
     end
   end
