@@ -262,14 +262,23 @@ defmodule MU.Block do
   end
 
   @doc """
-  head_excerpt(text, N) return the
+  head_excerpt(text, N):
+    1. If the text begins with a hyperlink, return it.
+    2. Otherwise, return the
   first N words of text.
   """
   def head_excerpt(text, n_words) do
-      text
-      |> String.split(" ")
-      |> Enum.slice(0..(n_words-1))
-      |> Enum.join(" ")
+      items = text
+      |> String.split([" ", "\r\n", "\r", "\n"])
+      |> Enum.map(fn(item) -> String.strip(item) end )
+      |> Enum.filter(fn(item) -> item != "" end)
+      if Regex.match?(~r/http/, hd(items)) do
+        hd(items)
+      else
+        items
+        |> Enum.slice(0..(n_words-1))
+        |> Enum.join(" ")
+      end
   end
 
   @doc """
