@@ -26,6 +26,10 @@ defmodule MU.Regex do
     ~r/(http|https):\/\/(.*(mp3|wav))/i
   end
 
+  def code_regex do
+    ~r/\[code\][\r\n]--[\r\n](.*)[\r\n]--[\r\n]/msr
+  end
+
   def hyperlink_bare_regex do
     ~r/\s((http|https):\/\/([a-zA-Z0-9\.\-_%-']*)([\/?=#]\S*|))\s/
   end

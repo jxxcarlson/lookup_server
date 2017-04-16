@@ -15,10 +15,19 @@ fee
 fie
 fo
 """
+expected_output = %{equation_counter: 0, text: "la di dah\n<div class='quote'>\nThis is\na test\n\n-- </div>\nfee\nfie\nfo\n"}
   output = Block.transform(text1)
-  assert output == "la di dah\n<div class='quote'>\nThis is\na test\n</div>\nfee\nfie\nfo\n"
+  assert output == expected_output
 
   end
+
+   test "formatCode" do
+
+      text = "yada yada\n[code]\n--\na == b\n--\n"
+      result = Block.formatCode(text)
+      assert result == "yada yada\n<pre><code>\na == b\n</code></pre>"
+
+    end
 
 
 end

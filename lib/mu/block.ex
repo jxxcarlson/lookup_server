@@ -65,9 +65,10 @@ defmodule MU.Block do
        params = %{type: type, species: species, label: label, target: target,
          args: args, contents: block_contents
          }
-       transform_block(String.to_atom(type), data, params) end)
+       transform_block(String.to_atom(type), data, params)
+     end)
       # Utility.benchmark(begin_time, text, "3. MU.Block")
-     data2.text
+      data.text
   end
 
   defp transform_block(:quote, data, params) do
@@ -240,6 +241,8 @@ defmodule MU.Block do
     </div>
     """
     text = String.replace(data.text, params.target, replacement)
+    out = %{ data | :text => text }
+    out
   end
 
   defp transform_open_env_block(data, params) do
@@ -307,7 +310,7 @@ defmodule MU.Block do
     end
 
   def formatCode(text) do
-    out = Regex.replace(~r/\[code\][\r\n]--[\r\n](.*)[\r\n]--[\r\n]/msU, text, "<pre><code>\\n#\\1\\n</code></pre>")
+    Regex.replace(code_regex(), text, "<pre><code>\n\\1\n</code></pre>")
   end
 
   def formatVerbatim(text) do
