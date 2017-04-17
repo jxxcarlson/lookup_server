@@ -194,9 +194,14 @@ defmodule LookupPhoenix.NoteController do
         current_notebook_id = AppState.get(:user, current_user.id, :current_notebook)
         current_note_id = AppState.get(:user, current_user.id, :current_note)
         notebook_url  = "/show2/#{current_notebook_id}/#{current_note_id}/#{current_notebook_id}>#{current_note_id}"
+        if note.parent_id != nil do
+          notebook_link = "<p style=\"float:left\"><a href=\"#{notebook_url}\"> Notebook</a></p>"
+        else
+          notebook_link = ""
+        end
 
         params = Map.merge(params1, %{nav: navigation_data})
-        params = Map.merge(params, %{notebook_url: notebook_url })
+        params = Map.merge(params, %{notebook_link: notebook_link })
         render(conn, "edit.html", params)
 
   end

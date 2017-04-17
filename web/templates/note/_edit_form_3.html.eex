@@ -59,7 +59,7 @@ input[type=checkbox]
     </div>
   <% end %>
 
- <p style="float:left"><a href=<%= @notebook_url %>> Notebook</a></p>
+  <%= raw(@notebook_link) %>
 
   <div class="form-group">
       <span id="yada" style="float:right;  margin-right:36px; padding-left:8p; padding-right:8px; color: cornflowerblue;">Update</span>
