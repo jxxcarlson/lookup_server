@@ -188,13 +188,20 @@ foo, bar
       assert output == expected_output
    end
 
-   test "quote" do
-       input = "\r\n[quote]\r\n--\r\nHo ho ho--\r\n--\r\n"
+   test "blurb" do
+       input = "yada yada\n[blurb]\n--\nho ho ho\n--\nuuu"
        output = Block.transform(input) |> String.trim
-       expected_output = "<div class='quote'>\Ho ho ho\n</div>"
+       expected_output = "<div class='blurb'><span style=\"font-style:italic\">\nho ho ho\n</span></div>"
        assert output == expected_output
 
    end
 
+   test "blurb2" do
+       input = "yada yada\n[blurb]\n--\nho ho ho\n--\nuuu"
+       output = Block.transform(input) |> String.trim
+       expected_output = "yada yada\n<div class='blurb'><span style=\"font-style:italic\">ho ho ho</span></div>\nuuu"
+       assert output == expected_output
+
+   end
 
  end

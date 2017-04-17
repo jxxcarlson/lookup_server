@@ -65,10 +65,11 @@ defmodule MU.Block do
        params = %{type: type, species: species, label: label, target: target,
          args: args, contents: block_contents
          }
+
        transform_block(String.to_atom(type), data, params)
      end)
       # Utility.benchmark(begin_time, text, "3. MU.Block")
-      data.text
+     data2.text
   end
 
   defp transform_block(:quote, data, params) do
@@ -96,9 +97,7 @@ defmodule MU.Block do
   end
 
   defp transform_block(:blurb, data, params) do
-    replacement =  params.contents
     title = String.capitalize(params.type)
-    replacement = params.contents
     replacement = "<div class='blurb'><span style=\"font-style:italic\">#{params.contents}</span></div>"
     text = String.replace(data.text, params.target,replacement)
     %{ data | :text => text }
