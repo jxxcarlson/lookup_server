@@ -47,7 +47,9 @@ defmodule MU.Block do
   def transform(text) do
     # begin_time = Timex.now
     text = String.replace(text, "\r\n", "\n") # normalize
-    data = %{text: text, equation_counter: 0}
+    # eqno_map is a map from labels to equation number, e.g.,
+    # %{ "pythag"" => 1, "fourier" => 2 }
+    data = %{text: text, equation_counter: 0, eqno_map: %{}}
     data2 = Regex.scan(block_regex, text)
     |> Enum.reduce(data, fn(triple, data) ->
     
@@ -69,7 +71,24 @@ defmodule MU.Block do
        transform_block(String.to_atom(type), data, params)
      end)
       # Utility.benchmark(begin_time, text, "3. MU.Block")
-     data2.text
+      Utility.report("EQNO MAP", data2.eqno_map)
+      resolve_references(data2.text, data2.eqno_map)
+  end
+
+  def resolve_reference(ref, text, reference_map) do
+    [target, ref_id] = ref
+    Utility.report("ref unpacked", [target, ref_id])
+    Utility.report("reference_map in resolve ...", reference_map)
+    IO.puts "resolve ref ||#{ref}|| to #{reference_map[ref]}"
+    # :SELF is a route that will be filled in by the controller presenting this text:
+    String.replace(text, target, "<span><a href=\"/:SELF\##{ref_id}\">(#{reference_map[ref_id]})</a></span>")
+  end
+
+  def resolve_references(text, reference_map) do
+    # Produce a list of references, where one reference is
+    # of the form [reference_text, label]
+    Regex.scan(reference_regex, text)
+    |> Enum.reduce(text, fn(ref, text) -> resolve_reference(ref, text, reference_map) end)
   end
 
   defp transform_block(:quote, data, params) do
@@ -178,19 +197,18 @@ defmodule MU.Block do
     if params.label == nil do
       count = data.equation_counter
       replacement = "<div class='env'>\n\\[\n\\begin\{equation\}\n#{params.contents}\n\\end\{equation\}\n\\]\n</div>"
+      text = String.replace(data.text, params.target, replacement)
+      %{ data | :text => text }
     else
       count = data.equation_counter + 1
-      replacement = "<table  class=\"equation\" ><tr><td class=\"equation\" style=\"width:90%;\">\n\\[#{params.contents}\n\\]\n</td><td class=\"equation\"  style=\"width:10%;\">(#{count})</td></tr></table>"
+      replacement = "<table  class=\"equation\" ><tr><td class=\"equation\" style=\"width:90%;\">\n\\[#{params.contents}\n\\]\n</td><td class=\"equation\"  style=\"width:10%;\"><a name=\"#{params.label}\">(#{count})</a></td></tr></table>"
+      eqno_map = data[:eqno_map]
+      eqno_map = Map.merge(eqno_map, %{params.label => count} )
+      text = String.replace(data.text, params.target, replacement)
+      %{ data | :text => text, :equation_counter => count, :eqno_map => eqno_map }
     end
-    """
-     <div class="env">
-           <div>
-             #{params.contents}
-           </div>
-     </div>
-    """
-    text = String.replace(data.text, params.target, replacement)
-    %{ data | :text => text, :equation_counter => count }
+
+
   end
 
   @doc """

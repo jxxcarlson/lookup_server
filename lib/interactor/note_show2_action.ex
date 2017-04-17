@@ -13,6 +13,8 @@ defmodule LookupPhoenix.NoteShow2Action do
 
   def call(conn,%{"id" => id, "id2" => id2, "toc_history" => toc_history}) do
 
+      th = toc_history
+      IO.puts "!!!! TOC_HISTORY = #{toc_history}"
       qsMap = Utility.qs2map(conn.query_string)
       note = Note.get(id); id = note.id
       note2 = Note.get(id2); id2 = note2.id
@@ -43,6 +45,7 @@ defmodule LookupPhoenix.NoteShow2Action do
       rendered_text2 = String.trim(RenderText.transform(content2, options2))
       rendered_text2 = "<h1 id=\"active_note:#{note2.id}\">#{note2.title}</h1>\n\n" <> rendered_text2
       rendered_text2 = "<h4><a href=\"/notes/#{note.id}\">#{note.title}</a></h4>\n\n" <> rendered_text2
+      rendered_text2 = String.replace(rendered_text2, ":SELF", "show2/#{id}/#{id2}/#{th}")
 
 
       inserted_at= Note.inserted_at_short(note)

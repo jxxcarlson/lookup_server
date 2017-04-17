@@ -50,6 +50,10 @@ defmodule MU.Regex do
     ~r/display::((http|https):(.*(pdf)))\s/U
   end
 
+  def reference_regex do
+    ~r/eqno:\[(.*)\]/
+  end
+
   def site_link_regex do
     ~r/site:(.*)\[(.*)\]/U
   end
