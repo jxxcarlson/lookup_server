@@ -24,7 +24,7 @@ defmodule LookupPhoenix.AppState do
   end
 
   def get(:user, id) do
-    get("user.#{id}")
+    get("user.#{id}") || initial_record()
   end
 
   def get(:user, id, key) do
@@ -41,11 +41,10 @@ defmodule LookupPhoenix.AppState do
   ## Existing API
 
   def memorize_notes(note_list, user_id) do
-    note_list
-    |> Enum.map(fn(note) -> note.id end)
+    id_list = note_list |> Enum.map(fn(note) -> note.id end)
     # |> memorize_list(user_id)
-    update(:user, user_id, :search_history, note_list)
-    note_list
+    update(:user, user_id, :search_history, id_list)
+    id_list
   end
 
   def memorize_list(id_list, user_id) do

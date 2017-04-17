@@ -11,11 +11,18 @@ defmodule LookupPhoenix.NoteCreateAction do
   alias LookupPhoenix.Utility
 
   def call(conn, note_params) do
-     changeset = setup(conn, note_params)
+     [changeset, notebook] = setup(conn, note_params)
      case Repo.insert(changeset) do
         {:ok, note} ->
           [note.id] ++ AppState.recall_list(conn.assigns.current_user.id)
           |> AppState.memorize_list(conn.assigns.current_user.id)
+          if notebook != nil do
+             # add the note being created to the current notebook:
+             content = notebook.content <> "\n" <> "#{note.id}, #{note.title}\n"
+             notebook_changeset = Note.changeset(notebook, %{content: content})
+             Repo.update(notebook_changeset)
+          end
+          IO.puts "ABOUT TO EXIT NOTE CREATE ACTION . CALL"
           {:ok, conn, note }
         {:error, changeset} ->
           {:error, changeset: changeset}
@@ -41,6 +48,16 @@ defmodule LookupPhoenix.NoteCreateAction do
       [access, channel_name, user_id] = User.decode_channel(conn.assigns.current_user)
       [tag_string, tags] = get_tags(note_params, channel_name)
       parent_id =  get_parent_id(conn.assigns.current_user.channel, tags)
+      if note_params[:current_notebook]  != nil do
+        parent_id = note_params[:current_notebook]
+        notebook = Note.get(parent_id)
+        parent_tag = "parent:#{conn.assigns.current_user.username}.#{notebook.identifier}"
+        tag_string = "#{tag_string}, #{parent_tag}"
+        tags = tags ++ [parent_tag]
+        IO.puts "Setting parent ID to that of current_notebook (#{parent_id})"
+      else
+        notebook = nil
+      end
 
       content = note_params["content"] || " "
       title = note_params["title"] || "Untitled"
@@ -64,7 +81,7 @@ defmodule LookupPhoenix.NoteCreateAction do
          "user_id" => conn.assigns.current_user.id, "viewed_at" => Timex.now, "edited_at" => Timex.now,
          "tag_string" => tag_string, "tags" => tags, "public" => false, "identifier" => identifier,
          "parent_id" => parent_id}
-      Note.changeset(%Note{}, new_params)
+      [Note.changeset(%Note{}, new_params), notebook]
   end
 
   defp get_tags(note_params, channel_name) do

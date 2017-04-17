@@ -72,9 +72,11 @@ defmodule LookupPhoenix.NoteController do
     if (conn.assigns.current_user.read_only == true) do
          read_only_message(conn)
     else
+      note_params = Map.merge(note_params, AppState.get(:user, conn.assigns.current_user.id))
       result = NoteCreateAction.call(conn, note_params)
       case result do
         {:ok, conn, note} ->
+          AppState.update(:user, conn.assigns.current_user.id, :current_note, note.id)
           conn
           |> put_flash(:info, "Note created successfully: #{note.id}")
           |> redirect(to: note_path(conn, :index, active_notes: [note.id], random: "no"))
@@ -121,7 +123,11 @@ defmodule LookupPhoenix.NoteController do
   def show(conn, %{"id" => id}) do
 
     IO.puts "THIS IS NOTECONTROLLER . SHOW, ID = #{id}"
-    username = conn.assigns.current_user.username
+    current_user = conn.assigns.current_user
+    username = current_user.username
+
+    AppState.update(:user, current_user.id, :current_note, id)
+
     query_string = conn.query_string
 
     query_string = conn.query_string
@@ -144,6 +150,11 @@ defmodule LookupPhoenix.NoteController do
 
 
   def show2(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history}) do
+
+    current_user = conn.assigns.current_user
+    AppState.update(:user, current_user.id, :current_notebook, id)
+    AppState.update(:user, current_user.id, :current_note, id2)
+
     params = NoteShow2Action.call(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history})
     render(conn, "show2.html", params)
   end
@@ -228,6 +239,7 @@ defmodule LookupPhoenix.NoteController do
   def delete(conn, %{"id" => id}) do
 
     user = conn.assigns.current_user
+    AppState.update(:user, user.id, :current_note, nil)
 
     note = Repo.get!(Note, id)
     if (user.read_only == true) or (user.id != note.user_id) do
