@@ -2,6 +2,7 @@ defmodule RenderTextTest do
   use LookupPhoenix.ModelCase
 
   alias MU.RenderText
+  alias MU.Block
 
   test "smartLinks parses example 1" do
      argument = "https://stripe.com"
@@ -178,6 +179,21 @@ foo, bar
    clean_expected_utput = Regex.replace(~r/\s/, expected_output, "")
 
     assert  clean_output == clean_expected_utput
+   end
+
+   test "env equation" do
+      input = "[env.equation]\n--\na^2 = b^2\n--\n"
+      output = RenderText.transform(input) |> String.trim
+      expected_output = ""
+      assert output == expected_output
+   end
+
+   test "quote" do
+       input = "\r\n[quote]\r\n--\r\nHo ho ho--\r\n--\r\n"
+       output = Block.transform(input) |> String.trim
+       expected_output = "<div class='quote'>\Ho ho ho\n</div>"
+       assert output == expected_output
+
    end
 
 

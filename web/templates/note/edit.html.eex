@@ -83,7 +83,8 @@
        action: note_path(@conn, :update, @note),locked: @locked,
        word_count: @word_count, conn: @conn, index: @nav.index,
        id_string: @nav.id_string, note: @note, rendered_text: @rendered_text,
-       current_user_name: @conn.assigns.current_user.username
+       current_user_name: @conn.assigns.current_user.username,
+       notebook_url: @notebook_url
   %>
 
 </div>

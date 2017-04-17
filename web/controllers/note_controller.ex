@@ -173,8 +173,8 @@ defmodule LookupPhoenix.NoteController do
 
 
   def edit(conn, %{"id" => id}) do
-
-        current_user_name = conn.assigns.current_user.username
+        current_user = conn.assigns.current_user
+        current_user_name = current_user.username
 
         note = Repo.get!(Note, id)
         changeset = Note.changeset(note)
@@ -190,7 +190,13 @@ defmodule LookupPhoenix.NoteController do
                     rendered_text: rendered_text, current_user_name: current_user_name}
 
         navigation_data = NoteNavigation.get(conn.query_string, id)
+
+        current_notebook_id = AppState.get(:user, current_user.id, :current_notebook)
+        current_note_id = AppState.get(:user, current_user.id, :current_note)
+        notebook_url  = "/show2/#{current_notebook_id}/#{current_note_id}/#{current_notebook_id}>#{current_note_id}"
+
         params = Map.merge(params1, %{nav: navigation_data})
+        params = Map.merge(params, %{notebook_url: notebook_url })
         render(conn, "edit.html", params)
 
   end
