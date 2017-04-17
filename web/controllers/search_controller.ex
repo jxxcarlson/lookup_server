@@ -6,6 +6,7 @@ defmodule LookupPhoenix.SearchController do
     alias LookupPhoenix.NoteSearch
     alias LookupPhoenix.Search
     alias LookupPhoenix.User
+    alias LookupPhoenix.AppState
     alias LookupPhoenix.Utility
 
     def cookies(conn, cookie_name) do
@@ -33,7 +34,7 @@ defmodule LookupPhoenix.SearchController do
         user_signed_in = current_user != nil
         notes = Search.search(channel, query, %{user_signed_in: user_signed_in})
         if current_user != nil do
-          Note.memorize_notes(notes, current_user.id)
+          AppState.memorize_notes(notes, current_user.id)
         end
 
         notes = Utility.add_index_to_maplist(notes)
@@ -99,7 +100,7 @@ defmodule LookupPhoenix.SearchController do
 
           noteCount = length(notes)
           if current_user != nil do
-            Note.memorize_notes(notes, current_user.id)
+            AppState.memorize_notes(notes, current_user.id)
           end
 
           notes_with_index = Utility.add_index_to_maplist(notes)
@@ -172,7 +173,7 @@ defmodule LookupPhoenix.SearchController do
         end
 
         note_count = length(notes)
-        Note.memorize_notes(notes, conn.assigns.current_user.id)
+        AppState.memorize_notes(notes, conn.assigns.current_user.id)
 
         notes = Utility.add_index_to_maplist(notes)
         # id_string = Note.extract_id_list(notes)

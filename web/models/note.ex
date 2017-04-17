@@ -59,26 +59,7 @@ defmodule LookupPhoenix.Note do
       text
     end
 
-    def memorize_notes(note_list, user_id) do
-      note_list
-      |> Enum.map(fn(note) -> note.id end)
-      |> memorize_list(user_id)
-      note_list
-    end
 
-    def memorize_list(id_list, user_id) do
-      new_id_list = Enum.filter(id_list, fn x -> is_integer(x) end)
-      Mnemonix.put(Cache, "active_notes_#{user_id}", new_id_list)
-    end
-
-    def recall_list(user_id) do
-      recalled = Mnemonix.get(Cache, "active_notes_#{user_id}")
-      if recalled == nil do
-         []
-      else
-         recalled |> Enum.filter(fn x -> is_integer(x) end)
-      end
-    end
 
 
   def update_viewed_at(note) do

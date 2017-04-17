@@ -4,6 +4,7 @@ defmodule LookupPhoenix.NoteController do
 
   alias LookupPhoenix.Note
   alias LookupPhoenix.User
+  alias LookupPhoenix.AppState
   alias LookupPhoenix.Utility
   alias LookupPhoenix.NoteNavigation
 
@@ -239,9 +240,9 @@ defmodule LookupPhoenix.NoteController do
        Repo.delete!(note)
 
        n = String.to_integer(id)
-       Note.recall_list(conn.assigns.current_user.id)
+       AppState.recall_list(conn.assigns.current_user.id)
        |> List.delete(n)
-       |> Note.memorize_list(conn.assigns.current_user.id)
+       |> AppState.memorize_list(conn.assigns.current_user.id)
 
        conn
        |> put_flash(:info, "Note deleted successfully.")

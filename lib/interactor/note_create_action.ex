@@ -5,6 +5,7 @@ defmodule LookupPhoenix.NoteCreateAction do
   alias LookupPhoenix.Search
   alias LookupPhoenix.Identifier
   alias LookupPhoenix.User
+  alias LookupPhoenix.AppState
   alias LookupPhoenix.Tag
 
   alias LookupPhoenix.Utility
@@ -13,8 +14,8 @@ defmodule LookupPhoenix.NoteCreateAction do
      changeset = setup(conn, note_params)
      case Repo.insert(changeset) do
         {:ok, note} ->
-          [note.id] ++ Note.recall_list(conn.assigns.current_user.id)
-          |> Note.memorize_list(conn.assigns.current_user.id)
+          [note.id] ++ AppState.recall_list(conn.assigns.current_user.id)
+          |> AppState.memorize_list(conn.assigns.current_user.id)
           {:ok, conn, note }
         {:error, changeset} ->
           {:error, changeset: changeset}
