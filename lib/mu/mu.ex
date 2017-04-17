@@ -21,7 +21,7 @@ defmodule MU.RenderText do
 
     def transform(text, options \\ %{mode: "show", process: "markup"}) do
       # Utility.report "IN TRANSFORM TEXT, OPTIONS ARE", options
-      begin_time = Timex.now
+      # begin_time = Timex.now
       result = case options.process do
         "plain" -> text
         "markup" -> format_markup(text, options) |> filterComments
@@ -30,7 +30,7 @@ defmodule MU.RenderText do
         "toc" -> TOC.process(text, options)
         _ -> format_markup(text, options)
       end
-      Utility.benchmark(begin_time, text, "0. MU.transform")
+      # Utility.benchmark(begin_time, text, "0. MU.transform")
       result
     end
 
