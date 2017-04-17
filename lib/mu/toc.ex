@@ -147,7 +147,7 @@ defmodule MU.TOC do
     text
     # split text into lines and normalize them
     |> lines_from_note_content
-       # Make TOC items
+    # Make TOC items
     |> Enum.map(fn(line) -> make_toc_item(line, options) end)
   end
 
@@ -172,21 +172,21 @@ defmodule MU.TOC do
       end
       toc_history = options.toc_history
       line_parts = String.split(line, ",")
-      id = hd(line_parts)
+      id = String.trim( hd(line_parts) )
       note = Note.get(id)
-      IO.puts "IN MAKE TOC ITEM, ID = #{id}"
       heading = tl(line_parts) |> Enum.join(", ")
       cond do
-        note == nil ->
-          ""
         id == "title" ->
+          IO.puts "XXXXXX HEADING: #{heading}"
           "<p class=\"title\">#{heading}</p>\n"
+        note == nil ->
+            ""
         true ->
            Utility.report('NOTE . TAGS', note.tags)
-          if Enum.member?(note.tags, ":toc") && !String.contains?(toc_history, to_string(note.id)) do
-            toc_history = toc_history <> ";" <> to_string(note.id) <> ">" <>  first_id(note.content)
-          end
-          "<p id=\"note:#{note.id}\" class=\"toc\"><a href=\"#{Constant.home_site}/#{path_segment}/#{options.note_id}/#{id}/#{toc_history}\">#{heading}</a></p>\n"
+           if Enum.member?(note.tags, ":toc") && !String.contains?(toc_history, to_string(note.id)) do
+               toc_history = toc_history <> ";" <> to_string(note.id) <> ">" <>  first_id(note.content)
+           end
+           "<p id=\"note:#{note.id}\" class=\"toc\"><a href=\"#{Constant.home_site}/#{path_segment}/#{options.note_id}/#{id}/#{toc_history}\">#{heading}</a></p>\n"
       end
   end
 
