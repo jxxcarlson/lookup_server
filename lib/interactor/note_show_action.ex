@@ -5,6 +5,7 @@ defmodule LookupPhoenix.NoteShowAction do
   alias LookupPhoenix.Repo
   alias LookupPhoenix.Utility
   alias LookupPhoenix.NoteNavigation
+  alias LookupPhoenix.AppState
 
   alias MU.RenderText
 
@@ -76,7 +77,9 @@ defmodule LookupPhoenix.NoteShowAction do
         channela: user.channel
      }
 
-     navigation_params = NoteNavigation.get(query_string, note_id)
+     id_list = AppState.get(:user, user.id, :search_history)
+
+     navigation_params = NoteNavigation.get(id_list, note_id)
 
      Map.merge(out_params, %{nav: navigation_params})
 

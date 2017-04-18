@@ -54,7 +54,7 @@ defmodule LookupPhoenix.PublicController do
 
           options = %{mode: "show"} |> Note.add_options(note)
           params1 = %{note: note, options: options, site: site, channela: user.channel}
-          params2 = NoteNavigation.get(query_string, nil)
+          params2 = NoteNavigation.get([id], id)
           params = Map.merge(params1, params2)
 
           case note.public do
@@ -86,13 +86,9 @@ defmodule LookupPhoenix.PublicController do
         note = Note.get(id); id = note.id
         note2 = Note.get(id2); id2 = note2.id
 
-       toc_history = TOC.update_toc_history(toc_history, note, note2)
-       history_string = TOC.make_history_string(toc_history)
+       history_string = "#{id}>#{id2}"
        # Piping to String.replace is a temporary fix
-       history_links = TOC.make_history_links(toc_history) |> String.replace("show2", "public")
-
-
-       TOC.make_history(toc_history)
+       history_links = "FOO"
 
 
         user = Repo.get!(User, note.user_id)
@@ -130,12 +126,10 @@ defmodule LookupPhoenix.PublicController do
           true ->  query_string =  conn_query_string
         end
 
-        params2 = NoteNavigation.get(query_string, id)
+        params2 = NoteNavigation.get([id], id)
         params = Map.merge(params1, params2)
 
-
-
-         params = Map.merge(params, %{toc_history: Enum.join(toc_history, ","), history_string: history_string})
+         params = Map.merge(params, %{toc_history: "#{id},#{id2}", history_string: history_string})
          render(conn, "show2.html", params)
       end # SHOW
 

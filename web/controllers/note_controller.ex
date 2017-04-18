@@ -7,6 +7,8 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.AppState
   alias LookupPhoenix.Utility
   alias LookupPhoenix.NoteNavigation
+  alias MU.TOC
+
 
   alias LookupPhoenix.NoteIndexAction
   alias LookupPhoenix.NoteShowAction
@@ -130,22 +132,27 @@ defmodule LookupPhoenix.NoteController do
 
     query_string = conn.query_string
 
-    query_string = conn.query_string
+
 
     if query_string == "" do
        query_string = "index=0&id_string=#{id}"
     end
 
     note = Note.get(id)
+
+    TOC.update_toc_history2(current_user, note)
+
     LiveNotebook.auto_update(note)
 
-    if Enum.member?(note.tags, ":toc") do
-      do_show2(conn, note)
-    else
-      result = NoteShowAction.call(username, query_string, id)
+    cond do
+      note.parent_id != nil ->
+        conn |> redirect(to: "/show2/#{note.parent_id}/#{note.id}/#{note.parent_id}>#{note.id}")
+      Enum.member?(note.tags, ":toc") ->
+         do_show2(conn, note)
+      true ->
+        result = NoteShowAction.call(username, query_string, id)
       render(conn, "show.html", result)
     end
-
   end
 
 
@@ -189,10 +196,23 @@ defmodule LookupPhoenix.NoteController do
                     conn: conn, tags: tags, note: note,
                     rendered_text: rendered_text, current_user_name: current_user_name}
 
-        navigation_data = NoteNavigation.get(conn.query_string, id)
-
+        # Ensure that id is in id_list
         current_notebook_id = AppState.get(:user, current_user.id, :current_notebook)
         current_note_id = AppState.get(:user, current_user.id, :current_note)
+
+        id_list = AppState.get(:user, current_user.id, :search_history)
+        if !Enum.member?(id_list, id) do
+          id_list = [id|id_list]
+          AppState.update(:user, current_user.id, :search_history, id_list)
+        end
+        if !Enum.member?(id_list, current_notebook_id) do
+          id_list = [current_notebook_id|id_list]
+          AppState.update(:user, current_user.id, :search_history, id_list)
+        end
+
+        navigation_data = NoteNavigation.get(id_list, id)
+
+
         notebook_url  = "/show2/#{current_notebook_id}/#{current_note_id}/#{current_notebook_id}>#{current_note_id}"
         if note.parent_id != nil do
           notebook_link = "<p style=\"float:left\"><a href=\"#{notebook_url}\"> Notebook</a></p>"
@@ -208,9 +228,11 @@ defmodule LookupPhoenix.NoteController do
 
   defp do_update(conn, note, note_params, save_option) do
 
-    navigation_data = NoteNavigation.get(conn.query_string, note.id)
+    current_user = conn.assigns.current_user
+    id_list = AppState.get(:user, current_user.id, :search_history)
+    navigation_data = NoteNavigation.get(id_list, note.id)
     note_params = Map.merge(note_params, %{nav: navigation_data})
-    username = conn.assigns.current_user.username
+    username = current_user.username
 
     Utility.report("DO UPDATE, NOTE_PARAMS", note_params)
 

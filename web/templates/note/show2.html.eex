@@ -68,7 +68,7 @@ p.title {
 
 <div style="font-size: 1.2em;clear:both;">
 
-     <%= raw(@parent_link) %> <span><%= raw(@history_links) %></span>
+     <span><%= raw(@history_links) %></span>
 
      <span style="">
 

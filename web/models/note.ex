@@ -153,4 +153,9 @@ defmodule LookupPhoenix.Note do
     end
 
 
+   def is_toc?(note) do
+     Enum.member?(note.tags, ":toc")
+   end
+
+
 end

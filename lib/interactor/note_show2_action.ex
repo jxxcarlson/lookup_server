@@ -7,6 +7,7 @@ defmodule LookupPhoenix.NoteShow2Action do
   alias MU.RenderText
   alias LookupPhoenix.Utility
   alias LookupPhoenix.NoteNavigation
+  alias LookupPhoenix.AppState
 
 
   # def show2(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history}) do
@@ -19,21 +20,10 @@ defmodule LookupPhoenix.NoteShow2Action do
       note = Note.get(id); id = note.id
       note2 = Note.get(id2); id2 = note2.id
 
-     toc_history = TOC.update_toc_history(toc_history, note, note2)
-     history_string = TOC.make_history_string(toc_history)
-     history_links = TOC.make_history_links(toc_history)
+     history_string = "#{id}>#{id2}"
 
-     parent_id = note.parent_id
-     if parent_id != nil and !String.contains?(history_links, Integer.to_string(parent_id)) do
-       parent_note = Note.get(parent_id)
-       parent_link = "<span style=\"margin-right:0;\"><a href=\"/notes/#{parent_id}\">#{parent_note.title} > </a> </span>"
-     else
-       parent_link = ""
-     end
-
-
-     TOC.make_history(toc_history)
-
+     current_user = conn.assigns.current_user
+     TOC.update_toc_history2(current_user, note, note2)
 
       user = Repo.get!(User, note.user_id)
 
@@ -65,7 +55,7 @@ defmodule LookupPhoenix.NoteShow2Action do
 
       params1 = %{note: note, note2: note2, parent: note, rendered_text: rendered_text, rendered_text2: rendered_text2,
                     inserted_at: inserted_at, updated_at: updated_at,
-                    options: options, word_count: word_count, history_links: history_links, parent_link: parent_link,
+                    options: options, word_count: word_count, history_links: TOC.history_links2(conn.assigns.current_user),
                     sharing_is_authorized: sharing_is_authorized, current_id: note.id, channela: user.channel}
 
       conn_query_string = conn.query_string || ""
@@ -77,10 +67,17 @@ defmodule LookupPhoenix.NoteShow2Action do
         true ->  query_string =  conn_query_string
       end
 
-      params2 = NoteNavigation.get(query_string, id)
+      # Get id_list and ensure that id2 is in it
+      id_list = AppState.get(:user, current_user.id, :search_history)
+      Utility.report("note_show2_action, id_list", id_list)
+      if !Enum.member?(id_list, id2) do
+        id_list = [id2|id_list]
+        AppState.update(:user, current_user.id, :search_history, id_list)
+      end
+      params2 = NoteNavigation.get(id_list, id2)
       params = Map.merge(params1, params2)
 
-      Map.merge(params, %{toc_history: Enum.join(toc_history, ","), history_string: history_string})
+      Map.merge(params, %{ history_string: history_string})
   end
 
 end

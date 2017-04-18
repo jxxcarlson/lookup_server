@@ -16,7 +16,7 @@ defmodule LookupPhoenix.AppState do
 
   def initial_record() do
      %{current_note: nil, current_notebook: nil,
-       search_history: nil, toc_history: []}
+       search_history: [], toc_history: []}
   end
 
   def put(:user, id, record) do
