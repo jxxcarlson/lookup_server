@@ -51,7 +51,7 @@ defmodule LookupPhoenix.NoteCreateAction do
       if note_params[:current_notebook]  != nil do
         parent_id = note_params[:current_notebook]
         notebook = Note.get(parent_id)
-        parent_tag = "parent:#{conn.assigns.current_user.username}.#{notebook.identifier}"
+        parent_tag = "parent:#{notebook.identifier}"
         tag_string = "#{tag_string}, #{parent_tag}"
         tags = tags ++ [parent_tag]
         IO.puts "Setting parent ID to that of current_notebook (#{parent_id})"
