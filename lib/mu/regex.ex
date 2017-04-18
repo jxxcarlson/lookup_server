@@ -51,7 +51,7 @@ defmodule MU.Regex do
   end
 
   def reference_regex do
-    ~r/eqno:\[(.*)\]/
+    ~r/eqref:\[(.*)\]/
   end
 
   def site_link_regex do
