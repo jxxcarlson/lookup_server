@@ -132,7 +132,7 @@ defmodule MU.TOC do
        #
 
      Utility.report("OUT: AppState toc_history", toc_history2)
-     AppState.put_toc_history(user, toc_history2)
+     put_toc_history(user, toc_history2)
 
    end
 
@@ -162,10 +162,11 @@ defmodule MU.TOC do
   end
 
   defp make_link(toc_history) do
-    history_item = hd(toc_history)
+    n = length(toc_history) - 1
+    [id, id2] = Enum.at(toc_history, n)
     title = Note.get(id).title
     history = make_history_string(toc_history)
-    "<a href=\"/show2/#{history_item.parent_id}/#{history_item.child_id}/#{history}\">#{history_item.parent_title}</a>"
+    "<a href=\"/show2/#{id}/#{id2}/#{history}\">#{title}</a>"
   end
 
   # Example of toc_history argument:
