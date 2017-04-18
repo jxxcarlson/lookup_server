@@ -392,6 +392,160 @@ The last integral is one we have seen before in our xref::1010[discussion of the
 // - http://www.nhn.ou.edu/~milton/p6433/chap3.pdf[Scalar Field Theory]
 """
 
+@text5 """
+[blurb]
+--
+Classical physics is based on the notion that a particle (an arrow, a baseball, a planet) has a _trajectory._ As various experiments show, this notion cannot work on the scale of eletrons and atoms.  What then, is a correct descriptive language for physics in this domain?
+--
+
+ https://psurl.s3.amazonaws.com/jim_images/brown_butterfly.png
+
+
+[env.texmacro]
+--
+ \newcommand{\bor}{\mathbf{r}}
+ \newcommand{\bov}{\mathbf{v}}
+ \newcommand{\boa}{\mathbf{a}}
+\newcommand{\bop}{\mathbf{p}}
+\newcommand{\boF}{\mathbf{F}}
+\newcommand{\boL}{\mathbf{L}}
+\newcommand{\sinc}{\,\text{sinc}\,}
+\newcommand{\bra}{<}
+\newcommand{\ket}{>}
+--
+
+
+
+
+*Quantum mechanics* is the physical theory needed to understand atoms, electrons, and other tiny particles.  It answers questions such as these
+
+- Why are atoms stable? According to classical electromagnetic theory, electrons whirling around the nucleus should radiate their energy way in the blink of an eye.
+
+- Why atoms can form molecules.
+
+- Why the spectrum of salt crystals dropped in a flame has bright lines.
+
+
+To understand quantum mechanics, we need to understand why the classical theories of mechanics and optics cannot explain phenomena such as those listed above.  Despite the fact that they do not work in the quantum domain, they furnish a vocabulary of notions -- force, field, wave, conservation of momentum and energy, symmetry, and minimum principle -- from which one fashions a new language of wave packets and wave functions, operators and observables that form the core of quantum theory and quantum field theory.
+
+We begin with the notion of trajectory in mechanics, then consider optical theories, beginning with Hero of Alexandria (c. AD 30), who explained the law of reflection via a minimum principle for light rays.  Much later came the formulation of Snell's law of refraction and Fermat's explanation of it via a principle of minimum time for rays.  The optical theories motivated physics to find a way of understanding minimum principles.  In 1788, Lagrange formulated his powerful Principle of Least Action. It appears again and again in the history of physics, including its key role in Richard Feynman's path integral approach to quantum field theory.
+
+There is a second branch of the optics storyline.  It begins with Huygens' wave theory of the propagation of light (1670) and gains momentum as it is able to explain not only reflection and refraction, but also phenomena such as interference and diffraction which the ray and corpuscular theories could not.
+
+== Trajectories in classical mechanics
+
+In classical mechanics, which successfully deals with objects such as arrows, baseballs, airplanes, and planets, we are accustomed to the idea of a body moving along a trajectory
+
+[env.equationalign]
+--
+\bor(t) = (x,y,z)(t)
+--
+From the trajectory are defined the velocity $\bov(t) = d\bor(t)/dt$ and the acceleration $\boa(t) = d\bov(t)/dt$.  And once these are given, we have Newton's second law, $\boF = m\boa$, where a force $\boF$ is applied to a body of mass $m$. To set the stage for later developments, recall that the _momentum_ of a body is $\bop = m\bov$, so that Newton's law can be written
+[env.equation#newton2nd]
+--
+\frac{d\bop}{dt} = \boF
+--
+The rate of change of the "quantity of motion" is equal to the applied force.  Such is the basis of classical mechanics as bequeathed to us by Isaac Newton in his _Philosophiæ Naturalis Principia Mathematica_ (1687)
+
+
+== Uncertainty principle
+
+image::84[width=200, float=right]
+
+Alas, the notion of trajectory does not hold in quantum mechanics.  This is because of the uncertainty principle, which has to do with the fact that a particle such as an electron does not have a position in the classical sense, but rather is a fuzzy object whose extent is measured by a quantity $\Delta x$. That is, we cannot say exactly where the electron is, but rather can say that it has a certain probability distribution of possible locations, as in the figure, with most of the probability concentrated in a region of width $\Delta x$.  Later, when we have the language of wave packets and wave functions,  we will be able to give a better explanation.  The same considerations apply to the momentum, so we also have a quantity $\Delta p$ which measures its "uncertainty."  The Heisenberg Uncertainty Principle asserts that the product of these quantities has a lower bound:
+
+[env.equation#uncertainty_principle]
+--
+  \Delta x \, \Delta p \ge \frac{\hbar}{2}
+--
+Here $\hbar$ is the reduced Planck constant $h/2\pi$.
+Planck's constant itself is
+[env.equation#planck_constant]
+--
+h = 6.6\times 10^{-34}\;\text{Joule-sec}
+--
+It has the dimension of an _action_ and is the fundamental constant of quantum physics.
+
+One sometimes says that $\Delta x$ is the standard deviation in measurements of position of (say) a particle, and that $\Delta p$ is the same for the momentum.  There is an element of truth to this if one thinks of a series of repeated experiments.  But the real truth lies deeper.  It has to do with the fuzziness mentioned above, and can only be properly stated in the language of wave packets.
+
+You may say, OK, all that philosophy is fine, but let's rig thing so that $\Delta x$ is so small that we might as well consider out particle to be a classical point particle.  But if $\Delta x$ is very, very small, then the uncertainty principle ensures that $\Delta p$ will be very, very large, as will be $\Delta v = \Delta p/m$.  In our attempt to recover a classical trajectory, we make $\Delta p$ so large that the notion of a well defined velocity is meaningless. Thus, whatever the mathematical language of quantum mechanics is, it cannot be based on a function $\bor(t)$ which gives position and therefore also velocity $\bov(t)$ and momentum $\bop(t)$.
+
+=== Thought experiment: electron in a small box
+
+
+Let's make a back of the envelope calculations for a little thought experiment on electrons.
+
+We will confine an electron to a little box with the dimension of two Bohr radiii.  The Bohr radius, which has a value of $5.3\times 10^{-11}\; m$, is the theoretical radius of the hydrogen atom in Niels Bohr's successful first quantum theory.  Thus our box is roughly the size of an atom, with a dimension of $10^{-11}\; m$ or one Angstrom.  The uncertainty principle tells us that if $\Delta x$ is less than one Angstrom, then $\Delta p$ is at least $5.9\times 10^{-35}\; \text{kg-m/sec}$. We use this to compute the uncertainty in the kinetic energy using the relation
+[env.equation]
+--
+  K.E. = \frac{1}{2}\;mv^2 = \frac{p^2}{2m}
+--
+Thus $\Delta E = (\Delta p)^2/m = 1.6\times 10^{-19}\; \text{Joules}$.
+
+To understand the significance of the value just computed for $\Delta E$, we compare it to the energy of the rest mass of an electron:
+[env.equation#emc2]
+--
+E = mc^2
+--
+An electron has rest mass
+[env.equation#m_e]
+--
+m_e = 9.1\times 10^{-31}\;\text{kg}
+--
+Using  $c = 3\times 10^8\;\text{m/sec}$ for the velocity of light, we find $E_{rest} = 8.2\times 10^{-14}\; \text{Joules}$.  Thus $\Delta E$ is small compared to $E_{rest}$.
+
+What about the velocity?  If we make a straightforward classical computation, we find $\Delta v = (\Delta p)/m = 6000\;\text{m/s}$.  The electron  "can be moving pretty fast" and so does not have a very well localized momentum
+
+=== A smaller box
+
+Let us continue the thought experiment. This time, we will confine the electron to a box about the size of a proton, so that $\Delta x = 10^{-15}\;\text{m}$.  Repeating the calculations, we find that $\Delta p = 2.5\times 10^{-20}\;\text{kg-m/s}$ and $\Delta E = 7\times 10^{-10}\;\text{Joules}$.  This time $\Delta E$ is much, much larger than the rest mass. It is so large that some of that energy could be converted into the formation of new particles!  This is the phenomenon of _pair production_.  It actually happens, indeed, is happening all around us.
+
+=== Relativistic computations
+
+The large value for the uncertainty of the momentum implies a large value for the uncertainty in the velocity: $\Delta v = (\Delta p)/m = 2.7\times 10^{10}\;\text{m/s}$.  This is much higher than the velocity of light and so our previous computation cannot be correct.  For a correct computation, we use the energy-moment relation of special relativity:
+[env.equation#energy_momentum_relation]
+--
+ E^2 = (pc)^2 + ( mc^2 )^2
+--
+We will explain this later when when we review special relativity.  But for now, observe that the factors of $c$ and $c^2$ in the parentheses ensure that all terms on the right have the same dimension, namely energy.  Doing the computation, we find that
+[env.equation]
+--
+(\Delta E)^2 = 5.6\times 10^{-23} + 6.7\times 10^{-27}
+--
+Thus $\Delta E \sim 7.5\times 10^{-12}$.  This value is about 100 times less than the one previously calculated, but is still about 100 times greater than the rest mass.  There is still enough energy for pair production.
+
+=== Creation and annihllation
+Pair production is the domain of quantum field theory, which has built into the notion of fields of creation and annihilation operators $\hat a^\dagger$ and $\hat a$.  We will, however, take things step by step, first studying these operators in the simplest possible context, that of a quantum-mechanical harmonic oscillator.  Next we will consider discrete but possibly infinite systems of oscillators, and lastly fields thereof.  In a certain sense, the universe is a vast collection of harmonic oscillators!
+
+== Optical Theories
+
+Please see these notes:
+
+xref::61[Hero's law of reflection]:: The historically first use of a minimum principle in physics.
+
+xref::59[Snell's Law of Reffraction]:: Derivation from Fermat's principle of least time.
+
+xref::76[Snell's Law and Huygens' Principle]:: Huygens wave theory of light (1670) and derivation of Snell's law from it.
+
+xref::60[Snell's Law via Quantum Mechanics]:: Derivation of Snell's Law from conservation of momentum of photons.  Uses the de Broglie proportionality between photon momentum and wavelength, $p = h/\lambda$.
+
+== Least Action
+
+== References
+
+- http://hyperphysics.phy-astr.gsu.edu/hbase/uncer.html#c2[Hyperphysics]
+
+-  http://www.cithep.caltech.edu/~fcp/physics/quantumMechanics/secondQuantization/SecondQuantization.pdf[Second quantization]
+
+
+- http://yclept.ucdavis.edu/course/242/2Q_Fradkin.pdf[Second quantization - Fradkin]
+
+- https://www.eng.fsu.edu/~dommelen/quantum/style_a/qft.html[QFT in a nanoshell]
+
+- https://www.eng.fsu.edu/~dommelen/quantum/style_a/contents.html[root of QFT in a nanoshell]   
+
+"""
+
   # First bench mark
   bench "transform input 1: wc 31, 104, 1594" do
     MU.RenderText.transform(@text1)
@@ -407,7 +561,10 @@ The last integral is one we have seen before in our xref::1010[discussion of the
 
    bench "transform input 4: wc 251, 1727, 10553 " do
       MU.RenderText.transform(@text4)
-    end
+   end
 
+   bench "transform input 5: 150, 1589, 10512 " do
+      MU.RenderText.transform(@text5)
+   end
 
 end

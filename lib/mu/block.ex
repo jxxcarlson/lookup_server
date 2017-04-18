@@ -71,15 +71,11 @@ defmodule MU.Block do
        transform_block(String.to_atom(type), data, params)
      end)
       # Utility.benchmark(begin_time, text, "3. MU.Block")
-      Utility.report("EQNO MAP", data2.eqno_map)
       resolve_references(data2.text, data2.eqno_map)
   end
 
   def resolve_reference(ref, text, reference_map) do
     [target, ref_id] = ref
-    Utility.report("ref unpacked", [target, ref_id])
-    Utility.report("reference_map in resolve ...", reference_map)
-    IO.puts "resolve ref ||#{ref}|| to #{reference_map[ref]}"
     # :SELF is a route that will be filled in by the controller presenting this text:
     String.replace(text, target, "<span><a href=\"/:SELF\##{ref_id}\">(#{reference_map[ref_id]})</a></span>")
   end
