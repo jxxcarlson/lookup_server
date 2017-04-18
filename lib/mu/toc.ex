@@ -96,7 +96,7 @@ defmodule MU.TOC do
      AppState.update(:user, user.id, :toc_history, [])
 
    end
-   
+
 
    def update_toc_history2(user, note, note2) do
 
@@ -132,7 +132,9 @@ defmodule MU.TOC do
      "#{id}>#{id2}"
   end
 
-  defp historify(list) do
+  #   MU.TOC.historify(foo)
+  #   => [[1], [1, 2], [1, 2, 3], [1, 2, 3, 4]]
+  def historify(list) do
     n = length(list) - 1
     Enum.reduce(0..n, [], fn(k, acc) -> acc ++ [Enum.slice(list, 0..k)] end)
   end
@@ -151,11 +153,10 @@ defmodule MU.TOC do
   end
 
   defp make_link(toc_history) do
-    n = length(toc_history) - 1
-    [id, id2] = Enum.at(toc_history, n)
+    history_item = hd(toc_history)
     title = Note.get(id).title
     history = make_history_string(toc_history)
-    "<a href=\"/show2/#{id}/#{id2}/#{history}\">#{title}</a>"
+    "<a href=\"/show2/#{history_item.parent_id}/#{history_item.child_id}/#{history}\">#{history_item.parent_title}</a>"
   end
 
   # Example of toc_history argument:
