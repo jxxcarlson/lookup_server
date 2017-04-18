@@ -7,6 +7,8 @@ defmodule LookupPhoenix.NoteController do
   alias LookupPhoenix.AppState
   alias LookupPhoenix.Utility
   alias LookupPhoenix.NoteNavigation
+  alias MU.TOC
+
 
   alias LookupPhoenix.NoteIndexAction
   alias LookupPhoenix.NoteShowAction
@@ -137,15 +139,20 @@ defmodule LookupPhoenix.NoteController do
     end
 
     note = Note.get(id)
+
+    TOC.update_toc_history2(current_user, note)
+
     LiveNotebook.auto_update(note)
 
-    if Enum.member?(note.tags, ":toc") do
-      do_show2(conn, note)
-    else
-      result = NoteShowAction.call(username, query_string, id)
-      render(conn, "show.html", result)
+    cond do
+      Enum.member?(note.tags, ":toc") ->
+         do_show2(conn, note)
+      note.parent_id != nil ->
+        conn |> redirect(to: "/show2/#{note.parent_id}/#{note.id}/#{note.parent_id}>#{note.id}")
+      true ->
+        result = NoteShowAction.call(username, query_string, id)
+        render(conn, "show.html", result)
     end
-
   end
 
 

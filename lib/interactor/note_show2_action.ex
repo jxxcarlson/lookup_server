@@ -7,6 +7,7 @@ defmodule LookupPhoenix.NoteShow2Action do
   alias MU.RenderText
   alias LookupPhoenix.Utility
   alias LookupPhoenix.NoteNavigation
+  alias LookupPhoenix.AppState
 
 
   # def show2(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history}) do
@@ -22,6 +23,9 @@ defmodule LookupPhoenix.NoteShow2Action do
      toc_history = TOC.update_toc_history(toc_history, note, note2)
      history_string = TOC.make_history_string(toc_history)
      history_links = TOC.make_history_links(toc_history)
+
+     current_user = conn.assigns.current_user
+     TOC.update_toc_history2(current_user, note, note2)
 
      parent_id = note.parent_id
      if parent_id != nil and !String.contains?(history_links, Integer.to_string(parent_id)) do

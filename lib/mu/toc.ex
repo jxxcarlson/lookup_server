@@ -1,8 +1,11 @@
 defmodule MU.TOC do
 
+  require IEx
+
   alias LookupPhoenix.Utility
   alias LookupPhoenix.Note
   alias LookupPhoenix.Constant
+  alias LookupPhoenix.AppState
 
   @module_doc """
   MU.TOC Manages "index notes" that represent a table of contents
@@ -39,7 +42,8 @@ defmodule MU.TOC do
     Enum.member?(toc_history, [note.id, note2.id])
   end
 
-  defp is_in_toc_history(toc_history, note, note2) do
+  # private
+  def is_in_toc_history(toc_history, note, note2) do
     toc_history
     |> Enum.map(fn(item) -> hd(item) end)
     |> Enum.member?(note.id)
@@ -67,6 +71,7 @@ defmodule MU.TOC do
       |> normalize
 
       Utility.report('NOTE 2 . TAGS', note2.tags)
+      Utility.report("U 1: toc_history", toc_history)
 
       cond do
         Enum.member?(note2.tags, ":toc") && !is_in_toc_history(toc_history, note, note2) ->
@@ -77,8 +82,50 @@ defmodule MU.TOC do
           toc_history = toc_history ++ [[note2.id, 100]]
         true -> toc_history
       end
-
   end
+
+
+
+   def toc_item(note, note2 \\ nil) do
+     %{parent_id: note.id, parent_title: note.title, child_id: note2.id,
+       child_title: note2.title, child_is_toc: Note.is_toc?(note2)}
+   end
+
+   def update_toc_history2(user, note) do
+
+     AppState.update(:user, user.id, :toc_history, [])
+
+   end
+   
+
+   def update_toc_history2(user, note, note2) do
+
+     toc_history = AppState.get(:user, user.id, :toc_history)
+     Utility.report("IN: AppState toc_history", toc_history)
+     IO.puts "Note = #{note.id}, Note2 = #{note2.id}"
+
+     toc_history = cond do
+        note2 == nil ->
+          toc_history = []
+        toc_history == [] ->
+          IO.puts "AppState, BRANCH A"
+          [toc_item(note, note2)]
+        hd(toc_history).parent_id == note.id ->
+          IO.puts "AppState, BRANCH B"
+          [toc_item(note, note2)| tl(toc_history)]
+        hd(toc_history).child_id == note.id ->
+          IO.puts "AppState, BRANCH C"
+          [toc_item(note, note2)] ++ toc_history
+        true ->
+          tl(toc_history)
+      end
+
+       #
+
+     Utility.report("OUT: AppState toc_history", toc_history)
+     AppState.update(:user, user.id, :toc_history, toc_history)
+
+   end
 
   defp ths1(elem) do
     [id, id2] = elem
