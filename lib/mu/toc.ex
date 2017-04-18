@@ -98,15 +98,24 @@ defmodule MU.TOC do
    end
 
 
+   def get_toc_history(user) do
+     AppState.get(:user, user.id, :toc_history)
+   end
+
+   def put_toc_history(user, toc_history) do
+     AppState.update(:user, user.id, :toc_history, toc_history)
+   end
+
+
    def update_toc_history2(user, note, note2) do
 
-     toc_history = AppState.get(:user, user.id, :toc_history)
+     toc_history = get_toc_history(user)
      Utility.report("IN: AppState toc_history", toc_history)
      IO.puts "Note = #{note.id}, Note2 = #{note2.id}"
 
-     toc_history = cond do
+     toc_history2 = cond do
         note2 == nil ->
-          toc_history = []
+          []
         toc_history == [] ->
           IO.puts "AppState, BRANCH A"
           [toc_item(note, note2)]
@@ -122,8 +131,8 @@ defmodule MU.TOC do
 
        #
 
-     Utility.report("OUT: AppState toc_history", toc_history)
-     AppState.update(:user, user.id, :toc_history, toc_history)
+     Utility.report("OUT: AppState toc_history", toc_history2)
+     AppState.put_toc_history(user, toc_history2)
 
    end
 
@@ -167,6 +176,8 @@ defmodule MU.TOC do
     |> Enum.join(" >  ")
   end
 
+   ################### ################### ################### ################### ###################
+
   @doc """
   Remove comments from the text, then split it into lines,
   filtering out any empty lines.
@@ -190,6 +201,8 @@ defmodule MU.TOC do
     [id, _] = item
     id
   end
+
+
 
   defp prepare_toc(text, options) do
     text
