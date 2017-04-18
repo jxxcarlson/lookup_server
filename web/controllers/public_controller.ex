@@ -88,7 +88,9 @@ defmodule LookupPhoenix.PublicController do
 
        toc_history = TOC.update_toc_history(toc_history, note, note2)
        history_string = TOC.make_history_string(toc_history)
-       history_links = TOC.make_history_links(toc_history)
+       # Piping to String.replace is a temporary fix
+       history_links = TOC.make_history_links(toc_history) |> String.replace("show2", "public")
+
 
        TOC.make_history(toc_history)
 
@@ -128,7 +130,7 @@ defmodule LookupPhoenix.PublicController do
           true ->  query_string =  conn_query_string
         end
 
-        params2 = NoteNavigation.get_string(query_string)
+        params2 = NoteNavigation.get(query_string, id)
         params = Map.merge(params1, params2)
 
 

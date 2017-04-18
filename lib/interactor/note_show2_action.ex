@@ -23,6 +23,15 @@ defmodule LookupPhoenix.NoteShow2Action do
      history_string = TOC.make_history_string(toc_history)
      history_links = TOC.make_history_links(toc_history)
 
+     parent_id = note.parent_id
+     if parent_id != nil and !String.contains?(history_links, Integer.to_string(parent_id)) do
+       parent_note = Note.get(parent_id)
+       parent_link = "<span style=\"margin-right:0;\"><a href=\"/notes/#{parent_id}\">#{parent_note.title} > </a> </span>"
+     else
+       parent_link = ""
+     end
+
+
      TOC.make_history(toc_history)
 
 
@@ -56,7 +65,7 @@ defmodule LookupPhoenix.NoteShow2Action do
 
       params1 = %{note: note, note2: note2, parent: note, rendered_text: rendered_text, rendered_text2: rendered_text2,
                     inserted_at: inserted_at, updated_at: updated_at,
-                    options: options, word_count: word_count, history_links: history_links,
+                    options: options, word_count: word_count, history_links: history_links, parent_link: parent_link,
                     sharing_is_authorized: sharing_is_authorized, current_id: note.id, channela: user.channel}
 
       conn_query_string = conn.query_string || ""
