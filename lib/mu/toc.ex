@@ -84,7 +84,19 @@ defmodule MU.TOC do
       end
   end
 
+   ########### ########### ########### ########### ########### ########### ###########
 
+   def toc_link(toc_item) do
+     parent_id = Integer.to_string(toc_item.parent_id)
+     child_id = Integer.to_string(toc_item.child_id)
+     "<a href=\"/show2/#{parent_id}/#{child_id}/#{parent_id}>#{child_id}\">#{toc_item.parent_title}</a>"
+   end
+
+   def history_links2(user) do
+     get_toc_history(user)
+     |> Enum.reduce([],fn(link, acc) -> [toc_link(link)] ++ acc end)
+     |> Enum.join(" > ")
+   end
 
    def toc_item(note, note2 \\ nil) do
      %{parent_id: note.id, parent_title: note.title, child_id: note2.id,
@@ -97,7 +109,6 @@ defmodule MU.TOC do
 
    end
 
-
    def get_toc_history(user) do
      AppState.get(:user, user.id, :toc_history)
    end
@@ -105,7 +116,6 @@ defmodule MU.TOC do
    def put_toc_history(user, toc_history) do
      AppState.update(:user, user.id, :toc_history, toc_history)
    end
-
 
    def update_toc_history2(user, note, note2) do
 
@@ -135,6 +145,8 @@ defmodule MU.TOC do
      put_toc_history(user, toc_history2)
 
    end
+
+   ########### ########### ########### ########### ########### ########### ########### ###########
 
   defp ths1(elem) do
     [id, id2] = elem

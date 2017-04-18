@@ -145,13 +145,13 @@ defmodule LookupPhoenix.NoteController do
     LiveNotebook.auto_update(note)
 
     cond do
-      Enum.member?(note.tags, ":toc") ->
-         do_show2(conn, note)
       note.parent_id != nil ->
         conn |> redirect(to: "/show2/#{note.parent_id}/#{note.id}/#{note.parent_id}>#{note.id}")
+      Enum.member?(note.tags, ":toc") ->
+         do_show2(conn, note)
       true ->
         result = NoteShowAction.call(username, query_string, id)
-        render(conn, "show.html", result)
+      render(conn, "show.html", result)
     end
   end
 

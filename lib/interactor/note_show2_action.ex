@@ -23,6 +23,7 @@ defmodule LookupPhoenix.NoteShow2Action do
      toc_history = TOC.update_toc_history(toc_history, note, note2)
      history_string = TOC.make_history_string(toc_history)
      history_links = TOC.make_history_links(toc_history)
+     # history_links = TOC.make_history_links(toc_history)
 
      current_user = conn.assigns.current_user
      TOC.update_toc_history2(current_user, note, note2)
@@ -69,7 +70,7 @@ defmodule LookupPhoenix.NoteShow2Action do
 
       params1 = %{note: note, note2: note2, parent: note, rendered_text: rendered_text, rendered_text2: rendered_text2,
                     inserted_at: inserted_at, updated_at: updated_at,
-                    options: options, word_count: word_count, history_links: history_links, parent_link: parent_link,
+                    options: options, word_count: word_count, history_links: TOC.history_links2(conn.assigns.current_user), parent_link: parent_link,
                     sharing_is_authorized: sharing_is_authorized, current_id: note.id, channela: user.channel}
 
       conn_query_string = conn.query_string || ""
