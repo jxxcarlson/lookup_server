@@ -80,8 +80,9 @@ defmodule LookupPhoenix.NoteController do
         {:ok, conn, note} ->
           AppState.update(:user, conn.assigns.current_user.id, :current_note, note.id)
           conn
-          |> put_flash(:info, "Note created successfully: #{note.id}")
-          |> redirect(to: note_path(conn, :index, active_notes: [note.id], random: "no"))
+          # |> put_flash(:info, "Note created successfully: #{note.id}")
+          # |> redirect(to: note_path(conn, :index, active_notes: [note.id], random: "no"))
+          |> redirect(to: note_path(conn, :edit, note.id))
         {:error, changeset} ->
           render(conn, "new.html", changeset: changeset)
       end
