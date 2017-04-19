@@ -6,6 +6,7 @@ defmodule LookupPhoenix.NoteApiController do
    alias LookupPhoenix.Note
    alias LookupPhoenix.NoteNavigation
    alias LookupPhoenix.User
+   alias LookupPhoenix.AppState
    alias LookupPhoenix.Utility
 
    alias LookupPhoenix.NoteShowAction
@@ -47,12 +48,18 @@ defmodule LookupPhoenix.NoteApiController do
 
     def update(conn, %{"id" => id, "put" => data}) do
 
+#      Utility.report("conn", conn)
+#      current_user = conn.assigns.current_user
+#      IO.puts("API . UPDATE, CURRENT USER = #{current_user.id}")
+
       if authenticated(data["secret"]) do
          IO.puts "AUTHORIZED!"
          title = data["title"]
          username = data["username"]
+         user = User.find_by_username(username)
          note = Note.get(id)
-         navigation_data = NoteNavigation.get(conn.query_string, id)
+         id_list = AppState.update({:user, user.id, :search_history, note.id})
+         navigation_data = NoteNavigation.get(id_list, id)
          params = Map.merge(data, %{nav: navigation_data})
 
          result = NoteUpdateAction.call(username, note, params)

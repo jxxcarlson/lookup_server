@@ -215,7 +215,7 @@ defmodule LookupPhoenix.NoteController do
         end
 
         params = Map.merge(params1, %{nav: navigation_data})
-        params = Map.merge(params, %{notebook_link: notebook_link })
+        params = Map.merge(params, %{notebook_link: "NL" })
         render(conn, "edit.html", params)
 
   end
