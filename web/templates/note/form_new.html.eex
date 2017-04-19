@@ -23,6 +23,12 @@
       <%= error_tag f, :tag_string %>
    </div>
 
+    <div class="form-check form-inline hidden-xs" style="display:inline; margin-left:0;">
+        <label class="form-check-label-inline"> Attach to notebook? &nbsp;
+          <%= checkbox f, :attach, class: "checkbox", value: "foo" %>
+        </label>
+     </div>
+
    <input type="hidden" name="index" value= <%=@index %> >
    <input type="hidden" name="id_string" value=<%= @id_string %> >
 

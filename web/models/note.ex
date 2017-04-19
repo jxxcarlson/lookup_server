@@ -152,6 +152,17 @@ defmodule LookupPhoenix.Note do
       end
     end
 
+   def normalize_id(id) do
+     cond do
+       is_integer(id) ->
+         id
+       Regex.match?(~r/\A[1-9][0-9]*$/, id) ->
+         String.to_integer(id)
+       true ->
+         Note.get(id).id
+     end
+   end
+
 
    def is_toc?(note) do
      Enum.member?(note.tags, ":toc")

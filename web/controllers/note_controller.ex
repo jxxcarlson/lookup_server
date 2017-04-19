@@ -74,6 +74,7 @@ defmodule LookupPhoenix.NoteController do
     if (conn.assigns.current_user.read_only == true) do
          read_only_message(conn)
     else
+      Utility.report("NEW NOTE, PARAMS",  note_params)
       note_params = Map.merge(note_params, AppState.get(:user, conn.assigns.current_user.id))
       result = NoteCreateAction.call(conn, note_params)
       case result do
@@ -157,11 +158,17 @@ defmodule LookupPhoenix.NoteController do
   end
 
 
+
+
   def show2(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history}) do
 
+    id = Note.normalize_id(id)
+    id2 = Note.normalize_id(id2)
+    Utility.report("SHOW2, ID, ID2", [id, id2])
     current_user = conn.assigns.current_user
-    AppState.update(:user, current_user.id, :current_notebook, String.to_integer(id))
-    AppState.update(:user, current_user.id, :current_note, String.to_integer(id2))
+    IO.puts "current_user: #{current_user.id}"
+    AppState.update(:user, current_user.id, :current_notebook, id)
+    AppState.update(:user, current_user.id, :current_note, id2)
 
     params = NoteShow2Action.call(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history})
     render(conn, "show2.html", params)

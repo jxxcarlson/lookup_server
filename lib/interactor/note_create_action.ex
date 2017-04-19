@@ -16,7 +16,7 @@ defmodule LookupPhoenix.NoteCreateAction do
         {:ok, note} ->
           [note.id] ++ AppState.recall_list(conn.assigns.current_user.id)
           |> AppState.memorize_list(conn.assigns.current_user.id)
-          if notebook != nil do
+          if notebook != nil and note_params["attach"] == true do
              # add the note being created to the current notebook:
              content = notebook.content <> "\n" <> "#{note.id}, #{note.title}\n"
              notebook_changeset = Note.changeset(notebook, %{content: content})
@@ -48,7 +48,7 @@ defmodule LookupPhoenix.NoteCreateAction do
       [access, channel_name, user_id] = User.decode_channel(conn.assigns.current_user)
       [tag_string, tags] = get_tags(note_params, channel_name)
       parent_id =  get_parent_id(conn.assigns.current_user.channel, tags)
-      if note_params[:current_notebook]  != nil do
+      if note_params[:current_notebook]  != nil and note_params["attach"] == true do
         parent_id = note_params[:current_notebook]
         notebook = Note.get(parent_id)
         parent_tag = "parent:#{notebook.identifier}"
