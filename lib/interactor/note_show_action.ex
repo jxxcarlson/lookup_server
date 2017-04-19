@@ -77,8 +77,7 @@ defmodule LookupPhoenix.NoteShowAction do
         channela: user.channel
      }
 
-     id_list = AppState.get(:user, user.id, :search_history)
-
+     id_list = AppState.update({:user, user.id, :search_history, note_id})
      navigation_params = NoteNavigation.get(id_list, note_id)
 
      Map.merge(out_params, %{nav: navigation_params})
