@@ -68,12 +68,7 @@ defmodule LookupPhoenix.NoteShow2Action do
       end
 
       # Get id_list and ensure that id2 is in it
-      id_list = AppState.get(:user, current_user.id, :search_history)
-      Utility.report("note_show2_action, id_list", id_list)
-      if !Enum.member?(id_list, id2) do
-        id_list = [id2|id_list]
-        AppState.update(:user, current_user.id, :search_history, id_list)
-      end
+      id_list = AppState.update({:user, current_user.id, :search_history, id2})
       params2 = NoteNavigation.get(id_list, id2)
       params = Map.merge(params1, params2)
 

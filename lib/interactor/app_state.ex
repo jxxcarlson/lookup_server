@@ -38,6 +38,18 @@ defmodule LookupPhoenix.AppState do
     put(:user, id, record)
   end
 
+  def update({:user, user_id, :search_history, note_id}) do
+    if !is_number(note_id) do note_id = String.to_integer(note_id) end
+    sh = get(:user, user_id, :search_history)
+    if !Enum.member?(sh, note_id) do
+      new_search_history = [note_id|sh]
+      update(:user, user_id, :search_history, new_search_history)
+    else
+      new_search_history = sh
+    end
+      new_search_history
+  end
+
   ## Existing API
 
   def memorize_notes(note_list, user_id) do

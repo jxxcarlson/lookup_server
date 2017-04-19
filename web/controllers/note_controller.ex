@@ -201,15 +201,8 @@ defmodule LookupPhoenix.NoteController do
         current_notebook_id = AppState.get(:user, current_user.id, :current_notebook)
         current_note_id = AppState.get(:user, current_user.id, :current_note)
 
-        id_list = AppState.get(:user, current_user.id, :search_history)
-        if !Enum.member?(id_list, id) do
-          id_list = [id|id_list]
-          AppState.update(:user, current_user.id, :search_history, id_list)
-        end
-        if !Enum.member?(id_list, current_notebook_id) do
-          id_list = [current_notebook_id|id_list]
-          AppState.update(:user, current_user.id, :search_history, id_list)
-        end
+        AppState.update({:user, current_user.id, :search_history, id})
+        id_list = AppState.update({:user, current_user.id, :search_history, current_notebook_id})
 
         navigation_data = NoteNavigation.get(id_list, id)
 
