@@ -11,6 +11,8 @@ defmodule LookupPhoenix.NoteNavigation do
   The approach of maintaining state in the query string is not a good one.
 """
 
+  require IEx
+
   def default_navigation_data(id) do
     %{
         first_index: 0,
@@ -30,22 +32,31 @@ defmodule LookupPhoenix.NoteNavigation do
     }
   end
 
-  def get(q_string, id) do
+  def s2i(n) do
+    if is_number(n) do
+       n
+    else
+       String.to_integer(n)
+    end
+  end
 
-      IO.puts "QUERY STRING: #{q_string}"
-      if q_string == "" do
-        IO.puts "Contructing stand-in for q_string"
-        q_string = "index=0&id_string=#{id}"
-      end
-      # Example: q_string=index=4&id_list=35%2C511%2C142%2C525%2C522%2C531%2C233
-      query_data = q_string |> Utility.parse_query_string
+  def get(id_list, id) do
 
-      # Get inputs
+      id_list = (id_list || [id])
 
-      index = query_data["index"]; {index, _} = Integer.parse index
-      id_string = query_data["id_string"] |> String.replace("%2C", ",")
-      id_list = String.split(id_string, ",")
-      channel = query_data["channel"] || "PUBLIC"
+      Utility.report("1. id_list", id_list)
+      Utility.report("1. id", id)
+
+      id = s2i(id)
+      id_list = id_list |> Enum.map(fn(item) -> s2i(item) end)
+
+      # IEx.pry
+
+      Utility.report("2. id_list", id_list)
+      Utility.report("2. id", id)
+
+      index = Enum.find_index(id_list, fn(x) -> x == id end)
+
 
      # Compute outputs
       current_id = Enum.at(id_list, index)
@@ -80,10 +91,10 @@ defmodule LookupPhoenix.NoteNavigation do
         previous_id: previous_id,
         current_id: current_id,
         next_id: next_id,
-        id_string: id_string,
+        id_string: "IDX",
         id_list: id_list,
         note_count: note_count,
-        channel: channel
+        channel: "XC"
        }
    end
 

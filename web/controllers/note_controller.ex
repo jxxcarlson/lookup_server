@@ -132,7 +132,7 @@ defmodule LookupPhoenix.NoteController do
 
     query_string = conn.query_string
 
-    query_string = conn.query_string
+
 
     if query_string == "" do
        query_string = "index=0&id_string=#{id}"

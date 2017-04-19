@@ -19,8 +19,7 @@
 
       <td class="hidden-xs" style="max-width:2em"> <%= if note.idx > -1 do note.idx end %> </td>
 
-      <td style="width:25%"> <%= link note.title, to: note_path(@conn, :show, note, index: note.index,
-         id_string: @id_string), class: "" %> </td>
+      <td style="width:25%"> <%= link note.title, to: note_path(@conn, :show, note), class: "" %> </td>
 
       <td class="hidden-xs" style="max-width:2em"> <%= LookupPhoenix.Utility.xForTrue(note.public) %> </td>
       <!-- <td class="hidden-xs small" style="max-width:6em"> <%= LookupPhoenix.Note.inserted_at_short(note) %> </td> -->
