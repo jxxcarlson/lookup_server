@@ -40,8 +40,8 @@ defmodule LookupPhoenix.Search do
            |> NoteSearch.select_by_channel(channel)
            |> NoteSearch.select_public(public)
            |> NoteSearch.sort_by_viewed_at
+           |> NoteSearch.limit(20)
            |> Repo.all
-           |> NoteSearch.most_recent(20)
 
         original_note_count = length(notes)
         filtered_notes = notes |> filter_random(Constant.random_note_threshold())
@@ -69,8 +69,9 @@ defmodule LookupPhoenix.Search do
       Note
       |> NoteSearch.for_user(user.id)
       |> NoteSearch.select_public(scope == :public)
+      |> NoteSearch.limit(max)
+      |> Utlity.stream_report("Using NoteSearch.limit", 11111)
       |> Repo.all
-      |> Enum.slice(0..max)
     end
 
     defp cookies(conn, cookie_name) do
@@ -109,6 +110,7 @@ defmodule LookupPhoenix.Search do
       |> NoteSearch.select_by_tag(tag_list)
       |> NoteSearch.select_public(access == :public)
       |> NoteSearch.sort_by_viewed_at
+      |> NoteSearch.limit(20)
       |> Repo.all
     end
 
@@ -138,7 +140,7 @@ defmodule LookupPhoenix.Search do
         |> NoteSearch.select_by_term(term, type == :term)
         |> NoteSearch.full_text_search(term, type == :text)
         |> NoteSearch.sort_by_viewed_at
-
+        |> NoteSearch.limit(30)
     end
 
    defp do_search(channel, query_terms, options) do

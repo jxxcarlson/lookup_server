@@ -58,6 +58,9 @@ defmodule LookupPhoenix.NoteApiController do
          username = data["username"]
          user = User.find_by_username(username)
          note = Note.get(id)
+         Utility.report("user.id", user.id)
+         Utility.report("note.id", note.id)
+
          id_list = AppState.update({:user, user.id, :search_history, note.id})
          navigation_data = NoteNavigation.get(id_list, id)
          params = Map.merge(data, %{nav: navigation_data})

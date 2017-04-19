@@ -8,9 +8,20 @@ defmodule LookupPhoenix.NoteSearch do
 
     # https://blog.drewolson.org/composable-queries-ecto/
 
+#    query = (Ectoing.User
+#    |> select([u], u.surname)
+#    |> distinct(true)
+#    |> limit(3)
+#    |> order_by([u], u.surname))
+
     def for_user(query, user_id) do
       from n in query,
         where: n.user_id == ^user_id
+    end
+
+    def limit(query, n) do
+      from note in query,
+        limit: ^n
     end
 
     def sort_by_viewed_at(query) do

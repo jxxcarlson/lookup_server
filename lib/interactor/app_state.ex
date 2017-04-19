@@ -1,6 +1,9 @@
 defmodule LookupPhoenix.AppState do
 
   alias LookupPhoenix.Utility
+  alias LookupPhoenix.Note
+  alias LookupPhoenix.Repo
+  alias LookupPhoenix.NoteSearch
 
   ## Base API
 
@@ -24,7 +27,11 @@ defmodule LookupPhoenix.AppState do
   end
 
   def get(:user, id) do
-    get("user.#{id}") || initial_record()
+    record = get("user.#{id}") || initial_record()
+#    if record.current_note == nil do
+#      note = Note |> NoteSearch.for_user(id) |> NoteSearch.limit(1) |> Repo.one
+#      update(:user, id, :current_note, note.id)
+#    end
   end
 
   def get(:user, id, key) do
