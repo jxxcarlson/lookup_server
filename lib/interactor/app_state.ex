@@ -39,6 +39,7 @@ defmodule LookupPhoenix.AppState do
   end
 
   def update({:user, user_id, :search_history, note_id}) do
+    Utility.report("NC . UPDATE . note_id", note_id)
     if !is_number(note_id) do note_id = String.to_integer(note_id) end
     sh = get(:user, user_id, :search_history)
     if !Enum.member?(sh, note_id) do

@@ -129,7 +129,7 @@ defmodule LookupPhoenix.NoteController do
     current_user = conn.assigns.current_user
     username = current_user.username
 
-    AppState.update(:user, current_user.id, :current_note, id)
+    AppState.update(:user, current_user.id, :current_note, String.to_integer(id))
 
     query_string = conn.query_string
 
@@ -160,8 +160,8 @@ defmodule LookupPhoenix.NoteController do
   def show2(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history}) do
 
     current_user = conn.assigns.current_user
-    AppState.update(:user, current_user.id, :current_notebook, id)
-    AppState.update(:user, current_user.id, :current_note, id2)
+    AppState.update(:user, current_user.id, :current_notebook, String.to_integer(id))
+    AppState.update(:user, current_user.id, :current_note, String.to_integer(id2))
 
     params = NoteShow2Action.call(conn, %{"id" => id, "id2" => id2, "toc_history" => toc_history})
     render(conn, "show2.html", params)
@@ -201,8 +201,10 @@ defmodule LookupPhoenix.NoteController do
         current_notebook_id = AppState.get(:user, current_user.id, :current_notebook)
         current_note_id = AppState.get(:user, current_user.id, :current_note)
 
-        AppState.update({:user, current_user.id, :search_history, id})
-        id_list = AppState.update({:user, current_user.id, :search_history, current_notebook_id})
+        id_list = AppState.update({:user, current_user.id, :search_history, id})
+        if current_notebook_id != nil do
+           id_list = AppState.update({:user, current_user.id, :search_history, current_notebook_id})
+        end
 
         navigation_data = NoteNavigation.get(id_list, id)
 
