@@ -208,7 +208,7 @@ defmodule LookupPhoenix.NoteController do
         current_notebook_id = AppState.get(:user, current_user.id, :current_notebook)
         current_note_id = AppState.get(:user, current_user.id, :current_note)
 
-        id_list = AppState.update({:user, current_user.id, :search_history, id})
+            id_list = AppState.update({:user, current_user.id, :search_history, id})
         if current_notebook_id != nil do
            id_list = AppState.update({:user, current_user.id, :search_history, current_notebook_id})
         end
